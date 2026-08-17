@@ -2564,21 +2564,59 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         row = tambahBarisKepField(panelKepAtas, row, "Riwayat Alergi", panelAlergi);
 
         // -- Keadaan Umum (Tanda Vital) --
+        // Ditata 2 kolom (bukan lewat tambahBarisKepField yg 1 kolom) supaya
+        // 7 field muat 4 baris: Td|Suhu, Spo|Nadi, Bb|Rr, Tb|(kosong).
         row = tambahBarisKepJudul(panelKepAtas, row, "KEADAAN UMUM");
-        TdKep = new widget.TextBox(); TdKep.setPreferredSize(new java.awt.Dimension(80,23));
-        row = tambahBarisKepField(panelKepAtas, row, "Tekanan Darah (mmHg)", TdKep);
-        SuhuKep = new widget.TextBox(); SuhuKep.setPreferredSize(new java.awt.Dimension(80,23));
-        row = tambahBarisKepField(panelKepAtas, row, "Suhu (°C)", SuhuKep);
-        SpoKep = new widget.TextBox(); SpoKep.setPreferredSize(new java.awt.Dimension(80,23));
-        row = tambahBarisKepField(panelKepAtas, row, "SpO2 (%)", SpoKep);
-        NadiKep = new widget.TextBox(); NadiKep.setPreferredSize(new java.awt.Dimension(80,23));
-        row = tambahBarisKepField(panelKepAtas, row, "Frekuensi Nadi (x/menit)", NadiKep);
-        BbKep = new widget.TextBox(); BbKep.setPreferredSize(new java.awt.Dimension(80,23));
-        row = tambahBarisKepField(panelKepAtas, row, "Berat Badan (Kg)", BbKep);
-        RrKep = new widget.TextBox(); RrKep.setPreferredSize(new java.awt.Dimension(80,23));
-        row = tambahBarisKepField(panelKepAtas, row, "Frekuensi Nafas (x/menit)", RrKep);
-        TbKep = new widget.TextBox(); TbKep.setPreferredSize(new java.awt.Dimension(80,23));
-        row = tambahBarisKepField(panelKepAtas, row, "Tinggi Badan (Cm)", TbKep);
+        TdKep = new widget.TextBox(); TdKep.setPreferredSize(new java.awt.Dimension(200,26));
+        SuhuKep = new widget.TextBox(); SuhuKep.setPreferredSize(new java.awt.Dimension(200,26));
+        SpoKep = new widget.TextBox(); SpoKep.setPreferredSize(new java.awt.Dimension(200,26));
+        NadiKep = new widget.TextBox(); NadiKep.setPreferredSize(new java.awt.Dimension(200,26));
+        BbKep = new widget.TextBox(); BbKep.setPreferredSize(new java.awt.Dimension(200,26));
+        RrKep = new widget.TextBox(); RrKep.setPreferredSize(new java.awt.Dimension(200,26));
+        TbKep = new widget.TextBox(); TbKep.setPreferredSize(new java.awt.Dimension(200,26));
+
+        widget.Label lblTdKep = new widget.Label(); lblTdKep.setText("Tekanan Darah (mmHg) :");
+        java.awt.GridBagConstraints cLblTdKep = kepConstraint(0,row); cLblTdKep.anchor = java.awt.GridBagConstraints.EAST; cLblTdKep.fill = java.awt.GridBagConstraints.NONE;
+        panelKepAtas.add(lblTdKep, cLblTdKep);
+        java.awt.GridBagConstraints cTdKep = kepConstraint(1,row); cTdKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cTdKep.weightx = 1.0; cTdKep.insets = new java.awt.Insets(4,8,4,20);
+        panelKepAtas.add(TdKep, cTdKep);
+        widget.Label lblSuhuKep = new widget.Label(); lblSuhuKep.setText("Suhu (°C) :");
+        java.awt.GridBagConstraints cLblSuhuKep = kepConstraint(2,row); cLblSuhuKep.anchor = java.awt.GridBagConstraints.EAST; cLblSuhuKep.fill = java.awt.GridBagConstraints.NONE; cLblSuhuKep.insets = new java.awt.Insets(3,20,3,5);
+        panelKepAtas.add(lblSuhuKep, cLblSuhuKep);
+        java.awt.GridBagConstraints cSuhuKep = kepConstraint(3,row); cSuhuKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cSuhuKep.weightx = 1.0; cSuhuKep.insets = new java.awt.Insets(4,8,4,20);
+        panelKepAtas.add(SuhuKep, cSuhuKep);
+        row++;
+
+        widget.Label lblSpoKep = new widget.Label(); lblSpoKep.setText("SpO2 (%) :");
+        java.awt.GridBagConstraints cLblSpoKep = kepConstraint(0,row); cLblSpoKep.anchor = java.awt.GridBagConstraints.EAST; cLblSpoKep.fill = java.awt.GridBagConstraints.NONE;
+        panelKepAtas.add(lblSpoKep, cLblSpoKep);
+        java.awt.GridBagConstraints cSpoKep = kepConstraint(1,row); cSpoKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cSpoKep.weightx = 1.0; cSpoKep.insets = new java.awt.Insets(4,8,4,20);
+        panelKepAtas.add(SpoKep, cSpoKep);
+        widget.Label lblNadiKep = new widget.Label(); lblNadiKep.setText("Frekuensi Nadi (x/menit) :");
+        java.awt.GridBagConstraints cLblNadiKep = kepConstraint(2,row); cLblNadiKep.anchor = java.awt.GridBagConstraints.EAST; cLblNadiKep.fill = java.awt.GridBagConstraints.NONE; cLblNadiKep.insets = new java.awt.Insets(3,20,3,5);
+        panelKepAtas.add(lblNadiKep, cLblNadiKep);
+        java.awt.GridBagConstraints cNadiKep = kepConstraint(3,row); cNadiKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cNadiKep.weightx = 1.0; cNadiKep.insets = new java.awt.Insets(4,8,4,20);
+        panelKepAtas.add(NadiKep, cNadiKep);
+        row++;
+
+        widget.Label lblBbKep = new widget.Label(); lblBbKep.setText("Berat Badan (Kg) :");
+        java.awt.GridBagConstraints cLblBbKep = kepConstraint(0,row); cLblBbKep.anchor = java.awt.GridBagConstraints.EAST; cLblBbKep.fill = java.awt.GridBagConstraints.NONE;
+        panelKepAtas.add(lblBbKep, cLblBbKep);
+        java.awt.GridBagConstraints cBbKep = kepConstraint(1,row); cBbKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cBbKep.weightx = 1.0; cBbKep.insets = new java.awt.Insets(4,8,4,20);
+        panelKepAtas.add(BbKep, cBbKep);
+        widget.Label lblRrKep = new widget.Label(); lblRrKep.setText("Frekuensi Nafas (x/menit) :");
+        java.awt.GridBagConstraints cLblRrKep = kepConstraint(2,row); cLblRrKep.anchor = java.awt.GridBagConstraints.EAST; cLblRrKep.fill = java.awt.GridBagConstraints.NONE; cLblRrKep.insets = new java.awt.Insets(3,20,3,5);
+        panelKepAtas.add(lblRrKep, cLblRrKep);
+        java.awt.GridBagConstraints cRrKep = kepConstraint(3,row); cRrKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cRrKep.weightx = 1.0; cRrKep.insets = new java.awt.Insets(4,8,4,20);
+        panelKepAtas.add(RrKep, cRrKep);
+        row++;
+
+        widget.Label lblTbKep = new widget.Label(); lblTbKep.setText("Tinggi Badan (Cm) :");
+        java.awt.GridBagConstraints cLblTbKep = kepConstraint(0,row); cLblTbKep.anchor = java.awt.GridBagConstraints.EAST; cLblTbKep.fill = java.awt.GridBagConstraints.NONE;
+        panelKepAtas.add(lblTbKep, cLblTbKep);
+        java.awt.GridBagConstraints cTbKep = kepConstraint(1,row); cTbKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cTbKep.weightx = 1.0; cTbKep.insets = new java.awt.Insets(4,8,4,20);
+        panelKepAtas.add(TbKep, cTbKep);
+        row++;
 
         // -- Status Kehamilan --
         // Widget lama StatusKehamilan/Gravida/Para/Abortus/HPHT direparent
@@ -2886,14 +2924,22 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // supaya tidak tumpang tindih dgn box Keluhan Utama yg baru.
         int yMulaiKepAtas = 90 + 143 + 20;
         FormInput.add(panelKepAtas);
-        panelKepAtas.setBounds(5, yMulaiKepAtas, 840, ukuranKepAtas.height);
+        // Lebar dipakai dari preferredSize GridBagLayout sendiri (bukan
+        // hardcode 840) - KEADAAN UMUM 2 kolom + panelKehamilan/panelAlergi
+        // butuh >840px, kalau dipaksa 840 GridBagLayout menyusutkan SEMUA
+        // kolom scr proporsional (weightx cuma ngatur kelebihan ruang,
+        // bukan defisit) -> field menyusut & row yg wrap ketimpa row
+        // bawahnya. lebarFormInput (di bawah) ikut disesuaikan supaya
+        // scrollInput bisa scroll horizontal sampai ke tepi panel ini.
+        panelKepAtas.setBounds(5, yMulaiKepAtas, ukuranKepAtas.width, ukuranKepAtas.height);
+        lebarFormInput = Math.max(870, 5 + ukuranKepAtas.width + 20);
         // Semua konten lama di y>=210 sekarang disembunyikan/direparent ke
         // section baru (lihat blok retired* & reparent Agama/StatusKehamilan
         // dst di atas) - jadi panel berikutnya (panelKepDua/Tiga/dst) tidak
         // perlu lagi mencadangkan ruang setinggi blok lama (dulu y=210-1203),
         // cukup ditempel tepat setelah panelKepAtas.
         yBawahLama = yMulaiKepAtas + ukuranKepAtas.height + 20;
-        FormInput.setPreferredSize(new java.awt.Dimension(870, yBawahLama + 20));
+        FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahLama + 20));
     }
 
     /**
@@ -3057,7 +3103,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         int yBawahDua = yBawahLama;
         FormInput.add(panelKepDua);
         panelKepDua.setBounds(5, yBawahDua, 840, ukuranKepDua.height);
-        FormInput.setPreferredSize(new java.awt.Dimension(870, yBawahDua + ukuranKepDua.height + 20));
+        FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahDua + ukuranKepDua.height + 20));
     }
 
     /**
@@ -3336,7 +3382,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         int yBawahTiga = yBawahLama + ukuranKepDua3.height + 10;
         FormInput.add(panelKepTiga);
         panelKepTiga.setBounds(5, yBawahTiga, 840, ukuranKepTiga.height);
-        FormInput.setPreferredSize(new java.awt.Dimension(870, yBawahTiga + ukuranKepTiga.height + 20));
+        FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahTiga + ukuranKepTiga.height + 20));
     }
 
     /**
@@ -3569,7 +3615,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         int yBawahEmpat = yBawahLama + ukuranKepDua4.height + 10 + ukuranKepTiga4.height + 10 + ukuranObatInfus4.height + 10;
         FormInput.add(panelKepEmpat);
         panelKepEmpat.setBounds(5, yBawahEmpat, 840, ukuranKepEmpat.height);
-        FormInput.setPreferredSize(new java.awt.Dimension(870, yBawahEmpat + ukuranKepEmpat.height + 20));
+        FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahEmpat + ukuranKepEmpat.height + 20));
     }
 
     /**
@@ -3685,7 +3731,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         int yBawahObat = yBawahLama + ukuranKepDuaO.height + 10 + ukuranKepTigaO.height + 10;
         FormInput.add(panelKepObat);
         panelKepObat.setBounds(5, yBawahObat, 840, ukuranKepObat.height);
-        FormInput.setPreferredSize(new java.awt.Dimension(870, yBawahObat + ukuranKepObat.height + 20));
+        FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahObat + ukuranKepObat.height + 20));
     }
 
     /**
@@ -4994,6 +5040,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private widget.PanelBiasa panelKepAtas;
     private int geserKep1;
     private int yBawahLama;
+    private int lebarFormInput = 870;
 
     // -- Riwayat Alergi --
     private widget.RadioButton RbAlergiTidak, RbAlergiYa;
