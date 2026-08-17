@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(python --version)",
+      "PowerShell(python -c \"import graphify; print\\('graphify installed'\\)\" 2>&1)",
+      "PowerShell(& \"C:\\\\Users\\\\itdem\\\\.local\\\\bin\\\\graphify.exe\" --help 2>&1)"
+    ]
+  }
+}

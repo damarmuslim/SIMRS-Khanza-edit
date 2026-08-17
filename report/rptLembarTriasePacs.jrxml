@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptLembarTriasePacs" pageWidth="609" pageHeight="935" columnWidth="569" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<!--
+	  Laporan cetak Formulir RM 03-1 - Triase IGD PACS (Patient's Acuity
+	  Categorization Scale). Dibuat baru, TIDAK mengubah/menghapus
+	  rptLembarTriaseSkala1-5.jrxml maupun rptDataTriaseIGD.jrxml yang
+	  masih dipakai alur Skala 1-5 lama.
+
+	  Beda pola dari rptLembarTriaseSkala1-5.jrxml: laporan ini query
+	  LANGSUNG by no_rawat (bukan lewat tabel staging `temporary` +
+	  temp1..temp37) - mengikuti pola yang SUDAH ADA di rptDataTriaseIGD.jrxml
+	  (field bernama asli, bukan slot generik).
+
+	  Ukuran kertas F4 (215mm x 330mm = 609x935 point) sesuai formulir fisik.
+	  Kotak identitas pasien (No. RM/Nama/Tgl Lahir/Tgl Masuk RS) sengaja
+	  ditaruh SEJAJAR dengan logo di header (bukan di bawahnya) - mengikuti
+	  posisi persis pada formulir kertas RM 03-1 asli. No. Rawat (field
+	  internal EMR, tidak ada di formulir fisik) TIDAK dicetak di halaman -
+	  parameter $P{norawat} tetap ada & tetap dipakai di queryString untuk
+	  mengambil data pasien yang benar, cuma tidak ditampilkan ke kertas.
+	-->
+	<style name="GayaLevelPacs" mode="Opaque" backcolor="#FFFFFF" forecolor="#000000">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[Boolean.valueOf($F{level_pacs}!=null && $F{level_pacs}.equals("PACS 1"))]]></conditionExpression>
+			<style backcolor="#AA0000" forecolor="#FFFFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[Boolean.valueOf($F{level_pacs}!=null && $F{level_pacs}.equals("PACS 2"))]]></conditionExpression>
+			<style backcolor="#C8C800" forecolor="#FFFFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[Boolean.valueOf($F{level_pacs}!=null && $F{level_pacs}.equals("PACS 3"))]]></conditionExpression>
+			<style backcolor="#AACC00" forecolor="#FFFFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[Boolean.valueOf($F{level_pacs}!=null && $F{level_pacs}.equals("PACS 4"))]]></conditionExpression>
+			<style backcolor="#00AA00" forecolor="#FFFFFF"/>
+		</conditionalStyle>
+	</style>
+	<style name="GayaKeputusanPacs" mode="Opaque" backcolor="#FFFFFF" forecolor="#000000">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[Boolean.valueOf($F{keputusan_pacs}!=null && $F{keputusan_pacs}.equals("Ruang Resusitasi"))]]></conditionExpression>
+			<style backcolor="#AA0000" forecolor="#FFFFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[Boolean.valueOf($F{keputusan_pacs}!=null && $F{keputusan_pacs}.equals("Ruang Non Resusitasi"))]]></conditionExpression>
+			<style backcolor="#C8C800" forecolor="#FFFFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[Boolean.valueOf($F{keputusan_pacs}!=null && $F{keputusan_pacs}.equals("Poli Klinik/Klinik Umum 24 Jam"))]]></conditionExpression>
+			<style backcolor="#00AA00" forecolor="#FFFFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[Boolean.valueOf($F{keputusan_pacs}!=null && $F{keputusan_pacs}.equals("Death On Arrival"))]]></conditionExpression>
+			<style backcolor="#000000" forecolor="#FFFFFF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="norawat" class="java.lang.String"/>
+	<parameter name="namars" class="java.lang.String"/>
+	<parameter name="alamatrs" class="java.lang.String"/>
+	<parameter name="kotars" class="java.lang.String"/>
+	<parameter name="propinsirs" class="java.lang.String"/>
+	<parameter name="kontakrs" class="java.lang.String"/>
+	<parameter name="emailrs" class="java.lang.String"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="finger" class="java.lang.String"/>
+	<parameter name="nikpetugas" class="java.lang.String"/>
+	<parameter name="noijinpraktek" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+pasien.no_rkm_medis, pasien.nm_pasien, pasien.jk, pasien.tgl_lahir,
+TIMESTAMPDIFF(YEAR, pasien.tgl_lahir, CURDATE()) as umur,
+reg_periksa.tgl_registrasi, reg_periksa.jam_reg,
+data_triase_igd.tgl_kunjungan, data_triase_igd.cara_masuk, data_triase_igd.alat_transportasi,
+CASE WHEN data_triase_igd.alat_transportasi='AGD' THEN 'Ambulance' ELSE 'Kendaraan bukan ambulance' END as kendaraan_tampil,
+data_triase_igd.alasan_kedatangan, data_triase_igd.keterangan_kedatangan, data_triase_igd.kode_kasus,
+master_triase_macam_kasus.macam_kasus,
+CASE WHEN data_triase_igd.kode_kasus='004' THEN 'Non Trauma' ELSE 'Trauma' END as kasus_tampil,
+data_triase_igd.kontak_awal_tanggal, data_triase_igd.kontak_awal_pukul,
+data_triase_igd.terpasang_infus, data_triase_igd.terpasang_ngt, data_triase_igd.terpasang_kateter_urin,
+data_triase_igd.nama_pengantar, data_triase_igd.telp_pengantar,
+data_triase_igd.tekanan_darah, data_triase_igd.nadi, data_triase_igd.pernapasan, data_triase_igd.suhu,
+data_triase_igd.saturasi_o2, data_triase_igd.nyeri, data_triase_igd.kesadaran,
+data_triase_igd.berat_badan, data_triase_igd.tinggi_badan,
+data_triase_pacs.keluhan_utama,
+data_triase_pacs.skor_kesadaran, data_triase_pacs.skor_tekanan_darah_sistolik, data_triase_pacs.skor_nadi,
+data_triase_pacs.skor_respirasi, data_triase_pacs.skor_temperatur, data_triase_pacs.skor_saturasi_o2,
+data_triase_pacs.total_skor, data_triase_pacs.level_pacs, data_triase_pacs.keputusan_pacs,
+data_triase_pacs.keputusan_pukul, data_triase_pacs.tanggal_triase, data_triase_pacs.catatan_khusus,
+pegawai.nama as petugas_nama,
+data_triase_mekanisme_trauma.kkl_tunggal, data_triase_mekanisme_trauma.kkl_dengan_lawan, data_triase_mekanisme_trauma.kkl_lawan,
+data_triase_mekanisme_trauma.kkl_tempat_kejadian, data_triase_mekanisme_trauma.kkl_tanggal_kejadian, data_triase_mekanisme_trauma.kkl_pukul_kejadian,
+data_triase_mekanisme_trauma.jatuh_ketinggian, data_triase_mekanisme_trauma.jatuh_ketinggian_keterangan,
+data_triase_mekanisme_trauma.luka_bakar, data_triase_mekanisme_trauma.luka_bakar_keterangan,
+data_triase_mekanisme_trauma.trauma_fisik, data_triase_mekanisme_trauma.trauma_fisik_keterangan,
+data_triase_mekanisme_trauma.trauma_zat_kimia, data_triase_mekanisme_trauma.trauma_zat_kimia_keterangan,
+data_triase_mekanisme_trauma.trauma_zat_lainnya, data_triase_mekanisme_trauma.trauma_zat_lainnya_keterangan
+from data_triase_igd
+inner join reg_periksa on reg_periksa.no_rawat = data_triase_igd.no_rawat
+inner join pasien on pasien.no_rkm_medis = reg_periksa.no_rkm_medis
+left join master_triase_macam_kasus on master_triase_macam_kasus.kode_kasus = data_triase_igd.kode_kasus
+left join data_triase_pacs on data_triase_pacs.no_rawat = data_triase_igd.no_rawat
+left join pegawai on pegawai.nik = data_triase_pacs.nik
+left join data_triase_mekanisme_trauma on data_triase_mekanisme_trauma.no_rawat = data_triase_igd.no_rawat
+where data_triase_igd.no_rawat = $P{norawat}]]>
+	</queryString>
+	<field name="no_rkm_medis" class="java.lang.String"/>
+	<field name="nm_pasien" class="java.lang.String"/>
+	<field name="jk" class="java.lang.String"/>
+	<field name="tgl_lahir" class="java.sql.Date"/>
+	<field name="umur" class="java.lang.Integer"/>
+	<field name="tgl_registrasi" class="java.sql.Date"/>
+	<field name="jam_reg" class="java.sql.Time"/>
+	<field name="tgl_kunjungan" class="java.sql.Timestamp"/>
+	<field name="cara_masuk" class="java.lang.String"/>
+	<field name="alat_transportasi" class="java.lang.String"/>
+	<field name="kendaraan_tampil" class="java.lang.String"/>
+	<field name="alasan_kedatangan" class="java.lang.String"/>
+	<field name="keterangan_kedatangan" class="java.lang.String"/>
+	<field name="kode_kasus" class="java.lang.String"/>
+	<field name="macam_kasus" class="java.lang.String"/>
+	<field name="kasus_tampil" class="java.lang.String"/>
+	<field name="kontak_awal_tanggal" class="java.sql.Date"/>
+	<field name="kontak_awal_pukul" class="java.sql.Time"/>
+	<field name="terpasang_infus" class="java.lang.String"/>
+	<field name="terpasang_ngt" class="java.lang.String"/>
+	<field name="terpasang_kateter_urin" class="java.lang.String"/>
+	<field name="nama_pengantar" class="java.lang.String"/>
+	<field name="telp_pengantar" class="java.lang.String"/>
+	<field name="tekanan_darah" class="java.lang.String"/>
+	<field name="nadi" class="java.lang.String"/>
+	<field name="pernapasan" class="java.lang.String"/>
+	<field name="suhu" class="java.lang.String"/>
+	<field name="saturasi_o2" class="java.lang.String"/>
+	<field name="nyeri" class="java.lang.String"/>
+	<field name="kesadaran" class="java.lang.String"/>
+	<field name="berat_badan" class="java.lang.String"/>
+	<field name="tinggi_badan" class="java.lang.String"/>
+	<field name="keluhan_utama" class="java.lang.String"/>
+	<field name="skor_kesadaran" class="java.lang.Integer"/>
+	<field name="skor_tekanan_darah_sistolik" class="java.lang.Integer"/>
+	<field name="skor_nadi" class="java.lang.Integer"/>
+	<field name="skor_respirasi" class="java.lang.Integer"/>
+	<field name="skor_temperatur" class="java.lang.Integer"/>
+	<field name="skor_saturasi_o2" class="java.lang.Integer"/>
+	<field name="total_skor" class="java.lang.Integer"/>
+	<field name="level_pacs" class="java.lang.String"/>
+	<field name="keputusan_pacs" class="java.lang.String"/>
+	<field name="keputusan_pukul" class="java.sql.Time"/>
+	<field name="tanggal_triase" class="java.sql.Timestamp"/>
+	<field name="catatan_khusus" class="java.lang.String"/>
+	<field name="petugas_nama" class="java.lang.String"/>
+	<field name="kkl_tunggal" class="java.lang.String"/>
+	<field name="kkl_dengan_lawan" class="java.lang.String"/>
+	<field name="kkl_lawan" class="java.lang.String"/>
+	<field name="kkl_tempat_kejadian" class="java.lang.String"/>
+	<field name="kkl_tanggal_kejadian" class="java.sql.Date"/>
+	<field name="kkl_pukul_kejadian" class="java.sql.Time"/>
+	<field name="jatuh_ketinggian" class="java.lang.String"/>
+	<field name="jatuh_ketinggian_keterangan" class="java.lang.String"/>
+	<field name="luka_bakar" class="java.lang.String"/>
+	<field name="luka_bakar_keterangan" class="java.lang.String"/>
+	<field name="trauma_fisik" class="java.lang.String"/>
+	<field name="trauma_fisik_keterangan" class="java.lang.String"/>
+	<field name="trauma_zat_kimia" class="java.lang.String"/>
+	<field name="trauma_zat_kimia_keterangan" class="java.lang.String"/>
+	<field name="trauma_zat_lainnya" class="java.lang.String"/>
+	<field name="trauma_zat_lainnya_keterangan" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="730" splitType="Stretch">
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement x="2" y="2" width="45" height="45"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="50" y="0" width="300" height="15"/>
+				<textElement textAlignment="Center"><font fontName="Tahoma" size="11"/></textElement>
+				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="15" width="300" height="12"/>
+				<textElement textAlignment="Center"><font fontName="Tahoma" size="8"/></textElement>
+				<textFieldExpression><![CDATA[$P{alamatrs}+", "+$P{kotars}+", "+$P{propinsirs}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="27" width="300" height="12"/>
+				<textElement textAlignment="Center"><font fontName="Tahoma" size="8"/></textElement>
+				<textFieldExpression><![CDATA[$P{kontakrs}+" - "+$P{emailrs}]]></textFieldExpression>
+			</textField>
+
+			<!-- [PACS] Kotak identitas pasien sejajar dengan logo/header (bukan di bawahnya
+			     seperti sebelumnya) - mengikuti posisi persis pada formulir fisik RM 03-1. -->
+			<rectangle>
+				<reportElement x="354" y="0" width="215" height="48"/>
+			</rectangle>
+			<staticText><reportElement x="358" y="1" width="70" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[No. RM :]]></text></staticText>
+			<textField><reportElement x="428" y="1" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[$F{no_rkm_medis}]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="358" y="12" width="70" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[Nama :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="428" y="12" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[$F{nm_pasien}+($F{jk}==null?"":" ("+$F{jk}+")")]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="358" y="23" width="70" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[Tgl Lahir/Umur :]]></text></staticText>
+			<textField><reportElement x="428" y="23" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[($F{tgl_lahir}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_lahir}))+($F{umur}==null?"":" / "+$F{umur}+" th")]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="358" y="34" width="70" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[Tgl Masuk RS :]]></text></staticText>
+			<textField><reportElement x="428" y="34" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[($F{tgl_registrasi}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_registrasi}))+($F{jam_reg}==null?"":" "+new java.text.SimpleDateFormat("HH:mm").format($F{jam_reg}))]]></textFieldExpression></textField>
+
+			<line><reportElement x="0" y="49" width="569" height="1"/></line>
+
+			<staticText><reportElement mode="Opaque" backcolor="#C8C800" x="0" y="50" width="569" height="15"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="9"/></textElement><text><![CDATA[TRIASE PASIEN GAWAT DARURAT - LEVEL PACS (FORMULIR RM 03-1)]]></text></staticText>
+			<line><reportElement x="0" y="65" width="569" height="1"/></line>
+
+			<staticText><reportElement x="8" y="66" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Kontak Awal Pasien :]]></text></staticText>
+			<textField pattern="dd-MM-yyyy"><reportElement x="190" y="66" width="150" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kontak_awal_tanggal}]]></textFieldExpression></textField>
+			<textField pattern="HH:mm"><reportElement x="345" y="66" width="210" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kontak_awal_pukul}]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="80" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Cara Masuk :]]></text></staticText>
+			<textField><reportElement x="190" y="80" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{cara_masuk}]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="94" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Sudah Terpasang :]]></text></staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="190" y="94" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement>
+				<textFieldExpression><![CDATA[((("Ya".equals($F{terpasang_infus})?"Infus, ":"")+("Ya".equals($F{terpasang_ngt})?"NGT, ":"")+("Ya".equals($F{terpasang_kateter_urin})?"Kateter Urin, ":"")).isEmpty())?"-":(("Ya".equals($F{terpasang_infus})?"Infus, ":"")+("Ya".equals($F{terpasang_ngt})?"NGT, ":"")+("Ya".equals($F{terpasang_kateter_urin})?"Kateter Urin, ":"")).replaceAll(", $","")]]></textFieldExpression>
+			</textField>
+
+			<staticText><reportElement x="8" y="108" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Asal Kedatangan :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="190" y="108" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{alasan_kedatangan}+(($F{keterangan_kedatangan}==null||$F{keterangan_kedatangan}.trim().isEmpty())?"":" ("+$F{keterangan_kedatangan}+")")]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="122" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Kendaraan :]]></text></staticText>
+			<textField><reportElement x="190" y="122" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kendaraan_tampil}]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="136" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Identitas Pengantar :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="190" y="136" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[(($F{nama_pengantar}==null||$F{nama_pengantar}.trim().isEmpty())?"-":$F{nama_pengantar})+(($F{telp_pengantar}==null||$F{telp_pengantar}.trim().isEmpty())?"":" / "+$F{telp_pengantar})]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="150" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Kasus :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="190" y="150" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kasus_tampil}+(($F{macam_kasus}==null)?"":" - "+$F{macam_kasus})]]></textFieldExpression></textField>
+			<line><reportElement x="0" y="164" width="569" height="1"/></line>
+
+			<staticText><reportElement mode="Opaque" backcolor="#F0F0DC" x="0" y="165" width="569" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[  MEKANISME TRAUMA]]></text></staticText>
+
+			<staticText><reportElement x="8" y="179" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[KKL :]]></text></staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="190" y="179" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement>
+				<textFieldExpression><![CDATA[(!"Ya".equals($F{kkl_tunggal})&&!"Ya".equals($F{kkl_dengan_lawan}))?"-":(("Ya".equals($F{kkl_tunggal})?"KKL Tunggal":"KKL vs "+($F{kkl_lawan}==null?"":$F{kkl_lawan}))+(($F{kkl_tempat_kejadian}==null||$F{kkl_tempat_kejadian}.trim().isEmpty())?"":", Tempat: "+$F{kkl_tempat_kejadian}))]]></textFieldExpression>
+			</textField>
+
+			<staticText><reportElement x="8" y="193" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Jatuh dari Ketinggian :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="190" y="193" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{jatuh_ketinggian})?"-":"Ya"+(($F{jatuh_ketinggian_keterangan}==null||$F{jatuh_ketinggian_keterangan}.trim().isEmpty())?"":" - "+$F{jatuh_ketinggian_keterangan})]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="207" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Luka Bakar :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="190" y="207" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{luka_bakar})?"-":"Ya"+(($F{luka_bakar_keterangan}==null||$F{luka_bakar_keterangan}.trim().isEmpty())?"":" - "+$F{luka_bakar_keterangan})]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="221" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Trauma Fisik :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="190" y="221" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{trauma_fisik})?"-":"Ya"+(($F{trauma_fisik_keterangan}==null||$F{trauma_fisik_keterangan}.trim().isEmpty())?"":" - "+$F{trauma_fisik_keterangan})]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="235" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Trauma Zat Kimia :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="190" y="235" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{trauma_zat_kimia})?"-":"Ya"+(($F{trauma_zat_kimia_keterangan}==null||$F{trauma_zat_kimia_keterangan}.trim().isEmpty())?"":" - "+$F{trauma_zat_kimia_keterangan})]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="249" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Trauma Zat Lainnya :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="190" y="249" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{trauma_zat_lainnya})?"-":"Ya"+(($F{trauma_zat_lainnya_keterangan}==null||$F{trauma_zat_lainnya_keterangan}.trim().isEmpty())?"":" - "+$F{trauma_zat_lainnya_keterangan})]]></textFieldExpression></textField>
+			<line><reportElement x="0" y="263" width="569" height="1"/></line>
+
+			<staticText><reportElement x="8" y="264" width="180" height="30"/><textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Keluhan Utama :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="190" y="264" width="365" height="30"/><textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{keluhan_utama}]]></textFieldExpression></textField>
+			<line><reportElement x="0" y="294" width="569" height="1"/></line>
+
+			<staticText><reportElement mode="Opaque" backcolor="#F0F0DC" x="0" y="295" width="569" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[  TANDA-TANDA VITAL]]></text></staticText>
+
+			<staticText><reportElement x="8" y="309" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Tekanan Darah / Nadi :]]></text></staticText>
+			<textField><reportElement x="190" y="309" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{tekanan_darah}+" mmHg   /   Nadi "+$F{nadi}+" x/menit"]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="323" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Pernapasan / Saturasi O2 :]]></text></staticText>
+			<textField><reportElement x="190" y="323" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{pernapasan}+" x/menit   /   SaO2 "+$F{saturasi_o2}+"%"]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="337" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Suhu / Nyeri :]]></text></staticText>
+			<textField><reportElement x="190" y="337" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{suhu}+" C   /   Nyeri "+$F{nyeri}]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="351" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Kesadaran (AVPU) :]]></text></staticText>
+			<textField><reportElement x="190" y="351" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kesadaran}]]></textFieldExpression></textField>
+			<line><reportElement x="0" y="365" width="569" height="1"/></line>
+
+			<staticText><reportElement mode="Opaque" backcolor="#F0F0DC" x="0" y="366" width="569" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[  ANTROPOMETRI]]></text></staticText>
+			<staticText><reportElement x="8" y="380" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Berat Badan / Tinggi Badan :]]></text></staticText>
+			<textField><reportElement x="190" y="380" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{berat_badan}+" kg   /   "+$F{tinggi_badan}+" cm"]]></textFieldExpression></textField>
+			<line><reportElement x="0" y="394" width="569" height="1"/></line>
+
+			<staticText><reportElement mode="Opaque" backcolor="#F0F0DC" x="0" y="395" width="569" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[  TABEL SKOR EWS]]></text></staticText>
+			<staticText><reportElement mode="Opaque" backcolor="#EFEFEF" x="0" y="409" width="366" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[  Parameter]]></text></staticText>
+			<staticText><reportElement mode="Opaque" backcolor="#EFEFEF" x="366" y="409" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[Skor (0-3)]]></text></staticText>
+
+			<staticText><reportElement x="8" y="423" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Kesadaran]]></text></staticText>
+			<textField><reportElement x="366" y="423" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_kesadaran}]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="437" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Tekanan Darah Sistolik]]></text></staticText>
+			<textField><reportElement x="366" y="437" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_tekanan_darah_sistolik}]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="451" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Nadi]]></text></staticText>
+			<textField><reportElement x="366" y="451" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_nadi}]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="465" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Respirasi]]></text></staticText>
+			<textField><reportElement x="366" y="465" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_respirasi}]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="479" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Temperatur]]></text></staticText>
+			<textField><reportElement x="366" y="479" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_temperatur}]]></textFieldExpression></textField>
+
+			<staticText><reportElement x="8" y="493" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Saturasi O2]]></text></staticText>
+			<textField><reportElement x="366" y="493" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_saturasi_o2}]]></textFieldExpression></textField>
+
+			<staticText><reportElement mode="Opaque" backcolor="#EFEFEF" x="8" y="507" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><text><![CDATA[TOTAL SKOR]]></text></staticText>
+			<textField><reportElement mode="Opaque" backcolor="#EFEFEF" x="366" y="507" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{total_skor}]]></textFieldExpression></textField>
+			<line><reportElement x="0" y="521" width="569" height="1"/></line>
+
+			<staticText><reportElement x="8" y="522" width="180" height="20"/><textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Catatan Khusus :]]></text></staticText>
+			<textField isStretchWithOverflow="true"><reportElement x="190" y="522" width="365" height="20"/><textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{catatan_khusus}]]></textFieldExpression></textField>
+			<line><reportElement x="0" y="542" width="569" height="1"/></line>
+
+			<staticText><reportElement x="8" y="543" width="120" height="20"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Level Triage (PACS) :]]></text></staticText>
+			<textField><reportElement style="GayaLevelPacs" x="130" y="543" width="120" height="20"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{level_pacs}==null?"-":$F{level_pacs}]]></textFieldExpression></textField>
+			<line><reportElement x="0" y="563" width="569" height="1"/></line>
+
+			<staticText><reportElement x="8" y="564" width="120" height="20"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Keputusan :]]></text></staticText>
+			<!-- [PACS] "Pukul :" dihapus - sudah terwakili oleh Kontak Awal Pasien di atas.
+			     Bar keputusan dilebarkan mengisi ruang yang kosong. -->
+			<textField isStretchWithOverflow="true"><reportElement style="GayaKeputusanPacs" x="130" y="564" width="425" height="20"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{keputusan_pacs}==null?"-":$F{keputusan_pacs}]]></textFieldExpression></textField>
+			<line><reportElement x="0" y="584" width="569" height="1"/></line>
+
+			<!-- [PACS] Tanda tangan basah diganti QR Code verifikasi elektronik, pola
+			     sama persis dengan rptLembarTriaseSkala1-5.jrxml ($P{finger}: nama RS,
+			     nama petugas, ID sidik jari/NIK, dan tanggal triase). Susunan: caption
+			     "Petugas Triage" di atas, QR code, lalu nama petugas di bawahnya -
+			     semua tengah (center). -->
+			<staticText><reportElement x="365" y="590" width="190" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[Petugas Triage]]></text></staticText>
+			<componentElement>
+				<reportElement x="425" y="606" width="70" height="70" isRemoveLineWhenBlank="true"/>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
+					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<textField isStretchWithOverflow="true"><reportElement x="365" y="678" width="190" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{petugas_nama}==null?"":$F{petugas_nama}]]></textFieldExpression></textField>
+			<!-- [PACS] No. Ijin Praktek cuma terisi kalau petugas kebetulan seorang dokter
+			     (tabel dokter) - kosong utk perawat/staf lain, itu wajar. NIK selalu ada. -->
+			<textField><reportElement x="365" y="692" width="190" height="12"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[$P{noijinpraktek}==null||$P{noijinpraktek}.isEmpty()?"-":"No. Ijin Praktek: "+$P{noijinpraktek}]]></textFieldExpression></textField>
+			<textField><reportElement x="365" y="704" width="190" height="12"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA["NIK: "+($P{nikpetugas}==null?"":$P{nikpetugas})]]></textFieldExpression></textField>
+		</band>
+	</title>
+</jasperReport>

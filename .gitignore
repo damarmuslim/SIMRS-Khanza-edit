@@ -1,0 +1,5 @@
+﻿build/
+dist/
+_tmp_compile/
+cache/
+*.class

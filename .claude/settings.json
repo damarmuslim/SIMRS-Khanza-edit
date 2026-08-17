@@ -1,0 +1,53 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Copy-Item -Path \"d:\\\\Damar\\\\SIMRS\\\\SIMRS-Khanza-edit\\\\src\\\\rekammedis\\\\File Asli RMTriaseIGD.java\" -Destination \"d:\\\\Damar\\\\SIMRS\\\\SIMRS-Khanza-edit\\\\src\\\\rekammedis\\\\RMTriaseIGD.java\" -Force)",
+      "PowerShell(Move-Item -Path \"d:\\\\Damar\\\\SIMRS\\\\SIMRS-Khanza-edit\\\\src\\\\rekammedis\\\\File Asli RMTriaseIGD.java\" -Destination \"d:\\\\Damar\\\\SIMRS\\\\SIMRS-Khanza-edit\\\\File Asli RMTriaseIGD.java.reference\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root sik -e \"show table status like 'data_triase_igd';\" 2>&1)",
+      "PowerShell(Get-Process -Name \"mysqld\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-CimInstance Win32_LogicalDisk -Filter \"DeviceID='C:'\" | Select-Object DeviceID, @{N='FreeGB';E={[math]::Round\\($_.FreeSpace/1GB,2\\)}}, @{N='SizeGB';E={[math]::Round\\($_.Size/1GB,2\\)}})",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysqlcheck.exe\" -u root --auto-repair --check sik 2>&1)",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root -e \"show databases like 'aik';\" 2>&1)",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"select no_rawat,tekanan_darah,nadi,pernapasan,suhu,saturasi_o2,nyeri,terpasang_infus,nama_pengantar from data_triase_igd where no_rawat like '2026/08/15/000003%';\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"select no_rawat,total_skor,level_pacs,keputusan_pacs,nik from data_triase_pacs where no_rawat like '2026/08/15/000003%';\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"select no_rawat from data_triase_igd order by no_rawat desc limit 5;\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"select no_rawat,total_skor,level_pacs,keputusan_pacs,nik,keluhan_utama from data_triase_pacs where no_rawat like '2026/08/15/000003%';\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"select no_rawat,tekanan_darah,nadi,keterangan_kedatangan,tgl_kunjungan from data_triase_igd where no_rawat like '2026/08/15/000003%';\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"select no_rawat,anamnesa_singkat,nik from data_triase_igdsekunder where no_rawat like '2026/08/15/000003%';\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"select no_rawat, tgl_kunjungan from data_triase_igd order by no_rawat desc limit 8;\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"select no_rawat, status from reg_periksa where no_rawat like '2026/08/15/000003%';\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"select no_rawat, tgl_kunjungan from data_triase_igd order by tgl_kunjungan desc limit 5;\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"select no_rawat,total_skor,level_pacs,keputusan_pacs,nik from data_triase_pacs order by tanggal_triase desc limit 5;\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root aik -e \"source d:\\\\Damar\\\\SIMRS\\\\SIMRS-Khanza-edit\\\\sik_triase_pacs.sql\" 2>&1)",
+      "PowerShell(graphify query \"bagaimana data tabel triase dimuat ke form input saat baris diklik di RMTriaseIGD\")",
+      "Read(//d/Damar/SIMRS/SIMRS-Khanby-edit/src/rekammedis/**)",
+      "Read(//c/xampp/mysql/bin/**)",
+      "Read(//c/xampp/htdocs/**)",
+      "Read(//c/xampp/htdocs/webapps/**)",
+      "Read(//c/xampp/htdocs/webapps/persetujuantransferruang/**)",
+      "Read(//c/xampp/htdocs/webapps edit canvas/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/itdem/.local/bin/graphify.EXE hook-guard search"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/itdem/.local/bin/graphify.EXE hook-guard read"
+          }
+        ]
+      }
+    ]
+  }
+}

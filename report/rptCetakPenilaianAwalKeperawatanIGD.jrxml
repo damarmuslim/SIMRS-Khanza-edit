@@ -1,0 +1,2400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.0.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="609" pageHeight="935" columnWidth="569" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="34c13d5a-cd6b-451e-8001-9fd298d2274a">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="namars" class="java.lang.String"/>
+	<parameter name="alamatrs" class="java.lang.String"/>
+	<parameter name="kotars" class="java.lang.String"/>
+	<parameter name="propinsirs" class="java.lang.String"/>
+	<parameter name="kontakrs" class="java.lang.String"/>
+	<parameter name="emailrs" class="java.lang.String"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="finger" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select penilaian_awal_keperawatan_igd.*,
+reg_periksa.no_rkm_medis, pasien.nm_pasien, pasien.tgl_lahir, if(pasien.jk='L','Laki-Laki','Perempuan') as jk,
+reg_periksa.tgl_registrasi, reg_periksa.jam_reg,
+petugas.nama as nm_perawat,
+dokter.nm_dokter, dokter.no_ijn_praktek,
+(select group_concat(mmk.nama_masalah separator ', ') from penilaian_awal_keperawatan_igd_masalah pakm
+ inner join master_masalah_keperawatan_igd mmk on mmk.kode_masalah=pakm.kode_masalah
+ where pakm.no_rawat=penilaian_awal_keperawatan_igd.no_rawat) as masalah_terpilih,
+(select group_concat(concat(pako.pukul,' - ',pako.nama_obat,' (',pako.dosis,', ',pako.rute,')') separator '; ')
+ from penilaian_awal_keperawatan_igd_obat pako
+ where pako.no_rawat=penilaian_awal_keperawatan_igd.no_rawat) as obat_infus_ringkas
+from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis
+inner join penilaian_awal_keperawatan_igd on reg_periksa.no_rawat=penilaian_awal_keperawatan_igd.no_rawat
+inner join petugas on penilaian_awal_keperawatan_igd.nip=petugas.nip
+left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter]]>
+	</queryString>
+	<field name="no_rawat" class="java.lang.String"/>
+	<field name="no_rkm_medis" class="java.lang.String"/>
+	<field name="nm_pasien" class="java.lang.String"/>
+	<field name="jk" class="java.lang.String"/>
+	<field name="tgl_lahir" class="java.sql.Date"/>
+	<field name="tgl_registrasi" class="java.sql.Date"/>
+	<field name="jam_reg" class="java.sql.Time"/>
+	<field name="nm_perawat" class="java.lang.String"/>
+	<field name="nm_dokter" class="java.lang.String"/>
+	<field name="no_ijn_praktek" class="java.lang.String"/>
+	<field name="masalah_terpilih" class="java.lang.String"/>
+	<field name="obat_infus_ringkas" class="java.lang.String"/>
+	<field name="tanggal" class="java.sql.Timestamp"/>
+	<field name="informasi" class="java.lang.String"/>
+	<field name="keluhan_utama" class="java.lang.String"/>
+	<field name="alergi_ada" class="java.lang.String"/>
+	<field name="alergi_sebutkan" class="java.lang.String"/>
+	<field name="td" class="java.lang.String"/>
+	<field name="nadi" class="java.lang.String"/>
+	<field name="suhu" class="java.lang.String"/>
+	<field name="spo" class="java.lang.String"/>
+	<field name="rr" class="java.lang.String"/>
+	<field name="bb" class="java.lang.String"/>
+	<field name="tb" class="java.lang.String"/>
+	<field name="status_kehamilan" class="java.lang.String"/>
+	<field name="gravida" class="java.lang.String"/>
+	<field name="para" class="java.lang.String"/>
+	<field name="abortus" class="java.lang.String"/>
+	<field name="hpht" class="java.lang.String"/>
+	<field name="psi_tenang" class="java.lang.String"/>
+	<field name="psi_cemas" class="java.lang.String"/>
+	<field name="psi_takut" class="java.lang.String"/>
+	<field name="psi_sedih" class="java.lang.String"/>
+	<field name="psi_marah" class="java.lang.String"/>
+	<field name="psi_bunuh_diri" class="java.lang.String"/>
+	<field name="psi_masalah_prilaku" class="java.lang.String"/>
+	<field name="psi_masalah_prilaku_sebutkan" class="java.lang.String"/>
+	<field name="status_pernikahan" class="java.lang.String"/>
+	<field name="ket_status_pernikahan" class="java.lang.String"/>
+	<field name="tempat_tinggal" class="java.lang.String"/>
+	<field name="ket_tempat_tinggal" class="java.lang.String"/>
+	<field name="pekerjaan_kep" class="java.lang.String"/>
+	<field name="pendidikan_pasien_kep" class="java.lang.String"/>
+	<field name="geri_60_multi_penyakit" class="java.lang.String"/>
+	<field name="geri_60_penurunan_fungsi" class="java.lang.String"/>
+	<field name="geri_70_1_penyakit" class="java.lang.String"/>
+	<field name="jatuh_cara_berjalan" class="java.lang.String"/>
+	<field name="jatuh_menopang_duduk" class="java.lang.String"/>
+	<field name="jatuh_hasil" class="java.lang.String"/>
+	<field name="agama_manual" class="java.lang.String"/>
+	<field name="wajib_ibadah" class="java.lang.String"/>
+	<field name="ket_wajib_ibadah" class="java.lang.String"/>
+	<field name="thaharoh" class="java.lang.String"/>
+	<field name="sholat" class="java.lang.String"/>
+	<field name="nilai_kepercayaan" class="java.lang.String"/>
+	<field name="ket_nilai_kepercayaan" class="java.lang.String"/>
+	<field name="budaya" class="java.lang.String"/>
+	<field name="ket_budaya" class="java.lang.String"/>
+	<field name="cacat_tidak" class="java.lang.String"/>
+	<field name="cacat_tuna_netra" class="java.lang.String"/>
+	<field name="cacat_tuna_daksa" class="java.lang.String"/>
+	<field name="cacat_tuna_rungu" class="java.lang.String"/>
+	<field name="cacat_tuna_wicara" class="java.lang.String"/>
+	<field name="mst_penurunan_bb" class="java.lang.String"/>
+	<field name="mst_penurunan_bb_kg" class="java.lang.String"/>
+	<field name="mst_asupan_berkurang" class="java.lang.String"/>
+	<field name="mst_total_skor" class="java.lang.String"/>
+	<field name="mst_diagnosis_khusus" class="java.lang.String"/>
+	<field name="mst_diagnosis_khusus_sebutkan" class="java.lang.String"/>
+	<field name="mst_kesimpulan" class="java.lang.String"/>
+	<field name="gizi_anak_kurus" class="java.lang.String"/>
+	<field name="gizi_anak_turun_bb" class="java.lang.String"/>
+	<field name="gizi_anak_kondisi_khusus" class="java.lang.String"/>
+	<field name="gizi_anak_risiko_malnutrisi" class="java.lang.String"/>
+	<field name="gizi_anak_total_skor" class="java.lang.String"/>
+	<field name="gizi_anak_kesimpulan" class="java.lang.String"/>
+	<field name="nyeri_ada" class="java.lang.String"/>
+	<field name="lokasi" class="java.lang.String"/>
+	<field name="skala_nyeri" class="java.lang.String"/>
+	<field name="flacc_wajah" class="java.lang.String"/>
+	<field name="flacc_kaki" class="java.lang.String"/>
+	<field name="flacc_aktivitas" class="java.lang.String"/>
+	<field name="flacc_menangis" class="java.lang.String"/>
+	<field name="flacc_bersuara" class="java.lang.String"/>
+	<field name="flacc_total" class="java.lang.String"/>
+	<field name="pqrst_prov_cahaya" class="java.lang.String"/>
+	<field name="pqrst_prov_gelap" class="java.lang.String"/>
+	<field name="pqrst_prov_gerakan" class="java.lang.String"/>
+	<field name="pqrst_prov_berbaring" class="java.lang.String"/>
+	<field name="pqrst_qual_tumpul" class="java.lang.String"/>
+	<field name="pqrst_qual_ditusuk" class="java.lang.String"/>
+	<field name="pqrst_qual_berdenyut" class="java.lang.String"/>
+	<field name="pqrst_qual_tajam" class="java.lang.String"/>
+	<field name="pqrst_qual_panas" class="java.lang.String"/>
+	<field name="pqrst_radiation" class="java.lang.String"/>
+	<field name="pqrst_radiation_ke" class="java.lang.String"/>
+	<field name="pqrst_severity" class="java.lang.String"/>
+	<field name="pqrst_time" class="java.lang.String"/>
+	<field name="rencana" class="java.lang.String"/>
+	<field name="interv_manajemen_jalan_nafas" class="java.lang.String"/>
+	<field name="interv_suctioning_jalan_nafas" class="java.lang.String"/>
+	<field name="interv_manajemen_asam_basa" class="java.lang.String"/>
+	<field name="interv_manajemen_syok" class="java.lang.String"/>
+	<field name="interv_manajemen_nyeri" class="java.lang.String"/>
+	<field name="interv_manajemen_cairan" class="java.lang.String"/>
+	<field name="interv_monitoring_cairan" class="java.lang.String"/>
+	<field name="interv_manajemen_lingkungan" class="java.lang.String"/>
+	<field name="interv_pendidikan_kesehatan" class="java.lang.String"/>
+	<field name="interv_fever_treatment" class="java.lang.String"/>
+	<field name="interv_manajemen_sensasi_perifer" class="java.lang.String"/>
+	<field name="interv_monitoring_kardiovaskuler" class="java.lang.String"/>
+	<field name="interv_pencegahan_penekanan_luka" class="java.lang.String"/>
+	<field name="interv_lainnya" class="java.lang.String"/>
+	<field name="kardio_pulse_oximetri" class="java.lang.String"/>
+	<field name="kardio_intubasi" class="java.lang.String"/>
+	<field name="kardio_rjp" class="java.lang.String"/>
+	<field name="kardio_rjp_ket" class="java.lang.String"/>
+	<field name="kardio_kardioversi_dc_shock" class="java.lang.String"/>
+	<field name="penunjang_cek_lab" class="java.lang.String"/>
+	<field name="penunjang_cek_lab_ket" class="java.lang.String"/>
+	<field name="penunjang_rontgen" class="java.lang.String"/>
+	<field name="penunjang_rontgen_ket" class="java.lang.String"/>
+	<field name="penunjang_ct_scan" class="java.lang.String"/>
+	<field name="penunjang_ct_scan_ket" class="java.lang.String"/>
+	<field name="kolab_o2" class="java.lang.String"/>
+	<field name="kolab_o2_ket" class="java.lang.String"/>
+	<field name="kolab_ekg_monitor" class="java.lang.String"/>
+	<field name="kolab_nebulizer" class="java.lang.String"/>
+	<field name="kolab_pasang_infus" class="java.lang.String"/>
+	<field name="kolab_pasang_infus_ket" class="java.lang.String"/>
+	<field name="kolab_injeksi_syringe_pump" class="java.lang.String"/>
+	<field name="kolab_transfusi_darah" class="java.lang.String"/>
+	<field name="kolab_transfusi_darah_ket" class="java.lang.String"/>
+	<field name="kolab_ngt" class="java.lang.String"/>
+	<field name="kolab_ngt_ukuran" class="java.lang.String"/>
+	<field name="kolab_bilas_lambung" class="java.lang.String"/>
+	<field name="kolab_bilas_lambung_ket" class="java.lang.String"/>
+	<field name="kolab_dower_catheter" class="java.lang.String"/>
+	<field name="kolab_dower_catheter_ukuran" class="java.lang.String"/>
+	<field name="kolab_restrain_pengaman" class="java.lang.String"/>
+	<field name="trauma_cervical_collar" class="java.lang.String"/>
+	<field name="trauma_immobilisasi_tulang_belakang" class="java.lang.String"/>
+	<field name="trauma_gips" class="java.lang.String"/>
+	<field name="trauma_perawatan_luka" class="java.lang.String"/>
+	<field name="trauma_jahit_luka" class="java.lang.String"/>
+	<field name="trauma_balutan_spalk" class="java.lang.String"/>
+	<field name="trauma_selang_dada_wsd" class="java.lang.String"/>
+	<field name="trauma_lainnya" class="java.lang.String"/>
+	<field name="tht_irigasi_mata_telinga" class="java.lang.String"/>
+	<field name="tht_ambil_korpus_alienum" class="java.lang.String"/>
+	<field name="obgyn_membantu_partus" class="java.lang.String"/>
+	<field name="obgyn_periksa_ginekologi" class="java.lang.String"/>
+	<field name="obgyn_doppler_ctg_usg" class="java.lang.String"/>
+	<field name="obgyn_pasang_tampon" class="java.lang.String"/>
+	<field name="kp_pukul" class="java.sql.Time"/>
+	<field name="kp_gcs_e" class="java.lang.String"/>
+	<field name="kp_gcs_v" class="java.lang.String"/>
+	<field name="kp_gcs_m" class="java.lang.String"/>
+	<field name="kp_td" class="java.lang.String"/>
+	<field name="kp_nadi" class="java.lang.String"/>
+	<field name="kp_nadi_reguler" class="java.lang.String"/>
+	<field name="kp_suhu" class="java.lang.String"/>
+	<field name="kp_pernafasan" class="java.lang.String"/>
+	<field name="kp_spo" class="java.lang.String"/>
+	<field name="kp_masuk_rs" class="java.lang.String"/>
+	<field name="kp_ruang" class="java.lang.String"/>
+	<field name="kp_petugas_penerima" class="java.lang.String"/>
+	<field name="kp_pendamping" class="java.lang.String"/>
+	<field name="kp_tindakan_lanjutan" class="java.lang.String"/>
+	<field name="kp_tindakan_lanjutan_ket" class="java.lang.String"/>
+	<field name="kp_dirujuk" class="java.lang.String"/>
+	<field name="kp_dirujuk_ket" class="java.lang.String"/>
+	<field name="kp_dirujuk_alasan" class="java.lang.String"/>
+	<field name="kp_dipulangkan" class="java.lang.String"/>
+	<field name="kp_dipulangkan_pukul" class="java.sql.Time"/>
+	<field name="kp_meninggal" class="java.lang.String"/>
+	<field name="kp_meninggal_pukul" class="java.sql.Time"/>
+	<field name="kp_doa" class="java.lang.String"/>
+	<field name="kp_edukasi_makan_obat" class="java.lang.String"/>
+	<field name="kp_edukasi_luka" class="java.lang.String"/>
+	<field name="kp_edukasi_diet" class="java.lang.String"/>
+	<field name="kp_edukasi_diet_ket" class="java.lang.String"/>
+	<field name="kp_edukasi_lain" class="java.lang.String"/>
+	<field name="kp_edukasi_lain_ket" class="java.lang.String"/>
+	<field name="kp_kd_dokter" class="java.lang.String"/>
+	<field name="kp_kd_perawat" class="java.lang.String"/>
+	<detail>
+		<band splitType="Prevent" height="52">
+			<image scaleImage="FillFrame" isUsingCache="true" onErrorType="Blank">
+				<reportElement positionType="Float" x="1" y="2" width="45" height="45"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="50" y="1" width="295" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="11"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="50" y="16" width="295" height="11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{alamatrs}+", "+$P{kotars}+", "+$P{propinsirs}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="50" y="27" width="295" height="11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{kontakrs}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="50" y="38" width="295" height="11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["E-mail : "+$P{emailrs}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="350" y="0" width="205" height="48"/>
+			</rectangle>
+			<staticText>
+				<reportElement positionType="Float" x="354" y="1" width="62" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[No. RM :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="419" y="1" width="132" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{no_rkm_medis}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="354" y="12" width="62" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Nama :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="419" y="12" width="132" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nm_pasien}+($F{jk}==null?"":" ("+$F{jk}+")")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="354" y="23" width="62" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Tgl Lahir :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="419" y="23" width="132" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tgl_lahir}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_lahir})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="354" y="34" width="62" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Tgl Masuk RS :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="419" y="34" width="132" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{tgl_registrasi}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_registrasi}))+($F{jam_reg}==null?"":" "+new java.text.SimpleDateFormat("HH:mm").format($F{jam_reg}))]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="50" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="42">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="556" height="17" backcolor="#F0F0DC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PENGKAJIAN AWAL KEPERAWATAN GAWAT DARURAT (RM 03-4/05/06)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="29" width="40" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Tanggal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="43" y="29" width="7" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement positionType="Float" x="50" y="29" width="130" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tanggal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="290" y="29" width="30" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Pukul]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="320" y="29" width="7" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="HH:mm:ss">
+				<reportElement positionType="Float" x="327" y="29" width="100" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tanggal}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="41" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="42"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="42"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="46">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[I. RIWAYAT KESEHATAN]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="28"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Keluhan Utama : "+$F{keluhan_utama}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="45" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="46"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="46"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="26">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[RIWAYAT ALERGI]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{alergi_ada}.equals("Ya")?"X":" ")+"] Ya, "+$F{alergi_sebutkan}+"   ["+($F{alergi_ada}.equals("Tidak")?"X":" ")+"] Tidak"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="48">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[KEADAAN UMUM]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="16" width="90" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Tekanan Darah]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="93" y="16" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="101" y="16" width="94" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{td}+" mmHg"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="195" y="16" width="90" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Suhu]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="285" y="16" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="293" y="16" width="94" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{suhu}+" °C"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="390" y="16" width="60" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[SpO2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="450" y="16" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="458" y="16" width="97" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{spo}+" %"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="26" width="90" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Frekuensi Nadi]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="93" y="26" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="101" y="26" width="94" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nadi}+" x/menit"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="195" y="26" width="90" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Berat Badan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="285" y="26" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="293" y="26" width="94" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bb}+" Kg"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="36" width="90" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Frekuensi Nafas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="93" y="36" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="101" y="36" width="94" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rr}+" x/menit"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="195" y="36" width="90" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Tinggi Badan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="285" y="36" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="293" y="36" width="94" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tb}+" Cm"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="47" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="48"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="48"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="26">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[STATUS KEHAMILAN]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{status_kehamilan}==null||$F{status_kehamilan}.equals("Tidak Hamil")?"X":" ")+"] Tidak Hamil   ["+($F{status_kehamilan}!=null&&$F{status_kehamilan}.equals("Hamil")?"X":" ")+"] Hamil, Gravida "+$F{gravida}+", Para "+$F{para}+", Abortus "+$F{abortus}+", HPHT "+$F{hpht}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="37">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ASESMEN PSIKOLOGIS]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="19"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{psi_tenang}.equals("Ya")?"X":" ")+"] Tenang   "+
+"["+($F{psi_cemas}.equals("Ya")?"X":" ")+"] Cemas   "+
+"["+($F{psi_takut}.equals("Ya")?"X":" ")+"] Takut   "+
+"["+($F{psi_sedih}.equals("Ya")?"X":" ")+"] Sedih   "+
+"["+($F{psi_marah}.equals("Ya")?"X":" ")+"] Marah   "+
+"["+($F{psi_bunuh_diri}.equals("Ya")?"X":" ")+"] Kecenderungan Bunuh Diri\n"+
+"Masalah Prilaku : ["+($F{psi_masalah_prilaku}.equals("Ya")?"X":" ")+"] Ada, "+$F{psi_masalah_prilaku_sebutkan}+"   ["+($F{psi_masalah_prilaku}.equals("Tidak")?"X":" ")+"] Tidak"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="36" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="37"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="37"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="48">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[STATUS SOSIAL DAN EKONOMIS]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="16" width="140" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Status Pernikahan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="143" y="16" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="152" y="16" width="403" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{status_pernikahan}==null?"-":$F{status_pernikahan}+($F{ket_status_pernikahan}.equals("")?"":", "+$F{ket_status_pernikahan})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="26" width="140" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Tempat Tinggal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="143" y="26" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="152" y="26" width="403" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tempat_tinggal}==null?"-":$F{tempat_tinggal}+($F{ket_tempat_tinggal}.equals("")?"":", "+$F{ket_tempat_tinggal})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="36" width="140" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Pekerjaan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="143" y="36" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="152" y="36" width="200" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pekerjaan_kep}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="360" y="36" width="60" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Pendidikan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="420" y="36" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="429" y="36" width="126" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pendidikan_pasien_kep}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="47" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="48"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="48"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="48">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[SKRINING GERIATRI]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="16" width="380" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[≥60 Tahun dengan >1 Penyakit Fisik/Psikis]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="384" y="16" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="392" y="16" width="163" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{geri_60_multi_penyakit}==null?"-":$F{geri_60_multi_penyakit}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="26" width="380" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[≥60 Tahun, 1 Penyakit Fisik/Psikis, dgn Penurunan Fungsi Organ/Sosial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="384" y="26" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="392" y="26" width="163" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{geri_60_penurunan_fungsi}==null?"-":$F{geri_60_penurunan_fungsi}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="36" width="380" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[≥70 Tahun dengan 1 Penyakit Fisik/Psikologis]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="384" y="36" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="392" y="36" width="163" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{geri_70_1_penyakit}==null?"-":$F{geri_70_1_penyakit}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="47" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="48"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="48"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="37">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="280" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[SKRINING RESIKO PASIEN JATUH (GET UP AND GO TEST)]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="16" width="140" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[A. Cara Berjalan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="143" y="16" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="152" y="16" width="228" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{jatuh_cara_berjalan}==null?"-":$F{jatuh_cara_berjalan}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="26" width="140" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[B. Menopang Duduk]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="143" y="26" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="152" y="26" width="228" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{jatuh_menopang_duduk}==null?"-":$F{jatuh_menopang_duduk}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Opaque" x="385" y="16" width="170" height="19" backcolor="#AA0000">
+					<printWhenExpression><![CDATA[$F{jatuh_hasil}!=null && $F{jatuh_hasil}.equals("Beresiko")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Hasil : Beresiko"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Opaque" x="385" y="16" width="170" height="19" backcolor="#00AA00">
+					<printWhenExpression><![CDATA[$F{jatuh_hasil}==null || $F{jatuh_hasil}.equals("Tidak Beresiko")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Hasil : Tidak Beresiko"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="36" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="37"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="37"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="88">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PENGKAJIAN SPIRITUAL, KEPERCAYAAN, FUNGSIONAL DAN BUDAYA]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="16" width="160" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Agama]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="163" y="16" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="171" y="16" width="384" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{agama_manual}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="26" width="160" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Wajib Ibadah]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="163" y="26" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="171" y="26" width="384" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{wajib_ibadah}==null?"-":$F{wajib_ibadah}+($F{ket_wajib_ibadah}.equals("")?"":", "+$F{ket_wajib_ibadah})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="36" width="160" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Thaharoh]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="163" y="36" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="171" y="36" width="384" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{thaharoh}==null?"-":$F{thaharoh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="46" width="160" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Sholat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="163" y="46" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="171" y="46" width="384" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sholat}==null?"-":$F{sholat}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="56" width="160" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Nilai/Kepercayaan Tertentu]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="163" y="56" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="171" y="56" width="384" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nilai_kepercayaan}==null?"-":$F{nilai_kepercayaan}+($F{nilai_kepercayaan}.equals("Ya")?", "+$F{ket_nilai_kepercayaan}:"")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="66" width="160" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Hambatan Budaya/Bahasa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="163" y="66" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="171" y="66" width="384" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{budaya}==null?"-":$F{budaya}+($F{budaya}.equals("Ada")?", "+$F{ket_budaya}:"")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="76" width="160" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Cacat Tubuh/Disabilitas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="163" y="76" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="171" y="76" width="384" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{cacat_tidak}.equals("Ya")?"X":" ")+"] Tidak ["+($F{cacat_tuna_netra}.equals("Ya")?"X":" ")+"] Tuna Netra ["+($F{cacat_tuna_daksa}.equals("Ya")?"X":" ")+"] Tuna Daksa ["+($F{cacat_tuna_rungu}.equals("Ya")?"X":" ")+"] Tuna Rungu ["+($F{cacat_tuna_wicara}.equals("Ya")?"X":" ")+"] Tuna Wicara"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="87" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="88"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="88"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="60">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[SKRINING GIZI DEWASA (MST)]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="16" width="140" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Penurunan BB]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="143" y="16" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="152" y="16" width="228" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mst_penurunan_bb}==null?"-":$F{mst_penurunan_bb}+($F{mst_penurunan_bb}.equals("Ya")?" ("+$F{mst_penurunan_bb_kg}+" Kg)":"")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="26" width="140" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Asupan Berkurang]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="143" y="26" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="152" y="26" width="228" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mst_asupan_berkurang}==null?"-":$F{mst_asupan_berkurang}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="36" width="140" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Diagnosis Khusus]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="143" y="36" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="152" y="36" width="228" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mst_diagnosis_khusus}==null?"-":$F{mst_diagnosis_khusus}+($F{mst_diagnosis_khusus}.equals("Ya")?", "+$F{mst_diagnosis_khusus_sebutkan}:"")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="46" width="140" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Total Skor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="143" y="46" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="152" y="46" width="228" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mst_total_skor}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Opaque" x="385" y="16" width="170" height="39" backcolor="#AA0000">
+					<printWhenExpression><![CDATA[$F{mst_kesimpulan}!=null && $F{mst_kesimpulan}.equals("Risiko")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Kesimpulan : Risiko"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Opaque" x="385" y="16" width="170" height="39" backcolor="#00AA00">
+					<printWhenExpression><![CDATA[$F{mst_kesimpulan}==null || $F{mst_kesimpulan}.equals("Tidak Risiko")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Kesimpulan : Tidak Risiko"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="59" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="60"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="60"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="26">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[SKRINING GIZI ANAK]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="380" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total Skor : "+$F{gizi_anak_total_skor}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Opaque" x="385" y="16" width="170" height="9" backcolor="#AA0000">
+					<printWhenExpression><![CDATA[$F{gizi_anak_kesimpulan}!=null && $F{gizi_anak_kesimpulan}.equals("Risiko Tinggi")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Kesimpulan : Risiko Tinggi"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Opaque" x="385" y="16" width="170" height="9" backcolor="#FF9900">
+					<printWhenExpression><![CDATA[$F{gizi_anak_kesimpulan}!=null && $F{gizi_anak_kesimpulan}.equals("Risiko Sedang")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Kesimpulan : Risiko Sedang"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Opaque" x="385" y="16" width="170" height="9" backcolor="#00AA00">
+					<printWhenExpression><![CDATA[$F{gizi_anak_kesimpulan}==null || $F{gizi_anak_kesimpulan}.equals("Risiko Rendah")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Kesimpulan : Risiko Rendah"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="26">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ASESMEN NYERI]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{nyeri_ada}!=null && $F{nyeri_ada}.equals("Ya")?"X":" ")+"] Ya, Lokasi: "+$F{lokasi}+", Skala: "+($F{skala_nyeri}==null?"-":$F{skala_nyeri})+"   ["+($F{nyeri_ada}==null || $F{nyeri_ada}.equals("Tidak")?"X":" ")+"] Tidak"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="26">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[FLACC (Face, Legs, Activity, Cry, Consolability)]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Wajah "+($F{flacc_wajah}==null?"-":$F{flacc_wajah})+", Kaki "+($F{flacc_kaki}==null?"-":$F{flacc_kaki})+", Aktivitas "+($F{flacc_aktivitas}==null?"-":$F{flacc_aktivitas})+", Menangis "+($F{flacc_menangis}==null?"-":$F{flacc_menangis})+", Bersuara "+($F{flacc_bersuara}==null?"-":$F{flacc_bersuara})+"   Total Skor : "+$F{flacc_total}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="68">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PQRST]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="16" width="80" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Provocation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="83" y="16" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="91" y="16" width="464" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{pqrst_prov_cahaya}.equals("Ya")?"X":" ")+"] Cahaya ["+($F{pqrst_prov_gelap}.equals("Ya")?"X":" ")+"] Gelap ["+($F{pqrst_prov_gerakan}.equals("Ya")?"X":" ")+"] Gerakan ["+($F{pqrst_prov_berbaring}.equals("Ya")?"X":" ")+"] Berbaring"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="26" width="80" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Quality]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="83" y="26" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="91" y="26" width="464" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{pqrst_qual_tumpul}.equals("Ya")?"X":" ")+"] Tumpul ["+($F{pqrst_qual_ditusuk}.equals("Ya")?"X":" ")+"] Ditusuk ["+($F{pqrst_qual_berdenyut}.equals("Ya")?"X":" ")+"] Berdenyut ["+($F{pqrst_qual_tajam}.equals("Ya")?"X":" ")+"] Tajam ["+($F{pqrst_qual_panas}.equals("Ya")?"X":" ")+"] Panas"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="36" width="80" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Radiation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="83" y="36" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="91" y="36" width="464" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_radiation}==null?"-":$F{pqrst_radiation}+($F{pqrst_radiation}.equals("Ya")?", ke "+$F{pqrst_radiation_ke}:"")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="46" width="80" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Severity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="83" y="46" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="91" y="46" width="464" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_severity}==null?"-":$F{pqrst_severity}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="56" width="80" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Time]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="83" y="56" width="7" height="11"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="91" y="56" width="464" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_time}==null?"-":$F{pqrst_time}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="67" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="68"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="68"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="37">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[I. DIAGNOSIS KEPERAWATAN]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="19"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{masalah_terpilih}==null||$F{masalah_terpilih}.isEmpty()?"-":$F{masalah_terpilih}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="36" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="37"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="37"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="60">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[II. INTERVENSI KEPERAWATAN]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="42"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{interv_manajemen_jalan_nafas}.equals("Ya")?"X":" ")+"] Manajemen Jalan Nafas   "+
+"["+($F{interv_suctioning_jalan_nafas}.equals("Ya")?"X":" ")+"] Suctioning Jalan Nafas   "+
+"["+($F{interv_manajemen_asam_basa}.equals("Ya")?"X":" ")+"] Manajemen Asam Basa   "+
+"["+($F{interv_manajemen_syok}.equals("Ya")?"X":" ")+"] Manajemen Syok   "+
+"["+($F{interv_manajemen_nyeri}.equals("Ya")?"X":" ")+"] Manajemen Nyeri\n"+
+"["+($F{interv_manajemen_cairan}.equals("Ya")?"X":" ")+"] Manajemen Cairan   "+
+"["+($F{interv_monitoring_cairan}.equals("Ya")?"X":" ")+"] Monitoring Cairan   "+
+"["+($F{interv_manajemen_lingkungan}.equals("Ya")?"X":" ")+"] Manajemen Lingkungan   "+
+"["+($F{interv_pendidikan_kesehatan}.equals("Ya")?"X":" ")+"] Pendidikan Kesehatan\n"+
+"["+($F{interv_fever_treatment}.equals("Ya")?"X":" ")+"] Fever Treatment   "+
+"["+($F{interv_manajemen_sensasi_perifer}.equals("Ya")?"X":" ")+"] Manajemen Sensasi Perifer   "+
+"["+($F{interv_monitoring_kardiovaskuler}.equals("Ya")?"X":" ")+"] Monitoring Kardiovaskuler   "+
+"["+($F{interv_pencegahan_penekanan_luka}.equals("Ya")?"X":" ")+"] Pencegahan Penekanan Luka\n"+
+"Lainnya : "+$F{interv_lainnya}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="59" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="60"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="60"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="26">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[III. TINDAKAN KEPERAWATAN MANDIRI]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rencana}==null||$F{rencana}.isEmpty()?"-":$F{rencana}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="26">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[IV. KARDIOPULMONAL]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{kardio_pulse_oximetri}.equals("Ya")?"X":" ")+"] Pulse Oximetri (SpO2)   "+
+"["+($F{kardio_intubasi}.equals("Ya")?"X":" ")+"] Intubasi   "+
+"["+($F{kardio_rjp}.equals("Ya")?"X":" ")+"] RJP "+$F{kardio_rjp_ket}+"   "+
+"["+($F{kardio_kardioversi_dc_shock}.equals("Ya")?"X":" ")+"] Kardioversi/DC Shock"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="26">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[V. TINDAKAN PENUNJANG]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{penunjang_cek_lab}.equals("Ya")?"X":" ")+"] Cek Lab "+$F{penunjang_cek_lab_ket}+"   "+
+"["+($F{penunjang_rontgen}.equals("Ya")?"X":" ")+"] Rontgen "+$F{penunjang_rontgen_ket}+"   "+
+"["+($F{penunjang_ct_scan}.equals("Ya")?"X":" ")+"] CT Scan "+$F{penunjang_ct_scan_ket}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="60">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[VI. TINDAKAN KOLABORASI]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="42"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{kolab_o2}.equals("Ya")?"X":" ")+"] O2 "+$F{kolab_o2_ket}+"   "+
+"["+($F{kolab_ekg_monitor}.equals("Ya")?"X":" ")+"] EKG/Monitor EKG   "+
+"["+($F{kolab_nebulizer}.equals("Ya")?"X":" ")+"] Nebulizer   "+
+"["+($F{kolab_pasang_infus}.equals("Ya")?"X":" ")+"] Pasang Infus "+$F{kolab_pasang_infus_ket}+"\n"+
+"["+($F{kolab_injeksi_syringe_pump}.equals("Ya")?"X":" ")+"] Injeksi/Syringe Pump   "+
+"["+($F{kolab_transfusi_darah}.equals("Ya")?"X":" ")+"] Transfusi Darah "+$F{kolab_transfusi_darah_ket}+"   "+
+"["+($F{kolab_ngt}.equals("Ya")?"X":" ")+"] NGT "+$F{kolab_ngt_ukuran}+"\n"+
+"["+($F{kolab_bilas_lambung}.equals("Ya")?"X":" ")+"] Bilas Lambung "+$F{kolab_bilas_lambung_ket}+"   "+
+"["+($F{kolab_dower_catheter}.equals("Ya")?"X":" ")+"] Dower Catheter "+$F{kolab_dower_catheter_ukuran}+"   "+
+"["+($F{kolab_restrain_pengaman}.equals("Ya")?"X":" ")+"] Restrain/Pengaman"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="59" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="60"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="60"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="37">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[VII. TRAUMA / BEDAH]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="19"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{trauma_cervical_collar}.equals("Ya")?"X":" ")+"] Cervical Collar   "+
+"["+($F{trauma_immobilisasi_tulang_belakang}.equals("Ya")?"X":" ")+"] Immobilisasi Tulang Belakang   "+
+"["+($F{trauma_gips}.equals("Ya")?"X":" ")+"] Gips   "+
+"["+($F{trauma_perawatan_luka}.equals("Ya")?"X":" ")+"] Perawatan Luka\n"+
+"["+($F{trauma_jahit_luka}.equals("Ya")?"X":" ")+"] Jahit Luka   "+
+"["+($F{trauma_balutan_spalk}.equals("Ya")?"X":" ")+"] Balutan/Spalk   "+
+"["+($F{trauma_selang_dada_wsd}.equals("Ya")?"X":" ")+"] Selang Dada/WSD   "+
+"Lainnya : "+$F{trauma_lainnya}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="36" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="37"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="37"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="26">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[VIII. THT / MATA]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{tht_irigasi_mata_telinga}.equals("Ya")?"X":" ")+"] Irigasi Mata/Telinga   "+
+"["+($F{tht_ambil_korpus_alienum}.equals("Ya")?"X":" ")+"] Ambil Korpus Alienum di Telinga/Hidung/Mata"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="26">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[IX. TINDAKAN OBGYN]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{obgyn_membantu_partus}.equals("Ya")?"X":" ")+"] Membantu Partus   "+
+"["+($F{obgyn_periksa_ginekologi}.equals("Ya")?"X":" ")+"] Periksa Ginekologi   "+
+"["+($F{obgyn_doppler_ctg_usg}.equals("Ya")?"X":" ")+"] Doppler, CTG, USG   "+
+"["+($F{obgyn_pasang_tampon}.equals("Ya")?"X":" ")+"] Pasang Tampon"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="37">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PEMBERIAN OBAT / INFUS]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="16" width="552" height="19"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{obat_infus_ringkas}==null||$F{obat_infus_ringkas}.isEmpty()?"-":$F{obat_infus_ringkas}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="36" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="37"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="37"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="83">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[KONDISI PASIEN SAAT PINDAH / PULANG DARI IGD]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField pattern="HH:mm:ss">
+				<reportElement positionType="Float" x="3" y="16" width="150" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pukul : "+($F{kp_pukul}==null?"-":new java.text.SimpleDateFormat("HH:mm:ss").format($F{kp_pukul}))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="26" width="552" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["GCS E"+$F{kp_gcs_e}+"V"+$F{kp_gcs_v}+"M"+$F{kp_gcs_m}+"   TD "+$F{kp_td}+" mmHg   Nadi "+$F{kp_nadi}+" ("+($F{kp_nadi_reguler}==null?"-":$F{kp_nadi_reguler})+")   Suhu "+$F{kp_suhu}+" °C   RR "+$F{kp_pernafasan}+"   SpO2 "+$F{kp_spo}+" %"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="36" width="552" height="19"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{kp_masuk_rs}.equals("Ya")?"X":" ")+"] Masuk RS, Ruang "+$F{kp_ruang}+", Petugas Penerima "+$F{kp_petugas_penerima}+"   Pendamping : "+($F{kp_pendamping}==null?"-":$F{kp_pendamping})+"\n"+
+"Tindakan Lanjutan : "+($F{kp_tindakan_lanjutan}==null?"-":$F{kp_tindakan_lanjutan}+($F{kp_tindakan_lanjutan_ket}.equals("")?"":", "+$F{kp_tindakan_lanjutan_ket}))+"   "+
+"["+($F{kp_dirujuk}.equals("Ya")?"X":" ")+"] Dirujuk ke "+$F{kp_dirujuk_ket}+", Alasan "+$F{kp_dirujuk_alasan}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="56" width="552" height="19"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["["+($F{kp_dipulangkan}.equals("Ya")?"X":" ")+"] Dipulangkan"+($F{kp_dipulangkan_pukul}==null?"":", Pukul "+new java.text.SimpleDateFormat("HH:mm:ss").format($F{kp_dipulangkan_pukul}))+"   "+
+"["+($F{kp_meninggal}.equals("Ya")?"X":" ")+"] Meninggal"+($F{kp_meninggal_pukul}==null?"":", Pukul "+new java.text.SimpleDateFormat("HH:mm:ss").format($F{kp_meninggal_pukul}))+"   "+
+"["+($F{kp_doa}.equals("Ya")?"X":" ")+"] Death On Arrival\n"+
+"Pendidikan Kesehatan Pulang : ["+($F{kp_edukasi_makan_obat}.equals("Ya")?"X":" ")+"] Makan/Minum Obat Teratur   ["+($F{kp_edukasi_luka}.equals("Ya")?"X":" ")+"] Jaga Kebersihan Luka   ["+($F{kp_edukasi_diet}.equals("Ya")?"X":" ")+"] Diet "+$F{kp_edukasi_diet_ket}+"   ["+($F{kp_edukasi_lain}.equals("Ya")?"X":" ")+"] Lain-lain "+$F{kp_edukasi_lain_ket}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="82" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="83"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="83"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band splitType="Prevent" height="94">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="3" width="255" height="11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Perawat/Bidan]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Transparent" x="3" y="15" width="255" height="11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nm_perawat}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement positionType="Float" x="87" y="27" width="87" height="40" isRemoveLineWhenBlank="true"/>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
+					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Transparent" x="3" y="70" width="255" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NIP: "+($F{kp_kd_perawat}==null?"-":$F{kp_kd_perawat})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="259" y="3" width="295" height="11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Dokter]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Transparent" x="259" y="15" width="295" height="11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nm_dokter}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement positionType="Float" x="362" y="27" width="87" height="40" isRemoveLineWhenBlank="true"/>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
+					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Transparent" x="259" y="70" width="295" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{no_ijn_praktek}==null||$F{no_ijn_praktek}.isEmpty()?"-":"No. Ijin Praktek: "+$F{no_ijn_praktek}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Transparent" x="259" y="82" width="295" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NIK: "+($F{kp_kd_dokter}==null?"":$F{kp_kd_dokter})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="0" y="93" width="557" height="1"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="94"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="94"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+</jasperReport>
