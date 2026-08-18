@@ -2423,11 +2423,22 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     // tambahBarisKepField()/panelChecklistKep().
     // ===================================================================
 
-    private widget.PanelBiasa panelChecklistKep(widget.CekBox... cek){
+    private widget.PanelBiasa panelChecklistKep(int kolom, widget.CekBox... cek){
         widget.PanelBiasa p = new widget.PanelBiasa();
-        p.setLayout(new java.awt.GridLayout(0,2,10,2));
+        p.setLayout(new java.awt.GridLayout(0,kolom,10,2));
         for(widget.CekBox c : cek){ p.add(c); }
         return p;
+    }
+
+    // Pengganti Valid.SetTgl2(JDateTimePicker,String) khusus utk widget.Jam
+    // (bukan JDateTimePicker) - logic parse persis sama dgn validasi.java,
+    // TIDAK mengubah fungsi.validasi.java krn dipakai file lain juga.
+    private void setJamDariString(widget.Jam jam, String tglJam){
+        try {
+            jam.setJam(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tglJam.replaceAll("'","")));
+        } catch (java.text.ParseException ex) {
+            jam.setJam(new Date());
+        }
     }
 
     private java.awt.GridBagConstraints kepConstraint(int gridx,int gridy){
@@ -2452,10 +2463,22 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
     private int tambahBarisKepField(widget.PanelBiasa panel,int row,String label,java.awt.Component field){
         widget.Label lbl = new widget.Label();
-        lbl.setText(label+" :");
+        // Label kosong ("") dipakai di banyak baris (checkbox/panel yg
+        // teksnya sudah ada di komponennya sendiri) - kalau selalu
+        // ditambah " :" hasilnya tanda ":" nyangkut sendirian tanpa teks
+        // di depannya. Cuma tambahkan " :" kalau label-nya memang ada isi.
+        lbl.setText(label.isEmpty() ? "" : label+" :");
         java.awt.GridBagConstraints c1 = kepConstraint(0,row);
         panel.add(lbl,c1);
+        // fill=NONE/anchor=WEST (bukan HORIZONTAL) - field/panel FlowLayout
+        // duduk pas di lebar kontennya sendiri, rapat ke label, TIDAK
+        // melebar ikut lebar kolom 1 (yg ditentukan baris lain yg lebih
+        // lebar) - permintaan user supaya tidak ada "ruang kosong" di
+        // dalam field/dropdown yg sebenarnya sempit.
         java.awt.GridBagConstraints c2 = kepConstraint(1,row);
+        c2.anchor = java.awt.GridBagConstraints.WEST;
+        c2.fill = java.awt.GridBagConstraints.NONE;
+        c2.weightx = 0;
         panel.add(field,c2);
         return row+1;
     }
@@ -2564,58 +2587,90 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         row = tambahBarisKepField(panelKepAtas, row, "Riwayat Alergi", panelAlergi);
 
         // -- Keadaan Umum (Tanda Vital) --
-        // Ditata 2 kolom (bukan lewat tambahBarisKepField yg 1 kolom) supaya
-        // 7 field muat 4 baris: Td|Suhu, Spo|Nadi, Bb|Rr, Tb|(kosong).
+        // Ditata 2 kolom DALAM PANEL TERSENDIRI (panelKeadaanUmum, GridBag
+        // sendiri) - bukan langsung di kolom panelKepAtas seperti versi
+        // lama. Kalau langsung di kolom panelKepAtas, gridx=1 dipakai
+        // BARENG section lain (Riwayat Alergi/Status Kehamilan dst yg
+        // butuh ~550px), jadi kolomnya ikut melebar & jarak Tekanan
+        // Darah->Suhu jadi jauh walau field-nya sendiri sudah 100px.
+        // Dibungkus panel sendiri, kolomnya cuma dihitung dari isinya
+        // sendiri (Td|Suhu, Spo|Nadi, Bb|Rr, Tb|kosong) - rapat.
         row = tambahBarisKepJudul(panelKepAtas, row, "KEADAAN UMUM");
-        TdKep = new widget.TextBox(); TdKep.setPreferredSize(new java.awt.Dimension(200,26));
-        SuhuKep = new widget.TextBox(); SuhuKep.setPreferredSize(new java.awt.Dimension(200,26));
-        SpoKep = new widget.TextBox(); SpoKep.setPreferredSize(new java.awt.Dimension(200,26));
-        NadiKep = new widget.TextBox(); NadiKep.setPreferredSize(new java.awt.Dimension(200,26));
-        BbKep = new widget.TextBox(); BbKep.setPreferredSize(new java.awt.Dimension(200,26));
-        RrKep = new widget.TextBox(); RrKep.setPreferredSize(new java.awt.Dimension(200,26));
-        TbKep = new widget.TextBox(); TbKep.setPreferredSize(new java.awt.Dimension(200,26));
+        TdKep = new widget.TextBox(); TdKep.setPreferredSize(new java.awt.Dimension(100,26));
+        SuhuKep = new widget.TextBox(); SuhuKep.setPreferredSize(new java.awt.Dimension(100,26));
+        SpoKep = new widget.TextBox(); SpoKep.setPreferredSize(new java.awt.Dimension(100,26));
+        NadiKep = new widget.TextBox(); NadiKep.setPreferredSize(new java.awt.Dimension(100,26));
+        BbKep = new widget.TextBox(); BbKep.setPreferredSize(new java.awt.Dimension(100,26));
+        RrKep = new widget.TextBox(); RrKep.setPreferredSize(new java.awt.Dimension(100,26));
+        TbKep = new widget.TextBox(); TbKep.setPreferredSize(new java.awt.Dimension(100,26));
+
+        widget.PanelBiasa panelKeadaanUmum = new widget.PanelBiasa();
+        panelKeadaanUmum.setLayout(new java.awt.GridBagLayout());
+        int rowKU = 0;
 
         widget.Label lblTdKep = new widget.Label(); lblTdKep.setText("Tekanan Darah (mmHg) :");
-        java.awt.GridBagConstraints cLblTdKep = kepConstraint(0,row); cLblTdKep.anchor = java.awt.GridBagConstraints.EAST; cLblTdKep.fill = java.awt.GridBagConstraints.NONE;
-        panelKepAtas.add(lblTdKep, cLblTdKep);
-        java.awt.GridBagConstraints cTdKep = kepConstraint(1,row); cTdKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cTdKep.weightx = 1.0; cTdKep.insets = new java.awt.Insets(4,8,4,20);
-        panelKepAtas.add(TdKep, cTdKep);
+        java.awt.GridBagConstraints cLblTdKep = kepConstraint(0,rowKU); cLblTdKep.anchor = java.awt.GridBagConstraints.EAST; cLblTdKep.fill = java.awt.GridBagConstraints.NONE;
+        panelKeadaanUmum.add(lblTdKep, cLblTdKep);
+        java.awt.GridBagConstraints cTdKep = kepConstraint(1,rowKU); cTdKep.anchor = java.awt.GridBagConstraints.WEST; cTdKep.fill = java.awt.GridBagConstraints.NONE; cTdKep.weightx = 0;
+        panelKeadaanUmum.add(TdKep, cTdKep);
         widget.Label lblSuhuKep = new widget.Label(); lblSuhuKep.setText("Suhu (°C) :");
-        java.awt.GridBagConstraints cLblSuhuKep = kepConstraint(2,row); cLblSuhuKep.anchor = java.awt.GridBagConstraints.EAST; cLblSuhuKep.fill = java.awt.GridBagConstraints.NONE; cLblSuhuKep.insets = new java.awt.Insets(3,20,3,5);
-        panelKepAtas.add(lblSuhuKep, cLblSuhuKep);
-        java.awt.GridBagConstraints cSuhuKep = kepConstraint(3,row); cSuhuKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cSuhuKep.weightx = 1.0; cSuhuKep.insets = new java.awt.Insets(4,8,4,20);
-        panelKepAtas.add(SuhuKep, cSuhuKep);
-        row++;
+        java.awt.GridBagConstraints cLblSuhuKep = kepConstraint(2,rowKU); cLblSuhuKep.anchor = java.awt.GridBagConstraints.EAST; cLblSuhuKep.fill = java.awt.GridBagConstraints.NONE; cLblSuhuKep.insets = new java.awt.Insets(3,20,3,5);
+        panelKeadaanUmum.add(lblSuhuKep, cLblSuhuKep);
+        java.awt.GridBagConstraints cSuhuKep = kepConstraint(3,rowKU); cSuhuKep.anchor = java.awt.GridBagConstraints.WEST; cSuhuKep.fill = java.awt.GridBagConstraints.NONE; cSuhuKep.weightx = 0;
+        panelKeadaanUmum.add(SuhuKep, cSuhuKep);
+        // Tinggi Badan digabung ke baris ke-1 (sejajar Tekanan Darah &
+        // Suhu) di gridx=4/5, bukan baris sendiri - supaya total cuma 3
+        // baris (permintaan user).
+        widget.Label lblTbKep = new widget.Label(); lblTbKep.setText("Tinggi Badan (Cm) :");
+        java.awt.GridBagConstraints cLblTbKep = kepConstraint(4,rowKU); cLblTbKep.anchor = java.awt.GridBagConstraints.EAST; cLblTbKep.fill = java.awt.GridBagConstraints.NONE; cLblTbKep.insets = new java.awt.Insets(3,20,3,5);
+        panelKeadaanUmum.add(lblTbKep, cLblTbKep);
+        java.awt.GridBagConstraints cTbKep = kepConstraint(5,rowKU); cTbKep.anchor = java.awt.GridBagConstraints.WEST; cTbKep.fill = java.awt.GridBagConstraints.NONE; cTbKep.weightx = 0;
+        panelKeadaanUmum.add(TbKep, cTbKep);
+        rowKU++;
 
         widget.Label lblSpoKep = new widget.Label(); lblSpoKep.setText("SpO2 (%) :");
-        java.awt.GridBagConstraints cLblSpoKep = kepConstraint(0,row); cLblSpoKep.anchor = java.awt.GridBagConstraints.EAST; cLblSpoKep.fill = java.awt.GridBagConstraints.NONE;
-        panelKepAtas.add(lblSpoKep, cLblSpoKep);
-        java.awt.GridBagConstraints cSpoKep = kepConstraint(1,row); cSpoKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cSpoKep.weightx = 1.0; cSpoKep.insets = new java.awt.Insets(4,8,4,20);
-        panelKepAtas.add(SpoKep, cSpoKep);
+        java.awt.GridBagConstraints cLblSpoKep = kepConstraint(0,rowKU); cLblSpoKep.anchor = java.awt.GridBagConstraints.EAST; cLblSpoKep.fill = java.awt.GridBagConstraints.NONE;
+        panelKeadaanUmum.add(lblSpoKep, cLblSpoKep);
+        java.awt.GridBagConstraints cSpoKep = kepConstraint(1,rowKU); cSpoKep.anchor = java.awt.GridBagConstraints.WEST; cSpoKep.fill = java.awt.GridBagConstraints.NONE; cSpoKep.weightx = 0;
+        panelKeadaanUmum.add(SpoKep, cSpoKep);
         widget.Label lblNadiKep = new widget.Label(); lblNadiKep.setText("Frekuensi Nadi (x/menit) :");
-        java.awt.GridBagConstraints cLblNadiKep = kepConstraint(2,row); cLblNadiKep.anchor = java.awt.GridBagConstraints.EAST; cLblNadiKep.fill = java.awt.GridBagConstraints.NONE; cLblNadiKep.insets = new java.awt.Insets(3,20,3,5);
-        panelKepAtas.add(lblNadiKep, cLblNadiKep);
-        java.awt.GridBagConstraints cNadiKep = kepConstraint(3,row); cNadiKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cNadiKep.weightx = 1.0; cNadiKep.insets = new java.awt.Insets(4,8,4,20);
-        panelKepAtas.add(NadiKep, cNadiKep);
-        row++;
+        java.awt.GridBagConstraints cLblNadiKep = kepConstraint(2,rowKU); cLblNadiKep.anchor = java.awt.GridBagConstraints.EAST; cLblNadiKep.fill = java.awt.GridBagConstraints.NONE; cLblNadiKep.insets = new java.awt.Insets(3,20,3,5);
+        panelKeadaanUmum.add(lblNadiKep, cLblNadiKep);
+        java.awt.GridBagConstraints cNadiKep = kepConstraint(3,rowKU); cNadiKep.anchor = java.awt.GridBagConstraints.WEST; cNadiKep.fill = java.awt.GridBagConstraints.NONE; cNadiKep.weightx = 0;
+        panelKeadaanUmum.add(NadiKep, cNadiKep);
+        rowKU++;
 
         widget.Label lblBbKep = new widget.Label(); lblBbKep.setText("Berat Badan (Kg) :");
-        java.awt.GridBagConstraints cLblBbKep = kepConstraint(0,row); cLblBbKep.anchor = java.awt.GridBagConstraints.EAST; cLblBbKep.fill = java.awt.GridBagConstraints.NONE;
-        panelKepAtas.add(lblBbKep, cLblBbKep);
-        java.awt.GridBagConstraints cBbKep = kepConstraint(1,row); cBbKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cBbKep.weightx = 1.0; cBbKep.insets = new java.awt.Insets(4,8,4,20);
-        panelKepAtas.add(BbKep, cBbKep);
+        java.awt.GridBagConstraints cLblBbKep = kepConstraint(0,rowKU); cLblBbKep.anchor = java.awt.GridBagConstraints.EAST; cLblBbKep.fill = java.awt.GridBagConstraints.NONE;
+        panelKeadaanUmum.add(lblBbKep, cLblBbKep);
+        java.awt.GridBagConstraints cBbKep = kepConstraint(1,rowKU); cBbKep.anchor = java.awt.GridBagConstraints.WEST; cBbKep.fill = java.awt.GridBagConstraints.NONE; cBbKep.weightx = 0;
+        panelKeadaanUmum.add(BbKep, cBbKep);
         widget.Label lblRrKep = new widget.Label(); lblRrKep.setText("Frekuensi Nafas (x/menit) :");
-        java.awt.GridBagConstraints cLblRrKep = kepConstraint(2,row); cLblRrKep.anchor = java.awt.GridBagConstraints.EAST; cLblRrKep.fill = java.awt.GridBagConstraints.NONE; cLblRrKep.insets = new java.awt.Insets(3,20,3,5);
-        panelKepAtas.add(lblRrKep, cLblRrKep);
-        java.awt.GridBagConstraints cRrKep = kepConstraint(3,row); cRrKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cRrKep.weightx = 1.0; cRrKep.insets = new java.awt.Insets(4,8,4,20);
-        panelKepAtas.add(RrKep, cRrKep);
-        row++;
+        java.awt.GridBagConstraints cLblRrKep = kepConstraint(2,rowKU); cLblRrKep.anchor = java.awt.GridBagConstraints.EAST; cLblRrKep.fill = java.awt.GridBagConstraints.NONE; cLblRrKep.insets = new java.awt.Insets(3,20,3,5);
+        panelKeadaanUmum.add(lblRrKep, cLblRrKep);
+        java.awt.GridBagConstraints cRrKep = kepConstraint(3,rowKU); cRrKep.anchor = java.awt.GridBagConstraints.WEST; cRrKep.fill = java.awt.GridBagConstraints.NONE; cRrKep.weightx = 0;
+        panelKeadaanUmum.add(RrKep, cRrKep);
+        rowKU++;
 
-        widget.Label lblTbKep = new widget.Label(); lblTbKep.setText("Tinggi Badan (Cm) :");
-        java.awt.GridBagConstraints cLblTbKep = kepConstraint(0,row); cLblTbKep.anchor = java.awt.GridBagConstraints.EAST; cLblTbKep.fill = java.awt.GridBagConstraints.NONE;
-        panelKepAtas.add(lblTbKep, cLblTbKep);
-        java.awt.GridBagConstraints cTbKep = kepConstraint(1,row); cTbKep.fill = java.awt.GridBagConstraints.HORIZONTAL; cTbKep.weightx = 1.0; cTbKep.insets = new java.awt.Insets(4,8,4,20);
-        panelKepAtas.add(TbKep, cTbKep);
+        // Filler kolom paling kanan (gridx=6) menyerap sisa lebar baris
+        // supaya kolom KEADAAN UMUM tetap rapat di kiri, bukan field yg
+        // melebar. Tidak terlihat (Box glue, 0x0).
+        java.awt.GridBagConstraints cFillerKeadaanUmum = kepConstraint(6, 0);
+        cFillerKeadaanUmum.gridheight = rowKU;
+        cFillerKeadaanUmum.weightx = 1.0;
+        cFillerKeadaanUmum.fill = java.awt.GridBagConstraints.BOTH;
+        cFillerKeadaanUmum.insets = new java.awt.Insets(0,0,0,0);
+        panelKeadaanUmum.add(javax.swing.Box.createHorizontalGlue(), cFillerKeadaanUmum);
+
+        // panelKeadaanUmum ditempel 1 baris di panelKepAtas, gridwidth
+        // REMAINDER (pakai semua sisa lebar baris) + fill HORIZONTAL supaya
+        // lebar totalnya sama dgn baris lain, tapi kolom INTERNALnya
+        // (barusan) tetap independen/rapat.
+        java.awt.GridBagConstraints cKeadaanUmum = kepConstraint(0, row);
+        cKeadaanUmum.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        cKeadaanUmum.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cKeadaanUmum.insets = new java.awt.Insets(0,0,0,0);
+        panelKepAtas.add(panelKeadaanUmum, cKeadaanUmum);
         row++;
 
         // -- Status Kehamilan --
@@ -2648,7 +2703,52 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelKehamilan.add(lblPara); panelKehamilan.add(Para);
         panelKehamilan.add(lblAbortus); panelKehamilan.add(Abortus);
         panelKehamilan.add(lblHPHT); panelKehamilan.add(HPHT);
-        row = tambahBarisKepField(panelKepAtas, row, "Gravida / Para / Abortus / HPHT", panelKehamilan);
+        // Ditulis manual (bukan lewat tambahBarisKepField) supaya label-nya
+        // punya referensi (lblKehamilan) - dipakai toggle show/hide di bawah.
+        widget.Label lblKehamilan = new widget.Label(); lblKehamilan.setText("Gravida / Para / Abortus / HPHT :");
+        java.awt.GridBagConstraints cLblKehamilan = kepConstraint(0,row);
+        panelKepAtas.add(lblKehamilan, cLblKehamilan);
+        java.awt.GridBagConstraints cKehamilan = kepConstraint(1,row);
+        cKehamilan.anchor = java.awt.GridBagConstraints.WEST;
+        cKehamilan.fill = java.awt.GridBagConstraints.NONE;
+        cKehamilan.weightx = 0;
+        panelKepAtas.add(panelKehamilan, cKehamilan);
+        row++;
+
+        // Baris Gravida/Para/Abortus/HPHT cuma tampil kalau Status Kehamilan
+        // = "Hamil" (permintaan user). Toggle di runtime harus ikut
+        // menggeser panelKepDua/Tiga/Empat/Obat & tinggi FormInput, krn
+        // tinggi panelKepAtas berubah begitu barisnya muncul/hilang -
+        // kalau tidak, baris2 di bawahnya akan tertimpa/ada celah.
+        StatusKehamilan.addActionListener((java.awt.event.ActionEvent e) -> {
+            boolean hamil = "Hamil".equals(StatusKehamilan.getSelectedItem());
+            if (lblKehamilan.isVisible() == hamil) return;
+            lblKehamilan.setVisible(hamil);
+            panelKehamilan.setVisible(hamil);
+
+            int tinggiLama = panelKepAtas.getHeight();
+            java.awt.Dimension ukuranBaru = panelKepAtas.getPreferredSize();
+            panelKepAtas.setSize(ukuranBaru.width, ukuranBaru.height);
+            panelKepAtas.revalidate();
+            int delta = ukuranBaru.height - tinggiLama;
+            if (delta != 0) {
+                panelKepDua.setLocation(panelKepDua.getX(), panelKepDua.getY() + delta);
+                panelKepTiga.setLocation(panelKepTiga.getX(), panelKepTiga.getY() + delta);
+                panelKepEmpat.setLocation(panelKepEmpat.getX(), panelKepEmpat.getY() + delta);
+                panelKepObat.setLocation(panelKepObat.getX(), panelKepObat.getY() + delta);
+                java.awt.Dimension ukuranForm = FormInput.getPreferredSize();
+                FormInput.setPreferredSize(new java.awt.Dimension(ukuranForm.width, ukuranForm.height + delta));
+            }
+            FormInput.revalidate();
+            FormInput.repaint();
+        });
+        // Set kondisi awal sesuai pilihan default combo (index 0 = "Tidak
+        // Hamil") - TIDAK lewat listener di atas krn panelKepDua/Tiga/Empat/
+        // Obat belum dibuat di titik ini (baru dibuat di initKepTambahanHal2/
+        // 3/4 & initObatInfusTambahan(), dipanggil setelah method ini).
+        boolean hamilAwal = "Hamil".equals(StatusKehamilan.getSelectedItem());
+        lblKehamilan.setVisible(hamilAwal);
+        panelKehamilan.setVisible(hamilAwal);
 
         // -- Asesmen Psikologis --
         row = tambahBarisKepJudul(panelKepAtas, row, "ASESMEN PSIKOLOGIS");
@@ -2659,7 +2759,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekPsiMarah = new widget.CekBox(); CekPsiMarah.setText("Marah");
         CekPsiBunuhDiri = new widget.CekBox(); CekPsiBunuhDiri.setText("Kecenderungan Bunuh Diri");
         java.awt.GridBagConstraints cPsi = kepConstraint(0,row); cPsi.gridwidth=2;
-        panelKepAtas.add(panelChecklistKep(CekPsiTenang,CekPsiCemas,CekPsiTakut,CekPsiSedih,CekPsiMarah,CekPsiBunuhDiri), cPsi);
+        // Urutan diatur ulang (bukan urutan deklarasi) supaya isi baris 1 =
+        // Tenang/Cemas/Marah dan baris 2 = Takut/Sedih/Kecenderungan Bunuh
+        // Diri, sesuai GridLayout(0,3) row-major.
+        panelKepAtas.add(panelChecklistKep(3, CekPsiTenang,CekPsiCemas,CekPsiMarah,CekPsiTakut,CekPsiSedih,CekPsiBunuhDiri), cPsi);
         row++;
         RbMasalahPrilakuTidak = new widget.RadioButton(); RbMasalahPrilakuTidak.setText("Tidak");
         RbMasalahPrilakuYa = new widget.RadioButton(); RbMasalahPrilakuYa.setText("Ada, Sebutkan");
@@ -2701,8 +2804,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
         TPekerjaanKep = new widget.TextBox(); TPekerjaanKep.setPreferredSize(new java.awt.Dimension(250,23));
         row = tambahBarisKepField(panelKepAtas, row, "Pekerjaan", TPekerjaanKep);
+        // Baris input "Pendidikan Pasien" dihapus dari tampilan (permintaan
+        // user - tidak dipakai). TPendidikanPasienKep TETAP dibuat (bukan
+        // dihapus totalj) krn masih dipakai getData()/simpan()/emptTeks()/
+        // bangunRingkasanHtml() utk kolom DB pendidikan_pasien_kep - kalau
+        // dihapus total akan NullPointerException di situ. Cukup tidak
+        // ditambahkan ke panelKepAtas, jadi tidak ada baris/UI-nya lagi.
         TPendidikanPasienKep = new widget.TextBox(); TPendidikanPasienKep.setPreferredSize(new java.awt.Dimension(250,23));
-        row = tambahBarisKepField(panelKepAtas, row, "Pendidikan Pasien", TPendidikanPasienKep);
 
         // -- Skrining Geriatri --
         row = tambahBarisKepJudul(panelKepAtas, row, "SKRINING GERIATRI");
@@ -2835,7 +2943,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekCacatTunaRungu = new widget.CekBox(); CekCacatTunaRungu.setText("Tuna Rungu");
         CekCacatTunaWicara = new widget.CekBox(); CekCacatTunaWicara.setText("Tuna Wicara");
         row = tambahBarisKepField(panelKepAtas, row, "Cacat Tubuh / Disabilitas",
-            panelChecklistKep(CekCacatTidak,CekCacatTunaNetra,CekCacatTunaDaksa,CekCacatTunaRungu,CekCacatTunaWicara));
+            panelChecklistKep(5, CekCacatTidak,CekCacatTunaNetra,CekCacatTunaDaksa,CekCacatTunaRungu,CekCacatTunaWicara));
 
         // -- Retire section/field lama yang tak ada padanan di foto fisik
         // RM 03-4/05/06 (setVisible(false), BUKAN dihapus - kolom DB tetap
@@ -2919,10 +3027,14 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                 c.setLocation(c.getX(), c.getY() + geserKep1);
             }
         }
-        // panelKepAtas mulai setelah kotak "Keluhan Utama" yg sudah
-        // diperbesar (y=90, tinggi 143) + margin, bukan lagi y=210 tetap -
-        // supaya tidak tumpang tindih dgn box Keluhan Utama yg baru.
-        int yMulaiKepAtas = 90 + 143 + 20;
+        // panelKepAtas mulai setelah kotak "Keluhan Utama" (scrollPane1),
+        // bukan lagi y=210 tetap - supaya tidak tumpang tindih dgn box
+        // Keluhan Utama. Dihitung dari posisi/tinggi scrollPane1 yg
+        // SEBENARNYA (y=120, bukan y=90 - lihat setBounds di atas), bukan
+        // hardcode "90+143" lagi; formula lama itu basi & bikin
+        // panelKepAtas (border "RIWAYAT ALERGI") mulai 30px lebih awal dari
+        // ujung bawah kotak Keluhan Utama, jadi kepotong tumpang tindih.
+        int yMulaiKepAtas = scrollPane1.getY() + scrollPane1.getHeight() + 20;
         FormInput.add(panelKepAtas);
         // Lebar dipakai dari preferredSize GridBagLayout sendiri (bukan
         // hardcode 840) - KEADAAN UMUM 2 kolom + panelKehamilan/panelAlergi
@@ -3084,6 +3196,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // fisik RM 03-5 ("Nyeri: Tidak/Ya, Lokasi..."). Label lama
         // (jLabel83/85) disembunyikan, diganti label baru di sini.
         jLabel83.setVisible(false); jLabel85.setVisible(false);
+        // Lokasi widget.TextBox lama TIDAK punya .setPreferredSize() (cuma
+        // .setBounds() GEN block, diabaikan begitu dipindah ke GridBagLayout)
+        // - tanpa ini kolomnya menciut ke ~1px, sama spt bug Gravida/Para dulu.
+        Lokasi.setPreferredSize(new java.awt.Dimension(220,23));
         row = tambahBarisKepField(panelKepDua, row, "Lokasi", Lokasi);
         row = tambahBarisKepField(panelKepDua, row, "Skala Nyeri", SkalaNyeri);
         // Gambar skala nyeri (Numeric Rating Scale + Wong Baker Faces Pain
@@ -3102,7 +3218,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // lama di antaranya sudah disembunyikan/direparent semua.
         int yBawahDua = yBawahLama;
         FormInput.add(panelKepDua);
-        panelKepDua.setBounds(5, yBawahDua, 840, ukuranKepDua.height);
+        panelKepDua.setBounds(5, yBawahDua, ukuranKepDua.width, ukuranKepDua.height);
+        lebarFormInput = Math.max(lebarFormInput, 5 + ukuranKepDua.width + 20);
         FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahDua + ukuranKepDua.height + 20));
     }
 
@@ -3129,45 +3246,105 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // perubahan salah satu dari 5 kriteria memicu hitung ulang.
         java.awt.event.ActionListener alFlacc = (java.awt.event.ActionEvent e) -> hitungTotalFlacc();
         FlaccWajah = new widget.ComboBox(); FlaccWajah.setModel(new javax.swing.DefaultComboBoxModel(flaccItems));
+        FlaccWajah.setPreferredSize(new java.awt.Dimension(120,26));
         FlaccWajah.addActionListener(alFlacc);
-        row = tambahBarisKepField(panelKepTiga, row, "Wajah", FlaccWajah);
         FlaccKaki = new widget.ComboBox(); FlaccKaki.setModel(new javax.swing.DefaultComboBoxModel(flaccItems));
+        FlaccKaki.setPreferredSize(new java.awt.Dimension(120,26));
         FlaccKaki.addActionListener(alFlacc);
-        row = tambahBarisKepField(panelKepTiga, row, "Kaki", FlaccKaki);
         FlaccAktivitas = new widget.ComboBox(); FlaccAktivitas.setModel(new javax.swing.DefaultComboBoxModel(flaccItems));
+        FlaccAktivitas.setPreferredSize(new java.awt.Dimension(120,26));
         FlaccAktivitas.addActionListener(alFlacc);
-        row = tambahBarisKepField(panelKepTiga, row, "Aktivitas", FlaccAktivitas);
         FlaccMenangis = new widget.ComboBox(); FlaccMenangis.setModel(new javax.swing.DefaultComboBoxModel(flaccItems));
+        FlaccMenangis.setPreferredSize(new java.awt.Dimension(120,26));
         FlaccMenangis.addActionListener(alFlacc);
-        row = tambahBarisKepField(panelKepTiga, row, "Menangis", FlaccMenangis);
         FlaccBersuara = new widget.ComboBox(); FlaccBersuara.setModel(new javax.swing.DefaultComboBoxModel(flaccItems));
+        FlaccBersuara.setPreferredSize(new java.awt.Dimension(120,26));
         FlaccBersuara.addActionListener(alFlacc);
-        row = tambahBarisKepField(panelKepTiga, row, "Bersuara", FlaccBersuara);
+
+        // Dibungkus panel tersendiri (pola sama spt KEADAAN UMUM) supaya
+        // kolomnya rapat, tidak ikut lebar kolom 1 milik section lain -
+        // 3 baris: Wajah|Kaki, Aktivitas|Menangis, Bersuara|(kosong).
+        widget.PanelBiasa panelFlacc = new widget.PanelBiasa();
+        panelFlacc.setLayout(new java.awt.GridBagLayout());
+        int rowFlacc = 0;
+
+        widget.Label lblFlaccWajah = new widget.Label(); lblFlaccWajah.setText("Wajah :");
+        java.awt.GridBagConstraints cLblFlaccWajah = kepConstraint(0,rowFlacc); cLblFlaccWajah.anchor = java.awt.GridBagConstraints.EAST; cLblFlaccWajah.fill = java.awt.GridBagConstraints.NONE;
+        panelFlacc.add(lblFlaccWajah, cLblFlaccWajah);
+        java.awt.GridBagConstraints cFlaccWajah = kepConstraint(1,rowFlacc); cFlaccWajah.anchor = java.awt.GridBagConstraints.WEST; cFlaccWajah.fill = java.awt.GridBagConstraints.NONE; cFlaccWajah.weightx = 0;
+        panelFlacc.add(FlaccWajah, cFlaccWajah);
+        widget.Label lblFlaccKaki = new widget.Label(); lblFlaccKaki.setText("Kaki :");
+        java.awt.GridBagConstraints cLblFlaccKaki = kepConstraint(2,rowFlacc); cLblFlaccKaki.anchor = java.awt.GridBagConstraints.EAST; cLblFlaccKaki.fill = java.awt.GridBagConstraints.NONE; cLblFlaccKaki.insets = new java.awt.Insets(3,20,3,5);
+        panelFlacc.add(lblFlaccKaki, cLblFlaccKaki);
+        java.awt.GridBagConstraints cFlaccKaki = kepConstraint(3,rowFlacc); cFlaccKaki.anchor = java.awt.GridBagConstraints.WEST; cFlaccKaki.fill = java.awt.GridBagConstraints.NONE; cFlaccKaki.weightx = 0;
+        panelFlacc.add(FlaccKaki, cFlaccKaki);
+        rowFlacc++;
+
+        widget.Label lblFlaccAktivitas = new widget.Label(); lblFlaccAktivitas.setText("Aktivitas :");
+        java.awt.GridBagConstraints cLblFlaccAktivitas = kepConstraint(0,rowFlacc); cLblFlaccAktivitas.anchor = java.awt.GridBagConstraints.EAST; cLblFlaccAktivitas.fill = java.awt.GridBagConstraints.NONE;
+        panelFlacc.add(lblFlaccAktivitas, cLblFlaccAktivitas);
+        java.awt.GridBagConstraints cFlaccAktivitas = kepConstraint(1,rowFlacc); cFlaccAktivitas.anchor = java.awt.GridBagConstraints.WEST; cFlaccAktivitas.fill = java.awt.GridBagConstraints.NONE; cFlaccAktivitas.weightx = 0;
+        panelFlacc.add(FlaccAktivitas, cFlaccAktivitas);
+        widget.Label lblFlaccMenangis = new widget.Label(); lblFlaccMenangis.setText("Menangis :");
+        java.awt.GridBagConstraints cLblFlaccMenangis = kepConstraint(2,rowFlacc); cLblFlaccMenangis.anchor = java.awt.GridBagConstraints.EAST; cLblFlaccMenangis.fill = java.awt.GridBagConstraints.NONE; cLblFlaccMenangis.insets = new java.awt.Insets(3,20,3,5);
+        panelFlacc.add(lblFlaccMenangis, cLblFlaccMenangis);
+        java.awt.GridBagConstraints cFlaccMenangis = kepConstraint(3,rowFlacc); cFlaccMenangis.anchor = java.awt.GridBagConstraints.WEST; cFlaccMenangis.fill = java.awt.GridBagConstraints.NONE; cFlaccMenangis.weightx = 0;
+        panelFlacc.add(FlaccMenangis, cFlaccMenangis);
+        rowFlacc++;
+
+        widget.Label lblFlaccBersuara = new widget.Label(); lblFlaccBersuara.setText("Bersuara :");
+        java.awt.GridBagConstraints cLblFlaccBersuara = kepConstraint(0,rowFlacc); cLblFlaccBersuara.anchor = java.awt.GridBagConstraints.EAST; cLblFlaccBersuara.fill = java.awt.GridBagConstraints.NONE;
+        panelFlacc.add(lblFlaccBersuara, cLblFlaccBersuara);
+        java.awt.GridBagConstraints cFlaccBersuara = kepConstraint(1,rowFlacc); cFlaccBersuara.anchor = java.awt.GridBagConstraints.WEST; cFlaccBersuara.fill = java.awt.GridBagConstraints.NONE; cFlaccBersuara.weightx = 0;
+        panelFlacc.add(FlaccBersuara, cFlaccBersuara);
+        rowFlacc++;
+
+        java.awt.GridBagConstraints cFillerFlacc = kepConstraint(4, 0);
+        cFillerFlacc.gridheight = rowFlacc;
+        cFillerFlacc.weightx = 1.0;
+        cFillerFlacc.fill = java.awt.GridBagConstraints.BOTH;
+        cFillerFlacc.insets = new java.awt.Insets(0,0,0,0);
+        panelFlacc.add(javax.swing.Box.createHorizontalGlue(), cFillerFlacc);
+
+        java.awt.GridBagConstraints cFlaccPanel = kepConstraint(0, row);
+        cFlaccPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        cFlaccPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cFlaccPanel.insets = new java.awt.Insets(0,0,0,0);
+        panelKepTiga.add(panelFlacc, cFlaccPanel);
+        row++;
+
+        // Total tetap baris tersendiri di bawah semua kriteria (permintaan
+        // user), bukan ikut masuk ke dalam panelFlacc di atas.
         TFlaccTotal = new widget.TextBox(); TFlaccTotal.setPreferredSize(new java.awt.Dimension(60,23));
         TFlaccTotal.setEditable(false);
         row = tambahBarisKepField(panelKepTiga, row, "Total", TFlaccTotal);
 
-        // -- PQRST --
+        // -- PQRST -- Provocation/Quality dipindah dari grid 2-kolom (bikin
+        // celah lebar antar checkbox, tidak sejajar dgn labelnya) ke
+        // FlowLayout 1 baris - pola sama persis Radiation/Severity/Time di
+        // bawah (label lalu jawabannya langsung di sebelahnya) - permintaan
+        // user.
         row = tambahBarisKepJudul(panelKepTiga, row, "PQRST");
         CekProvCahaya = new widget.CekBox(); CekProvCahaya.setText("Cahaya");
         CekProvGelap = new widget.CekBox(); CekProvGelap.setText("Gelap");
         CekProvGerakan = new widget.CekBox(); CekProvGerakan.setText("Gerakan");
         CekProvBerbaring = new widget.CekBox(); CekProvBerbaring.setText("Berbaring");
-        java.awt.GridBagConstraints cProv = kepConstraint(0,row); cProv.gridwidth=2;
-        panelKepTiga.add(panelChecklistKep(CekProvCahaya,CekProvGelap,CekProvGerakan,CekProvBerbaring), cProv);
-        row++;
-        row = tambahBarisKepJudul(panelKepTiga, row-1, "Provocation (Faktor Yang Memperberat Nyeri)");
-        row++;
+        widget.PanelBiasa panelProvocation = new widget.PanelBiasa();
+        panelProvocation.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
+        panelProvocation.add(CekProvCahaya); panelProvocation.add(CekProvGelap);
+        panelProvocation.add(CekProvGerakan); panelProvocation.add(CekProvBerbaring);
+        row = tambahBarisKepField(panelKepTiga, row, "Provocation (Faktor Yang Memperberat Nyeri)", panelProvocation);
 
         CekQualTumpul = new widget.CekBox(); CekQualTumpul.setText("Tumpul");
         CekQualDitusuk = new widget.CekBox(); CekQualDitusuk.setText("Ditusuk");
         CekQualBerdenyut = new widget.CekBox(); CekQualBerdenyut.setText("Berdenyut");
         CekQualTajam = new widget.CekBox(); CekQualTajam.setText("Tajam");
         CekQualPanas = new widget.CekBox(); CekQualPanas.setText("Panas");
-        row = tambahBarisKepJudul(panelKepTiga, row, "Quality (Kualitas Nyeri)");
-        java.awt.GridBagConstraints cQual = kepConstraint(0,row); cQual.gridwidth=2;
-        panelKepTiga.add(panelChecklistKep(CekQualTumpul,CekQualDitusuk,CekQualBerdenyut,CekQualTajam,CekQualPanas), cQual);
-        row++;
+        widget.PanelBiasa panelQuality = new widget.PanelBiasa();
+        panelQuality.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
+        panelQuality.add(CekQualTumpul); panelQuality.add(CekQualDitusuk); panelQuality.add(CekQualBerdenyut);
+        panelQuality.add(CekQualTajam); panelQuality.add(CekQualPanas);
+        row = tambahBarisKepField(panelKepTiga, row, "Quality (Kualitas Nyeri)", panelQuality);
 
         RbRadiationTidak = new widget.RadioButton(); RbRadiationTidak.setText("Tidak");
         RbRadiationYa = new widget.RadioButton(); RbRadiationYa.setText("Ya, ke");
@@ -3234,7 +3411,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekIntervMonitoringKardiovaskuler = new widget.CekBox(); CekIntervMonitoringKardiovaskuler.setText("Monitoring Status Kardiovaskuler");
         CekIntervPencegahanPenekananLuka = new widget.CekBox(); CekIntervPencegahanPenekananLuka.setText("Pencegahan Penekanan pada Luka");
         java.awt.GridBagConstraints cInterv = kepConstraint(0,row); cInterv.gridwidth=2;
-        panelKepTiga.add(panelChecklistKep(CekIntervManajemenJalanNafas,CekIntervSuctioningJalanNafas,CekIntervManajemenAsamBasa,
+        panelKepTiga.add(panelChecklistKep(2, CekIntervManajemenJalanNafas,CekIntervSuctioningJalanNafas,CekIntervManajemenAsamBasa,
             CekIntervManajemenSyok,CekIntervManajemenNyeri,CekIntervManajemenCairan,CekIntervMonitoringCairan,
             CekIntervManajemenLingkungan,CekIntervPendidikanKesehatan,CekIntervFeverTreatment,
             CekIntervManajemenSensasiPerifer,CekIntervMonitoringKardiovaskuler,CekIntervPencegahanPenekananLuka), cInterv);
@@ -3353,7 +3530,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekTraumaBalutanSpalk = new widget.CekBox(); CekTraumaBalutanSpalk.setText("Balutan / Spalk");
         CekTraumaSelangDadaWsd = new widget.CekBox(); CekTraumaSelangDadaWsd.setText("Selang Dada / WSD");
         java.awt.GridBagConstraints cTrauma = kepConstraint(0,row); cTrauma.gridwidth=2;
-        panelKepTiga.add(panelChecklistKep(CekTraumaCervicalCollar,CekTraumaImmobilisasiTulangBelakang,CekTraumaGips,
+        panelKepTiga.add(panelChecklistKep(2, CekTraumaCervicalCollar,CekTraumaImmobilisasiTulangBelakang,CekTraumaGips,
             CekTraumaPerawatanLuka,CekTraumaJahitLuka,CekTraumaBalutanSpalk,CekTraumaSelangDadaWsd), cTrauma);
         row++;
         TTraumaLainnya = new widget.TextBox(); TTraumaLainnya.setPreferredSize(new java.awt.Dimension(300,23));
@@ -3364,7 +3541,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekThtIrigasiMataTelinga = new widget.CekBox(); CekThtIrigasiMataTelinga.setText("Irigasi Mata / Irigasi Telinga");
         CekThtAmbilKorpusAlienum = new widget.CekBox(); CekThtAmbilKorpusAlienum.setText("Ambil Korpus Alienum di Telinga/Hidung/Mata");
         java.awt.GridBagConstraints cTht = kepConstraint(0,row); cTht.gridwidth=2;
-        panelKepTiga.add(panelChecklistKep(CekThtIrigasiMataTelinga,CekThtAmbilKorpusAlienum), cTht);
+        panelKepTiga.add(panelChecklistKep(2, CekThtIrigasiMataTelinga,CekThtAmbilKorpusAlienum), cTht);
         row++;
 
         // -- IX. Tindakan Obgyn --
@@ -3374,14 +3551,15 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekObgynDopplerCtgUsg = new widget.CekBox(); CekObgynDopplerCtgUsg.setText("Doppler, CTG, USG");
         CekObgynPasangTampon = new widget.CekBox(); CekObgynPasangTampon.setText("Pasang Tampon");
         java.awt.GridBagConstraints cObgyn = kepConstraint(0,row); cObgyn.gridwidth=2;
-        panelKepTiga.add(panelChecklistKep(CekObgynMembantuPartus,CekObgynPeriksaGinekologi,CekObgynDopplerCtgUsg,CekObgynPasangTampon), cObgyn);
+        panelKepTiga.add(panelChecklistKep(2, CekObgynMembantuPartus,CekObgynPeriksaGinekologi,CekObgynDopplerCtgUsg,CekObgynPasangTampon), cObgyn);
         row++;
 
         java.awt.Dimension ukuranKepTiga = panelKepTiga.getPreferredSize();
         java.awt.Dimension ukuranKepDua3 = panelKepDua.getPreferredSize();
         int yBawahTiga = yBawahLama + ukuranKepDua3.height + 10;
         FormInput.add(panelKepTiga);
-        panelKepTiga.setBounds(5, yBawahTiga, 840, ukuranKepTiga.height);
+        panelKepTiga.setBounds(5, yBawahTiga, ukuranKepTiga.width, ukuranKepTiga.height);
+        lebarFormInput = Math.max(lebarFormInput, 5 + ukuranKepTiga.width + 20);
         FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahTiga + ukuranKepTiga.height + 20));
     }
 
@@ -3485,24 +3663,31 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         int row = 0;
 
         row = tambahBarisKepJudul(panelKepEmpat, row, "KONDISI PASIEN SAAT PINDAH / PULANG DARI IGD");
-        DTPKpPukul = new widget.Tanggal();
-        DTPKpPukul.setPreferredSize(new java.awt.Dimension(150,23));
-        DTPKpPukul.setDisplayFormat("HH:mm:ss");
-        DTPKpPukul.setDate(new Date());
+        // widget.Jam (JSpinner jam murni) - bukan widget.Tanggal lagi, krn
+        // widget.Tanggal (uz.ncipro.calendar.JDateTimePicker) popup-nya
+        // SELALU kalender tanggal, tidak pernah ada kontrol jam sama sekali
+        // walau displayFormat "HH:mm:ss" (cuma ganti format TEKS-nya, bukan
+        // popup-nya) - permintaan user, field "Pukul" harusnya nunjukin jam.
+        DTPKpPukul = new widget.Jam();
+        // Tanggal ikut ditampilkan & tersimpan (bukan cuma jam) - permintaan
+        // user, krn bisa beda dari tanggal kunjungan (pasien masuk/pindah
+        // lewat tengah malam). kp_pukul di DB diubah dari TIME ke DATETIME.
+        DTPKpPukul.tampilkanTanggal();
+        DTPKpPukul.setPreferredSize(new java.awt.Dimension(190,23));
+        DTPKpPukul.setJam(new Date());
         row = tambahBarisKepField(panelKepEmpat, row, "Pukul", DTPKpPukul);
 
-        TKpGcsE = new widget.TextBox(); TKpGcsE.setPreferredSize(new java.awt.Dimension(50,23));
-        TKpGcsV = new widget.TextBox(); TKpGcsV.setPreferredSize(new java.awt.Dimension(50,23));
-        TKpGcsM = new widget.TextBox(); TKpGcsM.setPreferredSize(new java.awt.Dimension(50,23));
+        // GCS/TD/Nadi/Suhu/Pernafasan/SpO2 ditata 3 baris x 2 kolom (pola
+        // sama spt KEADAAN UMUM) - lebar field disamakan dgn Suhu (60px),
+        // permintaan user.
+        TKpGcsE = new widget.TextBox(); TKpGcsE.setPreferredSize(new java.awt.Dimension(60,23));
+        TKpGcsV = new widget.TextBox(); TKpGcsV.setPreferredSize(new java.awt.Dimension(60,23));
+        TKpGcsM = new widget.TextBox(); TKpGcsM.setPreferredSize(new java.awt.Dimension(60,23));
         widget.PanelBiasa panelKpGcs = new widget.PanelBiasa();
         panelKpGcs.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelKpGcs.add(new widget.Label()); // spacer kecil (konsisten style baris lain)
         panelKpGcs.add(TKpGcsE); panelKpGcs.add(TKpGcsV); panelKpGcs.add(TKpGcsM);
-        row = tambahBarisKepField(panelKepEmpat, row, "GCS (E/V/M)", panelKpGcs);
-
-        TKpTd = new widget.TextBox(); TKpTd.setPreferredSize(new java.awt.Dimension(80,23));
-        row = tambahBarisKepField(panelKepEmpat, row, "TD (mmHg)", TKpTd);
-
+        TKpTd = new widget.TextBox(); TKpTd.setPreferredSize(new java.awt.Dimension(60,23));
         TKpNadi = new widget.TextBox(); TKpNadi.setPreferredSize(new java.awt.Dimension(60,23));
         RbKpNadiReguler = new widget.RadioButton(); RbKpNadiReguler.setText("Reguler");
         RbKpNadiIreguler = new widget.RadioButton(); RbKpNadiIreguler.setText("Ireguler");
@@ -3510,24 +3695,134 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         widget.PanelBiasa panelKpNadi = new widget.PanelBiasa();
         panelKpNadi.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelKpNadi.add(TKpNadi); panelKpNadi.add(RbKpNadiReguler); panelKpNadi.add(RbKpNadiIreguler);
-        row = tambahBarisKepField(panelKepEmpat, row, "Nadi (x/menit)", panelKpNadi);
-
         TKpSuhu = new widget.TextBox(); TKpSuhu.setPreferredSize(new java.awt.Dimension(60,23));
-        row = tambahBarisKepField(panelKepEmpat, row, "Suhu (°C)", TKpSuhu);
         TKpPernafasan = new widget.TextBox(); TKpPernafasan.setPreferredSize(new java.awt.Dimension(60,23));
-        row = tambahBarisKepField(panelKepEmpat, row, "Pernafasan (x/menit)", TKpPernafasan);
         TKpSpo = new widget.TextBox(); TKpSpo.setPreferredSize(new java.awt.Dimension(60,23));
-        row = tambahBarisKepField(panelKepEmpat, row, "SpO2 (%)", TKpSpo);
 
+        widget.PanelBiasa panelKpVital = new widget.PanelBiasa();
+        panelKpVital.setLayout(new java.awt.GridBagLayout());
+        int rowKpVital = 0;
+
+        widget.Label lblKpGcs = new widget.Label(); lblKpGcs.setText("GCS (E/V/M) :");
+        java.awt.GridBagConstraints cLblKpGcs = kepConstraint(0,rowKpVital); cLblKpGcs.anchor = java.awt.GridBagConstraints.EAST; cLblKpGcs.fill = java.awt.GridBagConstraints.NONE;
+        panelKpVital.add(lblKpGcs, cLblKpGcs);
+        java.awt.GridBagConstraints cKpGcs = kepConstraint(1,rowKpVital); cKpGcs.anchor = java.awt.GridBagConstraints.WEST; cKpGcs.fill = java.awt.GridBagConstraints.NONE; cKpGcs.weightx = 0;
+        panelKpVital.add(panelKpGcs, cKpGcs);
+        widget.Label lblKpTd = new widget.Label(); lblKpTd.setText("TD (mmHg) :");
+        java.awt.GridBagConstraints cLblKpTd = kepConstraint(2,rowKpVital); cLblKpTd.anchor = java.awt.GridBagConstraints.EAST; cLblKpTd.fill = java.awt.GridBagConstraints.NONE; cLblKpTd.insets = new java.awt.Insets(3,20,3,5);
+        panelKpVital.add(lblKpTd, cLblKpTd);
+        java.awt.GridBagConstraints cKpTd = kepConstraint(3,rowKpVital); cKpTd.anchor = java.awt.GridBagConstraints.WEST; cKpTd.fill = java.awt.GridBagConstraints.NONE; cKpTd.weightx = 0;
+        panelKpVital.add(TKpTd, cKpTd);
+        rowKpVital++;
+
+        widget.Label lblKpNadi = new widget.Label(); lblKpNadi.setText("Nadi (x/menit) :");
+        java.awt.GridBagConstraints cLblKpNadi = kepConstraint(0,rowKpVital); cLblKpNadi.anchor = java.awt.GridBagConstraints.EAST; cLblKpNadi.fill = java.awt.GridBagConstraints.NONE;
+        panelKpVital.add(lblKpNadi, cLblKpNadi);
+        java.awt.GridBagConstraints cKpNadi = kepConstraint(1,rowKpVital); cKpNadi.anchor = java.awt.GridBagConstraints.WEST; cKpNadi.fill = java.awt.GridBagConstraints.NONE; cKpNadi.weightx = 0;
+        panelKpVital.add(panelKpNadi, cKpNadi);
+        widget.Label lblKpSuhu = new widget.Label(); lblKpSuhu.setText("Suhu (°C) :");
+        java.awt.GridBagConstraints cLblKpSuhu = kepConstraint(2,rowKpVital); cLblKpSuhu.anchor = java.awt.GridBagConstraints.EAST; cLblKpSuhu.fill = java.awt.GridBagConstraints.NONE; cLblKpSuhu.insets = new java.awt.Insets(3,20,3,5);
+        panelKpVital.add(lblKpSuhu, cLblKpSuhu);
+        java.awt.GridBagConstraints cKpSuhu = kepConstraint(3,rowKpVital); cKpSuhu.anchor = java.awt.GridBagConstraints.WEST; cKpSuhu.fill = java.awt.GridBagConstraints.NONE; cKpSuhu.weightx = 0;
+        panelKpVital.add(TKpSuhu, cKpSuhu);
+        rowKpVital++;
+
+        widget.Label lblKpPernafasan = new widget.Label(); lblKpPernafasan.setText("Pernafasan (x/menit) :");
+        java.awt.GridBagConstraints cLblKpPernafasan = kepConstraint(0,rowKpVital); cLblKpPernafasan.anchor = java.awt.GridBagConstraints.EAST; cLblKpPernafasan.fill = java.awt.GridBagConstraints.NONE;
+        panelKpVital.add(lblKpPernafasan, cLblKpPernafasan);
+        java.awt.GridBagConstraints cKpPernafasan = kepConstraint(1,rowKpVital); cKpPernafasan.anchor = java.awt.GridBagConstraints.WEST; cKpPernafasan.fill = java.awt.GridBagConstraints.NONE; cKpPernafasan.weightx = 0;
+        panelKpVital.add(TKpPernafasan, cKpPernafasan);
+        widget.Label lblKpSpo = new widget.Label(); lblKpSpo.setText("SpO2 (%) :");
+        java.awt.GridBagConstraints cLblKpSpo = kepConstraint(2,rowKpVital); cLblKpSpo.anchor = java.awt.GridBagConstraints.EAST; cLblKpSpo.fill = java.awt.GridBagConstraints.NONE; cLblKpSpo.insets = new java.awt.Insets(3,20,3,5);
+        panelKpVital.add(lblKpSpo, cLblKpSpo);
+        java.awt.GridBagConstraints cKpSpo = kepConstraint(3,rowKpVital); cKpSpo.anchor = java.awt.GridBagConstraints.WEST; cKpSpo.fill = java.awt.GridBagConstraints.NONE; cKpSpo.weightx = 0;
+        panelKpVital.add(TKpSpo, cKpSpo);
+        rowKpVital++;
+
+        java.awt.GridBagConstraints cFillerKpVital = kepConstraint(4, 0);
+        cFillerKpVital.gridheight = rowKpVital;
+        cFillerKpVital.weightx = 1.0;
+        cFillerKpVital.fill = java.awt.GridBagConstraints.BOTH;
+        cFillerKpVital.insets = new java.awt.Insets(0,0,0,0);
+        panelKpVital.add(javax.swing.Box.createHorizontalGlue(), cFillerKpVital);
+
+        java.awt.GridBagConstraints cKpVitalPanel = kepConstraint(0, row);
+        cKpVitalPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        cKpVitalPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cKpVitalPanel.insets = new java.awt.Insets(0,0,0,0);
+        panelKepEmpat.add(panelKpVital, cKpVitalPanel);
+        row++;
+
+        // Masuk Rumah Sakit & Petugas yang Menerima disejajarkan 1 baris
+        // (permintaan user). Ruang & Petugas Penerima KEDUANYA dipilih lewat
+        // dialog pencarian (pola sama BtnObatDiperiksa/BtnObatDiberikan di
+        // atas) - bukan ComboBox/input manual - permintaan user.
         CekKpMasukRs = new widget.CekBox(); CekKpMasukRs.setText("Masuk Rumah Sakit, di Ruang");
-        TKpRuang = new widget.TextBox(); TKpRuang.setPreferredSize(new java.awt.Dimension(150,23));
+        TKpRuang = new widget.TextBox(); TKpRuang.setPreferredSize(new java.awt.Dimension(220,23)); TKpRuang.setEditable(false);
+        BtnKpRuang = new widget.Button();
+        BtnKpRuang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png")));
+        BtnKpRuang.addActionListener((java.awt.event.ActionEvent evt) -> {
+            DlgCariKamar dlg = new DlgCariKamar(null,false);
+            dlg.addWindowListener(new WindowAdapter() {
+                @Override public void windowClosed(WindowEvent e) {
+                    if(dlg.getTable().getSelectedRow()!= -1){
+                        TKpRuang.setText(dlg.getTable().getValueAt(dlg.getTable().getSelectedRow(),1).toString());
+                    }
+                    BtnKpRuang.requestFocus();
+                }
+            });
+            dlg.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dlg.setLocationRelativeTo(internalFrame1);
+            dlg.setVisible(true);
+        });
         widget.PanelBiasa panelKpMasukRs = new widget.PanelBiasa();
         panelKpMasukRs.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
-        panelKpMasukRs.add(CekKpMasukRs); panelKpMasukRs.add(TKpRuang);
-        row = tambahBarisKepField(panelKepEmpat, row, "", panelKpMasukRs);
+        panelKpMasukRs.add(CekKpMasukRs); panelKpMasukRs.add(TKpRuang); panelKpMasukRs.add(BtnKpRuang);
 
-        TKpPetugasPenerima = new widget.TextBox(); TKpPetugasPenerima.setPreferredSize(new java.awt.Dimension(200,23));
-        row = tambahBarisKepField(panelKepEmpat, row, "Petugas yang Menerima", TKpPetugasPenerima);
+        TKpPetugasPenerima = new widget.TextBox(); TKpPetugasPenerima.setPreferredSize(new java.awt.Dimension(70,23)); TKpPetugasPenerima.setEditable(false);
+        NmKpPetugasPenerima = new widget.TextBox(); NmKpPetugasPenerima.setPreferredSize(new java.awt.Dimension(180,23)); NmKpPetugasPenerima.setEditable(false);
+        BtnKpPetugasPenerima = new widget.Button();
+        BtnKpPetugasPenerima.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png")));
+        BtnKpPetugasPenerima.addActionListener((java.awt.event.ActionEvent evt) -> {
+            DlgCariPetugas dlg = new DlgCariPetugas(null,false);
+            dlg.addWindowListener(new WindowAdapter() {
+                @Override public void windowClosed(WindowEvent e) {
+                    if(dlg.getTable().getSelectedRow()!= -1){
+                        TKpPetugasPenerima.setText(dlg.getTable().getValueAt(dlg.getTable().getSelectedRow(),0).toString());
+                        NmKpPetugasPenerima.setText(dlg.getTable().getValueAt(dlg.getTable().getSelectedRow(),1).toString());
+                    }
+                    BtnKpPetugasPenerima.requestFocus();
+                }
+            });
+            dlg.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dlg.setLocationRelativeTo(internalFrame1);
+            dlg.setVisible(true);
+        });
+        widget.PanelBiasa panelKpPetugasPenerima = new widget.PanelBiasa();
+        panelKpPetugasPenerima.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
+        panelKpPetugasPenerima.add(TKpPetugasPenerima); panelKpPetugasPenerima.add(NmKpPetugasPenerima); panelKpPetugasPenerima.add(BtnKpPetugasPenerima);
+
+        widget.PanelBiasa panelKpMasukPetugas = new widget.PanelBiasa();
+        panelKpMasukPetugas.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints cKpMasukRs = kepConstraint(0,0); cKpMasukRs.gridwidth = 2; cKpMasukRs.anchor = java.awt.GridBagConstraints.WEST; cKpMasukRs.fill = java.awt.GridBagConstraints.NONE;
+        panelKpMasukPetugas.add(panelKpMasukRs, cKpMasukRs);
+        widget.Label lblKpPetugasPenerima = new widget.Label(); lblKpPetugasPenerima.setText("Petugas yang Menerima :");
+        java.awt.GridBagConstraints cLblKpPetugasPenerima = kepConstraint(2,0); cLblKpPetugasPenerima.anchor = java.awt.GridBagConstraints.EAST; cLblKpPetugasPenerima.fill = java.awt.GridBagConstraints.NONE; cLblKpPetugasPenerima.insets = new java.awt.Insets(3,20,3,5);
+        panelKpMasukPetugas.add(lblKpPetugasPenerima, cLblKpPetugasPenerima);
+        java.awt.GridBagConstraints cKpPetugasPenerima = kepConstraint(3,0); cKpPetugasPenerima.anchor = java.awt.GridBagConstraints.WEST; cKpPetugasPenerima.fill = java.awt.GridBagConstraints.NONE; cKpPetugasPenerima.weightx = 0;
+        panelKpMasukPetugas.add(panelKpPetugasPenerima, cKpPetugasPenerima);
+        java.awt.GridBagConstraints cFillerKpMasukPetugas = kepConstraint(4, 0);
+        cFillerKpMasukPetugas.weightx = 1.0;
+        cFillerKpMasukPetugas.fill = java.awt.GridBagConstraints.BOTH;
+        cFillerKpMasukPetugas.insets = new java.awt.Insets(0,0,0,0);
+        panelKpMasukPetugas.add(javax.swing.Box.createHorizontalGlue(), cFillerKpMasukPetugas);
+
+        java.awt.GridBagConstraints cKpMasukPetugasPanel = kepConstraint(0, row);
+        cKpMasukPetugasPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        cKpMasukPetugasPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cKpMasukPetugasPanel.insets = new java.awt.Insets(0,0,0,0);
+        panelKepEmpat.add(panelKpMasukPetugas, cKpMasukPetugasPanel);
+        row++;
 
         RbKpPendampingDokter = new widget.RadioButton(); RbKpPendampingDokter.setText("Dokter");
         RbKpPendampingPerawat = new widget.RadioButton(); RbKpPendampingPerawat.setText("Perawat");
@@ -3552,56 +3847,115 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelKpTl.add(RbKpTlKamarJenazah); panelKpTl.add(RbKpTlLainnya); panelKpTl.add(TKpTindakanLanjutanKet);
         row = tambahBarisKepField(panelKepEmpat, row, "Tindakan Lanjutan di", panelKpTl);
 
+        // Dirujuk & Alasan Dirujuk disejajarkan 1 baris (permintaan user).
         CekKpDirujuk = new widget.CekBox(); CekKpDirujuk.setText("Dirujuk ke RS");
         TKpDirujukKet = new widget.TextBox(); TKpDirujukKet.setPreferredSize(new java.awt.Dimension(150,23));
         widget.PanelBiasa panelKpDirujuk = new widget.PanelBiasa();
         panelKpDirujuk.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelKpDirujuk.add(CekKpDirujuk); panelKpDirujuk.add(TKpDirujukKet);
-        row = tambahBarisKepField(panelKepEmpat, row, "", panelKpDirujuk);
         TKpDirujukAlasan = new widget.TextBox(); TKpDirujukAlasan.setPreferredSize(new java.awt.Dimension(300,23));
-        row = tambahBarisKepField(panelKepEmpat, row, "Alasan Dirujuk", TKpDirujukAlasan);
 
+        widget.PanelBiasa panelKpDirujukAlasan = new widget.PanelBiasa();
+        panelKpDirujukAlasan.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints cKpDirujuk = kepConstraint(0,0); cKpDirujuk.gridwidth = 2; cKpDirujuk.anchor = java.awt.GridBagConstraints.WEST; cKpDirujuk.fill = java.awt.GridBagConstraints.NONE;
+        panelKpDirujukAlasan.add(panelKpDirujuk, cKpDirujuk);
+        widget.Label lblKpDirujukAlasan = new widget.Label(); lblKpDirujukAlasan.setText("Alasan Dirujuk :");
+        java.awt.GridBagConstraints cLblKpDirujukAlasan = kepConstraint(2,0); cLblKpDirujukAlasan.anchor = java.awt.GridBagConstraints.EAST; cLblKpDirujukAlasan.fill = java.awt.GridBagConstraints.NONE; cLblKpDirujukAlasan.insets = new java.awt.Insets(3,20,3,5);
+        panelKpDirujukAlasan.add(lblKpDirujukAlasan, cLblKpDirujukAlasan);
+        java.awt.GridBagConstraints cKpDirujukAlasan = kepConstraint(3,0); cKpDirujukAlasan.anchor = java.awt.GridBagConstraints.WEST; cKpDirujukAlasan.fill = java.awt.GridBagConstraints.NONE; cKpDirujukAlasan.weightx = 0;
+        panelKpDirujukAlasan.add(TKpDirujukAlasan, cKpDirujukAlasan);
+        java.awt.GridBagConstraints cFillerKpDirujukAlasan = kepConstraint(4, 0);
+        cFillerKpDirujukAlasan.weightx = 1.0;
+        cFillerKpDirujukAlasan.fill = java.awt.GridBagConstraints.BOTH;
+        cFillerKpDirujukAlasan.insets = new java.awt.Insets(0,0,0,0);
+        panelKpDirujukAlasan.add(javax.swing.Box.createHorizontalGlue(), cFillerKpDirujukAlasan);
+
+        java.awt.GridBagConstraints cKpDirujukAlasanPanel = kepConstraint(0, row);
+        cKpDirujukAlasanPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        cKpDirujukAlasanPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cKpDirujukAlasanPanel.insets = new java.awt.Insets(0,0,0,0);
+        panelKepEmpat.add(panelKpDirujukAlasan, cKpDirujukAlasanPanel);
+        row++;
+
+        // Dipulangkan, Meninggal, dan Death On Arrival disejajarkan 1
+        // baris bertiga (permintaan user).
         CekKpDipulangkan = new widget.CekBox(); CekKpDipulangkan.setText("Dipulangkan, Pukul");
-        DTPKpDipulangkanPukul = new widget.Tanggal();
-        DTPKpDipulangkanPukul.setPreferredSize(new java.awt.Dimension(150,23));
-        DTPKpDipulangkanPukul.setDisplayFormat("HH:mm:ss");
-        DTPKpDipulangkanPukul.setDate(new Date());
+        DTPKpDipulangkanPukul = new widget.Jam();
+        DTPKpDipulangkanPukul.tampilkanTanggal();
+        DTPKpDipulangkanPukul.setPreferredSize(new java.awt.Dimension(190,23));
+        DTPKpDipulangkanPukul.setJam(new Date());
         widget.PanelBiasa panelKpDipulangkan = new widget.PanelBiasa();
         panelKpDipulangkan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelKpDipulangkan.add(CekKpDipulangkan); panelKpDipulangkan.add(DTPKpDipulangkanPukul);
-        row = tambahBarisKepField(panelKepEmpat, row, "", panelKpDipulangkan);
 
         CekKpMeninggal = new widget.CekBox(); CekKpMeninggal.setText("Meninggal, Pukul");
-        DTPKpMeninggalPukul = new widget.Tanggal();
-        DTPKpMeninggalPukul.setPreferredSize(new java.awt.Dimension(150,23));
-        DTPKpMeninggalPukul.setDisplayFormat("HH:mm:ss");
-        DTPKpMeninggalPukul.setDate(new Date());
+        DTPKpMeninggalPukul = new widget.Jam();
+        DTPKpMeninggalPukul.tampilkanTanggal();
+        DTPKpMeninggalPukul.setPreferredSize(new java.awt.Dimension(190,23));
+        DTPKpMeninggalPukul.setJam(new Date());
         widget.PanelBiasa panelKpMeninggal = new widget.PanelBiasa();
         panelKpMeninggal.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelKpMeninggal.add(CekKpMeninggal); panelKpMeninggal.add(DTPKpMeninggalPukul);
-        row = tambahBarisKepField(panelKepEmpat, row, "", panelKpMeninggal);
 
         CekKpDoa = new widget.CekBox(); CekKpDoa.setText("Death On Arrival");
-        row = tambahBarisKepField(panelKepEmpat, row, "", CekKpDoa);
+
+        widget.PanelBiasa panelKpAkhir = new widget.PanelBiasa();
+        panelKpAkhir.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints cKpDipulangkan = kepConstraint(0,0); cKpDipulangkan.anchor = java.awt.GridBagConstraints.WEST; cKpDipulangkan.fill = java.awt.GridBagConstraints.NONE;
+        panelKpAkhir.add(panelKpDipulangkan, cKpDipulangkan);
+        java.awt.GridBagConstraints cKpMeninggal = kepConstraint(1,0); cKpMeninggal.anchor = java.awt.GridBagConstraints.WEST; cKpMeninggal.fill = java.awt.GridBagConstraints.NONE; cKpMeninggal.insets = new java.awt.Insets(3,20,3,5);
+        panelKpAkhir.add(panelKpMeninggal, cKpMeninggal);
+        java.awt.GridBagConstraints cKpDoa = kepConstraint(2,0); cKpDoa.anchor = java.awt.GridBagConstraints.WEST; cKpDoa.fill = java.awt.GridBagConstraints.NONE; cKpDoa.insets = new java.awt.Insets(3,20,3,5);
+        panelKpAkhir.add(CekKpDoa, cKpDoa);
+        java.awt.GridBagConstraints cFillerKpAkhir = kepConstraint(3, 0);
+        cFillerKpAkhir.weightx = 1.0;
+        cFillerKpAkhir.fill = java.awt.GridBagConstraints.BOTH;
+        cFillerKpAkhir.insets = new java.awt.Insets(0,0,0,0);
+        panelKpAkhir.add(javax.swing.Box.createHorizontalGlue(), cFillerKpAkhir);
+
+        java.awt.GridBagConstraints cKpAkhirPanel = kepConstraint(0, row);
+        cKpAkhirPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        cKpAkhirPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cKpAkhirPanel.insets = new java.awt.Insets(0,0,0,0);
+        panelKepEmpat.add(panelKpAkhir, cKpAkhirPanel);
+        row++;
 
         row = tambahBarisKepJudul(panelKepEmpat, row, "Pendidikan Kesehatan Pasien Pulang");
         CekKpEdukasiMakanObat = new widget.CekBox(); CekKpEdukasiMakanObat.setText("Makan/Minum Obat Teratur");
         CekKpEdukasiLuka = new widget.CekBox(); CekKpEdukasiLuka.setText("Jaga Kebersihan Luka");
         java.awt.GridBagConstraints cKpEdu = kepConstraint(0,row); cKpEdu.gridwidth=2;
-        panelKepEmpat.add(panelChecklistKep(CekKpEdukasiMakanObat,CekKpEdukasiLuka), cKpEdu);
+        panelKepEmpat.add(panelChecklistKep(2, CekKpEdukasiMakanObat,CekKpEdukasiLuka), cKpEdu);
         row++;
+        // Diet & Lain-lain disejajarkan 1 baris (permintaan user).
         CekKpEdukasiDiet = new widget.CekBox(); CekKpEdukasiDiet.setText("Diet");
         TKpEdukasiDietKet = new widget.TextBox(); TKpEdukasiDietKet.setPreferredSize(new java.awt.Dimension(200,23));
         widget.PanelBiasa panelKpEdukasiDiet = new widget.PanelBiasa();
         panelKpEdukasiDiet.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelKpEdukasiDiet.add(CekKpEdukasiDiet); panelKpEdukasiDiet.add(TKpEdukasiDietKet);
-        row = tambahBarisKepField(panelKepEmpat, row, "", panelKpEdukasiDiet);
         CekKpEdukasiLain = new widget.CekBox(); CekKpEdukasiLain.setText("Lain-lain");
         TKpEdukasiLainKet = new widget.TextBox(); TKpEdukasiLainKet.setPreferredSize(new java.awt.Dimension(200,23));
         widget.PanelBiasa panelKpEdukasiLain = new widget.PanelBiasa();
         panelKpEdukasiLain.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelKpEdukasiLain.add(CekKpEdukasiLain); panelKpEdukasiLain.add(TKpEdukasiLainKet);
-        row = tambahBarisKepField(panelKepEmpat, row, "", panelKpEdukasiLain);
+
+        widget.PanelBiasa panelKpEdukasiDietLain = new widget.PanelBiasa();
+        panelKpEdukasiDietLain.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints cKpEdukasiDiet = kepConstraint(0,0); cKpEdukasiDiet.anchor = java.awt.GridBagConstraints.WEST; cKpEdukasiDiet.fill = java.awt.GridBagConstraints.NONE;
+        panelKpEdukasiDietLain.add(panelKpEdukasiDiet, cKpEdukasiDiet);
+        java.awt.GridBagConstraints cKpEdukasiLain = kepConstraint(1,0); cKpEdukasiLain.anchor = java.awt.GridBagConstraints.WEST; cKpEdukasiLain.fill = java.awt.GridBagConstraints.NONE; cKpEdukasiLain.insets = new java.awt.Insets(3,20,3,5);
+        panelKpEdukasiDietLain.add(panelKpEdukasiLain, cKpEdukasiLain);
+        java.awt.GridBagConstraints cFillerKpEdukasiDietLain = kepConstraint(2, 0);
+        cFillerKpEdukasiDietLain.weightx = 1.0;
+        cFillerKpEdukasiDietLain.fill = java.awt.GridBagConstraints.BOTH;
+        cFillerKpEdukasiDietLain.insets = new java.awt.Insets(0,0,0,0);
+        panelKpEdukasiDietLain.add(javax.swing.Box.createHorizontalGlue(), cFillerKpEdukasiDietLain);
+
+        java.awt.GridBagConstraints cKpEdukasiDietLainPanel = kepConstraint(0, row);
+        cKpEdukasiDietLainPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        cKpEdukasiDietLainPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cKpEdukasiDietLainPanel.insets = new java.awt.Insets(0,0,0,0);
+        panelKepEmpat.add(panelKpEdukasiDietLain, cKpEdukasiDietLainPanel);
+        row++;
 
         // Dokter & Perawat yang bertanggung jawab dipindah ke header
         // (permintaan user) - lihat initKepTambahan() utk field Dokter,
@@ -3614,7 +3968,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.Dimension ukuranObatInfus4 = panelKepObat.getPreferredSize();
         int yBawahEmpat = yBawahLama + ukuranKepDua4.height + 10 + ukuranKepTiga4.height + 10 + ukuranObatInfus4.height + 10;
         FormInput.add(panelKepEmpat);
-        panelKepEmpat.setBounds(5, yBawahEmpat, 840, ukuranKepEmpat.height);
+        panelKepEmpat.setBounds(5, yBawahEmpat, ukuranKepEmpat.width, ukuranKepEmpat.height);
+        lebarFormInput = Math.max(lebarFormInput, 5 + ukuranKepEmpat.width + 20);
         FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahEmpat + ukuranKepEmpat.height + 20));
     }
 
@@ -3646,18 +4001,83 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelKepObat.add(scrollObatInfus, cTabelObat);
         row++;
 
-        DTPObatPukul = new widget.Tanggal();
+        // Pukul|Nama Obat/Infus & Dosis|Rute ditata 2 kolom, 2 baris dalam
+        // panel tersendiri (pola sama spt KEADAAN UMUM) - permintaan user.
+        DTPObatPukul = new widget.Jam();
         DTPObatPukul.setPreferredSize(new java.awt.Dimension(150,23));
-        DTPObatPukul.setDisplayFormat("HH:mm:ss");
-        DTPObatPukul.setDate(new Date());
-        row = tambahBarisKepField(panelKepObat, row, "Pukul", DTPObatPukul);
-
-        TObatNama = new widget.TextBox(); TObatNama.setPreferredSize(new java.awt.Dimension(250,23));
-        row = tambahBarisKepField(panelKepObat, row, "Nama Obat/Infus", TObatNama);
+        DTPObatPukul.setJam(new Date());
+        // Nama Obat/Infus - ambil dari data master `databarang` lewat
+        // DlgCariNamaObat (baru, murni SELECT read-only) supaya nama
+        // konsisten dgn data barang, TANPA mengurangi stok obat yg ada
+        // (permintaan eksplisit user - dialog itu tidak pernah menyentuh
+        // tabel stok `gudangbarang`/`data_batch` sama sekali). TObatNama
+        // tetap TextBox biasa (bisa diketik manual juga), cuma diisi
+        // otomatis kalau user pilih lewat tombol cari.
+        TObatNama = new widget.TextBox(); TObatNama.setPreferredSize(new java.awt.Dimension(200,23));
+        BtnObatNama = new widget.Button();
+        BtnObatNama.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png")));
+        BtnObatNama.setPreferredSize(new java.awt.Dimension(28,23));
+        BtnObatNama.addActionListener((java.awt.event.ActionEvent evt) -> {
+            DlgCariNamaObat dlgObat = new DlgCariNamaObat(null,false);
+            dlgObat.addWindowListener(new WindowAdapter() {
+                @Override public void windowClosed(WindowEvent e) {
+                    if(dlgObat.getTable().getSelectedRow()!= -1){
+                        TObatNama.setText(dlgObat.getTable().getValueAt(dlgObat.getTable().getSelectedRow(),1).toString());
+                    }
+                    BtnObatNama.requestFocus();
+                }
+            });
+            dlgObat.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dlgObat.setLocationRelativeTo(internalFrame1);
+            dlgObat.setVisible(true);
+        });
+        widget.PanelBiasa panelObatNama = new widget.PanelBiasa();
+        panelObatNama.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
+        panelObatNama.add(TObatNama); panelObatNama.add(BtnObatNama);
         TObatDosis = new widget.TextBox(); TObatDosis.setPreferredSize(new java.awt.Dimension(150,23));
-        row = tambahBarisKepField(panelKepObat, row, "Dosis", TObatDosis);
         TObatRute = new widget.TextBox(); TObatRute.setPreferredSize(new java.awt.Dimension(150,23));
-        row = tambahBarisKepField(panelKepObat, row, "Rute", TObatRute);
+
+        widget.PanelBiasa panelObatBaris = new widget.PanelBiasa();
+        panelObatBaris.setLayout(new java.awt.GridBagLayout());
+        int rowObat = 0;
+
+        widget.Label lblObatPukul = new widget.Label(); lblObatPukul.setText("Pukul :");
+        java.awt.GridBagConstraints cLblObatPukul = kepConstraint(0,rowObat); cLblObatPukul.anchor = java.awt.GridBagConstraints.EAST; cLblObatPukul.fill = java.awt.GridBagConstraints.NONE;
+        panelObatBaris.add(lblObatPukul, cLblObatPukul);
+        java.awt.GridBagConstraints cObatPukul = kepConstraint(1,rowObat); cObatPukul.anchor = java.awt.GridBagConstraints.WEST; cObatPukul.fill = java.awt.GridBagConstraints.NONE; cObatPukul.weightx = 0;
+        panelObatBaris.add(DTPObatPukul, cObatPukul);
+        widget.Label lblObatNama = new widget.Label(); lblObatNama.setText("Nama Obat/Infus :");
+        java.awt.GridBagConstraints cLblObatNama = kepConstraint(2,rowObat); cLblObatNama.anchor = java.awt.GridBagConstraints.EAST; cLblObatNama.fill = java.awt.GridBagConstraints.NONE; cLblObatNama.insets = new java.awt.Insets(3,20,3,5);
+        panelObatBaris.add(lblObatNama, cLblObatNama);
+        java.awt.GridBagConstraints cObatNama = kepConstraint(3,rowObat); cObatNama.anchor = java.awt.GridBagConstraints.WEST; cObatNama.fill = java.awt.GridBagConstraints.NONE; cObatNama.weightx = 0;
+        panelObatBaris.add(panelObatNama, cObatNama);
+        rowObat++;
+
+        widget.Label lblObatDosis = new widget.Label(); lblObatDosis.setText("Dosis :");
+        java.awt.GridBagConstraints cLblObatDosis = kepConstraint(0,rowObat); cLblObatDosis.anchor = java.awt.GridBagConstraints.EAST; cLblObatDosis.fill = java.awt.GridBagConstraints.NONE;
+        panelObatBaris.add(lblObatDosis, cLblObatDosis);
+        java.awt.GridBagConstraints cObatDosis = kepConstraint(1,rowObat); cObatDosis.anchor = java.awt.GridBagConstraints.WEST; cObatDosis.fill = java.awt.GridBagConstraints.NONE; cObatDosis.weightx = 0;
+        panelObatBaris.add(TObatDosis, cObatDosis);
+        widget.Label lblObatRute = new widget.Label(); lblObatRute.setText("Rute :");
+        java.awt.GridBagConstraints cLblObatRute = kepConstraint(2,rowObat); cLblObatRute.anchor = java.awt.GridBagConstraints.EAST; cLblObatRute.fill = java.awt.GridBagConstraints.NONE; cLblObatRute.insets = new java.awt.Insets(3,20,3,5);
+        panelObatBaris.add(lblObatRute, cLblObatRute);
+        java.awt.GridBagConstraints cObatRute = kepConstraint(3,rowObat); cObatRute.anchor = java.awt.GridBagConstraints.WEST; cObatRute.fill = java.awt.GridBagConstraints.NONE; cObatRute.weightx = 0;
+        panelObatBaris.add(TObatRute, cObatRute);
+        rowObat++;
+
+        java.awt.GridBagConstraints cFillerObat = kepConstraint(4, 0);
+        cFillerObat.gridheight = rowObat;
+        cFillerObat.weightx = 1.0;
+        cFillerObat.fill = java.awt.GridBagConstraints.BOTH;
+        cFillerObat.insets = new java.awt.Insets(0,0,0,0);
+        panelObatBaris.add(javax.swing.Box.createHorizontalGlue(), cFillerObat);
+
+        java.awt.GridBagConstraints cObatBarisPanel = kepConstraint(0, row);
+        cObatBarisPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        cObatBarisPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cObatBarisPanel.insets = new java.awt.Insets(0,0,0,0);
+        panelKepObat.add(panelObatBaris, cObatBarisPanel);
+        row++;
 
         KdObatDiperiksa = new widget.TextBox(); KdObatDiperiksa.setPreferredSize(new java.awt.Dimension(70,23)); KdObatDiperiksa.setEditable(false);
         NmObatDiperiksa = new widget.TextBox(); NmObatDiperiksa.setPreferredSize(new java.awt.Dimension(200,23)); NmObatDiperiksa.setEditable(false);
@@ -3681,7 +4101,6 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         widget.PanelBiasa panelObatDiperiksa = new widget.PanelBiasa();
         panelObatDiperiksa.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelObatDiperiksa.add(KdObatDiperiksa); panelObatDiperiksa.add(NmObatDiperiksa); panelObatDiperiksa.add(BtnObatDiperiksa);
-        row = tambahBarisKepField(panelKepObat, row, "Diperiksa Oleh", panelObatDiperiksa);
 
         KdObatDiberikan = new widget.TextBox(); KdObatDiberikan.setPreferredSize(new java.awt.Dimension(70,23)); KdObatDiberikan.setEditable(false);
         NmObatDiberikan = new widget.TextBox(); NmObatDiberikan.setPreferredSize(new java.awt.Dimension(200,23)); NmObatDiberikan.setEditable(false);
@@ -3705,7 +4124,33 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         widget.PanelBiasa panelObatDiberikan = new widget.PanelBiasa();
         panelObatDiberikan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelObatDiberikan.add(KdObatDiberikan); panelObatDiberikan.add(NmObatDiberikan); panelObatDiberikan.add(BtnObatDiberikan);
-        row = tambahBarisKepField(panelKepObat, row, "Diberikan Oleh", panelObatDiberikan);
+
+        // Diperiksa Oleh & Diberikan Oleh disejajarkan 1 baris (permintaan
+        // user), pola sama spt panelObatBaris (Pukul/Nama/Dosis/Rute) di atas.
+        widget.PanelBiasa panelObatPetugas = new widget.PanelBiasa();
+        panelObatPetugas.setLayout(new java.awt.GridBagLayout());
+        widget.Label lblObatDiperiksa = new widget.Label(); lblObatDiperiksa.setText("Diperiksa Oleh :");
+        java.awt.GridBagConstraints cLblObatDiperiksa = kepConstraint(0,0); cLblObatDiperiksa.anchor = java.awt.GridBagConstraints.EAST; cLblObatDiperiksa.fill = java.awt.GridBagConstraints.NONE;
+        panelObatPetugas.add(lblObatDiperiksa, cLblObatDiperiksa);
+        java.awt.GridBagConstraints cObatDiperiksa = kepConstraint(1,0); cObatDiperiksa.anchor = java.awt.GridBagConstraints.WEST; cObatDiperiksa.fill = java.awt.GridBagConstraints.NONE; cObatDiperiksa.weightx = 0;
+        panelObatPetugas.add(panelObatDiperiksa, cObatDiperiksa);
+        widget.Label lblObatDiberikan = new widget.Label(); lblObatDiberikan.setText("Diberikan Oleh :");
+        java.awt.GridBagConstraints cLblObatDiberikan = kepConstraint(2,0); cLblObatDiberikan.anchor = java.awt.GridBagConstraints.EAST; cLblObatDiberikan.fill = java.awt.GridBagConstraints.NONE; cLblObatDiberikan.insets = new java.awt.Insets(3,20,3,5);
+        panelObatPetugas.add(lblObatDiberikan, cLblObatDiberikan);
+        java.awt.GridBagConstraints cObatDiberikan = kepConstraint(3,0); cObatDiberikan.anchor = java.awt.GridBagConstraints.WEST; cObatDiberikan.fill = java.awt.GridBagConstraints.NONE; cObatDiberikan.weightx = 0;
+        panelObatPetugas.add(panelObatDiberikan, cObatDiberikan);
+        java.awt.GridBagConstraints cFillerObatPetugas = kepConstraint(4, 0);
+        cFillerObatPetugas.weightx = 1.0;
+        cFillerObatPetugas.fill = java.awt.GridBagConstraints.BOTH;
+        cFillerObatPetugas.insets = new java.awt.Insets(0,0,0,0);
+        panelObatPetugas.add(javax.swing.Box.createHorizontalGlue(), cFillerObatPetugas);
+
+        java.awt.GridBagConstraints cObatPetugasPanel = kepConstraint(0, row);
+        cObatPetugasPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        cObatPetugasPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cObatPetugasPanel.insets = new java.awt.Insets(0,0,0,0);
+        panelKepObat.add(panelObatPetugas, cObatPetugasPanel);
+        row++;
 
         // widget.Button (glass style) butuh .setPreferredSize() eksplisit
         // spy latar/rounded-background-nya kelihatan - tanpa ini cuma
@@ -3730,7 +4175,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.Dimension ukuranKepTigaO = panelKepTiga.getPreferredSize();
         int yBawahObat = yBawahLama + ukuranKepDuaO.height + 10 + ukuranKepTigaO.height + 10;
         FormInput.add(panelKepObat);
-        panelKepObat.setBounds(5, yBawahObat, 840, ukuranKepObat.height);
+        panelKepObat.setBounds(5, yBawahObat, ukuranKepObat.width, ukuranKepObat.height);
+        lebarFormInput = Math.max(lebarFormInput, 5 + ukuranKepObat.width + 20);
         FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahObat + ukuranKepObat.height + 20));
     }
 
@@ -3766,7 +4212,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     }
 
     private void emptTeksObatInfus(){
-        DTPObatPukul.setDate(new Date());
+        DTPObatPukul.setJam(new Date());
         TObatNama.setText("");
         TObatDosis.setText("");
         TObatRute.setText("");
@@ -3791,7 +4237,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             try{
                 psSimpanObat.setString(1,TNoRw.getText());
                 psSimpanObat.setString(2,Valid.SetTgl(TglAsuhan.getSelectedItem()+""));
-                psSimpanObat.setString(3,DTPObatPukul.getSelectedItem().toString());
+                psSimpanObat.setString(3,DTPObatPukul.getTeksJam());
                 psSimpanObat.setString(4,TObatNama.getText());
                 psSimpanObat.setString(5,TObatDosis.getText());
                 psSimpanObat.setString(6,TObatRute.getText());
@@ -3799,7 +4245,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                 psSimpanObat.setString(8,KdObatDiberikan.getText());
                 psSimpanObat.executeUpdate();
                 tabModeObatInfus.addRow(new Object[]{
-                    DTPObatPukul.getSelectedItem().toString(),TObatNama.getText(),TObatDosis.getText(),TObatRute.getText(),
+                    DTPObatPukul.getTeksJam(),TObatNama.getText(),TObatDosis.getText(),TObatRute.getText(),
                     NmObatDiperiksa.getText(),NmObatDiberikan.getText()
                 });
                 emptTeksObatInfus();
@@ -5203,12 +5649,18 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     // statis.
     // ===================================================================
     private widget.PanelBiasa panelKepEmpat;
-    private widget.Tanggal DTPKpPukul;
+    private widget.Jam DTPKpPukul;
     private widget.TextBox TKpGcsE, TKpGcsV, TKpGcsM, TKpTd, TKpNadi, TKpSuhu, TKpPernafasan, TKpSpo;
     private widget.RadioButton RbKpNadiReguler, RbKpNadiIreguler;
     private javax.swing.ButtonGroup bgKpNadiReguler;
     private widget.CekBox CekKpMasukRs;
+    // TKpRuang/TKpPetugasPenerima: penyimpan nilai (read-only) - diisi lewat
+    // dialog pencarian (BtnKpRuang -> DlgCariKamar, BtnKpPetugasPenerima ->
+    // DlgCariPetugas), bukan diketik manual lagi.
     private widget.TextBox TKpRuang, TKpPetugasPenerima;
+    private widget.Button BtnKpRuang;
+    private widget.TextBox NmKpPetugasPenerima;
+    private widget.Button BtnKpPetugasPenerima;
     private widget.RadioButton RbKpPendampingDokter, RbKpPendampingPerawat;
     private javax.swing.ButtonGroup bgKpPendamping;
     private widget.RadioButton RbKpTlKamarOperasi, RbKpTlKamarBersalin, RbKpTlHcu, RbKpTlKamarJenazah, RbKpTlLainnya;
@@ -5217,9 +5669,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private widget.CekBox CekKpDirujuk;
     private widget.TextBox TKpDirujukKet, TKpDirujukAlasan;
     private widget.CekBox CekKpDipulangkan;
-    private widget.Tanggal DTPKpDipulangkanPukul;
+    private widget.Jam DTPKpDipulangkanPukul;
     private widget.CekBox CekKpMeninggal;
-    private widget.Tanggal DTPKpMeninggalPukul;
+    private widget.Jam DTPKpMeninggalPukul;
     private widget.CekBox CekKpDoa;
     private widget.CekBox CekKpEdukasiMakanObat, CekKpEdukasiLuka, CekKpEdukasiDiet, CekKpEdukasiLain;
     private widget.TextBox TKpEdukasiDietKet, TKpEdukasiLainKet;
@@ -5233,8 +5685,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private widget.PanelBiasa panelKepObat;
     private DefaultTableModel tabModeObatInfus;
     private widget.Table tbObatInfus;
-    private widget.Tanggal DTPObatPukul;
+    private widget.Jam DTPObatPukul;
     private widget.TextBox TObatNama, TObatDosis, TObatRute;
+    private widget.Button BtnObatNama;
     private widget.TextBox KdObatDiperiksa, NmObatDiperiksa;
     private widget.Button BtnObatDiperiksa;
     private widget.TextBox KdObatDiberikan, NmObatDiberikan;
@@ -5705,16 +6158,17 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekObgynDopplerCtgUsg.setSelected(false); CekObgynPasangTampon.setSelected(false);
 
         // -- Kondisi Pasien Saat Pindah/Pulang --
-        DTPKpPukul.setDate(new Date());
+        DTPKpPukul.setJam(new Date());
         TKpGcsE.setText(""); TKpGcsV.setText(""); TKpGcsM.setText("");
         TKpTd.setText(""); TKpNadi.setText(""); bgKpNadiReguler.clearSelection();
         TKpSuhu.setText(""); TKpPernafasan.setText(""); TKpSpo.setText("");
-        CekKpMasukRs.setSelected(false); TKpRuang.setText(""); TKpPetugasPenerima.setText("");
+        CekKpMasukRs.setSelected(false); TKpRuang.setText("");
+        TKpPetugasPenerima.setText(""); NmKpPetugasPenerima.setText("");
         bgKpPendamping.clearSelection();
         bgKpTindakanLanjutan.clearSelection(); TKpTindakanLanjutanKet.setText("");
         CekKpDirujuk.setSelected(false); TKpDirujukKet.setText(""); TKpDirujukAlasan.setText("");
-        CekKpDipulangkan.setSelected(false); DTPKpDipulangkanPukul.setDate(new Date());
-        CekKpMeninggal.setSelected(false); DTPKpMeninggalPukul.setDate(new Date());
+        CekKpDipulangkan.setSelected(false); DTPKpDipulangkanPukul.setJam(new Date());
+        CekKpMeninggal.setSelected(false); DTPKpMeninggalPukul.setJam(new Date());
         CekKpDoa.setSelected(false);
         CekKpEdukasiMakanObat.setSelected(false); CekKpEdukasiLuka.setSelected(false);
         CekKpEdukasiDiet.setSelected(false); TKpEdukasiDietKet.setText("");
@@ -6074,8 +6528,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                         CekObgynPasangTampon.setSelected("Ya".equals(rsData.getString("obgyn_pasang_tampon")));
 
                         // -- Kondisi Pasien Saat Pindah/Pulang --
+                        // kp_pukul (DATETIME) sudah lengkap tanggal+jam - tidak
+                        // perlu digabung dgn kolom "tanggal" lagi spt sebelumnya
+                        // (dulu kp_pukul cuma TIME, tanpa tanggal sendiri).
                         String kpPukul = rsData.getString("kp_pukul");
-                        if(kpPukul!=null && !kpPukul.trim().equals("")){ Valid.SetTgl2(DTPKpPukul, rsData.getString("tanggal")+" "+kpPukul); }
+                        if(kpPukul!=null && !kpPukul.trim().equals("")){ setJamDariString(DTPKpPukul, kpPukul); }
                         TKpGcsE.setText(rsData.getString("kp_gcs_e"));
                         TKpGcsV.setText(rsData.getString("kp_gcs_v"));
                         TKpGcsM.setText(rsData.getString("kp_gcs_m"));
@@ -6089,6 +6546,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                         CekKpMasukRs.setSelected("Ya".equals(rsData.getString("kp_masuk_rs")));
                         TKpRuang.setText(rsData.getString("kp_ruang"));
                         TKpPetugasPenerima.setText(rsData.getString("kp_petugas_penerima"));
+                        NmKpPetugasPenerima.setText(TKpPetugasPenerima.getText().isEmpty()?"":Sequel.CariPetugas(TKpPetugasPenerima.getText()));
                         String kpPendamping = rsData.getString("kp_pendamping");
                         if("Dokter".equals(kpPendamping)) RbKpPendampingDokter.setSelected(true); else if("Perawat".equals(kpPendamping)) RbKpPendampingPerawat.setSelected(true); else bgKpPendamping.clearSelection();
                         String kpTl = rsData.getString("kp_tindakan_lanjutan");
@@ -6104,10 +6562,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                         TKpDirujukAlasan.setText(rsData.getString("kp_dirujuk_alasan"));
                         CekKpDipulangkan.setSelected("Ya".equals(rsData.getString("kp_dipulangkan")));
                         String kpDipulangkanPukul = rsData.getString("kp_dipulangkan_pukul");
-                        if(kpDipulangkanPukul!=null && !kpDipulangkanPukul.trim().equals("")){ Valid.SetTgl2(DTPKpDipulangkanPukul, rsData.getString("tanggal")+" "+kpDipulangkanPukul); }
+                        if(kpDipulangkanPukul!=null && !kpDipulangkanPukul.trim().equals("")){ setJamDariString(DTPKpDipulangkanPukul, kpDipulangkanPukul); }
                         CekKpMeninggal.setSelected("Ya".equals(rsData.getString("kp_meninggal")));
                         String kpMeninggalPukul = rsData.getString("kp_meninggal_pukul");
-                        if(kpMeninggalPukul!=null && !kpMeninggalPukul.trim().equals("")){ Valid.SetTgl2(DTPKpMeninggalPukul, rsData.getString("tanggal")+" "+kpMeninggalPukul); }
+                        if(kpMeninggalPukul!=null && !kpMeninggalPukul.trim().equals("")){ setJamDariString(DTPKpMeninggalPukul, kpMeninggalPukul); }
                         CekKpDoa.setSelected("Ya".equals(rsData.getString("kp_doa")));
                         CekKpEdukasiMakanObat.setSelected("Ya".equals(rsData.getString("kp_edukasi_makan_obat")));
                         CekKpEdukasiLuka.setSelected("Ya".equals(rsData.getString("kp_edukasi_luka")));
@@ -6312,6 +6770,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             h.toString()+
             "</table></html>"
         );
+        // JEditorPane bawaan Swing scroll ke BAWAH dokumen setelah setText()
+        // (bukan tetap di atas) - akibatnya baris pertama (Nama Pasien/No.RM
+        // di section "Pasien & Petugas") tampak "hilang" krn ter-scroll ke
+        // luar area terlihat. Paksa kembali ke awal dokumen - pola sama
+        // persis yg sudah dipakai di SuratPermintaanSecondOpinion.java.
+        LoadHTML.setCaretPosition(0);
     }
 
     private void isRawat() {
@@ -6735,8 +7199,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         String kpNadiReguler = RbKpNadiReguler.isSelected()?"Reguler":(RbKpNadiIreguler.isSelected()?"Ireguler":null);
         String kpPendamping = RbKpPendampingDokter.isSelected()?"Dokter":(RbKpPendampingPerawat.isSelected()?"Perawat":null);
         String kpTl = RbKpTlKamarOperasi.isSelected()?"Kamar Operasi":(RbKpTlKamarBersalin.isSelected()?"Kamar Bersalin":(RbKpTlHcu.isSelected()?"HCU":(RbKpTlKamarJenazah.isSelected()?"Kamar Jenazah":(RbKpTlLainnya.isSelected()?"Lainnya":null))));
-        String kpDipulangkanPukul = CekKpDipulangkan.isSelected()?DTPKpDipulangkanPukul.getSelectedItem().toString():null;
-        String kpMeninggalPukul = CekKpMeninggal.isSelected()?DTPKpMeninggalPukul.getSelectedItem().toString():null;
+        String kpDipulangkanPukul = CekKpDipulangkan.isSelected()?DTPKpDipulangkanPukul.getTeksSql():null;
+        String kpMeninggalPukul = CekKpMeninggal.isSelected()?DTPKpMeninggalPukul.getTeksSql():null;
 
         return new String[]{
             Valid.SetTgl(TglAsuhan.getSelectedItem()+"")+" "+TglAsuhan.getSelectedItem().toString().substring(11,19),
@@ -6800,7 +7264,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
             ya(CekObgynMembantuPartus),ya(CekObgynPeriksaGinekologi),ya(CekObgynDopplerCtgUsg),ya(CekObgynPasangTampon),
 
-            CekKpMasukRs.isSelected()||CekKpDipulangkan.isSelected()||CekKpMeninggal.isSelected()||CekKpDoa.isSelected()||CekKpDirujuk.isSelected()?DTPKpPukul.getSelectedItem().toString():null,
+            CekKpMasukRs.isSelected()||CekKpDipulangkan.isSelected()||CekKpMeninggal.isSelected()||CekKpDoa.isSelected()||CekKpDirujuk.isSelected()?DTPKpPukul.getTeksSql():null,
             TKpGcsE.getText(),TKpGcsV.getText(),TKpGcsM.getText(),TKpTd.getText(),TKpNadi.getText(),kpNadiReguler,TKpSuhu.getText(),TKpPernafasan.getText(),TKpSpo.getText(),
             ya(CekKpMasukRs),TKpRuang.getText(),TKpPetugasPenerima.getText(),kpPendamping,kpTl,TKpTindakanLanjutanKet.getText(),
             ya(CekKpDirujuk),TKpDirujukKet.getText(),TKpDirujukAlasan.getText(),ya(CekKpDipulangkan),kpDipulangkanPukul,ya(CekKpMeninggal),kpMeninggalPukul,ya(CekKpDoa),

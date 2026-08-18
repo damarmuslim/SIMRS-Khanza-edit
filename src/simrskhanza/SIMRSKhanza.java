@@ -23,11 +23,23 @@ public class SIMRSKhanza {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // Pre-load class Batik SVG di awal (single-threaded, sebelum ada
+        // report/viewer jalan) - classpath Class-Path manifest jar ini
+        // sangat panjang (~280 entri), dan JDK 8 (URLClassPath$JarLoader)
+        // punya bug lawas: kalau class ini baru di-load PERTAMA KALI di
+        // tengah render report/thread lain jalan bareng, kadang muncul
+        // sun.misc.InvalidJarIndexException. Load duluan di sini supaya
+        // resolusinya kelar sebelum ada thread lain berebut classloader.
+        try {
+            Class.forName("org.apache.batik.anim.dom.SVGDOMImplementation");
+        } catch (Throwable ignored) {
+        }
+
         WidgetUtilities.invokeLater(() -> {
            frmUtama utama=frmUtama.getInstance();
            utama.isWall();
            utama.setVisible(true);
-        }); 
+        });
     }
     
 }

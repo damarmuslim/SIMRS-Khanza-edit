@@ -224,7 +224,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="50" y="1" width="295" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
@@ -232,7 +232,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="50" y="16" width="295" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{alamatrs}+", "+$P{kotars}+", "+$P{propinsirs}]]></textFieldExpression>
@@ -240,7 +240,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="50" y="27" width="295" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{kontakrs}]]></textFieldExpression>
@@ -248,7 +248,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="50" y="38" width="295" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["E-mail : "+$P{emailrs}]]></textFieldExpression>
@@ -259,7 +259,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="354" y="1" width="62" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[No. RM :]]></text>
@@ -267,7 +267,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="419" y="1" width="132" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{no_rkm_medis}]]></textFieldExpression>
@@ -275,7 +275,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="354" y="12" width="62" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Nama :]]></text>
@@ -283,7 +283,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="419" y="12" width="132" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nm_pasien}+($F{jk}==null?"":" ("+$F{jk}+")")]]></textFieldExpression>
@@ -291,7 +291,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="354" y="23" width="62" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Tgl Lahir :]]></text>
@@ -299,7 +299,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="419" y="23" width="132" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tgl_lahir}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_lahir})]]></textFieldExpression>
@@ -307,7 +307,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="354" y="34" width="62" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Tgl Masuk RS :]]></text>
@@ -315,7 +315,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="419" y="34" width="132" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{tgl_registrasi}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_registrasi}))+($F{jam_reg}==null?"":" "+new java.text.SimpleDateFormat("HH:mm").format($F{jam_reg}))]]></textFieldExpression>
@@ -331,7 +331,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="556" height="17" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9" isBold="true"/>
+					<font fontName="Times New Roman" size="9" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[PENGKAJIAN AWAL KEPERAWATAN GAWAT DARURAT (RM 03-4/05/06)]]></text>
@@ -339,7 +339,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="29" width="40" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Times New Roman" size="8"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Tanggal]]></text>
@@ -347,7 +347,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="43" y="29" width="7" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Times New Roman" size="8"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -355,7 +355,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField pattern="dd/MM/yyyy">
 				<reportElement positionType="Float" x="50" y="29" width="130" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tanggal}]]></textFieldExpression>
@@ -363,7 +363,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="290" y="29" width="30" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Times New Roman" size="8"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Pukul]]></text>
@@ -371,7 +371,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="320" y="29" width="7" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Times New Roman" size="8"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -379,7 +379,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField pattern="HH:mm:ss">
 				<reportElement positionType="Float" x="327" y="29" width="100" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tanggal}]]></textFieldExpression>
@@ -407,7 +407,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[I. RIWAYAT KESEHATAN]]></text>
@@ -421,7 +421,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="16" width="552" height="28"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Keluhan Utama : "+$F{keluhan_utama}]]></textFieldExpression>
@@ -445,11 +445,11 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="26">
+		<band splitType="Prevent" height="45">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[RIWAYAT ALERGI]]></text>
@@ -460,28 +460,42 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{alergi_ada}.equals("Tidak")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="16" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tidak]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{alergi_ada}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{alergi_ada}.equals("Ya")?"X":" ")+"] Ya, "+$F{alergi_sebutkan}+"   ["+($F{alergi_ada}.equals("Tidak")?"X":" ")+"] Tidak"]]></textFieldExpression>
+				<reportElement positionType="Float" x="15" y="29" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Ya, "+$F{alergi_sebutkan}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="44" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="45"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="45"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
@@ -491,7 +505,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[KEADAAN UMUM]]></text>
@@ -505,7 +519,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="16" width="90" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Tekanan Darah]]></text>
@@ -513,7 +527,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="93" y="16" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -521,7 +535,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="101" y="16" width="94" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{td}+" mmHg"]]></textFieldExpression>
@@ -529,7 +543,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="195" y="16" width="90" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Suhu]]></text>
@@ -537,7 +551,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="285" y="16" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -545,7 +559,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="293" y="16" width="94" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{suhu}+" °C"]]></textFieldExpression>
@@ -553,7 +567,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="390" y="16" width="60" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[SpO2]]></text>
@@ -561,7 +575,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="450" y="16" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -569,7 +583,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="458" y="16" width="97" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{spo}+" %"]]></textFieldExpression>
@@ -577,7 +591,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="26" width="90" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Frekuensi Nadi]]></text>
@@ -585,7 +599,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="93" y="26" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -593,7 +607,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="101" y="26" width="94" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nadi}+" x/menit"]]></textFieldExpression>
@@ -601,7 +615,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="195" y="26" width="90" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Berat Badan]]></text>
@@ -609,7 +623,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="285" y="26" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -617,7 +631,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="293" y="26" width="94" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{bb}+" Kg"]]></textFieldExpression>
@@ -625,7 +639,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="36" width="90" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Frekuensi Nafas]]></text>
@@ -633,7 +647,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="93" y="36" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -641,7 +655,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="101" y="36" width="94" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rr}+" x/menit"]]></textFieldExpression>
@@ -649,7 +663,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="195" y="36" width="90" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Tinggi Badan]]></text>
@@ -657,7 +671,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="285" y="36" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -665,7 +679,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="293" y="36" width="94" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tb}+" Cm"]]></textFieldExpression>
@@ -689,11 +703,11 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="26">
+		<band splitType="Prevent" height="45">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[STATUS KEHAMILAN]]></text>
@@ -704,38 +718,52 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[($F{status_kehamilan}==null||$F{status_kehamilan}.equals("Tidak Hamil"))?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="16" width="68" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tidak Hamil]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[($F{status_kehamilan}!=null&&$F{status_kehamilan}.equals("Hamil"))?"X":""]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{status_kehamilan}==null||$F{status_kehamilan}.equals("Tidak Hamil")?"X":" ")+"] Tidak Hamil   ["+($F{status_kehamilan}!=null&&$F{status_kehamilan}.equals("Hamil")?"X":" ")+"] Hamil, Gravida "+$F{gravida}+", Para "+$F{para}+", Abortus "+$F{abortus}+", HPHT "+$F{hpht}]]></textFieldExpression>
+				<reportElement positionType="Float" x="15" y="29" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Hamil, Gravida "+$F{gravida}+", Para "+$F{para}+", Abortus "+$F{abortus}+", HPHT "+$F{hpht}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="44" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="45"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="45"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="37">
+		<band splitType="Prevent" height="58">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[ASESMEN PSIKOLOGIS]]></text>
@@ -746,34 +774,108 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="19"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{psi_tenang}.equals("Ya")?"X":" ")+"] Tenang   "+
-"["+($F{psi_cemas}.equals("Ya")?"X":" ")+"] Cemas   "+
-"["+($F{psi_takut}.equals("Ya")?"X":" ")+"] Takut   "+
-"["+($F{psi_sedih}.equals("Ya")?"X":" ")+"] Sedih   "+
-"["+($F{psi_marah}.equals("Ya")?"X":" ")+"] Marah   "+
-"["+($F{psi_bunuh_diri}.equals("Ya")?"X":" ")+"] Kecenderungan Bunuh Diri\n"+
-"Masalah Prilaku : ["+($F{psi_masalah_prilaku}.equals("Ya")?"X":" ")+"] Ada, "+$F{psi_masalah_prilaku_sebutkan}+"   ["+($F{psi_masalah_prilaku}.equals("Tidak")?"X":" ")+"] Tidak"]]></textFieldExpression>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{psi_tenang}.equals("Ya")?"X":""]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="16" width="40" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tenang]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="65" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{psi_cemas}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="77" y="16" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Cemas]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="121" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{psi_takut}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="133" y="16" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Takut]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="177" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{psi_sedih}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="189" y="16" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Sedih]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="233" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{psi_marah}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="245" y="16" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Marah]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="289" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{psi_bunuh_diri}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="301" y="16" width="141" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Kecenderungan Bunuh Diri]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{psi_masalah_prilaku}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="29" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Masalah Prilaku: Ada, "+$F{psi_masalah_prilaku_sebutkan}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="43" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{psi_masalah_prilaku}.equals("Tidak")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="42" width="130" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Masalah Prilaku: Tidak]]></text>
+			</staticText>
 			<line>
-				<reportElement positionType="Float" x="0" y="36" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="57" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="37"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="58"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="37"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="58"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
@@ -783,7 +885,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[STATUS SOSIAL DAN EKONOMIS]]></text>
@@ -797,7 +899,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="16" width="140" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Status Pernikahan]]></text>
@@ -805,7 +907,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="143" y="16" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -813,7 +915,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="152" y="16" width="403" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{status_pernikahan}==null?"-":$F{status_pernikahan}+($F{ket_status_pernikahan}.equals("")?"":", "+$F{ket_status_pernikahan})]]></textFieldExpression>
@@ -821,7 +923,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="26" width="140" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Tempat Tinggal]]></text>
@@ -829,7 +931,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="143" y="26" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -837,7 +939,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="152" y="26" width="403" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tempat_tinggal}==null?"-":$F{tempat_tinggal}+($F{ket_tempat_tinggal}.equals("")?"":", "+$F{ket_tempat_tinggal})]]></textFieldExpression>
@@ -845,7 +947,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="36" width="140" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Pekerjaan]]></text>
@@ -853,7 +955,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="143" y="36" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -861,7 +963,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="152" y="36" width="200" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{pekerjaan_kep}]]></textFieldExpression>
@@ -869,7 +971,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="360" y="36" width="60" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Pendidikan]]></text>
@@ -877,7 +979,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="420" y="36" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -885,7 +987,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="429" y="36" width="126" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{pendidikan_pasien_kep}]]></textFieldExpression>
@@ -913,7 +1015,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[SKRINING GERIATRI]]></text>
@@ -927,7 +1029,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="16" width="380" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[≥60 Tahun dengan >1 Penyakit Fisik/Psikis]]></text>
@@ -935,7 +1037,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="384" y="16" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -943,7 +1045,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="392" y="16" width="163" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{geri_60_multi_penyakit}==null?"-":$F{geri_60_multi_penyakit}]]></textFieldExpression>
@@ -951,7 +1053,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="26" width="380" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[≥60 Tahun, 1 Penyakit Fisik/Psikis, dgn Penurunan Fungsi Organ/Sosial]]></text>
@@ -959,7 +1061,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="384" y="26" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -967,7 +1069,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="392" y="26" width="163" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{geri_60_penurunan_fungsi}==null?"-":$F{geri_60_penurunan_fungsi}]]></textFieldExpression>
@@ -975,7 +1077,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="36" width="380" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[≥70 Tahun dengan 1 Penyakit Fisik/Psikologis]]></text>
@@ -983,7 +1085,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="384" y="36" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -991,7 +1093,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="392" y="36" width="163" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{geri_70_1_penyakit}==null?"-":$F{geri_70_1_penyakit}]]></textFieldExpression>
@@ -1019,7 +1121,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="280" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[SKRINING RESIKO PASIEN JATUH (GET UP AND GO TEST)]]></text>
@@ -1033,7 +1135,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="16" width="140" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[A. Cara Berjalan]]></text>
@@ -1041,7 +1143,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="143" y="16" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1049,7 +1151,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="152" y="16" width="228" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{jatuh_cara_berjalan}==null?"-":$F{jatuh_cara_berjalan}]]></textFieldExpression>
@@ -1057,7 +1159,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="26" width="140" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[B. Menopang Duduk]]></text>
@@ -1065,7 +1167,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="143" y="26" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1073,7 +1175,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="152" y="26" width="228" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{jatuh_menopang_duduk}==null?"-":$F{jatuh_menopang_duduk}]]></textFieldExpression>
@@ -1083,7 +1185,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<printWhenExpression><![CDATA[$F{jatuh_hasil}!=null && $F{jatuh_hasil}.equals("Beresiko")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Hasil : Beresiko"]]></textFieldExpression>
@@ -1093,7 +1195,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<printWhenExpression><![CDATA[$F{jatuh_hasil}==null || $F{jatuh_hasil}.equals("Tidak Beresiko")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Hasil : Tidak Beresiko"]]></textFieldExpression>
@@ -1117,11 +1219,11 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="88">
+		<band splitType="Prevent" height="105">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[PENGKAJIAN SPIRITUAL, KEPERCAYAAN, FUNGSIONAL DAN BUDAYA]]></text>
@@ -1135,7 +1237,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="16" width="160" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Agama]]></text>
@@ -1143,7 +1245,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="163" y="16" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1151,7 +1253,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="171" y="16" width="384" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{agama_manual}]]></textFieldExpression>
@@ -1159,7 +1261,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="26" width="160" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Wajib Ibadah]]></text>
@@ -1167,7 +1269,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="163" y="26" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1175,7 +1277,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="171" y="26" width="384" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{wajib_ibadah}==null?"-":$F{wajib_ibadah}+($F{ket_wajib_ibadah}.equals("")?"":", "+$F{ket_wajib_ibadah})]]></textFieldExpression>
@@ -1183,7 +1285,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="36" width="160" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Thaharoh]]></text>
@@ -1191,7 +1293,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="163" y="36" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1199,7 +1301,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="171" y="36" width="384" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{thaharoh}==null?"-":$F{thaharoh}]]></textFieldExpression>
@@ -1207,7 +1309,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="46" width="160" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Sholat]]></text>
@@ -1215,7 +1317,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="163" y="46" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1223,7 +1325,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="171" y="46" width="384" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sholat}==null?"-":$F{sholat}]]></textFieldExpression>
@@ -1231,7 +1333,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="56" width="160" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Nilai/Kepercayaan Tertentu]]></text>
@@ -1239,7 +1341,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="163" y="56" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1247,7 +1349,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="171" y="56" width="384" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nilai_kepercayaan}==null?"-":$F{nilai_kepercayaan}+($F{nilai_kepercayaan}.equals("Ya")?", "+$F{ket_nilai_kepercayaan}:"")]]></textFieldExpression>
@@ -1255,7 +1357,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="66" width="160" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Hambatan Budaya/Bahasa]]></text>
@@ -1263,7 +1365,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="163" y="66" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1271,7 +1373,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="171" y="66" width="384" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{budaya}==null?"-":$F{budaya}+($F{budaya}.equals("Ada")?", "+$F{ket_budaya}:"")]]></textFieldExpression>
@@ -1279,7 +1381,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="76" width="160" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Cacat Tubuh/Disabilitas]]></text>
@@ -1287,33 +1389,80 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="163" y="76" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="171" y="76" width="384" height="9"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{cacat_tidak}.equals("Ya")?"X":" ")+"] Tidak ["+($F{cacat_tuna_netra}.equals("Ya")?"X":" ")+"] Tuna Netra ["+($F{cacat_tuna_daksa}.equals("Ya")?"X":" ")+"] Tuna Daksa ["+($F{cacat_tuna_rungu}.equals("Ya")?"X":" ")+"] Tuna Rungu ["+($F{cacat_tuna_wicara}.equals("Ya")?"X":" ")+"] Tuna Wicara"]]></textFieldExpression>
+			<textField>
+				<reportElement positionType="Float" x="171" y="77" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{cacat_tidak}.equals("Ya")?"X":""]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="183" y="76" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tidak]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="227" y="77" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{cacat_tuna_netra}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="239" y="76" width="62" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tuna Netra]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="311" y="77" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{cacat_tuna_daksa}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="323" y="76" width="62" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tuna Daksa]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="395" y="77" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{cacat_tuna_rungu}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="407" y="76" width="62" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tuna Rungu]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="171" y="90" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{cacat_tuna_wicara}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="183" y="89" width="68" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tuna Wicara]]></text>
+			</staticText>
 			<line>
-				<reportElement positionType="Float" x="0" y="87" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="104" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="88"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="105"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="88"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="105"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
@@ -1323,7 +1472,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[SKRINING GIZI DEWASA (MST)]]></text>
@@ -1337,7 +1486,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="16" width="140" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Penurunan BB]]></text>
@@ -1345,7 +1494,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="143" y="16" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1353,7 +1502,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="152" y="16" width="228" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{mst_penurunan_bb}==null?"-":$F{mst_penurunan_bb}+($F{mst_penurunan_bb}.equals("Ya")?" ("+$F{mst_penurunan_bb_kg}+" Kg)":"")]]></textFieldExpression>
@@ -1361,7 +1510,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="26" width="140" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Asupan Berkurang]]></text>
@@ -1369,7 +1518,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="143" y="26" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1377,7 +1526,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="152" y="26" width="228" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{mst_asupan_berkurang}==null?"-":$F{mst_asupan_berkurang}]]></textFieldExpression>
@@ -1385,7 +1534,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="36" width="140" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Diagnosis Khusus]]></text>
@@ -1393,7 +1542,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="143" y="36" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1401,7 +1550,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="152" y="36" width="228" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{mst_diagnosis_khusus}==null?"-":$F{mst_diagnosis_khusus}+($F{mst_diagnosis_khusus}.equals("Ya")?", "+$F{mst_diagnosis_khusus_sebutkan}:"")]]></textFieldExpression>
@@ -1409,7 +1558,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="46" width="140" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Total Skor]]></text>
@@ -1417,7 +1566,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="143" y="46" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -1425,7 +1574,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="152" y="46" width="228" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{mst_total_skor}]]></textFieldExpression>
@@ -1435,7 +1584,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<printWhenExpression><![CDATA[$F{mst_kesimpulan}!=null && $F{mst_kesimpulan}.equals("Risiko")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Kesimpulan : Risiko"]]></textFieldExpression>
@@ -1445,7 +1594,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<printWhenExpression><![CDATA[$F{mst_kesimpulan}==null || $F{mst_kesimpulan}.equals("Tidak Risiko")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Kesimpulan : Tidak Risiko"]]></textFieldExpression>
@@ -1473,7 +1622,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[SKRINING GIZI ANAK]]></text>
@@ -1487,7 +1636,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="16" width="380" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Total Skor : "+$F{gizi_anak_total_skor}]]></textFieldExpression>
@@ -1497,7 +1646,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<printWhenExpression><![CDATA[$F{gizi_anak_kesimpulan}!=null && $F{gizi_anak_kesimpulan}.equals("Risiko Tinggi")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
+					<font fontName="Times New Roman" size="7" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Kesimpulan : Risiko Tinggi"]]></textFieldExpression>
@@ -1507,7 +1656,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<printWhenExpression><![CDATA[$F{gizi_anak_kesimpulan}!=null && $F{gizi_anak_kesimpulan}.equals("Risiko Sedang")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
+					<font fontName="Times New Roman" size="7" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Kesimpulan : Risiko Sedang"]]></textFieldExpression>
@@ -1517,7 +1666,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<printWhenExpression><![CDATA[$F{gizi_anak_kesimpulan}==null || $F{gizi_anak_kesimpulan}.equals("Risiko Rendah")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
+					<font fontName="Times New Roman" size="7" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Kesimpulan : Risiko Rendah"]]></textFieldExpression>
@@ -1541,11 +1690,11 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="26">
+		<band splitType="Prevent" height="45">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[ASESMEN NYERI]]></text>
@@ -1556,28 +1705,42 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[($F{nyeri_ada}==null || $F{nyeri_ada}.equals("Tidak"))?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="16" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tidak]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[($F{nyeri_ada}!=null && $F{nyeri_ada}.equals("Ya"))?"X":""]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{nyeri_ada}!=null && $F{nyeri_ada}.equals("Ya")?"X":" ")+"] Ya, Lokasi: "+$F{lokasi}+", Skala: "+($F{skala_nyeri}==null?"-":$F{skala_nyeri})+"   ["+($F{nyeri_ada}==null || $F{nyeri_ada}.equals("Tidak")?"X":" ")+"] Tidak"]]></textFieldExpression>
+				<reportElement positionType="Float" x="15" y="29" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Ya, Lokasi: "+$F{lokasi}+", Skala: "+($F{skala_nyeri}==null?"-":$F{skala_nyeri})]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="44" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="45"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="45"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
@@ -1587,7 +1750,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[FLACC (Face, Legs, Activity, Cry, Consolability)]]></text>
@@ -1601,7 +1764,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Wajah "+($F{flacc_wajah}==null?"-":$F{flacc_wajah})+", Kaki "+($F{flacc_kaki}==null?"-":$F{flacc_kaki})+", Aktivitas "+($F{flacc_aktivitas}==null?"-":$F{flacc_aktivitas})+", Menangis "+($F{flacc_menangis}==null?"-":$F{flacc_menangis})+", Bersuara "+($F{flacc_bersuara}==null?"-":$F{flacc_bersuara})+"   Total Skor : "+$F{flacc_total}]]></textFieldExpression>
@@ -1625,11 +1788,11 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="68">
+		<band splitType="Prevent" height="140">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[PQRST]]></text>
@@ -1643,7 +1806,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="16" width="80" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Provocation]]></text>
@@ -1651,129 +1814,252 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="83" y="16" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="91" y="16" width="464" height="9"/>
+			<staticText>
+				<reportElement positionType="Float" x="91" y="16" width="464" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isItalic="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA["["+($F{pqrst_prov_cahaya}.equals("Ya")?"X":" ")+"] Cahaya ["+($F{pqrst_prov_gelap}.equals("Ya")?"X":" ")+"] Gelap ["+($F{pqrst_prov_gerakan}.equals("Ya")?"X":" ")+"] Gerakan ["+($F{pqrst_prov_berbaring}.equals("Ya")?"X":" ")+"] Berbaring"]]></textFieldExpression>
+				<text><![CDATA[Faktor yang Memperberat Nyeri]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="91" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_prov_cahaya}.equals("Ya")?"X":""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="3" y="26" width="80" height="11"/>
+				<reportElement positionType="Float" x="103" y="29" width="40" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Cahaya]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="153" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_prov_gelap}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="165" y="29" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Gelap]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="209" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_prov_gerakan}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="221" y="29" width="46" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Gerakan]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="277" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_prov_berbaring}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="289" y="29" width="57" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Berbaring]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="42" width="80" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Quality]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="83" y="26" width="7" height="11"/>
+				<reportElement positionType="Float" x="83" y="42" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="91" y="26" width="464" height="9"/>
+			<staticText>
+				<reportElement positionType="Float" x="91" y="42" width="464" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isItalic="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA["["+($F{pqrst_qual_tumpul}.equals("Ya")?"X":" ")+"] Tumpul ["+($F{pqrst_qual_ditusuk}.equals("Ya")?"X":" ")+"] Ditusuk ["+($F{pqrst_qual_berdenyut}.equals("Ya")?"X":" ")+"] Berdenyut ["+($F{pqrst_qual_tajam}.equals("Ya")?"X":" ")+"] Tajam ["+($F{pqrst_qual_panas}.equals("Ya")?"X":" ")+"] Panas"]]></textFieldExpression>
+				<text><![CDATA[Kualitas Nyeri]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="91" y="56" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_qual_tumpul}.equals("Ya")?"X":""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="3" y="36" width="80" height="11"/>
+				<reportElement positionType="Float" x="103" y="55" width="40" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tumpul]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="153" y="56" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_qual_ditusuk}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="165" y="55" width="46" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Ditusuk]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="221" y="56" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_qual_berdenyut}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="233" y="55" width="57" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Berdenyut]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="300" y="56" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_qual_tajam}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="312" y="55" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Tajam]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="356" y="56" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pqrst_qual_panas}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="368" y="55" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Panas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="3" y="67" width="80" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Radiation]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="83" y="36" width="7" height="11"/>
+				<reportElement positionType="Float" x="83" y="67" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="91" y="36" width="464" height="9"/>
+			<staticText>
+				<reportElement positionType="Float" x="91" y="67" width="464" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isItalic="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Menjalar ke Tubuh yang Lain]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="91" y="80" width="464" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{pqrst_radiation}==null?"-":$F{pqrst_radiation}+($F{pqrst_radiation}.equals("Ya")?", ke "+$F{pqrst_radiation_ke}:"")]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="3" y="46" width="80" height="11"/>
+				<reportElement positionType="Float" x="3" y="91" width="80" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Severity]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="83" y="46" width="7" height="11"/>
+				<reportElement positionType="Float" x="83" y="91" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="91" y="46" width="464" height="9"/>
+			<staticText>
+				<reportElement positionType="Float" x="91" y="91" width="464" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isItalic="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Tingkat Keparahan Nyeri]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="91" y="104" width="464" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{pqrst_severity}==null?"-":$F{pqrst_severity}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="3" y="56" width="80" height="11"/>
+				<reportElement positionType="Float" x="3" y="115" width="80" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Time]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="83" y="56" width="7" height="11"/>
+				<reportElement positionType="Float" x="83" y="115" width="7" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="91" y="56" width="464" height="9"/>
+			<staticText>
+				<reportElement positionType="Float" x="91" y="115" width="464" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isItalic="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Nyeri Berlangsung]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="91" y="128" width="464" height="9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{pqrst_time}==null?"-":$F{pqrst_time}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="67" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="139" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="68"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="140"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="68"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="140"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
@@ -1783,7 +2069,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[I. DIAGNOSIS KEPERAWATAN]]></text>
@@ -1797,7 +2083,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="16" width="552" height="19"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{masalah_terpilih}==null||$F{masalah_terpilih}.isEmpty()?"-":$F{masalah_terpilih}]]></textFieldExpression>
@@ -1821,11 +2107,11 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="60">
+		<band splitType="Prevent" height="84">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[II. INTERVENSI KEPERAWATAN]]></text>
@@ -1836,41 +2122,174 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_manajemen_jalan_nafas}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="16" width="124" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Manajemen Jalan Nafas]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="149" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_suctioning_jalan_nafas}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="161" y="16" width="130" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Suctioning Jalan Nafas]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="301" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_manajemen_asam_basa}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="313" y="16" width="113" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Manajemen Asam Basa]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="436" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_manajemen_syok}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="448" y="16" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Manajemen Syok]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_manajemen_nyeri}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="29" width="90" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Manajemen Nyeri]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="115" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_manajemen_cairan}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="127" y="29" width="96" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Manajemen Cairan]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="233" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_monitoring_cairan}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="245" y="29" width="102" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Monitoring Cairan]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="357" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_manajemen_lingkungan}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="369" y="29" width="118" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Manajemen Lingkungan]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="43" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_pendidikan_kesehatan}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="42" width="118" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Pendidikan Kesehatan]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="143" y="43" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_fever_treatment}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="155" y="42" width="90" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Fever Treatment]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="255" y="43" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_manajemen_sensasi_perifer}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="267" y="42" width="146" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Manajemen Sensasi Perifer]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="56" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_monitoring_kardiovaskuler}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="55" width="146" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Monitoring Kardiovaskuler]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="171" y="56" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{interv_pencegahan_penekanan_luka}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="183" y="55" width="146" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Pencegahan Penekanan Luka]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="69" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[true?"X":""]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="42"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{interv_manajemen_jalan_nafas}.equals("Ya")?"X":" ")+"] Manajemen Jalan Nafas   "+
-"["+($F{interv_suctioning_jalan_nafas}.equals("Ya")?"X":" ")+"] Suctioning Jalan Nafas   "+
-"["+($F{interv_manajemen_asam_basa}.equals("Ya")?"X":" ")+"] Manajemen Asam Basa   "+
-"["+($F{interv_manajemen_syok}.equals("Ya")?"X":" ")+"] Manajemen Syok   "+
-"["+($F{interv_manajemen_nyeri}.equals("Ya")?"X":" ")+"] Manajemen Nyeri\n"+
-"["+($F{interv_manajemen_cairan}.equals("Ya")?"X":" ")+"] Manajemen Cairan   "+
-"["+($F{interv_monitoring_cairan}.equals("Ya")?"X":" ")+"] Monitoring Cairan   "+
-"["+($F{interv_manajemen_lingkungan}.equals("Ya")?"X":" ")+"] Manajemen Lingkungan   "+
-"["+($F{interv_pendidikan_kesehatan}.equals("Ya")?"X":" ")+"] Pendidikan Kesehatan\n"+
-"["+($F{interv_fever_treatment}.equals("Ya")?"X":" ")+"] Fever Treatment   "+
-"["+($F{interv_manajemen_sensasi_perifer}.equals("Ya")?"X":" ")+"] Manajemen Sensasi Perifer   "+
-"["+($F{interv_monitoring_kardiovaskuler}.equals("Ya")?"X":" ")+"] Monitoring Kardiovaskuler   "+
-"["+($F{interv_pencegahan_penekanan_luka}.equals("Ya")?"X":" ")+"] Pencegahan Penekanan Luka\n"+
-"Lainnya : "+$F{interv_lainnya}]]></textFieldExpression>
+				<reportElement positionType="Float" x="15" y="68" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Lainnya : "+$F{interv_lainnya}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="59" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="83" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="60"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="84"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="60"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="84"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
@@ -1880,7 +2299,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[III. TINDAKAN KEPERAWATAN MANDIRI]]></text>
@@ -1894,7 +2313,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rencana}==null||$F{rencana}.isEmpty()?"-":$F{rencana}]]></textFieldExpression>
@@ -1918,11 +2337,11 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="26">
+		<band splitType="Prevent" height="45">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[IV. KARDIOPULMONAL]]></text>
@@ -1933,41 +2352,74 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kardio_pulse_oximetri}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="16" width="124" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Pulse Oximetri (SpO2)]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="149" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kardio_intubasi}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="161" y="16" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Intubasi]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="222" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kardio_kardioversi_dc_shock}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="234" y="16" width="118" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Kardioversi/DC Shock]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kardio_rjp}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{kardio_pulse_oximetri}.equals("Ya")?"X":" ")+"] Pulse Oximetri (SpO2)   "+
-"["+($F{kardio_intubasi}.equals("Ya")?"X":" ")+"] Intubasi   "+
-"["+($F{kardio_rjp}.equals("Ya")?"X":" ")+"] RJP "+$F{kardio_rjp_ket}+"   "+
-"["+($F{kardio_kardioversi_dc_shock}.equals("Ya")?"X":" ")+"] Kardioversi/DC Shock"]]></textFieldExpression>
+				<reportElement positionType="Float" x="15" y="29" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["RJP "+$F{kardio_rjp_ket}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="44" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="45"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="45"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="26">
+		<band splitType="Prevent" height="58">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[V. TINDAKAN PENUNJANG]]></text>
@@ -1978,40 +2430,63 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{penunjang_cek_lab}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{penunjang_cek_lab}.equals("Ya")?"X":" ")+"] Cek Lab "+$F{penunjang_cek_lab_ket}+"   "+
-"["+($F{penunjang_rontgen}.equals("Ya")?"X":" ")+"] Rontgen "+$F{penunjang_rontgen_ket}+"   "+
-"["+($F{penunjang_ct_scan}.equals("Ya")?"X":" ")+"] CT Scan "+$F{penunjang_ct_scan_ket}]]></textFieldExpression>
+				<reportElement positionType="Float" x="15" y="16" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Cek Lab "+$F{penunjang_cek_lab_ket}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{penunjang_rontgen}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="29" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Rontgen "+$F{penunjang_rontgen_ket}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="43" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{penunjang_ct_scan}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="42" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["CT Scan "+$F{penunjang_ct_scan_ket}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="57" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="58"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="58"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="60">
+		<band splitType="Prevent" height="110">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[VI. TINDAKAN KOLABORASI]]></text>
@@ -2022,47 +2497,140 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kolab_ekg_monitor}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="16" width="90" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[EKG/Monitor EKG]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="115" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kolab_nebulizer}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="127" y="16" width="57" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Nebulizer]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="194" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kolab_injeksi_syringe_pump}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="206" y="16" width="118" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Injeksi/Syringe Pump]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="334" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kolab_restrain_pengaman}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="346" y="16" width="102" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Restrain/Pengaman]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kolab_o2}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="42"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{kolab_o2}.equals("Ya")?"X":" ")+"] O2 "+$F{kolab_o2_ket}+"   "+
-"["+($F{kolab_ekg_monitor}.equals("Ya")?"X":" ")+"] EKG/Monitor EKG   "+
-"["+($F{kolab_nebulizer}.equals("Ya")?"X":" ")+"] Nebulizer   "+
-"["+($F{kolab_pasang_infus}.equals("Ya")?"X":" ")+"] Pasang Infus "+$F{kolab_pasang_infus_ket}+"\n"+
-"["+($F{kolab_injeksi_syringe_pump}.equals("Ya")?"X":" ")+"] Injeksi/Syringe Pump   "+
-"["+($F{kolab_transfusi_darah}.equals("Ya")?"X":" ")+"] Transfusi Darah "+$F{kolab_transfusi_darah_ket}+"   "+
-"["+($F{kolab_ngt}.equals("Ya")?"X":" ")+"] NGT "+$F{kolab_ngt_ukuran}+"\n"+
-"["+($F{kolab_bilas_lambung}.equals("Ya")?"X":" ")+"] Bilas Lambung "+$F{kolab_bilas_lambung_ket}+"   "+
-"["+($F{kolab_dower_catheter}.equals("Ya")?"X":" ")+"] Dower Catheter "+$F{kolab_dower_catheter_ukuran}+"   "+
-"["+($F{kolab_restrain_pengaman}.equals("Ya")?"X":" ")+"] Restrain/Pengaman"]]></textFieldExpression>
+				<reportElement positionType="Float" x="15" y="29" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["O2 "+$F{kolab_o2_ket}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="43" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kolab_pasang_infus}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="42" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Pasang Infus "+$F{kolab_pasang_infus_ket}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="56" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kolab_transfusi_darah}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="55" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Transfusi Darah "+$F{kolab_transfusi_darah_ket}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="69" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kolab_ngt}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="68" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["NGT "+$F{kolab_ngt_ukuran}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="82" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kolab_bilas_lambung}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="81" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Bilas Lambung "+$F{kolab_bilas_lambung_ket}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="95" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kolab_dower_catheter}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="94" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Dower Catheter "+$F{kolab_dower_catheter_ukuran}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="59" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="109" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="60"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="110"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="60"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="110"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="37">
+		<band splitType="Prevent" height="58">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[VII. TRAUMA / BEDAH]]></text>
@@ -2073,45 +2641,118 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{trauma_cervical_collar}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="16" width="90" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Cervical Collar]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="115" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{trauma_immobilisasi_tulang_belakang}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="127" y="16" width="163" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Immobilisasi Tulang Belakang]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="300" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{trauma_gips}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="312" y="16" width="29" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Gips]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="351" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{trauma_perawatan_luka}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="363" y="16" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Perawatan Luka]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="458" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{trauma_jahit_luka}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="470" y="16" width="62" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Jahit Luka]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{trauma_balutan_spalk}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="29" width="79" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Balutan/Spalk]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="104" y="30" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{trauma_selang_dada_wsd}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="116" y="29" width="90" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Selang Dada/WSD]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="43" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[true?"X":""]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="19"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{trauma_cervical_collar}.equals("Ya")?"X":" ")+"] Cervical Collar   "+
-"["+($F{trauma_immobilisasi_tulang_belakang}.equals("Ya")?"X":" ")+"] Immobilisasi Tulang Belakang   "+
-"["+($F{trauma_gips}.equals("Ya")?"X":" ")+"] Gips   "+
-"["+($F{trauma_perawatan_luka}.equals("Ya")?"X":" ")+"] Perawatan Luka\n"+
-"["+($F{trauma_jahit_luka}.equals("Ya")?"X":" ")+"] Jahit Luka   "+
-"["+($F{trauma_balutan_spalk}.equals("Ya")?"X":" ")+"] Balutan/Spalk   "+
-"["+($F{trauma_selang_dada_wsd}.equals("Ya")?"X":" ")+"] Selang Dada/WSD   "+
-"Lainnya : "+$F{trauma_lainnya}]]></textFieldExpression>
+				<reportElement positionType="Float" x="15" y="42" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Lainnya : "+$F{trauma_lainnya}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="36" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="57" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="37"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="58"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="37"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="58"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="26">
+		<band splitType="Prevent" height="32">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[VIII. THT / MATA]]></text>
@@ -2122,39 +2763,52 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{tht_irigasi_mata_telinga}.equals("Ya")?"X":" ")+"] Irigasi Mata/Telinga   "+
-"["+($F{tht_ambil_korpus_alienum}.equals("Ya")?"X":" ")+"] Ambil Korpus Alienum di Telinga/Hidung/Mata"]]></textFieldExpression>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{tht_irigasi_mata_telinga}.equals("Ya")?"X":""]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="16" width="118" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Irigasi Mata/Telinga]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="143" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{tht_ambil_korpus_alienum}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="155" y="16" width="247" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Ambil Korpus Alienum di Telinga/Hidung/Mata]]></text>
+			</staticText>
 			<line>
-				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="31" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="32"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="32"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="26">
+		<band splitType="Prevent" height="32">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[IX. TINDAKAN OBGYN]]></text>
@@ -2165,31 +2819,64 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="9"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{obgyn_membantu_partus}.equals("Ya")?"X":" ")+"] Membantu Partus   "+
-"["+($F{obgyn_periksa_ginekologi}.equals("Ya")?"X":" ")+"] Periksa Ginekologi   "+
-"["+($F{obgyn_doppler_ctg_usg}.equals("Ya")?"X":" ")+"] Doppler, CTG, USG   "+
-"["+($F{obgyn_pasang_tampon}.equals("Ya")?"X":" ")+"] Pasang Tampon"]]></textFieldExpression>
+			<textField>
+				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{obgyn_membantu_partus}.equals("Ya")?"X":""]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="16" width="90" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Membantu Partus]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="115" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{obgyn_periksa_ginekologi}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="127" y="16" width="107" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Periksa Ginekologi]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="244" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{obgyn_doppler_ctg_usg}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="256" y="16" width="102" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Doppler, CTG, USG]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="368" y="17" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{obgyn_pasang_tampon}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="380" y="16" width="79" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Pasang Tampon]]></text>
+			</staticText>
 			<line>
-				<reportElement positionType="Float" x="0" y="25" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="31" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="32"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="26"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="32"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
@@ -2199,7 +2886,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="250" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[PEMBERIAN OBAT / INFUS]]></text>
@@ -2213,7 +2900,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="16" width="552" height="19"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{obat_infus_ringkas}==null||$F{obat_infus_ringkas}.isEmpty()?"-":$F{obat_infus_ringkas}]]></textFieldExpression>
@@ -2237,11 +2924,11 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 				</graphicElement>
 			</line>
 		</band>
-		<band splitType="Prevent" height="83">
+		<band splitType="Prevent" height="156">
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[KONDISI PASIEN SAAT PINDAH / PULANG DARI IGD]]></text>
@@ -2255,7 +2942,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField pattern="HH:mm:ss">
 				<reportElement positionType="Float" x="3" y="16" width="150" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Pukul : "+($F{kp_pukul}==null?"-":new java.text.SimpleDateFormat("HH:mm:ss").format($F{kp_pukul}))]]></textFieldExpression>
@@ -2263,46 +2950,129 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="26" width="552" height="9"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["GCS E"+$F{kp_gcs_e}+"V"+$F{kp_gcs_v}+"M"+$F{kp_gcs_m}+"   TD "+$F{kp_td}+" mmHg   Nadi "+$F{kp_nadi}+" ("+($F{kp_nadi_reguler}==null?"-":$F{kp_nadi_reguler})+")   Suhu "+$F{kp_suhu}+" °C   RR "+$F{kp_pernafasan}+"   SpO2 "+$F{kp_spo}+" %"]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="36" width="552" height="19"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{kp_masuk_rs}.equals("Ya")?"X":" ")+"] Masuk RS, Ruang "+$F{kp_ruang}+", Petugas Penerima "+$F{kp_petugas_penerima}+"   Pendamping : "+($F{kp_pendamping}==null?"-":$F{kp_pendamping})+"\n"+
-"Tindakan Lanjutan : "+($F{kp_tindakan_lanjutan}==null?"-":$F{kp_tindakan_lanjutan}+($F{kp_tindakan_lanjutan_ket}.equals("")?"":", "+$F{kp_tindakan_lanjutan_ket}))+"   "+
-"["+($F{kp_dirujuk}.equals("Ya")?"X":" ")+"] Dirujuk ke "+$F{kp_dirujuk_ket}+", Alasan "+$F{kp_dirujuk_alasan}]]></textFieldExpression>
+			<textField>
+				<reportElement positionType="Float" x="3" y="37" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kp_masuk_rs}.equals("Ya")?"X":""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="56" width="552" height="19"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["["+($F{kp_dipulangkan}.equals("Ya")?"X":" ")+"] Dipulangkan"+($F{kp_dipulangkan_pukul}==null?"":", Pukul "+new java.text.SimpleDateFormat("HH:mm:ss").format($F{kp_dipulangkan_pukul}))+"   "+
-"["+($F{kp_meninggal}.equals("Ya")?"X":" ")+"] Meninggal"+($F{kp_meninggal_pukul}==null?"":", Pukul "+new java.text.SimpleDateFormat("HH:mm:ss").format($F{kp_meninggal_pukul}))+"   "+
-"["+($F{kp_doa}.equals("Ya")?"X":" ")+"] Death On Arrival\n"+
-"Pendidikan Kesehatan Pulang : ["+($F{kp_edukasi_makan_obat}.equals("Ya")?"X":" ")+"] Makan/Minum Obat Teratur   ["+($F{kp_edukasi_luka}.equals("Ya")?"X":" ")+"] Jaga Kebersihan Luka   ["+($F{kp_edukasi_diet}.equals("Ya")?"X":" ")+"] Diet "+$F{kp_edukasi_diet_ket}+"   ["+($F{kp_edukasi_lain}.equals("Ya")?"X":" ")+"] Lain-lain "+$F{kp_edukasi_lain_ket}]]></textFieldExpression>
+				<reportElement positionType="Float" x="15" y="36" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Masuk RS, Ruang "+$F{kp_ruang}+", Petugas Penerima "+$F{kp_petugas_penerima}+", Pendamping "+($F{kp_pendamping}==null?"-":$F{kp_pendamping})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="49" width="552" height="9"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Tindakan Lanjutan : "+($F{kp_tindakan_lanjutan}==null?"-":$F{kp_tindakan_lanjutan}+($F{kp_tindakan_lanjutan_ket}.equals("")?"":", "+$F{kp_tindakan_lanjutan_ket}))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="63" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kp_dirujuk}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="62" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Dirujuk ke "+$F{kp_dirujuk_ket}+", Alasan "+$F{kp_dirujuk_alasan}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="76" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kp_dipulangkan}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="75" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Dipulangkan"+($F{kp_dipulangkan_pukul}==null?"":", Pukul "+new java.text.SimpleDateFormat("HH:mm:ss").format($F{kp_dipulangkan_pukul}))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="89" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kp_meninggal}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="88" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Meninggal"+($F{kp_meninggal_pukul}==null?"":", Pukul "+new java.text.SimpleDateFormat("HH:mm:ss").format($F{kp_meninggal_pukul}))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="102" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kp_doa}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="101" width="96" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Death On Arrival]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="115" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kp_edukasi_makan_obat}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="15" y="114" width="141" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Makan/Minum Obat Teratur]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="166" y="115" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kp_edukasi_luka}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="178" y="114" width="118" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<text><![CDATA[Jaga Kebersihan Luka]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="3" y="128" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kp_edukasi_diet}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="127" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Diet "+$F{kp_edukasi_diet_ket}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="141" width="10" height="10"/>
+				<box><pen lineWidth="0.75"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{kp_edukasi_lain}.equals("Ya")?"X":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="15" y="140" width="540" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Lain-lain "+$F{kp_edukasi_lain_ket}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="82" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="155" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.75"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="83"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="156"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="83"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="156"/>
 				<graphicElement>
 					<pen lineWidth="1.0" lineStyle="Solid"/>
 				</graphicElement>
@@ -2312,7 +3082,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="3" y="3" width="255" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Perawat/Bidan]]></text>
@@ -2320,7 +3090,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" mode="Transparent" x="3" y="15" width="255" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nm_perawat}]]></textFieldExpression>
@@ -2334,7 +3104,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" mode="Transparent" x="3" y="70" width="255" height="12"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["NIP: "+($F{kp_kd_perawat}==null?"-":$F{kp_kd_perawat})]]></textFieldExpression>
@@ -2342,7 +3112,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<staticText>
 				<reportElement positionType="Float" x="259" y="3" width="295" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Dokter]]></text>
@@ -2350,7 +3120,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" mode="Transparent" x="259" y="15" width="295" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nm_dokter}]]></textFieldExpression>
@@ -2364,7 +3134,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" mode="Transparent" x="259" y="70" width="295" height="12"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{no_ijn_praktek}==null||$F{no_ijn_praktek}.isEmpty()?"-":"No. Ijin Praktek: "+$F{no_ijn_praktek}]]></textFieldExpression>
@@ -2372,7 +3142,7 @@ left join dokter on dokter.kd_dokter=penilaian_awal_keperawatan_igd.kp_kd_dokter
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" mode="Transparent" x="259" y="82" width="295" height="12"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["NIK: "+($F{kp_kd_dokter}==null?"":$F{kp_kd_dokter})]]></textFieldExpression>

@@ -284,6 +284,13 @@ ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `obgyn_pas
 -- tidak perlu kolom gambar tanda tangan.
 -- ---------------------------------------------------------------------
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_pukul`                  TIME NULL DEFAULT NULL;
+-- kp_pukul/kp_dipulangkan_pukul/kp_meninggal_pukul diubah dari TIME ke
+-- DATETIME (permintaan user) - tanggalnya bisa beda dari kolom "tanggal"
+-- (tanggal kunjungan), mis. pasien masuk/pindah/meninggal lewat tengah
+-- malam. MODIFY COLUMN terpisah (bukan ubah ADD COLUMN di atas) supaya
+-- instalasi yang sudah pernah jalankan migrasi ini (kolomnya sudah ada
+-- sbg TIME, ADD COLUMN IF NOT EXISTS akan di-skip) tetap ikut ter-upgrade.
+ALTER TABLE `penilaian_awal_keperawatan_igd` MODIFY COLUMN `kp_pukul`                  DATETIME NULL DEFAULT NULL;
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_gcs_e`                  VARCHAR(5) NOT NULL DEFAULT '';
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_gcs_v`                  VARCHAR(5) NOT NULL DEFAULT '';
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_gcs_m`                  VARCHAR(5) NOT NULL DEFAULT '';
@@ -304,8 +311,10 @@ ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_diruju
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_dirujuk_alasan`         VARCHAR(200) NOT NULL DEFAULT '';
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_dipulangkan`            ENUM('Ya','Tidak') NOT NULL DEFAULT 'Tidak';
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_dipulangkan_pukul`      TIME NULL DEFAULT NULL;
+ALTER TABLE `penilaian_awal_keperawatan_igd` MODIFY COLUMN `kp_dipulangkan_pukul`      DATETIME NULL DEFAULT NULL;
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_meninggal`              ENUM('Ya','Tidak') NOT NULL DEFAULT 'Tidak';
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_meninggal_pukul`        TIME NULL DEFAULT NULL;
+ALTER TABLE `penilaian_awal_keperawatan_igd` MODIFY COLUMN `kp_meninggal_pukul`        DATETIME NULL DEFAULT NULL;
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_doa`                    ENUM('Ya','Tidak') NOT NULL DEFAULT 'Tidak';
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_edukasi_makan_obat`     ENUM('Ya','Tidak') NOT NULL DEFAULT 'Tidak';
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kp_edukasi_luka`           ENUM('Ya','Tidak') NOT NULL DEFAULT 'Tidak';
