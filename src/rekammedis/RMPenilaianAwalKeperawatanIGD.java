@@ -38,6 +38,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
+import widget.ModernStyle;
 import javax.swing.table.TableColumn;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
@@ -80,7 +81,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     public RMPenilaianAwalKeperawatanIGD(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        widget.ModernStyle.terapkan(this);
+        ModernStyle.terapkan(this);
         initKepTambahan();
         initKepTambahanHal2();
         initKepTambahanHal3();
