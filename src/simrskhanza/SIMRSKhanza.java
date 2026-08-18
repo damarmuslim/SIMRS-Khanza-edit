@@ -11,6 +11,7 @@
  */
 package simrskhanza;
 
+import javax.swing.UIManager;
 import usu.widget.util.WidgetUtilities;
 
 /**
@@ -23,6 +24,12 @@ public class SIMRSKhanza {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        com.formdev.flatlaf.FlatLightLaf.setup();
+        UIManager.put("ComboBox.buttonStyle", "auto");
+        UIManager.put("Component.arrowType", "chevron");
+        UIManager.put("Spinner.buttonStyle", "button");
+        UIManager.put("ComboBox.squareButton", false);
+
         widget.ModernStyle.pasang();
 
         // Pre-load class Batik SVG di awal (single-threaded, sebelum ada
