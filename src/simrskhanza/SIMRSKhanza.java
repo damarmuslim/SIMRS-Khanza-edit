@@ -23,6 +23,8 @@ public class SIMRSKhanza {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        widget.ModernStyle.pasang();
+
         // Pre-load class Batik SVG di awal (single-threaded, sebelum ada
         // report/viewer jalan) - classpath Class-Path manifest jar ini
         // sangat panjang (~280 entri), dan JDK 8 (URLClassPath$JarLoader)

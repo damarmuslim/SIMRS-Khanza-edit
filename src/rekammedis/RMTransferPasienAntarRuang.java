@@ -3339,6 +3339,9 @@ public final class RMTransferPasienAntarRuang extends javax.swing.JDialog {
 
         h.append("</table></body></html>");
         LoadHTML.setText(h.toString());
+        // JEditorPane scroll ke bawah dokumen setelah setText() (kuirk Swing
+        // baku) - paksa kembali ke atas, sama pola RMPenilaianAwalKeperawatanIGD.
+        LoadHTML.setCaretPosition(0);
     }
 
     private boolean DokterMerawatAsal2NonNull(){ return !NmDokterMerawatAsal2.getText().trim().isEmpty(); }

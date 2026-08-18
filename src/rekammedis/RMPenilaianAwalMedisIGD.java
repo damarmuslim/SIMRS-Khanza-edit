@@ -3434,6 +3434,9 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             h.toString()+
             "</table></html>"
         );
+        // JEditorPane scroll ke bawah dokumen setelah setText() (kuirk Swing
+        // baku) - paksa kembali ke atas, sama pola RMPenilaianAwalKeperawatanIGD.
+        LoadHTML.setCaretPosition(0);
     }
 
     private void getData() {
