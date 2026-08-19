@@ -26,7 +26,7 @@ public class SIMRSKhanza {
     public static void main(String[] args) {
         com.formdev.flatlaf.FlatLightLaf.setup();
         UIManager.put("ComboBox.buttonStyle", "auto");
-        UIManager.put("Component.arrowType", "chevron");
+        UIManager.put("Component.arrowType", "triangle");
         UIManager.put("Spinner.buttonStyle", "button");
         UIManager.put("ComboBox.squareButton", false);
 
