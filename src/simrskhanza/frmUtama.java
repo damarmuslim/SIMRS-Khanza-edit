@@ -1252,7 +1252,7 @@ public class frmUtama extends javax.swing.JFrame {
         //this.setSize(screen.width,screen.height);
         edAdmin.setDocument(new batasInput((byte)100).getKata(edAdmin));
         edPwd.setDocument(new batasInput((byte)100).getKata(edPwd));
-        DlgLogin.setSize(299,180);
+        DlgLogin.setSize(380,560);
         DlgLogin.setLocationRelativeTo(null);
         jMenu1.setOpaque(false);
         jMenu5.setOpaque(false);
@@ -1305,16 +1305,19 @@ public class frmUtama extends javax.swing.JFrame {
     private void initComponents() {
 
         DlgLogin = new javax.swing.JDialog();
-        internalFrame2 = new widget.InternalFrame();
-        internalFrame3 = new widget.InternalFrame();
-        panelGlass1 = new usu.widget.glass.PanelGlass();
+        pnlLoginBg = new usu.widget.glass.PanelGlass();
+        pnlLoginCard = new usu.widget.glass.PanelGlass();
+        lblLoginJudul = new javax.swing.JLabel();
+        lblLoginLogo = new javax.swing.JLabel();
+        lblLoginWelcome = new javax.swing.JLabel();
+        lblLoginSubtitle = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         edAdmin = new widget.PasswordBox();
         edPwd = new widget.PasswordBox();
-        BtnLogin = new widget.Button();
-        BtnCancel = new widget.Button();
-        jLabel6 = new javax.swing.JLabel();
+        BtnLogin = new javax.swing.JButton();
+        BtnCancel = new javax.swing.JButton();
+        lblLoginNamaRS = new javax.swing.JLabel();
         DlgHome = new javax.swing.JDialog();
         panelMenu = new widget.InternalFrame();
         panelisi2 = new widget.panelisi();
@@ -1883,41 +1886,43 @@ public class frmUtama extends javax.swing.JFrame {
         DlgLogin.setUndecorated(true);
         DlgLogin.setResizable(false);
 
-        internalFrame2.setBorder(null);
-        internalFrame2.setName("internalFrame2"); // NOI18N
-        internalFrame2.setWarnaAtas(new java.awt.Color(0, 168, 106));
-        internalFrame2.setWarnaBawah(new java.awt.Color(0, 158, 96));
-        internalFrame2.setLayout(null);
+        lblLoginJudul.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblLoginJudul.setForeground(new java.awt.Color(140, 140, 140));
+        lblLoginJudul.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLoginJudul.setText("SIMRS KHANZA");
+        lblLoginJudul.setName("lblLoginJudul"); // NOI18N
+        pnlLoginCard.add(lblLoginJudul);
+        lblLoginJudul.setBounds(0, 20, 320, 16);
 
-        internalFrame3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(100, 125, 90), 1, true), ":: Silahkan Anda Login ::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 2, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame3.setName("internalFrame3"); // NOI18N
-        internalFrame3.setRequestFocusEnabled(false);
-        internalFrame3.setWarnaAtas(new java.awt.Color(205, 240, 205));
-        internalFrame3.setWarnaBawah(new java.awt.Color(245, 255, 245));
-        internalFrame3.setLayout(null);
+        lblLoginLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLoginLogo.setIcon(skalakanIkonLogin(new javax.swing.ImageIcon(getClass().getResource("/picture/yaski24.png")).getImage(),96,96)); // NOI18N
+        lblLoginLogo.setName("lblLoginLogo"); // NOI18N
+        pnlLoginCard.add(lblLoginLogo);
+        lblLoginLogo.setBounds(112, 44, 96, 96);
 
-        panelGlass1.setBackground(java.awt.Color.red);
-        panelGlass1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(175, 175, 100)));
-        panelGlass1.setOpaqueImage(false);
-        panelGlass1.setRound(false);
-        panelGlass1.setWarna(new java.awt.Color(255, 255, 210));
-        panelGlass1.setLayout(null);
+        lblLoginWelcome.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
+        lblLoginWelcome.setForeground(new java.awt.Color(40, 40, 40));
+        lblLoginWelcome.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLoginWelcome.setText("Selamat Datang");
+        lblLoginWelcome.setName("lblLoginWelcome"); // NOI18N
+        pnlLoginCard.add(lblLoginWelcome);
+        lblLoginWelcome.setBounds(0, 152, 320, 28);
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(50, 50, 50));
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel4.setText("ID Admin :");
+        lblLoginSubtitle.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        lblLoginSubtitle.setForeground(new java.awt.Color(130, 130, 130));
+        lblLoginSubtitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLoginSubtitle.setText("Silakan masuk untuk melanjutkan");
+        lblLoginSubtitle.setName("lblLoginSubtitle"); // NOI18N
+        pnlLoginCard.add(lblLoginSubtitle);
+        lblLoginSubtitle.setBounds(0, 182, 320, 18);
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(90, 90, 90));
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel4.setText("ID Admin");
         jLabel4.setName("jLabel4"); // NOI18N
-        panelGlass1.add(jLabel4);
-        jLabel4.setBounds(2, 12, 75, 23);
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(50, 50, 50));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("Password :");
-        jLabel5.setName("jLabel5"); // NOI18N
-        panelGlass1.add(jLabel5);
-        jLabel5.setBounds(2, 40, 75, 23);
+        pnlLoginCard.add(jLabel4);
+        jLabel4.setBounds(32, 224, 200, 16);
 
         edAdmin.setForeground(new java.awt.Color(50, 50, 50));
         edAdmin.setToolTipText("Silahkan masukkan ID Admin");
@@ -1928,8 +1933,16 @@ public class frmUtama extends javax.swing.JFrame {
                 edAdminKeyPressed(evt);
             }
         });
-        panelGlass1.add(edAdmin);
-        edAdmin.setBounds(80, 12, 193, 23);
+        pnlLoginCard.add(edAdmin);
+        edAdmin.setBounds(32, 242, 256, 36);
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(90, 90, 90));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel5.setText("Password");
+        jLabel5.setName("jLabel5"); // NOI18N
+        pnlLoginCard.add(jLabel5);
+        jLabel5.setBounds(32, 288, 200, 16);
 
         edPwd.setForeground(new java.awt.Color(50, 50, 50));
         edPwd.setToolTipText("Silahkan masukkan password");
@@ -1940,47 +1953,69 @@ public class frmUtama extends javax.swing.JFrame {
                 edPwdKeyPressed(evt);
             }
         });
-        panelGlass1.add(edPwd);
-        edPwd.setBounds(80, 40, 193, 23);
+        pnlLoginCard.add(edPwd);
+        edPwd.setBounds(32, 306, 256, 36);
 
-        internalFrame3.add(panelGlass1);
-        panelGlass1.setBounds(-1, 25, 342, 76);
-
-        BtnLogin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/lock.png"))); // NOI18N
         BtnLogin.setMnemonic('Z');
-        BtnLogin.setText("Log-in");
+        BtnLogin.setText("MASUK");
         BtnLogin.setToolTipText("Alt+Z");
         BtnLogin.setName("BtnLogin"); // NOI18N
+        BtnLogin.putClientProperty("JButton.buttonType", "roundRect");
+        BtnLogin.setBackground(new java.awt.Color(0, 168, 106));
+        BtnLogin.setForeground(java.awt.Color.WHITE);
+        BtnLogin.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        BtnLogin.setFocusPainted(false);
+        BtnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         BtnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnLoginActionPerformed(evt);
             }
         });
-        internalFrame3.add(BtnLogin);
-        BtnLogin.setBounds(12, 110, 105, 32);
+        pnlLoginCard.add(BtnLogin);
+        BtnLogin.setBounds(32, 360, 256, 42);
 
-        BtnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
         BtnCancel.setMnemonic('Y');
         BtnCancel.setText("Batal");
         BtnCancel.setToolTipText("Alt+Y");
         BtnCancel.setName("BtnCancel"); // NOI18N
+        BtnCancel.putClientProperty("JButton.buttonType", "roundRect");
+        BtnCancel.setBackground(java.awt.Color.WHITE);
+        BtnCancel.setForeground(new java.awt.Color(90, 90, 90));
+        BtnCancel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        BtnCancel.setFocusPainted(false);
+        BtnCancel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(210, 213, 217), 1, true));
+        BtnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         BtnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnCancelActionPerformed(evt);
             }
         });
-        internalFrame3.add(BtnCancel);
-        BtnCancel.setBounds(177, 110, 105, 32);
+        pnlLoginCard.add(BtnCancel);
+        BtnCancel.setBounds(32, 408, 256, 32);
 
-        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/LaST (Cobalt) Lock n Gear.png"))); // NOI18N
-        jLabel6.setName("jLabel6"); // NOI18N
-        internalFrame3.add(jLabel6);
-        jLabel6.setBounds(105, 5, 135, 145);
+        pnlLoginCard.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 229, 233)));
+        pnlLoginCard.setOpaqueImage(false);
+        pnlLoginCard.setRound(false);
+        pnlLoginCard.setWarna(java.awt.Color.WHITE);
+        pnlLoginCard.setLayout(null);
 
-        internalFrame2.add(internalFrame3);
-        internalFrame3.setBounds(2, 12, 295, 155);
+        pnlLoginBg.add(pnlLoginCard);
+        pnlLoginCard.setBounds(30, 40, 320, 480);
 
-        DlgLogin.getContentPane().add(internalFrame2, java.awt.BorderLayout.CENTER);
+        lblLoginNamaRS.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblLoginNamaRS.setForeground(new java.awt.Color(110, 110, 110));
+        lblLoginNamaRS.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLoginNamaRS.setText("SIMRS KHANZA");
+        lblLoginNamaRS.setName("lblLoginNamaRS"); // NOI18N
+        pnlLoginBg.add(lblLoginNamaRS);
+        lblLoginNamaRS.setBounds(30, 528, 320, 20);
+
+        pnlLoginBg.setOpaqueImage(false);
+        pnlLoginBg.setRound(false);
+        pnlLoginBg.setWarna(new java.awt.Color(222, 228, 235));
+        pnlLoginBg.setLayout(null);
+
+        DlgLogin.getContentPane().add(pnlLoginBg, java.awt.BorderLayout.CENTER);
 
         DlgHome.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         DlgHome.setAlwaysOnTop(true);
@@ -23665,12 +23700,12 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private widget.Button BtnCancel;
+    private javax.swing.JButton BtnCancel;
     private widget.ButtonBig BtnClose;
     private widget.ButtonBig BtnDpjp;
     private widget.ButtonBig BtnJadwal;
     private widget.ButtonBig BtnLog;
-    private widget.Button BtnLogin;
+    private javax.swing.JButton BtnLogin;
     private widget.ButtonBig BtnMenu;
     private widget.ButtonBig BtnToolJualObat;
     private widget.ButtonBig BtnToolKamnap;
@@ -24199,13 +24234,10 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private widget.PasswordBox edAdmin;
     private widget.PasswordBox edPwd;
     private widget.InternalFrame internalFrame1;
-    private widget.InternalFrame internalFrame2;
-    private widget.InternalFrame internalFrame3;
     private widget.InternalFrame internalFrame4;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
@@ -24228,11 +24260,17 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private javax.swing.JSeparator jSeparator9;
     private widget.Label label35;
     private widget.Label label36;
+    private javax.swing.JLabel lblLoginJudul;
+    private javax.swing.JLabel lblLoginLogo;
+    private javax.swing.JLabel lblLoginNamaRS;
+    private javax.swing.JLabel lblLoginSubtitle;
+    private javax.swing.JLabel lblLoginWelcome;
     private javax.swing.JLabel lblStts;
     private javax.swing.JLabel lblTgl;
     private javax.swing.JLabel lblUser;
-    private usu.widget.glass.PanelGlass panelGlass1;
     private usu.widget.glass.PanelGlass panelJudul;
+    private usu.widget.glass.PanelGlass pnlLoginBg;
+    private usu.widget.glass.PanelGlass pnlLoginCard;
     private widget.InternalFrame panelMenu;
     private widget.panelisi panelisi2;
     private widget.ScrollPane scrollPane1;
@@ -24376,6 +24414,10 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             btnHasilUSGAbdomen,btnIntervensiNyeriFarmakologi,btnIntervensiNyeriNonFarmakologi,btnSuratPengajuanCutiPerawatan,btnChecklistKriteriaMasukIsolasi,btnMapingTarifTindakanRalanKPTLSatuSehat,
             btnMapingTarifTindakanRanapKPTLSatuSehat,btnMapingTarifTindakanRadiologiKPTLSatuSehat,btnMapingTarifTindakanLabKPTLSatuSehat,btnMapingTarifTindakanOperasiKPTLSatuSehat,btnMapingTarifKamarKPTLSatuSehat;
     
+    private javax.swing.ImageIcon skalakanIkonLogin(java.awt.Image src, int w, int h){
+        return new javax.swing.ImageIcon(src.getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH));
+    }
+
     public void isWall(){
         try{            
             ps=koneksi.prepareStatement("select setting.nama_instansi,setting.alamat_instansi,setting.kabupaten,setting.propinsi,setting.aktifkan,setting.wallpaper,setting.kontak,setting.email,setting.logo,setting.kode_ppk,setting.kode_ppkkemenkes from setting");
@@ -24393,12 +24435,27 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                     akses.setemailrs(rs.getString("email"));
                     akses.setkodeppkbpjs(rs.getString("kode_ppk"));
                     akses.setkodeppkkemenkes(rs.getString("kode_ppkkemenkes"));
+                    lblLoginNamaRS.setText(rs.getString("nama_instansi"));
+                    try{
+                        Blob logoBlob = rs.getBlob("logo");
+                        if(logoBlob!=null && logoBlob.length()>0){
+                            byte[] logoBytes = logoBlob.getBytes(1, (int) (logoBlob.length()));
+                            lblLoginLogo.setIcon(skalakanIkonLogin(new javax.swing.ImageIcon(logoBytes).getImage(),96,96));
+                            logoBlob.free();
+                        }
+                    }catch(Exception exLogo){
+                        System.out.println("Notif Logo Login : "+exLogo);
+                    }
                     if(rs.getString(5).equals("Yes")){
                         Blob blob = rs.getBlob(6);
-                        PanelWall.setBackgroundImage(new javax.swing.ImageIcon(blob.getBytes(1, (int) (blob.length()))));
+                        byte[] wallBytes = blob.getBytes(1, (int) (blob.length()));
+                        javax.swing.ImageIcon wallIcon = new javax.swing.ImageIcon(wallBytes);
+                        PanelWall.setBackgroundImage(wallIcon);
+                        pnlLoginBg.setBackgroundImage(wallIcon);
+                        pnlLoginBg.setOpaqueImage(true);
                         repaint();
                     }
-                }  
+                }
             } catch (Exception e) {
                 System.out.println(e);
             } finally{
