@@ -3,9 +3,8 @@
  * and open the template in the editor.
  */
 
-package widget; 
+package widget;
 
-import java.awt.Color;
 import javax.swing.JComboBox;
 
 /**
@@ -16,8 +15,8 @@ public final class ComboBox extends JComboBox {
 
     public ComboBox(){
         setFont(new java.awt.Font("Segoe UI", 0, 11));
-        setBackground(new Color(255,255,255));
-        setForeground(new Color(50,50,50));
+        // Fase 2.5: setBackground/setForeground hardcode dihapus - biarkan
+        // FlatLaf UIManager yang menentukan warna dasar komponen ini.
         setSize(WIDTH,23);
-    } 
+    }
 }

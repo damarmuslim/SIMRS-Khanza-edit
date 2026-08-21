@@ -39,6 +39,7 @@ public class SIMRSKhanza {
         UIManager.put("Button.toolbar.pressedBackground", new java.awt.Color(8, 126, 139));
 
         widget.ModernStyle.pasang();
+        widget.ThemeConfig.applyGlobalTheme();
 
         // Pre-load class Batik SVG di awal (single-threaded, sebelum ada
         // report/viewer jalan) - classpath Class-Path manifest jar ini

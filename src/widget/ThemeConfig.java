@@ -5,12 +5,15 @@ import java.awt.Font;
 import javax.swing.UIManager;
 
 /**
- * Design System SIMRS Khanza (Fase 2) - kumpulan konstanta warna/font
- * terpusat + method opsional utk terapkan tema FlatLaf secara global.
+ * Design System SIMRS Khanza (Fase 2 & 2.5) - kumpulan konstanta warna/font
+ * terpusat (Single Source of Truth) + method utk terapkan tema FlatLaf
+ * secara global.
  *
- * TIDAK dipanggil di mana pun secara otomatis (lihat catatan di
- * applyGlobalTheme()) - dibuat murni sbg persiapan, menunggu instruksi
- * lanjutan sebelum benar-benar diaktifkan.
+ * Sejak Fase 2.5, applyGlobalTheme() DIPANGGIL di SIMRSKhanza.main()
+ * (setelah FlatLightLaf.setup() + widget.ModernStyle.pasang()) - lihat
+ * catatan urutan panggilan di javadoc applyGlobalTheme() di bawah.
+ * widget.ModernStyle sekarang mengambil palet warnanya dari sini juga
+ * (bukan lagi hex literal terpisah).
  */
 public final class ThemeConfig {
 
@@ -46,17 +49,12 @@ public final class ThemeConfig {
     /**
      * Terapkan Design System ke UIManager secara global (FlatLaf UIDefaults).
      *
-     * CATATAN PENTING: method ini SENGAJA BELUM dipanggil di mana pun
-     * (bukan di SIMRSKhanza.java, bukan di frmUtama.java) - menunggu
-     * instruksi lanjutan sesuai batasan task Fase 2. Kalau nanti
-     * dipanggil, panggil SEBELUM form pertama dibuat (pola yg sama dgn
-     * FlatLightLaf.setup()/ModernStyle.pasang() di SIMRSKhanza.java).
-     *
-     * PERLU DIPERHATIKAN sebelum diaktifkan: SIMRSKhanza.java SAAT INI
-     * sudah py "Component.arc"=8 (dari sesi modernisasi Main Window
-     * sebelumnya) - beda dgn ARC=6 di sini. Kalau method ini dipanggil
-     * SETELAH baris itu, arc=6 akan menang (dipanggil belakangan) - perlu
-     * diputuskan mana yg dipakai, bukan otomatis diselaraskan di sini.
+     * Dipanggil di SIMRSKhanza.main(), SESUDAH FlatLightLaf.setup() +
+     * widget.ModernStyle.pasang() - dipanggil PALING TERAKHIR dari
+     * ketiganya supaya nilai ThemeConfig menang di properti UIManager
+     * yang tumpang-tindih (Component.arc dkk, sebelumnya di-set arc=8
+     * langsung di SIMRSKhanza.java - sekarang arc=6 dari sini yang jadi
+     * nilai final, sesuai keputusan "SATU tema dari ThemeConfig").
      */
     public static void applyGlobalTheme(){
         UIManager.put("Component.arc", ARC);

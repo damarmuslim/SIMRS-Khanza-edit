@@ -5,9 +5,7 @@
 
 package widget;
 
-import java.awt.Color;
 import javax.swing.JRadioButton;
-import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -20,12 +18,10 @@ public class RadioButton extends JRadioButton{
     public RadioButton(){
         super();
         setFont(new java.awt.Font("Segoe UI", 0, 11));
-        //setForeground(new Color(90,90,90));
-        //setBackground(new Color(245,170,245));
-        setBackground(new Color(255,255,255));
-        setForeground(new Color(50,50,50));
         setFocusPainted(false);
-        setBorder(new EmptyBorder(1,1,1,1));
+        // Fase 2.5: setBackground/setForeground/setBorder hardcode dihapus -
+        // biarkan FlatLaf UIManager yang menentukan warna & border dasar
+        // komponen ini.
         setOpaque(false);
         setSize(WIDTH,23);
     }

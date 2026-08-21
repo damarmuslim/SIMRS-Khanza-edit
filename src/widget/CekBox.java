@@ -5,7 +5,6 @@
 
 package widget;
 
-import java.awt.Color;
 import javax.swing.JCheckBox;
 
 /**
@@ -19,13 +18,10 @@ public class CekBox extends JCheckBox{
     public CekBox(){
         super();
         setFont(new java.awt.Font("Segoe UI", 0, 11));
-        //setBackground(new Color(209,209,209));
-        //setForeground(new Color(90,90,90));
-        setBackground(new Color(255,255,255));
-        setForeground(new Color(50,50,50));
         setFocusPainted(false);
-        
-        this.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(239,244,234)));
+        // Fase 2.5: setBackground/setForeground/setBorder hardcode dihapus -
+        // biarkan FlatLaf UIManager yang menentukan warna & border dasar
+        // komponen ini.
         setOpaque(true);
         setSize(WIDTH,23);
     }

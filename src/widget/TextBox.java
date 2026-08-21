@@ -11,11 +11,11 @@ import usu.widget.glass.TextBoxGlass;
 public class TextBox extends TextBoxGlass {
     public TextBox() {
         super();
-        setFont(new java.awt.Font("Segoe UI", 0, 11));        
+        setFont(new java.awt.Font("Segoe UI", 0, 11));
         setSelectionColor(new Color(255,252,252));
         setSelectedTextColor(new Color(255,0,0));
-        setForeground(new Color(50,50,50));
-        setBackground(new Color(255,255,255));
+        // Fase 2.5: setForeground/setBackground hardcode dihapus - biarkan
+        // FlatLaf UIManager yang menentukan warna dasar komponen ini.
         setHorizontalAlignment(LEFT);
         setSize(WIDTH,23);
     }

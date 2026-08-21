@@ -5,7 +5,6 @@
 
 package widget;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -22,12 +21,10 @@ import uz.ncipro.calendar.JDateTimePicker;
 public final class Tanggal extends JDateTimePicker {
     public Tanggal(){
         super();
-        //setBackground(new Color(245,160,245));
-        //setForeground(new Color(90,90,90));
-        setForeground(new Color(50,50,50));
-        setBackground(new Color(255,255,255));
+        // Fase 2.5: setForeground/setBackground/setBorder hardcode dihapus -
+        // biarkan FlatLaf UIManager yang menentukan warna & border dasar
+        // komponen ini.
         setFont(new java.awt.Font("Segoe UI", 0, 11));
-        //setBorder(javax.swing.BorderFactory.createLineBorder(new Color(212,212,152)));
         setSize(WIDTH,23);
         perbesarKalenderPopup(popupEditor);
     }
