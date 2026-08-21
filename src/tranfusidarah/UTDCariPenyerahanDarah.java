@@ -165,7 +165,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppCetakNota.setBackground(new java.awt.Color(255, 255, 254));
-        ppCetakNota.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppCetakNota.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppCetakNota.setForeground(new java.awt.Color(50, 50, 50));
         ppCetakNota.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppCetakNota.setText("Cetak Ulang Nota");
@@ -181,7 +181,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
         jPopupMenu1.add(ppCetakNota);
 
         ppHapus.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapus.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapus.setForeground(new java.awt.Color(50, 50, 50));
         ppHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapus.setText("Hapus Penyerahan Darah");
@@ -197,7 +197,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapus);
 
         ppVerif.setBackground(new java.awt.Color(255, 255, 254));
-        ppVerif.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppVerif.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppVerif.setForeground(new java.awt.Color(50, 50, 50));
         ppVerif.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppVerif.setText("Verifikasi");
@@ -213,7 +213,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
         jPopupMenu1.add(ppVerif);
 
         ppTampilkanBHPMedis.setBackground(new java.awt.Color(255, 255, 254));
-        ppTampilkanBHPMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppTampilkanBHPMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppTampilkanBHPMedis.setForeground(new java.awt.Color(50, 50, 50));
         ppTampilkanBHPMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTampilkanBHPMedis.setText("Tampilkan Penggunaan BHP Medis");
@@ -229,7 +229,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
         jPopupMenu1.add(ppTampilkanBHPMedis);
 
         ppTampilkanBHPPenunjang.setBackground(new java.awt.Color(255, 255, 254));
-        ppTampilkanBHPPenunjang.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppTampilkanBHPPenunjang.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppTampilkanBHPPenunjang.setForeground(new java.awt.Color(50, 50, 50));
         ppTampilkanBHPPenunjang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTampilkanBHPPenunjang.setText("Tampilkan Penggunaan BHP Non Medis");
@@ -245,7 +245,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
         jPopupMenu1.add(ppTampilkanBHPPenunjang);
 
         ppTampilkanBHPPenunjangDanMedis.setBackground(new java.awt.Color(255, 255, 254));
-        ppTampilkanBHPPenunjangDanMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppTampilkanBHPPenunjangDanMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppTampilkanBHPPenunjangDanMedis.setForeground(new java.awt.Color(50, 50, 50));
         ppTampilkanBHPPenunjangDanMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTampilkanBHPPenunjangDanMedis.setText("Tampilkan Penggunaan BHP Medis & Non Medis");
@@ -261,7 +261,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
         jPopupMenu1.add(ppTampilkanBHPPenunjangDanMedis);
 
         ppHapusBHPMedis.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapusBHPMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapusBHPMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapusBHPMedis.setForeground(new java.awt.Color(50, 50, 50));
         ppHapusBHPMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapusBHPMedis.setText("Hapus Penggunaan BHP Medis");
@@ -277,7 +277,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapusBHPMedis);
 
         ppHapusBHPNonMedis.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapusBHPNonMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapusBHPNonMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapusBHPNonMedis.setForeground(new java.awt.Color(50, 50, 50));
         ppHapusBHPNonMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapusBHPNonMedis.setText("Hapus Penggunaan BHP Non Medis");
@@ -293,7 +293,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapusBHPNonMedis);
 
         ppHapusBHPMedisDanNonMedis.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapusBHPMedisDanNonMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapusBHPMedisDanNonMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapusBHPMedisDanNonMedis.setForeground(new java.awt.Color(50, 50, 50));
         ppHapusBHPMedisDanNonMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapusBHPMedisDanNonMedis.setText("Hapus Penggunaan BHP Medis & Non Medis");
@@ -317,7 +317,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Penyerahan Darah UTD ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Penyerahan Darah UTD ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

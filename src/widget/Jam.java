@@ -14,7 +14,7 @@ public class Jam extends JSpinner {
     public Jam() {
         super(new SpinnerDateModel());
         setEditor(new JSpinner.DateEditor(this, "HH:mm:ss"));
-        setFont(new java.awt.Font("Tahoma", 0, 11));
+        setFont(new java.awt.Font("Segoe UI", 0, 11));
         setForeground(new Color(50,50,50));
         setBackground(new Color(255,255,255));
     }

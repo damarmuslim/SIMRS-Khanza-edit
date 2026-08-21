@@ -409,7 +409,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
 
         Popup.setName("Popup"); // NOI18N
 
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkan.setText("Bersihkan Jumlah");
@@ -424,7 +424,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         });
         Popup.add(ppBersihkan);
 
-        ppStok.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppStok.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppStok.setForeground(new java.awt.Color(50, 50, 50));
         ppStok.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppStok.setText("Tampilkan Semua Stok");
@@ -439,7 +439,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         });
         Popup.add(ppStok);
 
-        ppStok1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppStok1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppStok1.setForeground(new java.awt.Color(50, 50, 50));
         ppStok1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppStok1.setText("Tampilkan Stok Lokasi Lain");
@@ -454,7 +454,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         });
         Popup.add(ppStok1);
 
-        TNoRw.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TNoRw.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TNoRw.setHighlighter(null);
         TNoRw.setName("TNoRw"); // NOI18N
 
@@ -474,11 +474,11 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
             }
         });
 
-        TNoRM.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TNoRM.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TNoRM.setHighlighter(null);
         TNoRM.setName("TNoRM"); // NOI18N
 
-        TPasien.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TPasien.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TPasien.setHighlighter(null);
         TPasien.setName("TPasien"); // NOI18N
 
@@ -494,7 +494,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -508,7 +508,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         panelisi3.add(label9);
 
         TCari.setToolTipText("Alt+C");
-        TCari.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TCari.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TCari.setName("TCari"); // NOI18N
         TCari.setPreferredSize(new java.awt.Dimension(285, 23));
         TCari.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -521,7 +521,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
         BtnCari.setMnemonic('2');
         BtnCari.setToolTipText("Alt+2");
-        BtnCari.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnCari.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnCari.setName("BtnCari"); // NOI18N
         BtnCari.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnCari.addActionListener(new java.awt.event.ActionListener() {
@@ -539,7 +539,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         BtnAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
         BtnAll.setMnemonic('2');
         BtnAll.setToolTipText("Alt+2");
-        BtnAll.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnAll.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnAll.setName("BtnAll"); // NOI18N
         BtnAll.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnAll.addActionListener(new java.awt.event.ActionListener() {
@@ -569,7 +569,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         BtnSeek5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/011.png"))); // NOI18N
         BtnSeek5.setMnemonic('5');
         BtnSeek5.setToolTipText("Alt+5");
-        BtnSeek5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnSeek5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnSeek5.setName("BtnSeek5"); // NOI18N
         BtnSeek5.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnSeek5.addActionListener(new java.awt.event.ActionListener() {
@@ -587,7 +587,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         BtnSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
         BtnSimpan.setMnemonic('S');
         BtnSimpan.setToolTipText("Alt+S");
-        BtnSimpan.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnSimpan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnSimpan.setName("BtnSimpan"); // NOI18N
         BtnSimpan.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnSimpan.addActionListener(new java.awt.event.ActionListener() {
@@ -698,7 +698,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         cmbDtk.setBounds(299, 10, 62, 23);
 
         ChkJln.setBorder(null);
-        ChkJln.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkJln.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkJln.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkJln.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkJln.setName("ChkJln"); // NOI18N
@@ -789,7 +789,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         TabRawat.setBackground(new java.awt.Color(255, 255, 253));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

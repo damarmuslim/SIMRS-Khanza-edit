@@ -257,7 +257,7 @@ public final class KeuanganHutangNonMedisBelumLunas extends javax.swing.JDialog 
         Popup.setName("Popup"); // NOI18N
 
         ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkan.setText("Bersihkan Pilihan");
@@ -273,7 +273,7 @@ public final class KeuanganHutangNonMedisBelumLunas extends javax.swing.JDialog 
         Popup.add(ppBersihkan);
 
         ppSemua.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemua.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemua.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemua.setForeground(new java.awt.Color(50, 50, 50));
         ppSemua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemua.setText("Pilih Semua");
@@ -293,7 +293,7 @@ public final class KeuanganHutangNonMedisBelumLunas extends javax.swing.JDialog 
         DlgBayarMandiri.setUndecorated(true);
         DlgBayarMandiri.setResizable(false);
 
-        internalFrame4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Pembayaran Pihak Ke 3 Bank Mandir ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 70, 50))); // NOI18N
+        internalFrame4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Pembayaran Pihak Ke 3 Bank Mandir ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 70, 50))); // NOI18N
         internalFrame4.setName("internalFrame4"); // NOI18N
         internalFrame4.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -426,7 +426,7 @@ public final class KeuanganHutangNonMedisBelumLunas extends javax.swing.JDialog 
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Hutang Barang Non Medis dan Penunjang ( Lab & RO ) ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Hutang Barang Non Medis dan Penunjang ( Lab & RO ) ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -557,7 +557,7 @@ public final class KeuanganHutangNonMedisBelumLunas extends javax.swing.JDialog 
         panelisi1.setPreferredSize(new java.awt.Dimension(760, 55));
         panelisi1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 9));
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(50, 50, 50));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel10.setText("Total Hutang :");
@@ -565,7 +565,7 @@ public final class KeuanganHutangNonMedisBelumLunas extends javax.swing.JDialog 
         jLabel10.setPreferredSize(new java.awt.Dimension(76, 23));
         panelisi1.add(jLabel10);
 
-        LCount.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        LCount.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         LCount.setForeground(new java.awt.Color(50, 50, 50));
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");
@@ -573,7 +573,7 @@ public final class KeuanganHutangNonMedisBelumLunas extends javax.swing.JDialog 
         LCount.setPreferredSize(new java.awt.Dimension(150, 23));
         panelisi1.add(LCount);
 
-        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(50, 50, 50));
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel11.setText("Bayar :");
@@ -581,7 +581,7 @@ public final class KeuanganHutangNonMedisBelumLunas extends javax.swing.JDialog 
         jLabel11.setPreferredSize(new java.awt.Dimension(56, 23));
         panelisi1.add(jLabel11);
 
-        LCount1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        LCount1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         LCount1.setForeground(new java.awt.Color(50, 50, 50));
         LCount1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount1.setText("0");
@@ -874,7 +874,7 @@ public final class KeuanganHutangNonMedisBelumLunas extends javax.swing.JDialog 
         PanelAccor.add(ChkAccor, java.awt.BorderLayout.WEST);
 
         FormPhoto.setBackground(new java.awt.Color(255, 255, 255));
-        FormPhoto.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), " Photo Faktur : ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        FormPhoto.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), " Photo Faktur : ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         FormPhoto.setName("FormPhoto"); // NOI18N
         FormPhoto.setPreferredSize(new java.awt.Dimension(115, 73));
         FormPhoto.setLayout(new java.awt.BorderLayout());

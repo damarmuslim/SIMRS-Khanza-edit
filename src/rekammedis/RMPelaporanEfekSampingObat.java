@@ -803,7 +803,7 @@ public final class RMPelaporanEfekSampingObat extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnMonitoringEso.setBackground(new java.awt.Color(255, 255, 254));
-        MnMonitoringEso.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnMonitoringEso.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnMonitoringEso.setForeground(new java.awt.Color(50, 50, 50));
         MnMonitoringEso.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnMonitoringEso.setText("Laporan Monitoring Efek Samping Obat");
@@ -823,8 +823,8 @@ public final class RMPelaporanEfekSampingObat extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Monitoring Efek Samping Obat M.E.S.O ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Monitoring Efek Samping Obat M.E.S.O ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -1157,7 +1157,7 @@ public final class RMPelaporanEfekSampingObat extends javax.swing.JDialog {
 
         jLabel94.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel94.setText("OBAT");
-        jLabel94.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel94.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jLabel94.setName("jLabel94"); // NOI18N
         FormInput.add(jLabel94);
         jLabel94.setBounds(20, 550, 180, 23);
@@ -1288,7 +1288,7 @@ public final class RMPelaporanEfekSampingObat extends javax.swing.JDialog {
 
         jLabel99.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel99.setText("EFEK SAMPING OBAT (E.S.O)");
-        jLabel99.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel99.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jLabel99.setName("jLabel99"); // NOI18N
         FormInput.add(jLabel99);
         jLabel99.setBounds(20, 280, 180, 23);
@@ -2841,7 +2841,7 @@ public final class RMPelaporanEfekSampingObat extends javax.swing.JDialog {
 
         jLabel253.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel253.setText("ALGORITMA NARANJO");
-        jLabel253.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel253.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jLabel253.setName("jLabel253"); // NOI18N
         FormInput.add(jLabel253);
         jLabel253.setBounds(20, 940, 380, 23);

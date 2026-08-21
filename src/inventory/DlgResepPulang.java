@@ -180,7 +180,7 @@ public final class DlgResepPulang extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppResepObat.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat.setText("Cetak Aturan Pakai Model 1");
@@ -196,7 +196,7 @@ public final class DlgResepPulang extends javax.swing.JDialog {
         jPopupMenu1.add(ppResepObat);
 
         ppResepObat1.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat1.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat1.setText("Cetak Aturan Pakai Model 2");
@@ -212,7 +212,7 @@ public final class DlgResepPulang extends javax.swing.JDialog {
         jPopupMenu1.add(ppResepObat1);
 
         ppResepObat2.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat2.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat2.setText("Cetak Aturan Pakai Model 3");
@@ -236,7 +236,7 @@ public final class DlgResepPulang extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Resep Pulang ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Resep Pulang ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

@@ -251,7 +251,7 @@ public final class RMSkriningMPP extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnCetakLembarSkrining.setBackground(new java.awt.Color(255, 255, 254));
-        MnCetakLembarSkrining.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakLembarSkrining.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakLembarSkrining.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakLembarSkrining.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakLembarSkrining.setText("Form Skrining Manager Pelayanan Pasien");
@@ -265,7 +265,7 @@ public final class RMSkriningMPP extends javax.swing.JDialog {
         jPopupMenu1.add(MnCetakLembarSkrining);
 
         MnEvaluasiFormA.setBackground(new java.awt.Color(255, 255, 254));
-        MnEvaluasiFormA.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnEvaluasiFormA.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnEvaluasiFormA.setForeground(new java.awt.Color(50, 50, 50));
         MnEvaluasiFormA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnEvaluasiFormA.setText("Form - A Evaluasi Awal");
@@ -279,7 +279,7 @@ public final class RMSkriningMPP extends javax.swing.JDialog {
         jPopupMenu1.add(MnEvaluasiFormA);
 
         MnEvaluasiFormB.setBackground(new java.awt.Color(255, 255, 254));
-        MnEvaluasiFormB.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnEvaluasiFormB.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnEvaluasiFormB.setForeground(new java.awt.Color(50, 50, 50));
         MnEvaluasiFormB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnEvaluasiFormB.setText("Form - B Catatan Implementasi");
@@ -301,8 +301,8 @@ public final class RMSkriningMPP extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Skrining Manager Pelayanan Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Skrining Manager Pelayanan Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setPreferredSize(new java.awt.Dimension(462, 771));
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));

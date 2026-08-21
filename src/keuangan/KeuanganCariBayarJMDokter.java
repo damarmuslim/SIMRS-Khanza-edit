@@ -185,7 +185,7 @@ public class KeuanganCariBayarJMDokter extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppRincian.setBackground(new java.awt.Color(255, 255, 254));
-        ppRincian.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRincian.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppRincian.setForeground(new java.awt.Color(50, 50, 50));
         ppRincian.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppRincian.setText("Sembunyikan Rincian Jasa Medis");
@@ -201,7 +201,7 @@ public class KeuanganCariBayarJMDokter extends javax.swing.JDialog {
         jPopupMenu1.add(ppRincian);
 
         ppRincian2.setBackground(new java.awt.Color(255, 255, 254));
-        ppRincian2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRincian2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppRincian2.setForeground(new java.awt.Color(50, 50, 50));
         ppRincian2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppRincian2.setText("Tampilkan Rincian Jasa Medis");
@@ -225,7 +225,7 @@ public class KeuanganCariBayarJMDokter extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Bayar Jasa Medis Dokter ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Bayar Jasa Medis Dokter ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

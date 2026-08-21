@@ -234,11 +234,11 @@ public final class DlgCariObat3 extends javax.swing.JDialog {
         nmgudang = new widget.TextBox();
         BtnGudang = new widget.Button();
 
-        TNoRw.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TNoRw.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TNoRw.setHighlighter(null);
         TNoRw.setName("TNoRw"); // NOI18N
 
-        Kd2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Kd2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Kd2.setHighlighter(null);
         Kd2.setName("Kd2"); // NOI18N
         Kd2.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -263,11 +263,11 @@ public final class DlgCariObat3 extends javax.swing.JDialog {
             }
         });
 
-        TNoRM.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TNoRM.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TNoRM.setHighlighter(null);
         TNoRM.setName("TNoRM"); // NOI18N
 
-        TPasien.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TPasien.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TPasien.setHighlighter(null);
         TPasien.setName("TPasien"); // NOI18N
 
@@ -283,7 +283,7 @@ public final class DlgCariObat3 extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -328,7 +328,7 @@ public final class DlgCariObat3 extends javax.swing.JDialog {
         BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
         BtnCari.setMnemonic('1');
         BtnCari.setToolTipText("Alt+1");
-        BtnCari.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnCari.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnCari.setName("BtnCari"); // NOI18N
         BtnCari.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnCari.addActionListener(new java.awt.event.ActionListener() {

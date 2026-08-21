@@ -162,7 +162,7 @@ public final class DlgPembayaranRanap extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnBilling.setBackground(new java.awt.Color(255, 255, 254));
-        MnBilling.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBilling.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnBilling.setForeground(new java.awt.Color(50, 50, 50));
         MnBilling.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnBilling.setText("Billing/Pembayaran Pasien");
@@ -178,7 +178,7 @@ public final class DlgPembayaranRanap extends javax.swing.JDialog {
         jPopupMenu1.add(MnBilling);
 
         MnSudahBayar.setBackground(new java.awt.Color(255, 255, 254));
-        MnSudahBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSudahBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSudahBayar.setForeground(new java.awt.Color(50, 50, 50));
         MnSudahBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSudahBayar.setText("Tampilkan Sudah Bayar");
@@ -194,7 +194,7 @@ public final class DlgPembayaranRanap extends javax.swing.JDialog {
         jPopupMenu1.add(MnSudahBayar);
 
         MnBelumBayar.setBackground(new java.awt.Color(255, 255, 254));
-        MnBelumBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBelumBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnBelumBayar.setForeground(new java.awt.Color(50, 50, 50));
         MnBelumBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnBelumBayar.setText("Tampilkan Belum Bayar");
@@ -210,7 +210,7 @@ public final class DlgPembayaranRanap extends javax.swing.JDialog {
         jPopupMenu1.add(MnBelumBayar);
 
         MnSemuaStatusBayar.setBackground(new java.awt.Color(255, 255, 254));
-        MnSemuaStatusBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSemuaStatusBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSemuaStatusBayar.setForeground(new java.awt.Color(50, 50, 50));
         MnSemuaStatusBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSemuaStatusBayar.setText("Tampilkan Semua Status Bayar");
@@ -241,7 +241,7 @@ public final class DlgPembayaranRanap extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Pembayaran Pasien Ranap Per Tanggal Pulang ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Pembayaran Pasien Ranap Per Tanggal Pulang ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -335,7 +335,7 @@ public final class DlgPembayaranRanap extends javax.swing.JDialog {
         LCount2.setPreferredSize(new java.awt.Dimension(40, 23));
         panelGlass5.add(LCount2);
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(50, 50, 50));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel10.setText("Total");
@@ -343,7 +343,7 @@ public final class DlgPembayaranRanap extends javax.swing.JDialog {
         jLabel10.setPreferredSize(new java.awt.Dimension(40, 23));
         panelGlass5.add(jLabel10);
 
-        LCount.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        LCount.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         LCount.setForeground(new java.awt.Color(50, 50, 50));
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");

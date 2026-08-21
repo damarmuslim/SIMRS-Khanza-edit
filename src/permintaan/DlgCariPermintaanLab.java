@@ -430,7 +430,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         WindowAmbilSampel.setUndecorated(true);
         WindowAmbilSampel.setResizable(false);
 
-        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Update Waktu Pengambilan Sampel ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Update Waktu Pengambilan Sampel ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame5.setName("internalFrame5"); // NOI18N
         internalFrame5.setLayout(null);
 
@@ -481,13 +481,13 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         WindowTerkirim.setResizable(false);
         WindowTerkirim.getContentPane().setLayout(null);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jLabel1.setText("Berhasil terkirim..!!");
         jLabel1.setName("jLabel1"); // NOI18N
         WindowTerkirim.getContentPane().add(jLabel1);
         jLabel1.setBounds(40, 15, 150, 23);
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButton1.setText("OK");
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -513,7 +513,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Permintaan Laboratorium Patologi Klinis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Permintaan Laboratorium Patologi Klinis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -718,7 +718,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
 
         TabPilihRawat.setBackground(new java.awt.Color(255, 255, 254));
         TabPilihRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabPilihRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabPilihRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabPilihRawat.setName("TabPilihRawat"); // NOI18N
         TabPilihRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -783,7 +783,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
 
         TabRawatJalan.setBackground(new java.awt.Color(255, 255, 254));
         TabRawatJalan.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawatJalan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawatJalan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawatJalan.setName("TabRawatJalan"); // NOI18N
         TabRawatJalan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -922,7 +922,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
 
         TabRawatInap.setBackground(new java.awt.Color(255, 255, 254));
         TabRawatInap.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawatInap.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawatInap.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawatInap.setName("TabRawatInap"); // NOI18N
         TabRawatInap.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1032,7 +1032,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnCetakHasilLab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnCetakHasilLab.setText("Cetak Permintaan Lab");
         BtnCetakHasilLab.setFocusPainted(false);
-        BtnCetakHasilLab.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnCetakHasilLab.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnCetakHasilLab.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnCetakHasilLab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnCetakHasilLab.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1049,7 +1049,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnBarcodePermintaan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnBarcodePermintaan.setText("Barcode No.Permintaan");
         BtnBarcodePermintaan.setFocusPainted(false);
-        BtnBarcodePermintaan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnBarcodePermintaan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnBarcodePermintaan.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnBarcodePermintaan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnBarcodePermintaan.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1066,7 +1066,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnBarcodePermintaan2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnBarcodePermintaan2.setText("Barcode No.Permintaan 2");
         BtnBarcodePermintaan2.setFocusPainted(false);
-        BtnBarcodePermintaan2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnBarcodePermintaan2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnBarcodePermintaan2.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnBarcodePermintaan2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnBarcodePermintaan2.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1083,7 +1083,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnKirimLica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimLica.setText("Kirim Permintaan ke LICA");
         BtnKirimLica.setFocusPainted(false);
-        BtnKirimLica.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimLica.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimLica.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimLica.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimLica.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1100,7 +1100,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnAmbilLica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilLica.setText("Ambil Hasil dari LICA");
         BtnAmbilLica.setFocusPainted(false);
-        BtnAmbilLica.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilLica.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilLica.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilLica.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilLica.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1117,7 +1117,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnKirimSysmex.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimSysmex.setText("Kirim Permintaan ke Sysmex");
         BtnKirimSysmex.setFocusPainted(false);
-        BtnKirimSysmex.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimSysmex.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimSysmex.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimSysmex.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimSysmex.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1134,7 +1134,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnAmbilSysmex.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilSysmex.setText("Ambil Hasil dari Sysmex");
         BtnAmbilSysmex.setFocusPainted(false);
-        BtnAmbilSysmex.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilSysmex.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilSysmex.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilSysmex.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilSysmex.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1151,7 +1151,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnKirimLISELIMS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimLISELIMS.setText("Kirim Permintaan ke ELIMS");
         BtnKirimLISELIMS.setFocusPainted(false);
-        BtnKirimLISELIMS.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimLISELIMS.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimLISELIMS.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimLISELIMS.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimLISELIMS.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1168,7 +1168,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnAmbilLISELIMS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilLISELIMS.setText("Ambil Hasil dari ELIMS");
         BtnAmbilLISELIMS.setFocusPainted(false);
-        BtnAmbilLISELIMS.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilLISELIMS.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilLISELIMS.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilLISELIMS.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilLISELIMS.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1185,7 +1185,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnKirimLISTeras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimLISTeras.setText("Kirim Permintaan ke TERAS");
         BtnKirimLISTeras.setFocusPainted(false);
-        BtnKirimLISTeras.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimLISTeras.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimLISTeras.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimLISTeras.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimLISTeras.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1202,7 +1202,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnAmbilLISTeras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilLISTeras.setText("Ambil Hasil dari TERAS");
         BtnAmbilLISTeras.setFocusPainted(false);
-        BtnAmbilLISTeras.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilLISTeras.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilLISTeras.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilLISTeras.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilLISTeras.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1219,7 +1219,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnKirimLISMADQLAB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimLISMADQLAB.setText("Kirim Permintaan ke MEDQLAB ");
         BtnKirimLISMADQLAB.setFocusPainted(false);
-        BtnKirimLISMADQLAB.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimLISMADQLAB.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimLISMADQLAB.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimLISMADQLAB.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimLISMADQLAB.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1236,7 +1236,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnAmbilLISMADQLAB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilLISMADQLAB.setText("Ambil Hasil dari MEDQLAB");
         BtnAmbilLISMADQLAB.setFocusPainted(false);
-        BtnAmbilLISMADQLAB.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilLISMADQLAB.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilLISMADQLAB.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilLISMADQLAB.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilLISMADQLAB.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1253,7 +1253,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnKirimLISSMARTLAB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimLISSMARTLAB.setText("Kirim Permintaan ke SMARTLAB ");
         BtnKirimLISSMARTLAB.setFocusPainted(false);
-        BtnKirimLISSMARTLAB.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimLISSMARTLAB.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimLISSMARTLAB.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimLISSMARTLAB.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimLISSMARTLAB.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1270,7 +1270,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnAmbilLISSMARTLAB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilLISSMARTLAB.setText("Ambil Hasil dari SMARTLAB");
         BtnAmbilLISSMARTLAB.setFocusPainted(false);
-        BtnAmbilLISSMARTLAB.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilLISSMARTLAB.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilLISSMARTLAB.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilLISSMARTLAB.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilLISSMARTLAB.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1287,7 +1287,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnKirimLISSOFTMEDIX.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimLISSOFTMEDIX.setText("Kirim Permintaan ke SOFTMEDIX");
         BtnKirimLISSOFTMEDIX.setFocusPainted(false);
-        BtnKirimLISSOFTMEDIX.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimLISSOFTMEDIX.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimLISSOFTMEDIX.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimLISSOFTMEDIX.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimLISSOFTMEDIX.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1304,7 +1304,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnAmbilLISSOFTMEDIX.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilLISSOFTMEDIX.setText("Ambil Hasil dari SOFTMEDIX");
         BtnAmbilLISSOFTMEDIX.setFocusPainted(false);
-        BtnAmbilLISSOFTMEDIX.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilLISSOFTMEDIX.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilLISSOFTMEDIX.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilLISSOFTMEDIX.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilLISSOFTMEDIX.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1321,7 +1321,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnKirimVansLab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimVansLab.setText("Kirim Permintaan ke VANSLAB");
         BtnKirimVansLab.setFocusPainted(false);
-        BtnKirimVansLab.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimVansLab.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimVansLab.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimVansLab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimVansLab.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1338,7 +1338,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnAmbilVanslab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilVanslab.setText("Ambil Hasil dari VANSLAB");
         BtnAmbilVanslab.setFocusPainted(false);
-        BtnAmbilVanslab.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilVanslab.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilVanslab.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilVanslab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilVanslab.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1355,7 +1355,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnKirimLISSLIMS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimLISSLIMS.setText("Kirim Permintaan ke SLIMS");
         BtnKirimLISSLIMS.setFocusPainted(false);
-        BtnKirimLISSLIMS.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimLISSLIMS.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimLISSLIMS.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimLISSLIMS.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimLISSLIMS.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1372,7 +1372,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
         BtnAmbilLISSLIMS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilLISSLIMS.setText("Ambil Hasil dari SLIMS");
         BtnAmbilLISSLIMS.setFocusPainted(false);
-        BtnAmbilLISSLIMS.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilLISSLIMS.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilLISSLIMS.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilLISSLIMS.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilLISSLIMS.setMargin(new java.awt.Insets(1, 1, 1, 1));

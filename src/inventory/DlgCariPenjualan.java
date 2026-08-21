@@ -217,7 +217,7 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppCetakNota.setBackground(new java.awt.Color(255, 255, 254));
-        ppCetakNota.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppCetakNota.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppCetakNota.setForeground(new java.awt.Color(50, 50, 50));
         ppCetakNota.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppCetakNota.setText("Cetak Ulang Nota");
@@ -233,7 +233,7 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
         jPopupMenu1.add(ppCetakNota);
 
         ppHapus.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapus.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapus.setForeground(new java.awt.Color(50, 50, 50));
         ppHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapus.setText("Hapus Penjualan");
@@ -249,7 +249,7 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapus);
 
         ppVerif.setBackground(new java.awt.Color(255, 255, 254));
-        ppVerif.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppVerif.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppVerif.setForeground(new java.awt.Color(50, 50, 50));
         ppVerif.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppVerif.setText("Verifikasi");
@@ -265,7 +265,7 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
         jPopupMenu1.add(ppVerif);
 
         ppResepObat.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat.setText("Cetak Aturan Pakai Model 1");
@@ -281,7 +281,7 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
         jPopupMenu1.add(ppResepObat);
 
         ppResepObat1.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat1.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat1.setText("Cetak Aturan Pakai Model 2");
@@ -297,7 +297,7 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
         jPopupMenu1.add(ppResepObat1);
 
         ppResepObat2.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat2.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat2.setText("Cetak Aturan Pakai Model 3");
@@ -317,7 +317,7 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
         WindowGantiCaraBayar.setUndecorated(true);
         WindowGantiCaraBayar.setResizable(false);
 
-        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Akun Bayar ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Akun Bayar ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame5.setName("internalFrame5"); // NOI18N
         internalFrame5.setLayout(null);
 
@@ -380,7 +380,7 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Penjualan Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Penjualan Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -712,7 +712,7 @@ public class DlgCariPenjualan extends javax.swing.JDialog {
         TabRawat.setBackground(new java.awt.Color(255, 255, 253));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

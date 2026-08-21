@@ -182,14 +182,14 @@ public class TokoPembelian extends javax.swing.JDialog {
         btnSuplier = new widget.Button();
         btnPetugas = new widget.Button();
 
-        Kd2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Kd2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Kd2.setName("Kd2"); // NOI18N
         Kd2.setPreferredSize(new java.awt.Dimension(207, 23));
 
         Popup.setName("Popup"); // NOI18N
 
         ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkan.setText("Bersihkan Jumlah");
@@ -213,7 +213,7 @@ public class TokoPembelian extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Pengadaan Barang Toko / Minimarket / Koperasi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Pengadaan Barang Toko / Minimarket / Koperasi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -357,7 +357,7 @@ public class TokoPembelian extends javax.swing.JDialog {
 
         LSubtotal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LSubtotal.setText("0");
-        LSubtotal.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LSubtotal.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LSubtotal.setName("LSubtotal"); // NOI18N
         LSubtotal.setPreferredSize(new java.awt.Dimension(110, 30));
         panelisi1.add(LSubtotal);
@@ -372,7 +372,7 @@ public class TokoPembelian extends javax.swing.JDialog {
 
         LPotongan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LPotongan.setText("0");
-        LPotongan.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LPotongan.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LPotongan.setName("LPotongan"); // NOI18N
         LPotongan.setPreferredSize(new java.awt.Dimension(110, 30));
         panelisi1.add(LPotongan);
@@ -387,7 +387,7 @@ public class TokoPembelian extends javax.swing.JDialog {
 
         LTotal2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LTotal2.setText("0");
-        LTotal2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LTotal2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LTotal2.setName("LTotal2"); // NOI18N
         LTotal2.setPreferredSize(new java.awt.Dimension(110, 30));
         panelisi1.add(LTotal2);
@@ -401,7 +401,7 @@ public class TokoPembelian extends javax.swing.JDialog {
         label17.setBounds(340, 0, 40, 30);
 
         tppn.setText("11");
-        tppn.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tppn.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         tppn.setName("tppn"); // NOI18N
         tppn.setPreferredSize(new java.awt.Dimension(80, 23));
         tppn.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -414,7 +414,7 @@ public class TokoPembelian extends javax.swing.JDialog {
 
         LPpn.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LPpn.setText("0");
-        LPpn.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LPpn.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LPpn.setName("LPpn"); // NOI18N
         LPpn.setPreferredSize(new java.awt.Dimension(110, 30));
         panelisi1.add(LPpn);
@@ -428,7 +428,7 @@ public class TokoPembelian extends javax.swing.JDialog {
         label24.setBounds(520, 0, 90, 30);
 
         Meterai.setText("0");
-        Meterai.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Meterai.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Meterai.setName("Meterai"); // NOI18N
         Meterai.setPreferredSize(new java.awt.Dimension(80, 23));
         Meterai.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -448,7 +448,7 @@ public class TokoPembelian extends javax.swing.JDialog {
 
         LTagiha.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LTagiha.setText("0");
-        LTagiha.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LTagiha.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LTagiha.setName("LTagiha"); // NOI18N
         LTagiha.setPreferredSize(new java.awt.Dimension(110, 30));
         panelisi1.add(LTagiha);
@@ -456,7 +456,7 @@ public class TokoPembelian extends javax.swing.JDialog {
 
         label21.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         label21.setText("%");
-        label21.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label21.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label21.setName("label21"); // NOI18N
         label21.setPreferredSize(new java.awt.Dimension(70, 23));
         panelisi1.add(label21);

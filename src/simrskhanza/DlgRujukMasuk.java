@@ -271,7 +271,7 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
         WindowPerujuk.setUndecorated(true);
         WindowPerujuk.setResizable(false);
 
-        internalFrame6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Perujuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Perujuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame6.setName("internalFrame6"); // NOI18N
         internalFrame6.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -387,7 +387,7 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnBalasanRujukan.setBackground(new java.awt.Color(255, 255, 254));
-        MnBalasanRujukan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBalasanRujukan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnBalasanRujukan.setForeground(java.awt.Color.darkGray);
         MnBalasanRujukan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnBalasanRujukan.setText("Balasan Rujukan");
@@ -401,7 +401,7 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
         jPopupMenu1.add(MnBalasanRujukan);
 
         MnBalasanRujukan1.setBackground(new java.awt.Color(255, 255, 254));
-        MnBalasanRujukan1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBalasanRujukan1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnBalasanRujukan1.setForeground(java.awt.Color.darkGray);
         MnBalasanRujukan1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnBalasanRujukan1.setText("Balasan Rujukan 2");
@@ -415,7 +415,7 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
         jPopupMenu1.add(MnBalasanRujukan1);
 
         MnBalasanRujukan2.setBackground(new java.awt.Color(255, 255, 254));
-        MnBalasanRujukan2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBalasanRujukan2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnBalasanRujukan2.setForeground(java.awt.Color.darkGray);
         MnBalasanRujukan2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnBalasanRujukan2.setText("Balasan Rujukan 3");
@@ -444,8 +444,8 @@ public final class DlgRujukMasuk extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Rujukan Masuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Rujukan Masuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

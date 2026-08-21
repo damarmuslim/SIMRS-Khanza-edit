@@ -109,7 +109,7 @@ public class LaporanRegistrasiPoliPerTanggal extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppRegistrasiPasienBaru.setBackground(new java.awt.Color(255, 255, 254));
-        ppRegistrasiPasienBaru.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRegistrasiPasienBaru.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppRegistrasiPasienBaru.setForeground(new java.awt.Color(50, 50, 50));
         ppRegistrasiPasienBaru.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppRegistrasiPasienBaru.setText("Filter Registrasi Pasien Baru");
@@ -125,7 +125,7 @@ public class LaporanRegistrasiPoliPerTanggal extends javax.swing.JDialog {
         jPopupMenu1.add(ppRegistrasiPasienBaru);
 
         ppRegistrasiPasienLama.setBackground(new java.awt.Color(255, 255, 254));
-        ppRegistrasiPasienLama.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRegistrasiPasienLama.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppRegistrasiPasienLama.setForeground(new java.awt.Color(50, 50, 50));
         ppRegistrasiPasienLama.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppRegistrasiPasienLama.setText("Filter Registrasi Pasien Lama");
@@ -141,7 +141,7 @@ public class LaporanRegistrasiPoliPerTanggal extends javax.swing.JDialog {
         jPopupMenu1.add(ppRegistrasiPasienLama);
 
         ppRegistrasiPasienBaru1.setBackground(new java.awt.Color(255, 255, 254));
-        ppRegistrasiPasienBaru1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRegistrasiPasienBaru1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppRegistrasiPasienBaru1.setForeground(new java.awt.Color(50, 50, 50));
         ppRegistrasiPasienBaru1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppRegistrasiPasienBaru1.setText("Filter Registrasi Pasien Baru Batal");
@@ -157,7 +157,7 @@ public class LaporanRegistrasiPoliPerTanggal extends javax.swing.JDialog {
         jPopupMenu1.add(ppRegistrasiPasienBaru1);
 
         ppRegistrasiPasienLama1.setBackground(new java.awt.Color(255, 255, 254));
-        ppRegistrasiPasienLama1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRegistrasiPasienLama1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppRegistrasiPasienLama1.setForeground(new java.awt.Color(50, 50, 50));
         ppRegistrasiPasienLama1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppRegistrasiPasienLama1.setText("Filter Registrasi Pasien Lama Batal");
@@ -173,7 +173,7 @@ public class LaporanRegistrasiPoliPerTanggal extends javax.swing.JDialog {
         jPopupMenu1.add(ppRegistrasiPasienLama1);
 
         ppRegistrasiPasienNonBatal.setBackground(new java.awt.Color(255, 255, 254));
-        ppRegistrasiPasienNonBatal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRegistrasiPasienNonBatal.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppRegistrasiPasienNonBatal.setForeground(new java.awt.Color(50, 50, 50));
         ppRegistrasiPasienNonBatal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppRegistrasiPasienNonBatal.setText("Filter Registrasi Pasien Non Batal");
@@ -197,7 +197,7 @@ public class LaporanRegistrasiPoliPerTanggal extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Registrasi Poli Per Tanggal ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Registrasi Poli Per Tanggal ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

@@ -264,7 +264,7 @@ public class LabKeslingCariPenugasanPengujianSampel extends javax.swing.JDialog 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppSuratPenugasan.setBackground(new java.awt.Color(255, 255, 254));
-        ppSuratPenugasan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSuratPenugasan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSuratPenugasan.setForeground(new java.awt.Color(50, 50, 50));
         ppSuratPenugasan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSuratPenugasan.setText("Surat Penugasan");
@@ -280,7 +280,7 @@ public class LabKeslingCariPenugasanPengujianSampel extends javax.swing.JDialog 
         jPopupMenu1.add(ppSuratPenugasan);
 
         ppHasilPengujian.setBackground(new java.awt.Color(255, 255, 254));
-        ppHasilPengujian.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHasilPengujian.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHasilPengujian.setForeground(new java.awt.Color(50, 50, 50));
         ppHasilPengujian.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHasilPengujian.setText("Hasil Pengujian");
@@ -316,7 +316,7 @@ public class LabKeslingCariPenugasanPengujianSampel extends javax.swing.JDialog 
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Penugasan Pengujian Sampel Laboratorium Kesehatan Lingkungan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Penugasan Pengujian Sampel Laboratorium Kesehatan Lingkungan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -582,7 +582,7 @@ public class LabKeslingCariPenugasanPengujianSampel extends javax.swing.JDialog 
         TabData.setBackground(new java.awt.Color(255, 255, 253));
         TabData.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)));
         TabData.setForeground(new java.awt.Color(50, 50, 50));
-        TabData.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabData.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabData.setName("TabData"); // NOI18N
         TabData.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -645,7 +645,7 @@ public class LabKeslingCariPenugasanPengujianSampel extends javax.swing.JDialog 
         });
         PanelAccor.add(ChkAccor, java.awt.BorderLayout.WEST);
 
-        scrollPaneDetail.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), "Detail Penugasan :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        scrollPaneDetail.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), "Detail Penugasan :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         scrollPaneDetail.setComponentPopupMenu(jPopupMenu1);
         scrollPaneDetail.setName("scrollPaneDetail"); // NOI18N
         scrollPaneDetail.setOpaque(true);

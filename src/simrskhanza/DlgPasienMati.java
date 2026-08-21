@@ -190,7 +190,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnCetakSuratMati.setBackground(new java.awt.Color(255, 255, 254));
-        MnCetakSuratMati.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratMati.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratMati.setForeground(java.awt.Color.darkGray);
         MnCetakSuratMati.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratMati.setText("Surat Kematian 1");
@@ -204,7 +204,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
         jPopupMenu1.add(MnCetakSuratMati);
 
         MnCetakSuratMati1.setBackground(new java.awt.Color(255, 255, 254));
-        MnCetakSuratMati1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratMati1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratMati1.setForeground(java.awt.Color.darkGray);
         MnCetakSuratMati1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratMati1.setText("Surat Kematian 2");
@@ -218,7 +218,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
         jPopupMenu1.add(MnCetakSuratMati1);
 
         MnAngkutJenazah.setBackground(new java.awt.Color(255, 255, 254));
-        MnAngkutJenazah.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnAngkutJenazah.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnAngkutJenazah.setForeground(java.awt.Color.darkGray);
         MnAngkutJenazah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnAngkutJenazah.setText("Surat Angkut Jenazah");
@@ -240,7 +240,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pasien Meninggal ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pasien Meninggal ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

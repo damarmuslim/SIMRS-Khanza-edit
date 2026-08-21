@@ -220,7 +220,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         nmgolongan = new widget.TextBox();
         BtnGolongan = new widget.Button();
 
-        panelisi4.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        panelisi4.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         panelisi4.setName("panelisi4"); // NOI18N
         panelisi4.setPreferredSize(new java.awt.Dimension(100, 133));
         panelisi4.setLayout(null);
@@ -396,7 +396,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.setName("Popup1"); // NOI18N
 
         MnKodeBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKodeBarangDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKodeBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeBarangDesc.setText("Urutkan Berdasar Kode Barang Descending");
@@ -412,7 +412,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnKodeBarangDesc);
 
         MnKodeBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKodeBarangAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKodeBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeBarangAsc.setText("Urutkan Berdasar Kode Barang Ascending");
@@ -428,7 +428,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnKodeBarangAsc);
 
         MnNamaBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaBarangDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnNamaBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaBarangDesc.setText("Urutkan Berdasar Nama Barang Descending");
@@ -444,7 +444,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnNamaBarangDesc);
 
         MnNamaBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaBarangAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnNamaBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaBarangAsc.setText("Urutkan Berdasar Nama Barang Ascending");
@@ -460,7 +460,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnNamaBarangAsc);
 
         MnKategoriAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKategoriAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKategoriAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKategoriAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKategoriAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKategoriAsc.setText("Urutkan Berdasar Kategori Ascending");
@@ -476,7 +476,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnKategoriAsc);
 
         MnKategoriDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKategoriDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKategoriDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKategoriDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKategoriDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKategoriDesc.setText("Urutkan Berdasar Kategori Descending");
@@ -492,7 +492,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnKategoriDesc);
 
         MnJenisDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnJenisDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnJenisDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnJenisDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnJenisDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJenisDesc.setText("Urutkan Berdasar Jenis Descending");
@@ -508,7 +508,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnJenisDesc);
 
         MnJenisAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnJenisAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnJenisAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnJenisAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnJenisAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJenisAsc.setText("Urutkan Berdasar Jenis Ascending");
@@ -524,7 +524,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnJenisAsc);
 
         MnGolonganDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnGolonganDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGolonganDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnGolonganDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnGolonganDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGolonganDesc.setText("Urutkan Berdasar Golongan Descending");
@@ -540,7 +540,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnGolonganDesc);
 
         MnGolonganAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnGolonganAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGolonganAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnGolonganAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnGolonganAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGolonganAsc.setText("Urutkan Berdasar Golongan Ascending");
@@ -556,7 +556,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnGolonganAsc);
 
         MnKodeLokasiAsalDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeLokasiAsalDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKodeLokasiAsalDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKodeLokasiAsalDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeLokasiAsalDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeLokasiAsalDesc.setText("Urutkan Berdasar Kode Lokasi Asal Descending");
@@ -572,7 +572,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnKodeLokasiAsalDesc);
 
         MnKodeLokasiAsalAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeLokasiAsalAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKodeLokasiAsalAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKodeLokasiAsalAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeLokasiAsalAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeLokasiAsalAsc.setText("Urutkan Berdasar Kode Lokasi Asal Ascending");
@@ -588,7 +588,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnKodeLokasiAsalAsc);
 
         MnNamaLokasiAsalDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaLokasiAsalDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaLokasiAsalDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnNamaLokasiAsalDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaLokasiAsalDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaLokasiAsalDesc.setText("Urutkan Berdasar Nama Lokasi Asal Descending");
@@ -604,7 +604,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnNamaLokasiAsalDesc);
 
         MnNamaLokasiAsalAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaLokasiAsalAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaLokasiAsalAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnNamaLokasiAsalAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaLokasiAsalAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaLokasiAsalAsc.setText("Urutkan Berdasar Nama Lokasi Asal Ascending");
@@ -620,7 +620,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnNamaLokasiAsalAsc);
 
         MnKodeLokasiTujuanDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeLokasiTujuanDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKodeLokasiTujuanDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKodeLokasiTujuanDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeLokasiTujuanDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeLokasiTujuanDesc.setText("Urutkan Berdasar Kode Lokasi Tujuan Descending");
@@ -636,7 +636,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnKodeLokasiTujuanDesc);
 
         MnKodeLokasiTujuanAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeLokasiTujuanAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKodeLokasiTujuanAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKodeLokasiTujuanAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeLokasiTujuanAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeLokasiTujuanAsc.setText("Urutkan Berdasar Kode Lokasi Tujuan Ascending");
@@ -652,7 +652,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnKodeLokasiTujuanAsc);
 
         MnNamaLokasiTujuanDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaLokasiTujuanDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaLokasiTujuanDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnNamaLokasiTujuanDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaLokasiTujuanDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaLokasiTujuanDesc.setText("Urutkan Berdasar Nama Lokasi Tujuan Descending");
@@ -668,7 +668,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         Popup1.add(MnNamaLokasiTujuanDesc);
 
         MnNamaLokasiTujuanlAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaLokasiTujuanlAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaLokasiTujuanlAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnNamaLokasiTujuanlAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaLokasiTujuanlAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaLokasiTujuanlAsc.setText("Urutkan Berdasar Nama Lokasi Tujuan Ascending");
@@ -695,7 +695,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Mutasi Antar Gudang Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Mutasi Antar Gudang Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -772,7 +772,7 @@ public final class DlgPindahGudang extends javax.swing.JDialog {
         BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
         BtnCari.setMnemonic('2');
         BtnCari.setToolTipText("Alt+2");
-        BtnCari.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnCari.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnCari.setName("BtnCari"); // NOI18N
         BtnCari.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnCari.addActionListener(new java.awt.event.ActionListener() {

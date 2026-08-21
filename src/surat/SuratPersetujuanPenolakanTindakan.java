@@ -378,8 +378,8 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Pernyataan Persetujuan/Penolakan Tindakan Kedokteran ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Pernyataan Persetujuan/Penolakan Tindakan Kedokteran ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -517,7 +517,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
 
         TabRawat.setBackground(new java.awt.Color(254, 255, 254));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
 
         internalFrame2.setBorder(null);
@@ -544,7 +544,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
         scrollPane7.setName("scrollPane7"); // NOI18N
 
         Diagnosa.setColumns(20);
-        Diagnosa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Diagnosa.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Diagnosa.setRows(5);
         Diagnosa.setName("Diagnosa"); // NOI18N
         Diagnosa.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -725,7 +725,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
         scrollPane8.setName("scrollPane8"); // NOI18N
 
         TindakanKedokteran.setColumns(20);
-        TindakanKedokteran.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TindakanKedokteran.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TindakanKedokteran.setRows(5);
         TindakanKedokteran.setName("TindakanKedokteran"); // NOI18N
         TindakanKedokteran.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -754,7 +754,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
         scrollPane9.setName("scrollPane9"); // NOI18N
 
         IndikasiTindakan.setColumns(20);
-        IndikasiTindakan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        IndikasiTindakan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         IndikasiTindakan.setRows(5);
         IndikasiTindakan.setName("IndikasiTindakan"); // NOI18N
         IndikasiTindakan.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -771,7 +771,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
         scrollPane10.setName("scrollPane10"); // NOI18N
 
         TataCara.setColumns(20);
-        TataCara.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TataCara.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TataCara.setRows(5);
         TataCara.setName("TataCara"); // NOI18N
         TataCara.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -794,7 +794,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
         scrollPane11.setName("scrollPane11"); // NOI18N
 
         Risiko.setColumns(20);
-        Risiko.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Risiko.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Risiko.setRows(5);
         Risiko.setName("Risiko"); // NOI18N
         Risiko.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -811,7 +811,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
         scrollPane12.setName("scrollPane12"); // NOI18N
 
         Tujuan.setColumns(20);
-        Tujuan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Tujuan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Tujuan.setRows(5);
         Tujuan.setName("Tujuan"); // NOI18N
         Tujuan.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -846,7 +846,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
         scrollPane13.setName("scrollPane13"); // NOI18N
 
         Komplikasi.setColumns(20);
-        Komplikasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Komplikasi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Komplikasi.setRows(5);
         Komplikasi.setName("Komplikasi"); // NOI18N
         Komplikasi.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -863,7 +863,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
         scrollPane14.setName("scrollPane14"); // NOI18N
 
         Prognosis.setColumns(20);
-        Prognosis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Prognosis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Prognosis.setRows(5);
         Prognosis.setName("Prognosis"); // NOI18N
         Prognosis.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -892,7 +892,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
         scrollPane15.setName("scrollPane15"); // NOI18N
 
         AlternatifResiko.setColumns(20);
-        AlternatifResiko.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        AlternatifResiko.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         AlternatifResiko.setRows(5);
         AlternatifResiko.setName("AlternatifResiko"); // NOI18N
         AlternatifResiko.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -909,7 +909,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
         scrollPane16.setName("scrollPane16"); // NOI18N
 
         LainLain.setColumns(20);
-        LainLain.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        LainLain.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         LainLain.setRows(5);
         LainLain.setName("LainLain"); // NOI18N
         LainLain.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1317,7 +1317,7 @@ public final class SuratPersetujuanPenolakanTindakan extends javax.swing.JDialog
 
         TabData.setBackground(new java.awt.Color(254, 255, 254));
         TabData.setForeground(new java.awt.Color(50, 50, 50));
-        TabData.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabData.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabData.setName("TabData"); // NOI18N
         TabData.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

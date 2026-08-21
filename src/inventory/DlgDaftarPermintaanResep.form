@@ -40,7 +40,7 @@
                   <Color PropertyName="color" blue="eb" green="f5" red="f0" type="rgb"/>
                 </LineBorder>
               </Border>
-              <Font PropertyName="font" name="Tahoma" size="11" style="0"/>
+              <Font PropertyName="font" name="Segoe UI" size="11" style="0"/>
               <Color PropertyName="color" blue="32" green="32" red="32" type="rgb"/>
             </TitledBorder>
           </Border>
@@ -410,7 +410,7 @@
               <Color blue="32" green="32" red="32" type="rgb"/>
             </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="11" style="0"/>
+              <Font name="Segoe UI" size="11" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="TabPilihRawat" noResource="true"/>
           </Properties>
@@ -451,7 +451,7 @@
                       <Color blue="32" green="32" red="32" type="rgb"/>
                     </Property>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Tahoma" size="11" style="0"/>
+                      <Font name="Segoe UI" size="11" style="0"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="TabRawatJalan" noResource="true"/>
                   </Properties>
@@ -661,7 +661,7 @@
                       <Color blue="32" green="32" red="32" type="rgb"/>
                     </Property>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Tahoma" size="11" style="0"/>
+                      <Font name="Segoe UI" size="11" style="0"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="TabRawatInap" noResource="true"/>
                   </Properties>
@@ -1097,7 +1097,7 @@
                         <Property name="text" type="java.lang.String" value="Riwayat Pasien"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1124,7 +1124,7 @@
                         <Property name="text" type="java.lang.String" value="Obat Tervalidasi"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1151,7 +1151,7 @@
                         <Property name="text" type="java.lang.String" value="Piutang Obat"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1178,7 +1178,7 @@
                         <Property name="text" type="java.lang.String" value="Telaah Resep"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1205,7 +1205,7 @@
                         <Property name="text" type="java.lang.String" value="Cetak Resep Awal"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1232,7 +1232,7 @@
                         <Property name="text" type="java.lang.String" value="Resep Luar"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1259,7 +1259,7 @@
                         <Property name="text" type="java.lang.String" value="Konseling Farmasi"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1286,7 +1286,7 @@
                         <Property name="text" type="java.lang.String" value="Informasi Obat"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1313,7 +1313,7 @@
                         <Property name="text" type="java.lang.String" value="Data SEP BPJS"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1340,7 +1340,7 @@
                         <Property name="text" type="java.lang.String" value="Obat ApOL BPJS"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>

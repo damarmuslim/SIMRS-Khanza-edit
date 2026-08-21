@@ -314,12 +314,12 @@ public class DlgPiutang extends javax.swing.JDialog {
         nmgudang = new widget.TextBox();
         BtnGudang = new widget.Button();
 
-        Kd2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Kd2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Kd2.setName("Kd2"); // NOI18N
         Kd2.setPreferredSize(new java.awt.Dimension(207, 23));
 
         HrgBeli.setEditable(false);
-        HrgBeli.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        HrgBeli.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         HrgBeli.setName("HrgBeli"); // NOI18N
         HrgBeli.setPreferredSize(new java.awt.Dimension(80, 23));
 
@@ -332,7 +332,7 @@ public class DlgPiutang extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Piutang Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Piutang Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -410,7 +410,7 @@ public class DlgPiutang extends javax.swing.JDialog {
         });
         panelisi1.add(BtnHapus);
 
-        label9.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label9.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label9.setName("label9"); // NOI18N
         label9.setPreferredSize(new java.awt.Dimension(70, 23));
         panelisi1.add(label9);
@@ -519,7 +519,7 @@ public class DlgPiutang extends javax.swing.JDialog {
 
         LTotal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LTotal.setText("0");
-        LTotal.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LTotal.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LTotal.setName("LTotal"); // NOI18N
         LTotal.setPreferredSize(new java.awt.Dimension(155, 26));
         panelisi5.add(LTotal);
@@ -531,7 +531,7 @@ public class DlgPiutang extends javax.swing.JDialog {
         panelisi5.add(label14);
         label14.setBounds(265, 40, 70, 23);
 
-        Ongkir.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Ongkir.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Ongkir.setName("Ongkir"); // NOI18N
         Ongkir.setPreferredSize(new java.awt.Dimension(130, 26));
         panelisi5.add(Ongkir);
@@ -543,7 +543,7 @@ public class DlgPiutang extends javax.swing.JDialog {
         panelisi5.add(label19);
         label19.setBounds(518, 10, 130, 23);
 
-        UangMuka.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        UangMuka.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         UangMuka.setName("UangMuka"); // NOI18N
         UangMuka.setPreferredSize(new java.awt.Dimension(150, 26));
         panelisi5.add(UangMuka);
@@ -551,7 +551,7 @@ public class DlgPiutang extends javax.swing.JDialog {
 
         TagihanPPn.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         TagihanPPn.setText("0");
-        TagihanPPn.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TagihanPPn.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TagihanPPn.setName("TagihanPPn"); // NOI18N
         TagihanPPn.setPreferredSize(new java.awt.Dimension(200, 23));
         panelisi5.add(TagihanPPn);
@@ -570,7 +570,7 @@ public class DlgPiutang extends javax.swing.JDialog {
         jLabel13.setBounds(255, 10, 80, 23);
 
         PersenppnObat.setText("11");
-        PersenppnObat.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        PersenppnObat.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         PersenppnObat.setName("PersenppnObat"); // NOI18N
         PersenppnObat.setPreferredSize(new java.awt.Dimension(150, 23));
         PersenppnObat.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -583,7 +583,7 @@ public class DlgPiutang extends javax.swing.JDialog {
 
         BesarPPNObat.setEditable(false);
         BesarPPNObat.setText("0");
-        BesarPPNObat.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        BesarPPNObat.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         BesarPPNObat.setName("BesarPPNObat"); // NOI18N
         BesarPPNObat.setPreferredSize(new java.awt.Dimension(150, 23));
         panelisi5.add(BesarPPNObat);
@@ -705,7 +705,7 @@ public class DlgPiutang extends javax.swing.JDialog {
 
         label26.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         label26.setText("+");
-        label26.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label26.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label26.setName("label26"); // NOI18N
         label26.setPreferredSize(new java.awt.Dimension(70, 23));
         panelisi21.add(label26);
@@ -735,7 +735,7 @@ public class DlgPiutang extends javax.swing.JDialog {
 
         label27.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         label27.setText("-");
-        label27.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label27.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label27.setName("label27"); // NOI18N
         label27.setPreferredSize(new java.awt.Dimension(70, 23));
         panelisi21.add(label27);

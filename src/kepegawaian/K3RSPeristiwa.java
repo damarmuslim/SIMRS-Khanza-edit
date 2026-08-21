@@ -363,7 +363,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppGrafikBatangPeristiwaK3PerTahun.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikBatangPeristiwaK3PerTahun.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikBatangPeristiwaK3PerTahun.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikBatangPeristiwaK3PerTahun.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerTahun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerTahun.setText("Grafik Batang Peristiwa K3 Per Tahun");
@@ -379,7 +379,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikBatangPeristiwaK3PerTahun);
 
         ppGrafikPiePeristiwaK3PerTahun.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiePeristiwaK3PerTahun.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiePeristiwaK3PerTahun.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiePeristiwaK3PerTahun.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerTahun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerTahun.setText("Grafik Pie Peristiwa K3 Per Tahun");
@@ -395,7 +395,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiePeristiwaK3PerTahun);
 
         ppGrafikBatangPeristiwaK3PerBulan.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikBatangPeristiwaK3PerBulan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikBatangPeristiwaK3PerBulan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikBatangPeristiwaK3PerBulan.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerBulan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerBulan.setText("Grafik Batang Peristiwa K3 Per Bulan");
@@ -411,7 +411,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikBatangPeristiwaK3PerBulan);
 
         ppGrafikPiePeristiwaK3PerBulan.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiePeristiwaK3PerBulan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiePeristiwaK3PerBulan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiePeristiwaK3PerBulan.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerBulan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerBulan.setText("Grafik Pie Peristiwa K3 Per Bulan");
@@ -427,7 +427,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiePeristiwaK3PerBulan);
 
         ppGrafikBatangPeristiwaK3PerTanggal.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikBatangPeristiwaK3PerTanggal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikBatangPeristiwaK3PerTanggal.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikBatangPeristiwaK3PerTanggal.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerTanggal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerTanggal.setText("Grafik Batang Peristiwa K3 Per Tanggal");
@@ -443,7 +443,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikBatangPeristiwaK3PerTanggal);
 
         ppGrafikPiePeristiwaK3PerTanggal.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiePeristiwaK3PerTanggal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiePeristiwaK3PerTanggal.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiePeristiwaK3PerTanggal.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerTanggal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerTanggal.setText("Grafik Pie Peristiwa K3 Per Tanggal");
@@ -459,7 +459,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiePeristiwaK3PerTanggal);
 
         ppGrafikBatangPeristiwaK3PerJenisCidera.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikBatangPeristiwaK3PerJenisCidera.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikBatangPeristiwaK3PerJenisCidera.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikBatangPeristiwaK3PerJenisCidera.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerJenisCidera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerJenisCidera.setText("Grafik Batang Peristiwa K3 Per Jenis Cidera");
@@ -475,7 +475,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikBatangPeristiwaK3PerJenisCidera);
 
         ppGrafikPiePeristiwaK3PerJenisCidera.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiePeristiwaK3PerJenisCidera.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiePeristiwaK3PerJenisCidera.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiePeristiwaK3PerJenisCidera.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerJenisCidera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerJenisCidera.setText("Grafik Pie Peristiwa K3 Per Jenis Cidera");
@@ -491,7 +491,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiePeristiwaK3PerJenisCidera);
 
         ppGrafikBatangPeristiwaK3PerPenyebab.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikBatangPeristiwaK3PerPenyebab.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikBatangPeristiwaK3PerPenyebab.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikBatangPeristiwaK3PerPenyebab.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerPenyebab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerPenyebab.setText("Grafik Batang Peristiwa K3 Per Penyebab Kecelakaan");
@@ -507,7 +507,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikBatangPeristiwaK3PerPenyebab);
 
         ppGrafikPiePeristiwaK3PerPenyebab.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiePeristiwaK3PerPenyebab.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiePeristiwaK3PerPenyebab.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiePeristiwaK3PerPenyebab.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerPenyebab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerPenyebab.setText("Grafik Pie Peristiwa K3 Per Penyebab Kecelakaan");
@@ -523,7 +523,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiePeristiwaK3PerPenyebab);
 
         ppGrafikBatangPeristiwaK3PerJenisLuka.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikBatangPeristiwaK3PerJenisLuka.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikBatangPeristiwaK3PerJenisLuka.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikBatangPeristiwaK3PerJenisLuka.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerJenisLuka.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerJenisLuka.setText("Grafik Batang Peristiwa K3 Per Jenis Luka");
@@ -539,7 +539,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikBatangPeristiwaK3PerJenisLuka);
 
         ppGrafikPiePeristiwaK3PerJenisLuka.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiePeristiwaK3PerJenisLuka.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiePeristiwaK3PerJenisLuka.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiePeristiwaK3PerJenisLuka.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerJenisLuka.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerJenisLuka.setText("Grafik Pie Peristiwa K3 Per Jenis Luka");
@@ -555,7 +555,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiePeristiwaK3PerJenisLuka);
 
         ppGrafikBatangPeristiwaK3PerLokasiKejadian.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikBatangPeristiwaK3PerLokasiKejadian.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikBatangPeristiwaK3PerLokasiKejadian.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikBatangPeristiwaK3PerLokasiKejadian.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerLokasiKejadian.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerLokasiKejadian.setText("Grafik Batang Peristiwa K3 Per Lokasi Kejadian");
@@ -571,7 +571,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikBatangPeristiwaK3PerLokasiKejadian);
 
         ppGrafikPiePeristiwaK3PerLokasiKejadian.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiePeristiwaK3PerLokasiKejadian.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiePeristiwaK3PerLokasiKejadian.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiePeristiwaK3PerLokasiKejadian.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerLokasiKejadian.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerLokasiKejadian.setText("Grafik Pie Peristiwa K3 Per Lokasi Kejadian");
@@ -587,7 +587,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiePeristiwaK3PerLokasiKejadian);
 
         ppGrafikBatangPeristiwaK3PerDampakCidera.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikBatangPeristiwaK3PerDampakCidera.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikBatangPeristiwaK3PerDampakCidera.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikBatangPeristiwaK3PerDampakCidera.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerDampakCidera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerDampakCidera.setText("Grafik Batang Peristiwa K3 Per Dampak Cidera");
@@ -603,7 +603,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikBatangPeristiwaK3PerDampakCidera);
 
         ppGrafikPiePeristiwaK3PerDampakCidera.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiePeristiwaK3PerDampakCidera.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiePeristiwaK3PerDampakCidera.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiePeristiwaK3PerDampakCidera.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerDampakCidera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerDampakCidera.setText("Grafik Pie Peristiwa K3 Per Dampak Cidera");
@@ -619,7 +619,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiePeristiwaK3PerDampakCidera);
 
         ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setText("Grafik Batang Peristiwa K3 Per Jenis Pekerjaan");
@@ -635,7 +635,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikBatangPeristiwaK3PerJenisPekerjaan);
 
         ppGrafikPiePeristiwaK3PerJenisPekerjaan.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiePeristiwaK3PerJenisPekerjaan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiePeristiwaK3PerJenisPekerjaan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiePeristiwaK3PerJenisPekerjaan.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerJenisPekerjaan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerJenisPekerjaan.setText("Grafik Pie Peristiwa K3 Per Jenis Pekerjaan");
@@ -651,7 +651,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiePeristiwaK3PerJenisPekerjaan);
 
         ppGrafikBatangPeristiwaK3PerBagianTubuh.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikBatangPeristiwaK3PerBagianTubuh.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikBatangPeristiwaK3PerBagianTubuh.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikBatangPeristiwaK3PerBagianTubuh.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerBagianTubuh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerBagianTubuh.setText("Grafik Batang Peristiwa K3 Per Bagian Tubuh");
@@ -667,7 +667,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikBatangPeristiwaK3PerBagianTubuh);
 
         ppGrafikPiePeristiwaK3PerBagianTubuh.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiePeristiwaK3PerBagianTubuh.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiePeristiwaK3PerBagianTubuh.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiePeristiwaK3PerBagianTubuh.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerBagianTubuh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerBagianTubuh.setText("Grafik Pie Peristiwa K3 Per Bagian Tubuh");
@@ -694,7 +694,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Kejadian Kecelakaan Kerja ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Kejadian Kecelakaan Kerja ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -912,7 +912,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         TabRawat.setBackground(new java.awt.Color(254, 255, 254));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

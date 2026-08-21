@@ -136,7 +136,7 @@ public class KeuanganCariTagihanObatBHP extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Titip Faktur/Tagihan Obat & BHP ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Titip Faktur/Tagihan Obat & BHP ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -422,7 +422,7 @@ public class KeuanganCariTagihanObatBHP extends javax.swing.JDialog {
         MnHapusTagihan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         MnHapusTagihan.setText("Hapus Tagihan");
         MnHapusTagihan.setFocusPainted(false);
-        MnHapusTagihan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnHapusTagihan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnHapusTagihan.setGlassColor(new java.awt.Color(255, 255, 255));
         MnHapusTagihan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         MnHapusTagihan.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -439,7 +439,7 @@ public class KeuanganCariTagihanObatBHP extends javax.swing.JDialog {
         MnDitagihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         MnDitagihkan.setText("Status Ditagihkan");
         MnDitagihkan.setFocusPainted(false);
-        MnDitagihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnDitagihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnDitagihkan.setGlassColor(new java.awt.Color(255, 255, 255));
         MnDitagihkan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         MnDitagihkan.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -456,7 +456,7 @@ public class KeuanganCariTagihanObatBHP extends javax.swing.JDialog {
         MnDitagihkan1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         MnDitagihkan1.setText("Status Dibayar");
         MnDitagihkan1.setFocusPainted(false);
-        MnDitagihkan1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnDitagihkan1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnDitagihkan1.setGlassColor(new java.awt.Color(255, 255, 255));
         MnDitagihkan1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         MnDitagihkan1.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -473,7 +473,7 @@ public class KeuanganCariTagihanObatBHP extends javax.swing.JDialog {
         MnDibayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         MnDibayar.setText("Bayar Tagihan");
         MnDibayar.setFocusPainted(false);
-        MnDibayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnDibayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnDibayar.setGlassColor(new java.awt.Color(255, 255, 255));
         MnDibayar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         MnDibayar.setMargin(new java.awt.Insets(1, 1, 1, 1));

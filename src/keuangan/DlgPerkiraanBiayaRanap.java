@@ -275,7 +275,7 @@ public final class DlgPerkiraanBiayaRanap extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnJadikanPerkiraan.setBackground(new java.awt.Color(255, 255, 254));
-        MnJadikanPerkiraan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnJadikanPerkiraan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnJadikanPerkiraan.setForeground(java.awt.Color.darkGray);
         MnJadikanPerkiraan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJadikanPerkiraan.setText("Jadikan Perkiraan Biaya Pasien");
@@ -293,7 +293,7 @@ public final class DlgPerkiraanBiayaRanap extends javax.swing.JDialog {
         jPopupMenu2.setName("jPopupMenu2"); // NOI18N
 
         MnJadikanPerkiraan1.setBackground(new java.awt.Color(255, 255, 254));
-        MnJadikanPerkiraan1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnJadikanPerkiraan1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnJadikanPerkiraan1.setForeground(java.awt.Color.darkGray);
         MnJadikanPerkiraan1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJadikanPerkiraan1.setText("Jadikan Perkiraan Biaya Pasien");
@@ -311,7 +311,7 @@ public final class DlgPerkiraanBiayaRanap extends javax.swing.JDialog {
         jPopupMenu3.setName("jPopupMenu3"); // NOI18N
 
         MnJadikanPerkiraan2.setBackground(new java.awt.Color(255, 255, 254));
-        MnJadikanPerkiraan2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnJadikanPerkiraan2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnJadikanPerkiraan2.setForeground(java.awt.Color.darkGray);
         MnJadikanPerkiraan2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJadikanPerkiraan2.setText("Ambil Perkiraan Simulasi Inacbg");
@@ -327,7 +327,7 @@ public final class DlgPerkiraanBiayaRanap extends javax.swing.JDialog {
         jPopupMenu3.add(MnJadikanPerkiraan2);
 
         MnPerkiraanBiayaManual.setBackground(new java.awt.Color(255, 255, 254));
-        MnPerkiraanBiayaManual.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnPerkiraanBiayaManual.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnPerkiraanBiayaManual.setForeground(java.awt.Color.darkGray);
         MnPerkiraanBiayaManual.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnPerkiraanBiayaManual.setText("Input Manual Perkiraan Biaya");
@@ -347,7 +347,7 @@ public final class DlgPerkiraanBiayaRanap extends javax.swing.JDialog {
         WindowInput.setUndecorated(true);
         WindowInput.setResizable(false);
 
-        internalFrame2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Input Nilai Perkiraan Biaya ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Input Nilai Perkiraan Biaya ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame2.setName("internalFrame2"); // NOI18N
         internalFrame2.setLayout(null);
 
@@ -430,7 +430,7 @@ public final class DlgPerkiraanBiayaRanap extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Perkiraan Biaya Ranap ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Perkiraan Biaya Ranap ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -457,7 +457,7 @@ public final class DlgPerkiraanBiayaRanap extends javax.swing.JDialog {
         panelCari.setPreferredSize(new java.awt.Dimension(44, 44));
         panelCari.setLayout(new java.awt.GridLayout(2, 0, 0, 1));
 
-        Scroll3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)), "Berdasar Data Tarif Rumah Sakit 2 Tahun Terakhir", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11))); // NOI18N
+        Scroll3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)), "Berdasar Data Tarif Rumah Sakit 2 Tahun Terakhir", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11))); // NOI18N
         Scroll3.setName("Scroll3"); // NOI18N
         Scroll3.setPreferredSize(new java.awt.Dimension(452, 100));
 
@@ -467,7 +467,7 @@ public final class DlgPerkiraanBiayaRanap extends javax.swing.JDialog {
 
         panelCari.add(Scroll3);
 
-        Scroll4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)), "Berdasar Data Nilai Balik INACBG 2 Tahun Terakhir", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11))); // NOI18N
+        Scroll4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)), "Berdasar Data Nilai Balik INACBG 2 Tahun Terakhir", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11))); // NOI18N
         Scroll4.setName("Scroll4"); // NOI18N
         Scroll4.setPreferredSize(new java.awt.Dimension(452, 100));
 

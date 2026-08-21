@@ -222,7 +222,7 @@ public final class KeuanganCariRVPBPJS extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkan.setText("Hilangkan Pilihan");
@@ -238,7 +238,7 @@ public final class KeuanganCariRVPBPJS extends javax.swing.JDialog {
         jPopupMenu1.add(ppBersihkan);
 
         ppPilihSemua.setBackground(new java.awt.Color(255, 255, 254));
-        ppPilihSemua.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppPilihSemua.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppPilihSemua.setForeground(new java.awt.Color(50, 50, 50));
         ppPilihSemua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppPilihSemua.setText("Pilih Semua");
@@ -254,7 +254,7 @@ public final class KeuanganCariRVPBPJS extends javax.swing.JDialog {
         jPopupMenu1.add(ppPilihSemua);
 
         ppRincian.setBackground(new java.awt.Color(255, 255, 254));
-        ppRincian.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRincian.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppRincian.setForeground(new java.awt.Color(50, 50, 50));
         ppRincian.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppRincian.setText("Tampilkan Rincian");
@@ -270,7 +270,7 @@ public final class KeuanganCariRVPBPJS extends javax.swing.JDialog {
         jPopupMenu1.add(ppRincian);
 
         ppHilangkanRincian.setBackground(new java.awt.Color(255, 255, 254));
-        ppHilangkanRincian.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHilangkanRincian.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHilangkanRincian.setForeground(new java.awt.Color(50, 50, 50));
         ppHilangkanRincian.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHilangkanRincian.setText("Hilangkan Rincian");
@@ -294,7 +294,7 @@ public final class KeuanganCariRVPBPJS extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data RVP Piutang BPJS ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data RVP Piutang BPJS ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -348,7 +348,7 @@ public final class KeuanganCariRVPBPJS extends javax.swing.JDialog {
         });
         panelisi3.add(Tgl2);
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(50, 50, 50));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel10.setText("Piutang BPJS :");
@@ -356,7 +356,7 @@ public final class KeuanganCariRVPBPJS extends javax.swing.JDialog {
         jLabel10.setPreferredSize(new java.awt.Dimension(85, 23));
         panelisi3.add(jLabel10);
 
-        LCount.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        LCount.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         LCount.setForeground(new java.awt.Color(50, 50, 50));
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");
@@ -364,7 +364,7 @@ public final class KeuanganCariRVPBPJS extends javax.swing.JDialog {
         LCount.setPreferredSize(new java.awt.Dimension(140, 23));
         panelisi3.add(LCount);
 
-        jLabel13.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(50, 50, 50));
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel13.setText("Dibayar BPJS :");
@@ -372,7 +372,7 @@ public final class KeuanganCariRVPBPJS extends javax.swing.JDialog {
         jLabel13.setPreferredSize(new java.awt.Dimension(80, 23));
         panelisi3.add(jLabel13);
 
-        LCount2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        LCount2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         LCount2.setForeground(new java.awt.Color(50, 50, 50));
         LCount2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount2.setText("0");
@@ -434,7 +434,7 @@ public final class KeuanganCariRVPBPJS extends javax.swing.JDialog {
         });
         panelisi1.add(BtnAll);
 
-        jLabel15.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(50, 50, 50));
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel15.setName("jLabel15"); // NOI18N

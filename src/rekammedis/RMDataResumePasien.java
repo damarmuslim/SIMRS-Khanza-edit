@@ -290,7 +290,7 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnLaporanResume.setBackground(new java.awt.Color(255, 255, 254));
-        MnLaporanResume.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnLaporanResume.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnLaporanResume.setForeground(new java.awt.Color(50, 50, 50));
         MnLaporanResume.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnLaporanResume.setText("Laporan Resume Pasien");
@@ -304,7 +304,7 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
         jPopupMenu1.add(MnLaporanResume);
 
         MnInputDiagnosa.setBackground(new java.awt.Color(255, 255, 254));
-        MnInputDiagnosa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnInputDiagnosa.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnInputDiagnosa.setForeground(new java.awt.Color(50, 50, 50));
         MnInputDiagnosa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnInputDiagnosa.setText("Input Diagnosa Pasien");
@@ -318,7 +318,7 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
         jPopupMenu1.add(MnInputDiagnosa);
 
         ppBerkasDigital.setBackground(new java.awt.Color(255, 255, 254));
-        ppBerkasDigital.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBerkasDigital.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBerkasDigital.setForeground(new java.awt.Color(50, 50, 50));
         ppBerkasDigital.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBerkasDigital.setText("Berkas Digital Perawatan");
@@ -334,7 +334,7 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
         jPopupMenu1.add(ppBerkasDigital);
 
         MnSPBK.setBackground(new java.awt.Color(255, 255, 254));
-        MnSPBK.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSPBK.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSPBK.setForeground(new java.awt.Color(50, 50, 50));
         MnSPBK.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSPBK.setText("Surat Bukti Pelayanan Kesehatan (SBPK)");
@@ -350,7 +350,7 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
         jPopupMenu1.add(MnSPBK);
 
         MnSPBK2.setBackground(new java.awt.Color(255, 255, 254));
-        MnSPBK2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSPBK2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSPBK2.setForeground(new java.awt.Color(50, 50, 50));
         MnSPBK2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSPBK2.setText("Surat Bukti Pelayanan Kesehatan (SBPK) 2");
@@ -377,8 +377,8 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Resume Medis Pasien Rawat Jalan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Resume Medis Pasien Rawat Jalan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

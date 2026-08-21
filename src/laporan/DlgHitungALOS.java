@@ -175,7 +175,7 @@ public final class DlgHitungALOS extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnKelas1.setBackground(new java.awt.Color(255, 255, 254));
-        MnKelas1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKelas1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKelas1.setForeground(new java.awt.Color(50, 50, 50));
         MnKelas1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKelas1.setText("Filter Kamar Kelas 1");
@@ -189,7 +189,7 @@ public final class DlgHitungALOS extends javax.swing.JDialog {
         jPopupMenu1.add(MnKelas1);
 
         MnKelas2.setBackground(new java.awt.Color(255, 255, 254));
-        MnKelas2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKelas2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKelas2.setForeground(new java.awt.Color(50, 50, 50));
         MnKelas2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKelas2.setText("Filter Kamar Kelas 2");
@@ -203,7 +203,7 @@ public final class DlgHitungALOS extends javax.swing.JDialog {
         jPopupMenu1.add(MnKelas2);
 
         MnKelas3.setBackground(new java.awt.Color(255, 255, 254));
-        MnKelas3.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKelas3.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKelas3.setForeground(new java.awt.Color(50, 50, 50));
         MnKelas3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKelas3.setText("Filter Kamar Kelas 3");
@@ -217,7 +217,7 @@ public final class DlgHitungALOS extends javax.swing.JDialog {
         jPopupMenu1.add(MnKelas3);
 
         MnKelasVIP.setBackground(new java.awt.Color(255, 255, 254));
-        MnKelasVIP.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKelasVIP.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKelasVIP.setForeground(new java.awt.Color(50, 50, 50));
         MnKelasVIP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKelasVIP.setText("Filter Kamar Kelas VIP");
@@ -231,7 +231,7 @@ public final class DlgHitungALOS extends javax.swing.JDialog {
         jPopupMenu1.add(MnKelasVIP);
 
         MnKelasVVIP.setBackground(new java.awt.Color(255, 255, 254));
-        MnKelasVVIP.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKelasVVIP.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKelasVVIP.setForeground(new java.awt.Color(50, 50, 50));
         MnKelasVVIP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKelasVVIP.setText("Filter Kamar Kelas VVIP");
@@ -245,7 +245,7 @@ public final class DlgHitungALOS extends javax.swing.JDialog {
         jPopupMenu1.add(MnKelasVVIP);
 
         MnKelasUtama.setBackground(new java.awt.Color(255, 255, 254));
-        MnKelasUtama.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKelasUtama.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKelasUtama.setForeground(new java.awt.Color(50, 50, 50));
         MnKelasUtama.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKelasUtama.setText("Filter Kamar Kelas Utama");
@@ -270,7 +270,7 @@ public final class DlgHitungALOS extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Hitung ALOS ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Hitung ALOS ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -400,7 +400,7 @@ public final class DlgHitungALOS extends javax.swing.JDialog {
         TabRawat.setBackground(new java.awt.Color(255, 255, 255));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.setOpaque(true);
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {

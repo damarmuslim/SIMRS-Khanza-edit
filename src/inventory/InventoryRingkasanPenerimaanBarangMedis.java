@@ -166,7 +166,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.setName("Popup1"); // NOI18N
 
         MnKodeBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKodeBarangDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKodeBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeBarangDesc.setText("Urutkan Berdasar Kode Barang Descending");
@@ -182,7 +182,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnKodeBarangDesc);
 
         MnKodeBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKodeBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKodeBarangAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKodeBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKodeBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKodeBarangAsc.setText("Urutkan Berdasar Kode Barang Ascending");
@@ -198,7 +198,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnKodeBarangAsc);
 
         MnNamaBarangDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaBarangDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaBarangDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnNamaBarangDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaBarangDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaBarangDesc.setText("Urutkan Berdasar Nama Barang Descending");
@@ -214,7 +214,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnNamaBarangDesc);
 
         MnNamaBarangAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnNamaBarangAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnNamaBarangAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnNamaBarangAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnNamaBarangAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnNamaBarangAsc.setText("Urutkan Berdasar Nama Barang Ascending");
@@ -230,7 +230,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnNamaBarangAsc);
 
         MnKategoriAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKategoriAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKategoriAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKategoriAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnKategoriAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKategoriAsc.setText("Urutkan Berdasar Jenis Ascending");
@@ -246,7 +246,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnKategoriAsc);
 
         MnKategoriDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnKategoriDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKategoriDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnKategoriDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnKategoriDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnKategoriDesc.setText("Urutkan Berdasar Jenis Descending");
@@ -262,7 +262,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnKategoriDesc);
 
         MnSatuanDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnSatuanDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSatuanDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSatuanDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnSatuanDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSatuanDesc.setText("Urutkan Berdasar Satuan Descending");
@@ -278,7 +278,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnSatuanDesc);
 
         MnSatuanAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnSatuanAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSatuanAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSatuanAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnSatuanAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSatuanAsc.setText("Urutkan Berdasar Satuan Ascending");
@@ -294,7 +294,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnSatuanAsc);
 
         MnTotalAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnTotalAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnTotalAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnTotalAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnTotalAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnTotalAsc.setText("Urutkan Berdasar Total Ascending");
@@ -310,7 +310,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnTotalAsc);
 
         MnTotalDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnTotalDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnTotalDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnTotalDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnTotalDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnTotalDesc.setText("Urutkan Berdasar Total Descending");
@@ -326,7 +326,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnTotalDesc);
 
         MnJumlahAsc.setBackground(new java.awt.Color(255, 255, 254));
-        MnJumlahAsc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnJumlahAsc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnJumlahAsc.setForeground(new java.awt.Color(50, 50, 50));
         MnJumlahAsc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJumlahAsc.setText("Urutkan Berdasar Jumlah Ascending");
@@ -342,7 +342,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
         Popup1.add(MnJumlahAsc);
 
         MnJumlahDesc.setBackground(new java.awt.Color(255, 255, 254));
-        MnJumlahDesc.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnJumlahDesc.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnJumlahDesc.setForeground(new java.awt.Color(50, 50, 50));
         MnJumlahDesc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJumlahDesc.setText("Urutkan Berdasar Jumlah Descending");
@@ -366,7 +366,7 @@ public class InventoryRingkasanPenerimaanBarangMedis extends javax.swing.JDialog
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Ringkasan Penerimaan Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Ringkasan Penerimaan Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setAutoscrolls(true);
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));

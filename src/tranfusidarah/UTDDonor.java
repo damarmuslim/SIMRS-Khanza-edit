@@ -344,7 +344,7 @@ public final class UTDDonor extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppTampilkanBHPMedis.setBackground(new java.awt.Color(255, 255, 254));
-        ppTampilkanBHPMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppTampilkanBHPMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppTampilkanBHPMedis.setForeground(new java.awt.Color(50, 50, 50));
         ppTampilkanBHPMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTampilkanBHPMedis.setText("Tampilkan Penggunaan BHP Medis");
@@ -360,7 +360,7 @@ public final class UTDDonor extends javax.swing.JDialog {
         jPopupMenu1.add(ppTampilkanBHPMedis);
 
         ppTampilkanBHPPenunjang.setBackground(new java.awt.Color(255, 255, 254));
-        ppTampilkanBHPPenunjang.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppTampilkanBHPPenunjang.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppTampilkanBHPPenunjang.setForeground(new java.awt.Color(50, 50, 50));
         ppTampilkanBHPPenunjang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTampilkanBHPPenunjang.setText("Tampilkan Penggunaan BHP Non Medis");
@@ -376,7 +376,7 @@ public final class UTDDonor extends javax.swing.JDialog {
         jPopupMenu1.add(ppTampilkanBHPPenunjang);
 
         ppTampilkanBHPPenunjangDanMedis.setBackground(new java.awt.Color(255, 255, 254));
-        ppTampilkanBHPPenunjangDanMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppTampilkanBHPPenunjangDanMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppTampilkanBHPPenunjangDanMedis.setForeground(new java.awt.Color(50, 50, 50));
         ppTampilkanBHPPenunjangDanMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTampilkanBHPPenunjangDanMedis.setText("Tampilkan Penggunaan BHP Medis & Non Medis");
@@ -392,7 +392,7 @@ public final class UTDDonor extends javax.swing.JDialog {
         jPopupMenu1.add(ppTampilkanBHPPenunjangDanMedis);
 
         ppUbah.setBackground(new java.awt.Color(255, 255, 254));
-        ppUbah.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppUbah.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppUbah.setForeground(new java.awt.Color(50, 50, 50));
         ppUbah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppUbah.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -408,7 +408,7 @@ public final class UTDDonor extends javax.swing.JDialog {
         jPopupMenu1.add(ppUbah);
 
         ppHapusBHPMedis.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapusBHPMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapusBHPMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapusBHPMedis.setForeground(new java.awt.Color(50, 50, 50));
         ppHapusBHPMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapusBHPMedis.setText("Hapus Penggunaan BHP Medis");
@@ -424,7 +424,7 @@ public final class UTDDonor extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapusBHPMedis);
 
         ppHapusBHPNonMedis.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapusBHPNonMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapusBHPNonMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapusBHPNonMedis.setForeground(new java.awt.Color(50, 50, 50));
         ppHapusBHPNonMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapusBHPNonMedis.setText("Hapus Penggunaan BHP Non Medis");
@@ -440,7 +440,7 @@ public final class UTDDonor extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapusBHPNonMedis);
 
         ppHapusBHPMedisDanNonMedis.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapusBHPMedisDanNonMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapusBHPMedisDanNonMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapusBHPMedisDanNonMedis.setForeground(new java.awt.Color(50, 50, 50));
         ppHapusBHPMedisDanNonMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapusBHPMedisDanNonMedis.setText("Hapus Penggunaan BHP Medis & Non Medis");
@@ -456,7 +456,7 @@ public final class UTDDonor extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapusBHPMedisDanNonMedis);
 
         ppCekal.setBackground(new java.awt.Color(255, 255, 254));
-        ppCekal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppCekal.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppCekal.setForeground(new java.awt.Color(50, 50, 50));
         ppCekal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppCekal.setText("Cekal Darah");
@@ -483,14 +483,14 @@ public final class UTDDonor extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Donor Darah ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Donor Darah ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
         TabRawat.setBackground(new java.awt.Color(255, 255, 253));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -507,7 +507,7 @@ public final class UTDDonor extends javax.swing.JDialog {
         panelisi5.setPreferredSize(new java.awt.Dimension(450, 77));
         panelisi5.setLayout(new java.awt.GridLayout(2, 0));
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(237, 242, 232)), ".: Penggunaan BHP Medis ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(237, 242, 232)), ".: Penggunaan BHP Medis ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         jPanel3.setName("jPanel3"); // NOI18N
         jPanel3.setOpaque(false);
         jPanel3.setPreferredSize(new java.awt.Dimension(300, 102));
@@ -591,7 +591,7 @@ public final class UTDDonor extends javax.swing.JDialog {
 
         panelisi5.add(jPanel3);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(237, 242, 232)), ".: Penggunaan BHP Non Medis ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(237, 242, 232)), ".: Penggunaan BHP Non Medis ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         jPanel4.setName("jPanel4"); // NOI18N
         jPanel4.setOpaque(false);
         jPanel4.setPreferredSize(new java.awt.Dimension(300, 202));

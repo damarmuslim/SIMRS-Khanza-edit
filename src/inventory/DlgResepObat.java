@@ -323,7 +323,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         Popup2.setName("Popup2"); // NOI18N
 
         ppResepObat.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat.setText("Cetak Aturan Pakai Model 1");
@@ -339,7 +339,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         Popup2.add(ppResepObat);
 
         ppResepObat1.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat1.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat1.setText("Cetak Aturan Pakai Model 2");
@@ -355,7 +355,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         Popup2.add(ppResepObat1);
 
         ppResepObat2.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat2.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat2.setText("Cetak Aturan Pakai Model 3");
@@ -371,7 +371,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         Popup2.add(ppResepObat2);
 
         ppLabelDataObat.setBackground(new java.awt.Color(255, 255, 254));
-        ppLabelDataObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppLabelDataObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppLabelDataObat.setForeground(new java.awt.Color(50, 50, 50));
         ppLabelDataObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppLabelDataObat.setText("Label Daftar Obat");
@@ -387,7 +387,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         Popup2.add(ppLabelDataObat);
 
         ppLembarObat.setBackground(new java.awt.Color(255, 255, 254));
-        ppLembarObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppLembarObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppLembarObat.setForeground(new java.awt.Color(50, 50, 50));
         ppLembarObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppLembarObat.setText("Lembar Pemberian Obat 1");
@@ -403,7 +403,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         Popup2.add(ppLembarObat);
 
         ppLembarObat1.setBackground(new java.awt.Color(255, 255, 254));
-        ppLembarObat1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppLembarObat1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppLembarObat1.setForeground(new java.awt.Color(50, 50, 50));
         ppLembarObat1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppLembarObat1.setText("Lembar Pemberian Obat 2");
@@ -419,7 +419,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         Popup2.add(ppLembarObat1);
 
         ppLembarObat2.setBackground(new java.awt.Color(255, 255, 254));
-        ppLembarObat2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppLembarObat2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppLembarObat2.setForeground(new java.awt.Color(50, 50, 50));
         ppLembarObat2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppLembarObat2.setText("Lembar Pemberian Obat 3");
@@ -435,7 +435,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         Popup2.add(ppLembarObat2);
 
         ppUbahAturanPakai.setBackground(new java.awt.Color(255, 255, 254));
-        ppUbahAturanPakai.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppUbahAturanPakai.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppUbahAturanPakai.setForeground(new java.awt.Color(50, 50, 50));
         ppUbahAturanPakai.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppUbahAturanPakai.setText("Ubah Aturan Pakai Obat Umum");
@@ -451,7 +451,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         Popup2.add(ppUbahAturanPakai);
 
         ppUbahAturanPakai1.setBackground(new java.awt.Color(255, 255, 254));
-        ppUbahAturanPakai1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppUbahAturanPakai1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppUbahAturanPakai1.setForeground(new java.awt.Color(50, 50, 50));
         ppUbahAturanPakai1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppUbahAturanPakai1.setText("Ubah Aturan Pakai Obat Racikan");
@@ -471,7 +471,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         WindowInput3.setUndecorated(true);
         WindowInput3.setResizable(false);
 
-        internalFrame4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Ubah Aturan Pakai Obat Umum ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Ubah Aturan Pakai Obat Umum ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame4.setName("internalFrame4"); // NOI18N
         internalFrame4.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -554,7 +554,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         WindowInput4.setUndecorated(true);
         WindowInput4.setResizable(false);
 
-        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Ubah Aturan Pakai Obat Racik ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Ubah Aturan Pakai Obat Racik ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame5.setName("internalFrame5"); // NOI18N
         internalFrame5.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -644,7 +644,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Resep Obat ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Resep Obat ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -1005,7 +1005,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
 
         ChkRM.setBorder(null);
         ChkRM.setSelected(true);
-        ChkRM.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkRM.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkRM.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkRM.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkRM.setName("ChkRM"); // NOI18N
@@ -1077,7 +1077,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
 
         TabData.setBackground(new java.awt.Color(254, 255, 254));
         TabData.setForeground(new java.awt.Color(50, 50, 50));
-        TabData.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabData.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabData.setName("TabData"); // NOI18N
         TabData.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

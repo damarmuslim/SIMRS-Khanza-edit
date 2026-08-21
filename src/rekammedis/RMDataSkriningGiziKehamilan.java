@@ -226,7 +226,7 @@ public final class RMDataSkriningGiziKehamilan extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnSkriningGizi.setBackground(new java.awt.Color(255, 255, 254));
-        MnSkriningGizi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSkriningGizi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSkriningGizi.setForeground(new java.awt.Color(50, 50, 50));
         MnSkriningGizi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSkriningGizi.setText("Formulir Skrining Gizi Kehamilan");
@@ -257,8 +257,8 @@ public final class RMDataSkriningGiziKehamilan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Skrining Gizi Kehamilan/Obstetri/Nifas ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Skrining Gizi Kehamilan/Obstetri/Nifas ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -594,7 +594,7 @@ public final class RMDataSkriningGiziKehamilan extends javax.swing.JDialog {
 
         ChkKejadian.setBorder(null);
         ChkKejadian.setSelected(true);
-        ChkKejadian.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkKejadian.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkKejadian.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkKejadian.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkKejadian.setName("ChkKejadian"); // NOI18N
@@ -815,7 +815,7 @@ public final class RMDataSkriningGiziKehamilan extends javax.swing.JDialog {
 
         jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel25.setText("*) (Jika skor ≥1 dilakukan pengkajian lanjut oleh Dietisien)");
-        jLabel25.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        jLabel25.setFont(new java.awt.Font("Segoe UI", 2, 11)); // NOI18N
         jLabel25.setName("jLabel25"); // NOI18N
         FormInput.add(jLabel25);
         jLabel25.setBounds(79, 190, 530, 23);

@@ -288,7 +288,7 @@ public class PerpustakaanBayarDenda extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Bayar Denda Peminjaman Perpustakaan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Bayar Denda Peminjaman Perpustakaan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -460,7 +460,7 @@ public class PerpustakaanBayarDenda extends javax.swing.JDialog {
         BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
         BtnCari.setMnemonic('1');
         BtnCari.setToolTipText("Alt+1");
-        BtnCari.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnCari.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnCari.setName("BtnCari"); // NOI18N
         BtnCari.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnCari.addActionListener(new java.awt.event.ActionListener() {
@@ -481,7 +481,7 @@ public class PerpustakaanBayarDenda extends javax.swing.JDialog {
         BtnAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
         BtnAll.setMnemonic('2');
         BtnAll.setToolTipText("Alt+2");
-        BtnAll.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnAll.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnAll.setName("BtnAll"); // NOI18N
         BtnAll.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnAll.addActionListener(new java.awt.event.ActionListener() {
@@ -561,7 +561,7 @@ public class PerpustakaanBayarDenda extends javax.swing.JDialog {
         btnAng.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         btnAng.setMnemonic('3');
         btnAng.setToolTipText("Alt+3");
-        btnAng.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnAng.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnAng.setName("btnAng"); // NOI18N
         btnAng.setPreferredSize(new java.awt.Dimension(100, 30));
         btnAng.addActionListener(new java.awt.event.ActionListener() {
@@ -594,7 +594,7 @@ public class PerpustakaanBayarDenda extends javax.swing.JDialog {
         btnInv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         btnInv.setMnemonic('1');
         btnInv.setToolTipText("Alt+1");
-        btnInv.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnInv.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnInv.setName("btnInv"); // NOI18N
         btnInv.setPreferredSize(new java.awt.Dimension(100, 30));
         btnInv.addActionListener(new java.awt.event.ActionListener() {
@@ -615,7 +615,7 @@ public class PerpustakaanBayarDenda extends javax.swing.JDialog {
         TabRawat.setBackground(new java.awt.Color(255, 255, 254));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)));
         TabRawat.setForeground(new java.awt.Color(50,50,50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -742,7 +742,7 @@ public class PerpustakaanBayarDenda extends javax.swing.JDialog {
         BtnDenda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         BtnDenda.setMnemonic('3');
         BtnDenda.setToolTipText("Alt+3");
-        BtnDenda.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnDenda.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnDenda.setName("BtnDenda"); // NOI18N
         BtnDenda.setPreferredSize(new java.awt.Dimension(100, 30));
         BtnDenda.addActionListener(new java.awt.event.ActionListener() {

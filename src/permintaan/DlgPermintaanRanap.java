@@ -236,7 +236,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Permintaan Rawat Inap ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Permintaan Rawat Inap ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -758,7 +758,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         BtnKamarInap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKamarInap.setText("Kamar Inap");
         BtnKamarInap.setFocusPainted(false);
-        BtnKamarInap.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKamarInap.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKamarInap.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKamarInap.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKamarInap.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -775,7 +775,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         BtnRiwayatPasien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnRiwayatPasien.setText("Riwayat Perawatan");
         BtnRiwayatPasien.setFocusPainted(false);
-        BtnRiwayatPasien.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnRiwayatPasien.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnRiwayatPasien.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnRiwayatPasien.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnRiwayatPasien.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -792,7 +792,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         BtnSuratPermintaan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnSuratPermintaan.setText("Surat Permintaan Ranap");
         BtnSuratPermintaan.setFocusPainted(false);
-        BtnSuratPermintaan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnSuratPermintaan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnSuratPermintaan.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnSuratPermintaan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnSuratPermintaan.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -809,7 +809,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         BtnSuratPRI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnSuratPRI.setText("Perintah Rawat Inap BPJS");
         BtnSuratPRI.setFocusPainted(false);
-        BtnSuratPRI.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnSuratPRI.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnSuratPRI.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnSuratPRI.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnSuratPRI.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -826,7 +826,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         BtnPersetujuanRanap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnPersetujuanRanap.setText("Persetujuan Rawat Inap");
         BtnPersetujuanRanap.setFocusPainted(false);
-        BtnPersetujuanRanap.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnPersetujuanRanap.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnPersetujuanRanap.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnPersetujuanRanap.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnPersetujuanRanap.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -843,7 +843,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         BtnPernyataanMemilihDPJP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnPernyataanMemilihDPJP.setText("Pernyataan Memilih DPJP");
         BtnPernyataanMemilihDPJP.setFocusPainted(false);
-        BtnPernyataanMemilihDPJP.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnPernyataanMemilihDPJP.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnPernyataanMemilihDPJP.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnPernyataanMemilihDPJP.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnPernyataanMemilihDPJP.setMargin(new java.awt.Insets(1, 1, 1, 1));

@@ -272,7 +272,7 @@ public final class RMSkriningRisikoKankerServiks extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnSkriningRisikoKanker.setBackground(new java.awt.Color(255, 255, 254));
-        MnSkriningRisikoKanker.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSkriningRisikoKanker.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSkriningRisikoKanker.setForeground(new java.awt.Color(50, 50, 50));
         MnSkriningRisikoKanker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSkriningRisikoKanker.setText("Formulir Skrining Risiko Kanker Serviks");
@@ -304,8 +304,8 @@ public final class RMSkriningRisikoKankerServiks extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Skrining Risiko Kanker Serviks ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Skrining Risiko Kanker Serviks ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setPreferredSize(new java.awt.Dimension(462, 1300));
         internalFrame1.setRequestFocusEnabled(false);
@@ -668,7 +668,7 @@ public final class RMSkriningRisikoKankerServiks extends javax.swing.JDialog {
 
         ChkKejadian.setBorder(null);
         ChkKejadian.setSelected(true);
-        ChkKejadian.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkKejadian.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkKejadian.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkKejadian.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkKejadian.setName("ChkKejadian"); // NOI18N

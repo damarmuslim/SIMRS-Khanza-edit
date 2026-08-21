@@ -29,6 +29,14 @@ public class SIMRSKhanza {
         UIManager.put("Component.arrowType", "triangle");
         UIManager.put("Spinner.buttonStyle", "button");
         UIManager.put("ComboBox.squareButton", false);
+        UIManager.put("Component.arc", 8);
+        UIManager.put("Button.arc", 8);
+        UIManager.put("TextComponent.arc", 6);
+        UIManager.put("Component.focusWidth", 1);
+        UIManager.put("Component.innerFocusWidth", 0);
+        UIManager.put("defaultFont", new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+        UIManager.put("Button.toolbar.hoverBackground", new java.awt.Color(10, 155, 168));
+        UIManager.put("Button.toolbar.pressedBackground", new java.awt.Color(8, 126, 139));
 
         widget.ModernStyle.pasang();
 

@@ -282,7 +282,7 @@ public class DlgPermintaanPelayananInformasiObat extends javax.swing.JDialog {
         WindowInput.setUndecorated(true);
         WindowInput.setResizable(false);
 
-        internalFrame2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Jawaban Permintaan Pelayanan Informasi Obat ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 70, 40))); // NOI18N
+        internalFrame2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Jawaban Permintaan Pelayanan Informasi Obat ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 70, 40))); // NOI18N
         internalFrame2.setName("internalFrame2"); // NOI18N
         internalFrame2.setLayout(null);
 
@@ -377,7 +377,7 @@ public class DlgPermintaanPelayananInformasiObat extends javax.swing.JDialog {
         btnPetugas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         btnPetugas.setMnemonic('3');
         btnPetugas.setToolTipText("Alt+3");
-        btnPetugas.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        btnPetugas.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnPetugas.setName("btnPetugas"); // NOI18N
         btnPetugas.setPreferredSize(new java.awt.Dimension(100, 30));
         btnPetugas.addActionListener(new java.awt.event.ActionListener() {
@@ -497,7 +497,7 @@ public class DlgPermintaanPelayananInformasiObat extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Permintaan Pelayanan Informasi Obat ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Permintaan Pelayanan Informasi Obat ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -1029,7 +1029,7 @@ public class DlgPermintaanPelayananInformasiObat extends javax.swing.JDialog {
         BtnRiwayatPasien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnRiwayatPasien.setText("Riwayat Perawatan");
         BtnRiwayatPasien.setFocusPainted(false);
-        BtnRiwayatPasien.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnRiwayatPasien.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnRiwayatPasien.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnRiwayatPasien.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnRiwayatPasien.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1046,7 +1046,7 @@ public class DlgPermintaanPelayananInformasiObat extends javax.swing.JDialog {
         BtnJawabanApoteker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnJawabanApoteker.setText("Jawaban Apoteker");
         BtnJawabanApoteker.setFocusPainted(false);
-        BtnJawabanApoteker.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnJawabanApoteker.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnJawabanApoteker.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnJawabanApoteker.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnJawabanApoteker.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1063,7 +1063,7 @@ public class DlgPermintaanPelayananInformasiObat extends javax.swing.JDialog {
         BtnDokumentasiPIO.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnDokumentasiPIO.setText("Dokumentasi PIO");
         BtnDokumentasiPIO.setFocusPainted(false);
-        BtnDokumentasiPIO.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnDokumentasiPIO.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnDokumentasiPIO.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnDokumentasiPIO.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnDokumentasiPIO.setMargin(new java.awt.Insets(1, 1, 1, 1));

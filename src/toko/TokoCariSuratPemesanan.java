@@ -143,7 +143,7 @@ public class TokoCariSuratPemesanan extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppHapus.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapus.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapus.setForeground(new java.awt.Color(50, 50, 50));
         ppHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapus.setText("Hapus Data Surat Pemesanan");
@@ -159,7 +159,7 @@ public class TokoCariSuratPemesanan extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapus);
 
         ppDatang.setBackground(new java.awt.Color(255, 255, 254));
-        ppDatang.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppDatang.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppDatang.setForeground(new java.awt.Color(50, 50, 50));
         ppDatang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppDatang.setText("Sudah Datang");
@@ -175,7 +175,7 @@ public class TokoCariSuratPemesanan extends javax.swing.JDialog {
         jPopupMenu1.add(ppDatang);
 
         ppProses.setBackground(new java.awt.Color(255, 255, 254));
-        ppProses.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppProses.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppProses.setForeground(new java.awt.Color(50, 50, 50));
         ppProses.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppProses.setText("Proses Pesan");
@@ -199,7 +199,7 @@ public class TokoCariSuratPemesanan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Surat Pemesanan Barang Toko / Minimarket / Koperasi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Surat Pemesanan Barang Toko / Minimarket / Koperasi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

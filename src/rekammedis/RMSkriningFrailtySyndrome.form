@@ -17,7 +17,7 @@
               <Color blue="fe" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="11" style="0"/>
+              <Font name="Segoe UI" size="11" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="32" green="32" red="32" type="rgb"/>
@@ -100,13 +100,13 @@
                   <Color PropertyName="color" blue="eb" green="f5" red="f0" type="rgb"/>
                 </LineBorder>
               </Border>
-              <Font PropertyName="font" name="Tahoma" size="11" style="0"/>
+              <Font PropertyName="font" name="Segoe UI" size="11" style="0"/>
               <Color PropertyName="color" blue="32" green="32" red="32" type="rgb"/>
             </TitledBorder>
           </Border>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Tahoma" size="12" style="2"/>
+          <Font name="Segoe UI" size="12" style="2"/>
         </Property>
         <Property name="name" type="java.lang.String" value="internalFrame1" noResource="true"/>
       </Properties>
@@ -832,7 +832,7 @@
                         </Property>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="1"/>
+                          <Font name="Segoe UI" size="11" style="1"/>
                         </Property>
                         <Property name="horizontalAlignment" type="int" value="0"/>
                         <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -1141,7 +1141,7 @@
                         <Property name="horizontalAlignment" type="int" value="2"/>
                         <Property name="text" type="java.lang.String" value="R = Resistensi"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="1"/>
+                          <Font name="Segoe UI" size="11" style="1"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="jLabel77" noResource="true"/>
                       </Properties>
@@ -1180,7 +1180,7 @@
                         <Property name="horizontalAlignment" type="int" value="2"/>
                         <Property name="text" type="java.lang.String" value="A = Aktivitas 1"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="1"/>
+                          <Font name="Segoe UI" size="11" style="1"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="jLabel79" noResource="true"/>
                       </Properties>
@@ -1253,7 +1253,7 @@
                         <Property name="horizontalAlignment" type="int" value="2"/>
                         <Property name="text" type="java.lang.String" value="P = Penyakit Lebih Dari 5"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="1"/>
+                          <Font name="Segoe UI" size="11" style="1"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="jLabel81" noResource="true"/>
                       </Properties>
@@ -1565,7 +1565,7 @@
                         <Property name="horizontalAlignment" type="int" value="2"/>
                         <Property name="text" type="java.lang.String" value="U = Usaha Berjalan"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="1"/>
+                          <Font name="Segoe UI" size="11" style="1"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="jLabel83" noResource="true"/>
                       </Properties>
@@ -1755,7 +1755,7 @@
                         <Property name="horizontalAlignment" type="int" value="2"/>
                         <Property name="text" type="java.lang.String" value="H = Hilangnya Berat Badan"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="1"/>
+                          <Font name="Segoe UI" size="11" style="1"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="jLabel90" noResource="true"/>
                       </Properties>
@@ -1794,7 +1794,7 @@
                         <Property name="horizontalAlignment" type="int" value="2"/>
                         <Property name="text" type="java.lang.String" value="Keterangan perhitungan berat badan dalam persen : [(berat badan 1 tahun yang lalu - berat badan sekarang)/ "/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="2"/>
+                          <Font name="Segoe UI" size="11" style="2"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="jLabel97" noResource="true"/>
                       </Properties>
@@ -1809,7 +1809,7 @@
                         <Property name="horizontalAlignment" type="int" value="2"/>
                         <Property name="text" type="java.lang.String" value="berat badan satu tahun lalu)] x 100 %"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="2"/>
+                          <Font name="Segoe UI" size="11" style="2"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="jLabel98" noResource="true"/>
                       </Properties>

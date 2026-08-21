@@ -1246,7 +1246,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanDr.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanTindakanDr.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanTindakanDr.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanTindakanDr.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanTindakanDr.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanTindakanDr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanTindakanDr.setText("Bersihkan Pilihan");
@@ -1261,7 +1261,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanDr.add(ppBersihkanTindakanDr);
 
         ppSemuaTindakanDr.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaTindakanDr.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaTindakanDr.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaTindakanDr.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaTindakanDr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaTindakanDr.setText("Pilih Semua");
@@ -1278,7 +1278,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanDrBayar.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanTindakanDrBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanTindakanDrBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanTindakanDrBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanTindakanDrBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanTindakanDrBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanTindakanDrBayar.setText("Bersihkan Pilihan");
@@ -1293,7 +1293,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanDrBayar.add(ppBersihkanTindakanDrBayar);
 
         ppSemuaTindakanDrBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaTindakanDrBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaTindakanDrBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaTindakanDrBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaTindakanDrBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaTindakanDrBayar.setText("Pilih Semua");
@@ -1310,7 +1310,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanPr.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanTindakanPr.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanTindakanPr.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanTindakanPr.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanTindakanPr.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanTindakanPr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanTindakanPr.setText("Bersihkan Pilihan");
@@ -1325,7 +1325,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanPr.add(ppBersihkanTindakanPr);
 
         ppSemuaTindakanPr.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaTindakanPr.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaTindakanPr.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaTindakanPr.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaTindakanPr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaTindakanPr.setText("Pilih Semua");
@@ -1342,7 +1342,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanPrBayar.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanTindakanPrBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanTindakanPrBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanTindakanPrBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanTindakanPrBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanTindakanPrBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanTindakanPrBayar.setText("Bersihkan Pilihan");
@@ -1357,7 +1357,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanPrBayar.add(ppBersihkanTindakanPrBayar);
 
         ppSemuaTindakanPrBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaTindakanPrBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaTindakanPrBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaTindakanPrBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaTindakanPrBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaTindakanPrBayar.setText("Pilih Semua");
@@ -1374,7 +1374,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanDrPr.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanTindakanDrPr.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanTindakanDrPr.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanTindakanDrPr.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanTindakanDrPr.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanTindakanDrPr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanTindakanDrPr.setText("Bersihkan Pilihan");
@@ -1389,7 +1389,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanDrPr.add(ppBersihkanTindakanDrPr);
 
         ppSemuaTindakanDrPr.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaTindakanDrPr.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaTindakanDrPr.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaTindakanDrPr.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaTindakanDrPr.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaTindakanDrPr.setText("Pilih Semua");
@@ -1406,7 +1406,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanDrPrBayar.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanTindakanDrPrBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanTindakanDrPrBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanTindakanDrPrBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanTindakanDrPrBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanTindakanDrPrBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanTindakanDrPrBayar.setText("Bersihkan Pilihan");
@@ -1421,7 +1421,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupTindakanDrPrBayar.add(ppBersihkanTindakanDrPrBayar);
 
         ppSemuaTindakanDrPrBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaTindakanDrPrBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaTindakanDrPrBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaTindakanDrPrBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaTindakanDrPrBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaTindakanDrPrBayar.setText("Pilih Semua");
@@ -1438,7 +1438,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupRadiologi.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanRadiologi.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanRadiologi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanRadiologi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanRadiologi.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanRadiologi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanRadiologi.setText("Bersihkan Pilihan");
@@ -1453,7 +1453,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupRadiologi.add(ppBersihkanRadiologi);
 
         ppSemuaRadiologi.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaRadiologi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaRadiologi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaRadiologi.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaRadiologi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaRadiologi.setText("Pilih Semua");
@@ -1470,7 +1470,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupRadiologiBayar.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanRadiologiBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanRadiologiBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanRadiologiBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanRadiologiBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanRadiologiBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanRadiologiBayar.setText("Bersihkan Pilihan");
@@ -1485,7 +1485,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupRadiologiBayar.add(ppBersihkanRadiologiBayar);
 
         ppSemuaRadiologiBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaRadiologiBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaRadiologiBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaRadiologiBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaRadiologiBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaRadiologiBayar.setText("Pilih Semua");
@@ -1502,7 +1502,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupLaborat.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanLaborat.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanLaborat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanLaborat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanLaborat.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanLaborat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanLaborat.setText("Bersihkan Pilihan");
@@ -1517,7 +1517,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupLaborat.add(ppBersihkanLaborat);
 
         ppSemuaLaborat.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaLaborat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaLaborat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaLaborat.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaLaborat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaLaborat.setText("Pilih Semua");
@@ -1534,7 +1534,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupDetailLaborat.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanDetailLaborat.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanDetailLaborat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanDetailLaborat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanDetailLaborat.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanDetailLaborat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanDetailLaborat.setText("Bersihkan Pilihan");
@@ -1549,7 +1549,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupDetailLaborat.add(ppBersihkanDetailLaborat);
 
         ppSemuaDetailLaborat.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaDetailLaborat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaDetailLaborat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaDetailLaborat.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaDetailLaborat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaDetailLaborat.setText("Pilih Semua");
@@ -1566,7 +1566,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupLaboratBayar.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanLaboratBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanLaboratBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanLaboratBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanLaboratBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanLaboratBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanLaboratBayar.setText("Bersihkan Pilihan");
@@ -1581,7 +1581,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupLaboratBayar.add(ppBersihkanLaboratBayar);
 
         ppSemuaLaboratBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaLaboratBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaLaboratBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaLaboratBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaLaboratBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaLaboratBayar.setText("Pilih Semua");
@@ -1598,7 +1598,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupDetailLaboratBayar.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanDetailLaboratBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanDetailLaboratBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanDetailLaboratBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanDetailLaboratBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanDetailLaboratBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanDetailLaboratBayar.setText("Bersihkan Pilihan");
@@ -1613,7 +1613,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupDetailLaboratBayar.add(ppBersihkanDetailLaboratBayar);
 
         ppSemuaDetailLaboratBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaDetailLaboratBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaDetailLaboratBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaDetailLaboratBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaDetailLaboratBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaDetailLaboratBayar.setText("Pilih Semua");
@@ -1630,7 +1630,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupObat.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanObat.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanObat.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanObat.setText("Bersihkan Pilihan");
@@ -1645,7 +1645,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupObat.add(ppBersihkanObat);
 
         ppSemuaObat.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaObat.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaObat.setText("Pilih Semua");
@@ -1662,7 +1662,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupObatBayar.setBackground(new java.awt.Color(255, 255, 254));
 
         ppBersihkanObatBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkanObatBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkanObatBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkanObatBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkanObatBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkanObatBayar.setText("Bersihkan Pilihan");
@@ -1677,7 +1677,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         PopupObatBayar.add(ppBersihkanObatBayar);
 
         ppSemuaObatBayar.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemuaObatBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemuaObatBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemuaObatBayar.setForeground(new java.awt.Color(50, 50, 50));
         ppSemuaObatBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemuaObatBayar.setText("Pilih Semua");
@@ -1700,7 +1700,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Billing/Pembayaran Parsial Rawat Jalan Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Billing/Pembayaran Parsial Rawat Jalan Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
         panelGlass1.setPreferredSize(new java.awt.Dimension(100, 45));
@@ -1858,7 +1858,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         TagihanPPN.setEditable(false);
         TagihanPPN.setText("0");
-        TagihanPPN.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        TagihanPPN.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         TagihanPPN.setHighlighter(null);
         TagihanPPN.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -1935,7 +1935,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         TKembali.setEditable(false);
         TKembali.setText("0");
-        TKembali.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        TKembali.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         TKembali.setHighlighter(null);
         panelGlass8.add(TKembali);
         TKembali.setBounds(91, 180, 230, 23);
@@ -1982,7 +1982,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         TtlSemua.setEditable(false);
         TtlSemua.setText("0");
-        TtlSemua.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        TtlSemua.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         TtlSemua.setHighlighter(null);
         TtlSemua.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -2002,7 +2002,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         TabRawat.setBackground(new java.awt.Color(255, 255, 253));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 TabRawatMouseClicked(evt);
@@ -2049,7 +2049,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         internalFrame2.add(panelGlass7, java.awt.BorderLayout.PAGE_START);
 
-        Scroll3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Tindakan ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        Scroll3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Tindakan ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         Scroll3.setComponentPopupMenu(PopupTindakanDr);
         Scroll3.setPreferredSize(new java.awt.Dimension(540, 500));
 
@@ -2058,7 +2058,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         internalFrame2.add(Scroll3, java.awt.BorderLayout.WEST);
 
-        Scroll4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        Scroll4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         Scroll4.setComponentPopupMenu(PopupTindakanDrBayar);
         Scroll4.setPreferredSize(new java.awt.Dimension(400, 404));
 
@@ -2114,7 +2114,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         internalFrame3.add(panelGlass10, java.awt.BorderLayout.PAGE_START);
 
-        Scroll5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Tindakan ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        Scroll5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Tindakan ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         Scroll5.setComponentPopupMenu(PopupTindakanPr);
         Scroll5.setPreferredSize(new java.awt.Dimension(540, 500));
 
@@ -2133,7 +2133,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         internalFrame3.add(Scroll5, java.awt.BorderLayout.WEST);
 
-        Scroll6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        Scroll6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         Scroll6.setComponentPopupMenu(PopupTindakanPrBayar);
         Scroll6.setPreferredSize(new java.awt.Dimension(400, 404));
 
@@ -2219,7 +2219,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         internalFrame4.add(panelGlass11, java.awt.BorderLayout.PAGE_START);
 
-        Scroll7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Tindakan ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        Scroll7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Tindakan ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         Scroll7.setComponentPopupMenu(PopupTindakanDrPr);
         Scroll7.setPreferredSize(new java.awt.Dimension(540, 500));
 
@@ -2228,7 +2228,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         internalFrame4.add(Scroll7, java.awt.BorderLayout.WEST);
 
-        Scroll8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        Scroll8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         Scroll8.setComponentPopupMenu(PopupTindakanDrPrBayar);
         Scroll8.setPreferredSize(new java.awt.Dimension(400, 404));
 
@@ -2247,7 +2247,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         internalFrame5.setBorder(null);
         internalFrame5.setLayout(new java.awt.BorderLayout(1, 1));
 
-        Scroll10.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Pemeriksaan ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        Scroll10.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Pemeriksaan ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         Scroll10.setComponentPopupMenu(PopupRadiologi);
         Scroll10.setPreferredSize(new java.awt.Dimension(540, 500));
 
@@ -2256,7 +2256,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         internalFrame5.add(Scroll10, java.awt.BorderLayout.WEST);
 
-        Scroll11.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        Scroll11.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         Scroll11.setComponentPopupMenu(PopupRadiologiBayar);
         Scroll11.setPreferredSize(new java.awt.Dimension(400, 404));
 
@@ -2347,12 +2347,12 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         internalFrame6.add(panelGlass12, java.awt.BorderLayout.PAGE_START);
 
-        internalFrame7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Pemeriksaan ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Pemeriksaan ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame7.setLayout(new java.awt.BorderLayout(1, 1));
 
         TabRawatLaborat.setBackground(new java.awt.Color(255, 255, 253));
         TabRawatLaborat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawatLaborat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawatLaborat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawatLaborat.setPreferredSize(new java.awt.Dimension(540, 500));
         TabRawatLaborat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -2384,12 +2384,12 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         internalFrame6.add(internalFrame7, java.awt.BorderLayout.WEST);
 
-        internalFrame8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame8.setLayout(new java.awt.BorderLayout(1, 1));
 
         TabRawatLaboratBayar.setBackground(new java.awt.Color(255, 255, 253));
         TabRawatLaboratBayar.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawatLaboratBayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawatLaboratBayar.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawatLaboratBayar.setPreferredSize(new java.awt.Dimension(540, 500));
         TabRawatLaboratBayar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -2437,7 +2437,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
         internalFrame9.setForeground(new java.awt.Color(50, 50, 50));
         internalFrame9.setLayout(new java.awt.BorderLayout(1, 1));
 
-        Scroll13.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Obat ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        Scroll13.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Daftar Obat ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         Scroll13.setComponentPopupMenu(PopupObat);
         Scroll13.setPreferredSize(new java.awt.Dimension(540, 500));
         Scroll13.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -2451,7 +2451,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
 
         internalFrame9.add(Scroll13, java.awt.BorderLayout.WEST);
 
-        Scroll17.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        Scroll17.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)), " Sudah Dibayar ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         Scroll17.setComponentPopupMenu(PopupObatBayar);
         Scroll17.setPreferredSize(new java.awt.Dimension(400, 404));
 

@@ -308,7 +308,7 @@ public final class RMSkriningNutrisiLansia extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnSkriningNutrisi.setBackground(new java.awt.Color(255, 255, 254));
-        MnSkriningNutrisi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSkriningNutrisi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSkriningNutrisi.setForeground(new java.awt.Color(50, 50, 50));
         MnSkriningNutrisi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSkriningNutrisi.setText("Formulir Skrining Nutrisi Pasien Lansia");
@@ -333,8 +333,8 @@ public final class RMSkriningNutrisiLansia extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Skrining Nutrisi Pasien Lansia ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Skrining Nutrisi Pasien Lansia ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -695,7 +695,7 @@ public final class RMSkriningNutrisiLansia extends javax.swing.JDialog {
 
         ChkKejadian.setBorder(null);
         ChkKejadian.setSelected(true);
-        ChkKejadian.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkKejadian.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkKejadian.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkKejadian.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkKejadian.setName("ChkKejadian"); // NOI18N
@@ -984,7 +984,7 @@ public final class RMSkriningNutrisiLansia extends javax.swing.JDialog {
 
         jLabel44.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel44.setText("Hasil Skrining :");
-        jLabel44.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        jLabel44.setFont(new java.awt.Font("Segoe UI", 2, 11)); // NOI18N
         jLabel44.setName("jLabel44"); // NOI18N
         FormInput.add(jLabel44);
         jLabel44.setBounds(44, 360, 100, 23);
@@ -1189,7 +1189,7 @@ public final class RMSkriningNutrisiLansia extends javax.swing.JDialog {
 
         LabelSkrining.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LabelSkrining.setText("Status Gizi Normal");
-        LabelSkrining.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        LabelSkrining.setFont(new java.awt.Font("Segoe UI", 2, 11)); // NOI18N
         LabelSkrining.setName("LabelSkrining"); // NOI18N
         FormInput.add(LabelSkrining);
         LabelSkrining.setBounds(124, 360, 380, 23);

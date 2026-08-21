@@ -21,14 +21,18 @@ import java.awt.*;
  */
 public class ModernStyle {
 
-    // ---------- PALET ----------
-    public static final Color BG      = new Color(250, 250, 252);
-    public static final Color CARD    = Color.WHITE;
-    public static final Color TEKS    = new Color(38, 42, 51);
-    public static final Color LABEL   = new Color(105, 112, 125);
-    public static final Color GARIS   = new Color(222, 226, 232);
-    public static final Color AKSEN   = new Color(37, 99, 235);
-    public static final Color HEADING = new Color(30, 34, 42);
+    // ---------- PALET (Navy/Teal, design system SIMRS Khanza) ----------
+    public static final Color BG      = new Color(0xF4, 0xF7, 0xF9); // Background
+    public static final Color CARD    = Color.WHITE;                 // Surface
+    public static final Color TEKS    = new Color(0x26, 0x37, 0x46); // Text Primary
+    public static final Color LABEL   = new Color(0x68, 0x78, 0x87); // Text Secondary
+    public static final Color GARIS   = new Color(0xD9, 0xE2, 0xE8); // Border
+    public static final Color AKSEN   = new Color(0x08, 0x7E, 0x8B); // Primary Teal
+    public static final Color AKSEN_HOVER = new Color(0x0A, 0x9B, 0xA8); // Teal Hover
+    public static final Color HEADING = new Color(0x17, 0x32, 0x4D); // Primary Navy
+    public static final Color SUKSES  = new Color(0x2E, 0x9B, 0x68);
+    public static final Color WARNING = new Color(0xE6, 0xA2, 0x3C);
+    public static final Color DANGER  = new Color(0xD9, 0x53, 0x4F);
 
     public static final Font F_LABEL = new Font("Segoe UI", Font.PLAIN, 12);
     public static final Font F_INPUT = new Font("Segoe UI", Font.PLAIN, 12);

@@ -214,7 +214,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnDetailPiutang.setBackground(new java.awt.Color(255, 255, 254));
-        MnDetailPiutang.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnDetailPiutang.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnDetailPiutang.setForeground(new java.awt.Color(50, 50, 50));
         MnDetailPiutang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnDetailPiutang.setText("Detail Piutang");
@@ -228,7 +228,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
         jPopupMenu1.add(MnDetailPiutang);
 
         ppPilihSemua.setBackground(new java.awt.Color(255, 255, 254));
-        ppPilihSemua.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppPilihSemua.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppPilihSemua.setForeground(new java.awt.Color(50, 50, 50));
         ppPilihSemua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppPilihSemua.setText("Pilih Semua");
@@ -244,7 +244,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
         jPopupMenu1.add(ppPilihSemua);
 
         ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkan.setText("Hilangkan Pilihan");
@@ -260,7 +260,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
         jPopupMenu1.add(ppBersihkan);
 
         ppKapitasiPaket.setBackground(new java.awt.Color(255, 255, 254));
-        ppKapitasiPaket.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppKapitasiPaket.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppKapitasiPaket.setForeground(new java.awt.Color(50, 50, 50));
         ppKapitasiPaket.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppKapitasiPaket.setText("Hitung Kapitasi/Paket");
@@ -276,7 +276,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
         jPopupMenu1.add(ppKapitasiPaket);
 
         ppUmbal.setBackground(new java.awt.Color(255, 255, 254));
-        ppUmbal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppUmbal.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppUmbal.setForeground(new java.awt.Color(50, 50, 50));
         ppUmbal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppUmbal.setText("Cek Umpan Balik BPJS");
@@ -296,7 +296,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
         WindowHitungPaket.setUndecorated(true);
         WindowHitungPaket.setResizable(false);
 
-        internalFrame8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Hitung Kapitasi/Paket Pembayaran ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Hitung Kapitasi/Paket Pembayaran ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame8.setName("internalFrame8"); // NOI18N
         internalFrame8.setLayout(new java.awt.BorderLayout());
 
@@ -416,7 +416,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Piutang Belum Lunas ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Piutang Belum Lunas ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -591,7 +591,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
         panelisi1.setPreferredSize(new java.awt.Dimension(55, 55));
         panelisi1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 9));
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(50, 50, 50));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel10.setText("Belum Dibayar :");
@@ -599,7 +599,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
         jLabel10.setPreferredSize(new java.awt.Dimension(87, 23));
         panelisi1.add(jLabel10);
 
-        LCount.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        LCount.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         LCount.setForeground(new java.awt.Color(50, 50, 50));
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");
@@ -607,7 +607,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
         LCount.setPreferredSize(new java.awt.Dimension(150, 23));
         panelisi1.add(LCount);
 
-        jLabel12.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(50, 50, 50));
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel12.setText("Dipilih :");
@@ -615,7 +615,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
         jLabel12.setPreferredSize(new java.awt.Dimension(45, 23));
         panelisi1.add(jLabel12);
 
-        LCount1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        LCount1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         LCount1.setForeground(new java.awt.Color(50, 50, 50));
         LCount1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount1.setText("0");

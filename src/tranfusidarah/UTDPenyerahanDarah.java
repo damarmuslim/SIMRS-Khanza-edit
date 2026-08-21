@@ -309,14 +309,14 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
         jLabel10 = new widget.Label();
         AkunBayar = new widget.ComboBox();
 
-        Kd2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Kd2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Kd2.setName("Kd2"); // NOI18N
         Kd2.setPreferredSize(new java.awt.Dimension(207, 23));
 
         Popup.setName("Popup"); // NOI18N
 
         ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
         ppBersihkan.setText("Bersihkan Jumlah");
@@ -332,7 +332,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
         Popup.add(ppBersihkan);
 
         ppStok.setBackground(new java.awt.Color(255, 255, 254));
-        ppStok.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppStok.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppStok.setForeground(new java.awt.Color(50, 50, 50));
         ppStok.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppStok.setText("Tampilkan Semua Stok");
@@ -359,7 +359,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Penyerahan Darah ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Penyerahan Darah ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -544,7 +544,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
 
         LTotal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LTotal.setText("0");
-        LTotal.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LTotal.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LTotal.setName("LTotal"); // NOI18N
         LTotal.setPreferredSize(new java.awt.Dimension(100, 23));
         panelisi5.add(LTotal);
@@ -555,7 +555,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
         panelisi5.add(jLabel11);
 
         Persenppn.setText("0");
-        Persenppn.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Persenppn.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Persenppn.setName("Persenppn"); // NOI18N
         Persenppn.setPreferredSize(new java.awt.Dimension(40, 23));
         Persenppn.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -566,7 +566,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
         panelisi5.add(Persenppn);
 
         BesarPPN.setText("0");
-        BesarPPN.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        BesarPPN.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         BesarPPN.setName("BesarPPN"); // NOI18N
         BesarPPN.setPreferredSize(new java.awt.Dimension(100, 23));
         BesarPPN.addActionListener(new java.awt.event.ActionListener() {
@@ -583,7 +583,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
 
         TagihanPPn.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         TagihanPPn.setText("0");
-        TagihanPPn.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TagihanPPn.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TagihanPPn.setName("TagihanPPn"); // NOI18N
         TagihanPPn.setPreferredSize(new java.awt.Dimension(100, 23));
         panelisi5.add(TagihanPPn);
@@ -594,7 +594,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
         panelisi5.add(label19);
 
         Bayar.setText("0");
-        Bayar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Bayar.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Bayar.setName("Bayar"); // NOI18N
         Bayar.setPreferredSize(new java.awt.Dimension(120, 23));
         panelisi5.add(Bayar);
@@ -606,7 +606,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
 
         LKembali.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LKembali.setText("0");
-        LKembali.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LKembali.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LKembali.setName("LKembali"); // NOI18N
         LKembali.setPreferredSize(new java.awt.Dimension(100, 23));
         panelisi5.add(LKembali);
@@ -620,7 +620,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
         panelisi6.setPreferredSize(new java.awt.Dimension(450, 77));
         panelisi6.setLayout(new java.awt.GridLayout(2, 0));
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(237, 242, 232)), ".: Penggunaan BHP Medis ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(237, 242, 232)), ".: Penggunaan BHP Medis ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         jPanel3.setName("jPanel3"); // NOI18N
         jPanel3.setOpaque(false);
         jPanel3.setPreferredSize(new java.awt.Dimension(300, 102));
@@ -704,7 +704,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
 
         panelisi6.add(jPanel3);
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(237, 242, 232)), ".: Penggunaan BHP Non Medis ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(237, 242, 232)), ".: Penggunaan BHP Non Medis ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         jPanel4.setName("jPanel4"); // NOI18N
         jPanel4.setOpaque(false);
         jPanel4.setPreferredSize(new java.awt.Dimension(300, 202));

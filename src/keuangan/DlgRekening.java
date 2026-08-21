@@ -173,7 +173,7 @@ public final class DlgRekening extends javax.swing.JDialog {
         WindowSubRekening.setUndecorated(true);
         WindowSubRekening.setResizable(false);
 
-        internalFrame7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Sub Akun Rekening ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Sub Akun Rekening ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame7.setName("internalFrame7"); // NOI18N
         internalFrame7.setLayout(null);
 
@@ -274,7 +274,7 @@ public final class DlgRekening extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnSubAkun.setBackground(new java.awt.Color(255, 255, 254));
-        MnSubAkun.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSubAkun.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSubAkun.setForeground(new java.awt.Color(50, 50, 50));
         MnSubAkun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSubAkun.setText("Buat Sub Akun Rekening");
@@ -290,7 +290,7 @@ public final class DlgRekening extends javax.swing.JDialog {
         jPopupMenu1.add(MnSubAkun);
 
         MnJadikanSub.setBackground(new java.awt.Color(255, 255, 254));
-        MnJadikanSub.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnJadikanSub.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnJadikanSub.setForeground(new java.awt.Color(50, 50, 50));
         MnJadikanSub.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJadikanSub.setText("Jadikan Sub Akun Rekening");
@@ -306,7 +306,7 @@ public final class DlgRekening extends javax.swing.JDialog {
         jPopupMenu1.add(MnJadikanSub);
 
         MnJadikanUtama.setBackground(new java.awt.Color(255, 255, 254));
-        MnJadikanUtama.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnJadikanUtama.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnJadikanUtama.setForeground(new java.awt.Color(50, 50, 50));
         MnJadikanUtama.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnJadikanUtama.setText("Jadikan Akun Utama");
@@ -327,7 +327,7 @@ public final class DlgRekening extends javax.swing.JDialog {
         WindowJadikanSub.setUndecorated(true);
         WindowJadikanSub.setResizable(false);
 
-        internalFrame8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Jadikan Sub Akun ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Jadikan Sub Akun ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame8.setName("internalFrame8"); // NOI18N
         internalFrame8.setLayout(null);
 
@@ -409,7 +409,7 @@ public final class DlgRekening extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Rekening ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Rekening ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

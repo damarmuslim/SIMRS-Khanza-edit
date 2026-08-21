@@ -5,7 +5,7 @@
     <Component class="widget.TextBox" name="Kd2">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Tahoma" size="12" style="0"/>
+          <Font name="Segoe UI" size="12" style="0"/>
         </Property>
         <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
           <ComponentRef name="null"/>
@@ -32,7 +32,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Stok :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="label34" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -49,7 +49,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Tanggal :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="label32" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -66,7 +66,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
               <ComponentRef name="null"/>
@@ -87,7 +87,7 @@
             <Property name="editable" type="boolean" value="false"/>
             <Property name="displayFormat" type="java.lang.String" value="yyyy-MM-dd"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="Tanggal" noResource="true"/>
           </Properties>
@@ -101,7 +101,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Barang :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="label17" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -117,7 +117,7 @@
         <Component class="widget.TextBox" name="Kdbar">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="Kdbar" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -134,7 +134,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="Nmbar" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -151,7 +151,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
               <ComponentRef name="null"/>
@@ -168,7 +168,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Real :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="label36" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -184,7 +184,7 @@
         <Component class="widget.TextBox" name="Real">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
               <ComponentRef name="null"/>
@@ -204,7 +204,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
               <ComponentRef name="null"/>
@@ -221,7 +221,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Selisih :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="label37" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -238,7 +238,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Nominal Hilang :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="label38" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -255,7 +255,7 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
               <ComponentRef name="null"/>
@@ -274,7 +274,7 @@
         <Component class="widget.TextBox" name="Keterangan">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
               <ComponentRef name="null"/>
@@ -294,7 +294,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Lokasi :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="label18" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -311,7 +311,7 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Keterangan :"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="label39" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -376,7 +376,7 @@
                   <Color PropertyName="color" blue="eb" green="f5" red="f0" type="rgb"/>
                 </LineBorder>
               </Border>
-              <Font PropertyName="font" name="Tahoma" size="11" style="0"/>
+              <Font PropertyName="font" name="Segoe UI" size="11" style="0"/>
               <Color PropertyName="color" blue="32" green="32" red="32" type="rgb"/>
             </TitledBorder>
           </Border>
@@ -547,7 +547,7 @@
                     <Property name="mnemonic" type="int" value="51"/>
                     <Property name="toolTipText" type="java.lang.String" value="Alt+3"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Tahoma" size="12" style="1"/>
+                      <Font name="Segoe UI" size="12" style="1"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="BtnAll" noResource="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -567,7 +567,7 @@
                     <Property name="mnemonic" type="int" value="50"/>
                     <Property name="toolTipText" type="java.lang.String" value="Alt+2"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Tahoma" size="12" style="1"/>
+                      <Font name="Segoe UI" size="12" style="1"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="BtnCari" noResource="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">

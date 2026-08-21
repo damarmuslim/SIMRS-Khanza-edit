@@ -158,7 +158,7 @@ public final class SuratSakit extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnCetakSuratSakit.setBackground(new java.awt.Color(250, 250, 250));
-        MnCetakSuratSakit.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratSakit.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratSakit.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSakit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratSakit.setText("Cetak Surat Sakit 1");
@@ -172,7 +172,7 @@ public final class SuratSakit extends javax.swing.JDialog {
         jPopupMenu1.add(MnCetakSuratSakit);
 
         MnCetakSuratSakit1.setBackground(new java.awt.Color(250, 250, 250));
-        MnCetakSuratSakit1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratSakit1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratSakit1.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSakit1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratSakit1.setText("Cetak Surat Sakit 2");
@@ -186,7 +186,7 @@ public final class SuratSakit extends javax.swing.JDialog {
         jPopupMenu1.add(MnCetakSuratSakit1);
 
         MnCetakSuratSakit4.setBackground(new java.awt.Color(250, 250, 250));
-        MnCetakSuratSakit4.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratSakit4.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratSakit4.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSakit4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratSakit4.setText("Cetak Surat Sakit 3");
@@ -200,7 +200,7 @@ public final class SuratSakit extends javax.swing.JDialog {
         jPopupMenu1.add(MnCetakSuratSakit4);
 
         MnCetakSuratSakit5.setBackground(new java.awt.Color(250, 250, 250));
-        MnCetakSuratSakit5.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratSakit5.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratSakit5.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSakit5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratSakit5.setText("Cetak Surat Sakit 4");
@@ -214,7 +214,7 @@ public final class SuratSakit extends javax.swing.JDialog {
         jPopupMenu1.add(MnCetakSuratSakit5);
 
         MnCetakSuratSakit2.setBackground(new java.awt.Color(250, 250, 250));
-        MnCetakSuratSakit2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratSakit2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratSakit2.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSakit2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratSakit2.setText("Cetak Surat Sakit Pihak Ke-2");
@@ -236,8 +236,8 @@ public final class SuratSakit extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Surat Keterangan Sakit ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Surat Keterangan Sakit ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

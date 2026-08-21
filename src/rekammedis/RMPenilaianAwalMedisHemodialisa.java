@@ -582,7 +582,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnPenilaianMedis.setBackground(new java.awt.Color(255, 255, 254));
-        MnPenilaianMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnPenilaianMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnPenilaianMedis.setForeground(new java.awt.Color(50, 50, 50));
         MnPenilaianMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnPenilaianMedis.setText("Laporan Pengkajian Medis");
@@ -607,8 +607,8 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengkajian Awal Medis Pasien Hemodialisa ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengkajian Awal Medis Pasien Hemodialisa ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setPreferredSize(new java.awt.Dimension(467, 500));
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
@@ -747,7 +747,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
 
         TabRawat.setBackground(new java.awt.Color(254, 255, 254));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.setPreferredSize(new java.awt.Dimension(457, 480));
 
@@ -2199,7 +2199,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         jSeparator5.setBounds(0, 600, 880, 1);
 
         ChkUSG.setBorder(null);
-        ChkUSG.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkUSG.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkUSG.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkUSG.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkUSG.setName("ChkUSG"); // NOI18N
@@ -2212,7 +2212,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         ChkUSG.setBounds(135, 710, 23, 23);
 
         ChkThorax.setBorder(null);
-        ChkThorax.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkThorax.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkThorax.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkThorax.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkThorax.setName("ChkThorax"); // NOI18N
@@ -2225,7 +2225,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         ChkThorax.setBounds(135, 620, 23, 23);
 
         ChkEKG.setBorder(null);
-        ChkEKG.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkEKG.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkEKG.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkEKG.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkEKG.setName("ChkEKG"); // NOI18N
@@ -2238,7 +2238,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         ChkEKG.setBounds(135, 650, 23, 23);
 
         ChkBNO.setBorder(null);
-        ChkBNO.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkBNO.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkBNO.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkBNO.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkBNO.setName("ChkBNO"); // NOI18N
@@ -2251,7 +2251,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         ChkBNO.setBounds(135, 680, 23, 23);
 
         ChkRenogram.setBorder(null);
-        ChkRenogram.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkRenogram.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkRenogram.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkRenogram.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkRenogram.setName("ChkRenogram"); // NOI18N
@@ -2264,7 +2264,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         ChkRenogram.setBounds(444, 620, 23, 23);
 
         ChkBiopsiGinjal.setBorder(null);
-        ChkBiopsiGinjal.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkBiopsiGinjal.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkBiopsiGinjal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkBiopsiGinjal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkBiopsiGinjal.setName("ChkBiopsiGinjal"); // NOI18N
@@ -2277,7 +2277,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         ChkBiopsiGinjal.setBounds(444, 650, 23, 23);
 
         ChkCTScan.setBorder(null);
-        ChkCTScan.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkCTScan.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkCTScan.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkCTScan.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkCTScan.setName("ChkCTScan"); // NOI18N
@@ -2290,7 +2290,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         ChkCTScan.setBounds(444, 680, 23, 23);
 
         ChkArteriografi.setBorder(null);
-        ChkArteriografi.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkArteriografi.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkArteriografi.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkArteriografi.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkArteriografi.setName("ChkArteriografi"); // NOI18N
@@ -2303,7 +2303,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         ChkArteriografi.setBounds(444, 710, 23, 23);
 
         ChkKulturUrin.setBorder(null);
-        ChkKulturUrin.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkKulturUrin.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkKulturUrin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkKulturUrin.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkKulturUrin.setName("ChkKulturUrin"); // NOI18N
@@ -2316,7 +2316,7 @@ public final class RMPenilaianAwalMedisHemodialisa extends javax.swing.JDialog {
         ChkKulturUrin.setBounds(738, 620, 23, 23);
 
         ChkLaborat.setBorder(null);
-        ChkLaborat.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkLaborat.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkLaborat.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkLaborat.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkLaborat.setName("ChkLaborat"); // NOI18N

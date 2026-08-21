@@ -22,7 +22,7 @@
                       <Color PropertyName="color" blue="eb" green="f5" red="f0" type="rgb"/>
                     </LineBorder>
                   </Border>
-                  <Font PropertyName="font" name="Tahoma" size="11" style="0"/>
+                  <Font PropertyName="font" name="Segoe UI" size="11" style="0"/>
                   <Color PropertyName="color" blue="32" green="32" red="32" type="rgb"/>
                 </TitledBorder>
               </Border>
@@ -127,7 +127,7 @@
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="12" style="0"/>
+              <Font name="Segoe UI" size="12" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Berhasil terkirim..!!"/>
             <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
@@ -141,7 +141,7 @@
         <Component class="javax.swing.JButton" name="jButton1">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="14" style="0"/>
+              <Font name="Segoe UI" size="14" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" value="OK"/>
             <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
@@ -197,7 +197,7 @@
                   <Color PropertyName="color" blue="eb" green="f5" red="f0" type="rgb"/>
                 </LineBorder>
               </Border>
-              <Font PropertyName="font" name="Tahoma" size="11" style="0"/>
+              <Font PropertyName="font" name="Segoe UI" size="11" style="0"/>
               <Color PropertyName="color" blue="32" green="32" red="32" type="rgb"/>
             </TitledBorder>
           </Border>
@@ -490,7 +490,7 @@
               <Color blue="32" green="32" red="32" type="rgb"/>
             </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Tahoma" size="11" style="0"/>
+              <Font name="Segoe UI" size="11" style="0"/>
             </Property>
             <Property name="name" type="java.lang.String" value="TabPilihRawat" noResource="true"/>
           </Properties>
@@ -622,7 +622,7 @@
                       <Color blue="32" green="32" red="32" type="rgb"/>
                     </Property>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Tahoma" size="11" style="0"/>
+                      <Font name="Segoe UI" size="11" style="0"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="TabRawatJalan" noResource="true"/>
                   </Properties>
@@ -859,7 +859,7 @@
                       <Color blue="32" green="32" red="32" type="rgb"/>
                     </Property>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Tahoma" size="11" style="0"/>
+                      <Font name="Segoe UI" size="11" style="0"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="TabRawatInap" noResource="true"/>
                   </Properties>
@@ -1060,7 +1060,7 @@
                         <Property name="text" type="java.lang.String" value="Cetak Permintaan Lab"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1087,7 +1087,7 @@
                         <Property name="text" type="java.lang.String" value="Barcode No.Permintaan"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1114,7 +1114,7 @@
                         <Property name="text" type="java.lang.String" value="Barcode No.Permintaan 2"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1141,7 +1141,7 @@
                         <Property name="text" type="java.lang.String" value="Kirim Permintaan ke LICA"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1168,7 +1168,7 @@
                         <Property name="text" type="java.lang.String" value="Ambil Hasil dari LICA"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1195,7 +1195,7 @@
                         <Property name="text" type="java.lang.String" value="Kirim Permintaan ke Sysmex"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1222,7 +1222,7 @@
                         <Property name="text" type="java.lang.String" value="Ambil Hasil dari Sysmex"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1249,7 +1249,7 @@
                         <Property name="text" type="java.lang.String" value="Kirim Permintaan ke ELIMS"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1276,7 +1276,7 @@
                         <Property name="text" type="java.lang.String" value="Ambil Hasil dari ELIMS"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1303,7 +1303,7 @@
                         <Property name="text" type="java.lang.String" value="Kirim Permintaan ke TERAS"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1330,7 +1330,7 @@
                         <Property name="text" type="java.lang.String" value="Ambil Hasil dari TERAS"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1357,7 +1357,7 @@
                         <Property name="text" type="java.lang.String" value="Kirim Permintaan ke MEDQLAB "/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1384,7 +1384,7 @@
                         <Property name="text" type="java.lang.String" value="Ambil Hasil dari MEDQLAB"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1411,7 +1411,7 @@
                         <Property name="text" type="java.lang.String" value="Kirim Permintaan ke SMARTLAB "/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1438,7 +1438,7 @@
                         <Property name="text" type="java.lang.String" value="Ambil Hasil dari SMARTLAB"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1465,7 +1465,7 @@
                         <Property name="text" type="java.lang.String" value="Kirim Permintaan ke SOFTMEDIX"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1492,7 +1492,7 @@
                         <Property name="text" type="java.lang.String" value="Ambil Hasil dari SOFTMEDIX"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1519,7 +1519,7 @@
                         <Property name="text" type="java.lang.String" value="Kirim Permintaan ke VANSLAB"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1546,7 +1546,7 @@
                         <Property name="text" type="java.lang.String" value="Ambil Hasil dari VANSLAB"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1573,7 +1573,7 @@
                         <Property name="text" type="java.lang.String" value="Kirim Permintaan ke SLIMS"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -1600,7 +1600,7 @@
                         <Property name="text" type="java.lang.String" value="Ambil Hasil dari SLIMS"/>
                         <Property name="focusPainted" type="boolean" value="false"/>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Tahoma" size="11" style="0"/>
+                          <Font name="Segoe UI" size="11" style="0"/>
                         </Property>
                         <Property name="glassColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>

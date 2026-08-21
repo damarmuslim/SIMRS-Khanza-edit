@@ -163,7 +163,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnDetailPiutang.setBackground(new java.awt.Color(255, 255, 254));
-        MnDetailPiutang.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnDetailPiutang.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnDetailPiutang.setForeground(java.awt.Color.darkGray);
         MnDetailPiutang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnDetailPiutang.setText("Detail Piutang");
@@ -177,7 +177,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
         jPopupMenu1.add(MnDetailPiutang);
 
         MnDetailCicilan.setBackground(new java.awt.Color(255, 255, 254));
-        MnDetailCicilan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnDetailCicilan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnDetailCicilan.setForeground(java.awt.Color.darkGray);
         MnDetailCicilan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnDetailCicilan.setText("Detail Cicilan");
@@ -207,7 +207,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Tagihan Piutang Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Tagihan Piutang Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -294,7 +294,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
         LCount2.setPreferredSize(new java.awt.Dimension(40, 23));
         panelGlass5.add(LCount2);
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(50, 50, 50));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel10.setText("Belum Dibayar :");
@@ -302,7 +302,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
         jLabel10.setPreferredSize(new java.awt.Dimension(80, 23));
         panelGlass5.add(jLabel10);
 
-        LCount.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        LCount.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         LCount.setForeground(new java.awt.Color(50, 50, 50));
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");

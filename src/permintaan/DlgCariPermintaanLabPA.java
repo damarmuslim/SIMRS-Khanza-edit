@@ -439,7 +439,7 @@ public class DlgCariPermintaanLabPA extends javax.swing.JDialog {
         WindowAmbilSampel.setUndecorated(true);
         WindowAmbilSampel.setResizable(false);
 
-        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Update Waktu Pengambilan Sampel ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Update Waktu Pengambilan Sampel ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame5.setName("internalFrame5"); // NOI18N
         internalFrame5.setLayout(null);
 
@@ -499,7 +499,7 @@ public class DlgCariPermintaanLabPA extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Permintaan Laboratorium Patologi Anatomi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Permintaan Laboratorium Patologi Anatomi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -704,7 +704,7 @@ public class DlgCariPermintaanLabPA extends javax.swing.JDialog {
 
         TabPilihRawat.setBackground(new java.awt.Color(255, 255, 254));
         TabPilihRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabPilihRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabPilihRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabPilihRawat.setName("TabPilihRawat"); // NOI18N
         TabPilihRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -769,7 +769,7 @@ public class DlgCariPermintaanLabPA extends javax.swing.JDialog {
 
         TabRawatJalan.setBackground(new java.awt.Color(255, 255, 254));
         TabRawatJalan.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawatJalan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawatJalan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawatJalan.setName("TabRawatJalan"); // NOI18N
         TabRawatJalan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -908,7 +908,7 @@ public class DlgCariPermintaanLabPA extends javax.swing.JDialog {
 
         TabRawatInap.setBackground(new java.awt.Color(255, 255, 254));
         TabRawatInap.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawatInap.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawatInap.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawatInap.setName("TabRawatInap"); // NOI18N
         TabRawatInap.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1018,7 +1018,7 @@ public class DlgCariPermintaanLabPA extends javax.swing.JDialog {
         BtnCetakHasilLab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnCetakHasilLab.setText("Cetak Permintaan Lab");
         BtnCetakHasilLab.setFocusPainted(false);
-        BtnCetakHasilLab.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnCetakHasilLab.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnCetakHasilLab.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnCetakHasilLab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnCetakHasilLab.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1035,7 +1035,7 @@ public class DlgCariPermintaanLabPA extends javax.swing.JDialog {
         BtnBarcodePermintaan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnBarcodePermintaan.setText("Barcode No.Permintaan");
         BtnBarcodePermintaan.setFocusPainted(false);
-        BtnBarcodePermintaan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnBarcodePermintaan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnBarcodePermintaan.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnBarcodePermintaan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnBarcodePermintaan.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1052,7 +1052,7 @@ public class DlgCariPermintaanLabPA extends javax.swing.JDialog {
         BtnBarcodePermintaan2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnBarcodePermintaan2.setText("Barcode No.Permintaan 2");
         BtnBarcodePermintaan2.setFocusPainted(false);
-        BtnBarcodePermintaan2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnBarcodePermintaan2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnBarcodePermintaan2.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnBarcodePermintaan2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnBarcodePermintaan2.setMargin(new java.awt.Insets(1, 1, 1, 1));

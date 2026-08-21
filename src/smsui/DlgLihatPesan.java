@@ -98,7 +98,7 @@ public final class DlgLihatPesan extends javax.swing.JDialog {
         panel1.setPreferredSize(new java.awt.Dimension(440, 27));
         panel1.setLayout(new java.awt.BorderLayout());
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(180, 180, 180));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setName("jLabel5"); // NOI18N
@@ -109,7 +109,7 @@ public final class DlgLihatPesan extends javax.swing.JDialog {
         button1.setMnemonic('C');
         button1.setText("Close");
         button1.setToolTipText("Alt+C");
-        button1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        button1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         button1.setName("button1"); // NOI18N
         button1.setPreferredSize(new java.awt.Dimension(100, 27));
         button1.setRoundRect(false);
@@ -136,7 +136,7 @@ public final class DlgLihatPesan extends javax.swing.JDialog {
         Scroll.setOpaque(true);
 
         tbPesan.setAutoCreateRowSorter(true);
-        tbPesan.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tbPesan.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         tbPesan.setName("tbPesan"); // NOI18N
         Scroll.setViewportView(tbPesan);
 
@@ -149,7 +149,7 @@ public final class DlgLihatPesan extends javax.swing.JDialog {
         panelJudul1.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setBackground(java.awt.Color.darkGray);
-        jLabel1.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(180, 180, 180));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText(":: DATA PESAN MASUK ::        ");

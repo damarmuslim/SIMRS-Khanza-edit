@@ -214,7 +214,7 @@ public final class DlgKunjunganRanap extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppTampilkanBaru.setBackground(new java.awt.Color(255, 255, 254));
-        ppTampilkanBaru.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppTampilkanBaru.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppTampilkanBaru.setForeground(java.awt.Color.darkGray);
         ppTampilkanBaru.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTampilkanBaru.setText("Tampilkan Pasien Baru");
@@ -230,7 +230,7 @@ public final class DlgKunjunganRanap extends javax.swing.JDialog {
         jPopupMenu1.add(ppTampilkanBaru);
 
         ppTampilkanLama.setBackground(new java.awt.Color(255, 255, 254));
-        ppTampilkanLama.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppTampilkanLama.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppTampilkanLama.setForeground(java.awt.Color.darkGray);
         ppTampilkanLama.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTampilkanLama.setText("Tampilkan Pasien Lama");
@@ -254,14 +254,14 @@ public final class DlgKunjunganRanap extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Kunjungan Rawat Inap ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Kunjungan Rawat Inap ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
         TabRawat.setBackground(new java.awt.Color(255, 255, 254));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

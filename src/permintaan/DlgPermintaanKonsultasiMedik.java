@@ -255,7 +255,7 @@ public class DlgPermintaanKonsultasiMedik extends javax.swing.JDialog {
         WindowInput.setUndecorated(true);
         WindowInput.setResizable(false);
 
-        internalFrame2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Jawaban Permintaan Konsultasi Medik ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 70, 40))); // NOI18N
+        internalFrame2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Jawaban Permintaan Konsultasi Medik ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 70, 40))); // NOI18N
         internalFrame2.setName("internalFrame2"); // NOI18N
         internalFrame2.setLayout(null);
 
@@ -391,7 +391,7 @@ public class DlgPermintaanKonsultasiMedik extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnGenerateSBAR.setBackground(new java.awt.Color(255, 255, 254));
-        MnGenerateSBAR.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGenerateSBAR.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnGenerateSBAR.setForeground(new java.awt.Color(50, 50, 50));
         MnGenerateSBAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGenerateSBAR.setText("Gunakan Format SBAR");
@@ -413,7 +413,7 @@ public class DlgPermintaanKonsultasiMedik extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Permintaan Konsultasi Medik ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Permintaan Konsultasi Medik ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -983,7 +983,7 @@ public class DlgPermintaanKonsultasiMedik extends javax.swing.JDialog {
         BtnRiwayatPasien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnRiwayatPasien.setText("Riwayat Perawatan");
         BtnRiwayatPasien.setFocusPainted(false);
-        BtnRiwayatPasien.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnRiwayatPasien.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnRiwayatPasien.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnRiwayatPasien.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnRiwayatPasien.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1000,7 +1000,7 @@ public class DlgPermintaanKonsultasiMedik extends javax.swing.JDialog {
         BtnJawabanDikonsuli.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnJawabanDikonsuli.setText("Jawaban Konsul");
         BtnJawabanDikonsuli.setFocusPainted(false);
-        BtnJawabanDikonsuli.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnJawabanDikonsuli.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnJawabanDikonsuli.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnJawabanDikonsuli.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnJawabanDikonsuli.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1017,7 +1017,7 @@ public class DlgPermintaanKonsultasiMedik extends javax.swing.JDialog {
         BtnDokumentasiKonsul.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnDokumentasiKonsul.setText("Dokumentasi Konsul");
         BtnDokumentasiKonsul.setFocusPainted(false);
-        BtnDokumentasiKonsul.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnDokumentasiKonsul.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnDokumentasiKonsul.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnDokumentasiKonsul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnDokumentasiKonsul.setMargin(new java.awt.Insets(1, 1, 1, 1));

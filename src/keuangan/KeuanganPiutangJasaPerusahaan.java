@@ -218,7 +218,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Piutang Jasa Perusahaan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Piutang Jasa Perusahaan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -501,7 +501,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
 
         LSubtotal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LSubtotal.setText("0");
-        LSubtotal.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LSubtotal.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LSubtotal.setName("LSubtotal"); // NOI18N
         LSubtotal.setPreferredSize(new java.awt.Dimension(110, 30));
         panelisi1.add(LSubtotal);
@@ -515,7 +515,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
 
         BesarPPN.setEditable(false);
         BesarPPN.setText("0");
-        BesarPPN.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        BesarPPN.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         BesarPPN.setName("BesarPPN"); // NOI18N
         BesarPPN.setPreferredSize(new java.awt.Dimension(80, 23));
         BesarPPN.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -528,7 +528,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
 
         TotalTagihan.setEditable(false);
         TotalTagihan.setText("0");
-        TotalTagihan.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TotalTagihan.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TotalTagihan.setName("TotalTagihan"); // NOI18N
         TotalTagihan.setPreferredSize(new java.awt.Dimension(80, 23));
         TotalTagihan.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -585,7 +585,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
         BtnAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
         BtnAll.setMnemonic('2');
         BtnAll.setToolTipText("2Alt+2");
-        BtnAll.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnAll.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnAll.setName("BtnAll"); // NOI18N
         BtnAll.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnAll.addActionListener(new java.awt.event.ActionListener() {
@@ -608,7 +608,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
         label20.setBounds(0, 40, 120, 23);
 
         BesarJasaMenejemen.setEditable(false);
-        BesarJasaMenejemen.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        BesarJasaMenejemen.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         BesarJasaMenejemen.setName("BesarJasaMenejemen"); // NOI18N
         BesarJasaMenejemen.setPreferredSize(new java.awt.Dimension(80, 23));
         BesarJasaMenejemen.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -625,7 +625,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
         panelisi1.add(label21);
         label21.setBounds(280, 10, 85, 23);
 
-        DPPLainLain.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        DPPLainLain.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         DPPLainLain.setName("DPPLainLain"); // NOI18N
         DPPLainLain.setPreferredSize(new java.awt.Dimension(80, 23));
         DPPLainLain.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -636,7 +636,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
         panelisi1.add(DPPLainLain);
         DPPLainLain.setBounds(369, 10, 157, 23);
 
-        PersenMenejemen.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        PersenMenejemen.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         PersenMenejemen.setName("PersenMenejemen"); // NOI18N
         PersenMenejemen.setPreferredSize(new java.awt.Dimension(80, 23));
         PersenMenejemen.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -648,7 +648,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
         PersenMenejemen.setBounds(124, 40, 45, 23);
 
         PersenPPN.setText("12");
-        PersenPPN.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        PersenPPN.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         PersenPPN.setName("PersenPPN"); // NOI18N
         PersenPPN.setPreferredSize(new java.awt.Dimension(80, 23));
         PersenPPN.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -666,7 +666,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
         label22.setBounds(525, 10, 90, 23);
 
         PersenPPH.setText("2");
-        PersenPPH.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        PersenPPH.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         PersenPPH.setName("PersenPPH"); // NOI18N
         PersenPPH.setPreferredSize(new java.awt.Dimension(80, 23));
         PersenPPH.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -679,7 +679,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
 
         BesarPPH.setEditable(false);
         BesarPPH.setText("0");
-        BesarPPH.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        BesarPPH.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         BesarPPH.setName("BesarPPH"); // NOI18N
         BesarPPH.setPreferredSize(new java.awt.Dimension(80, 23));
         BesarPPH.addKeyListener(new java.awt.event.KeyAdapter() {

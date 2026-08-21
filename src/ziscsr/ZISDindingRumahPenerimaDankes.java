@@ -150,7 +150,7 @@ public final class ZISDindingRumahPenerimaDankes extends javax.swing.JDialog {
         Popup.setName("Popup"); // NOI18N
 
         ppSimpan.setBackground(new java.awt.Color(242, 242, 242));
-        ppSimpan.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        ppSimpan.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         ppSimpan.setForeground(new java.awt.Color(50, 50, 50));
         ppSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
         ppSimpan.setText("Simpan");
@@ -167,7 +167,7 @@ public final class ZISDindingRumahPenerimaDankes extends javax.swing.JDialog {
         Popup.add(ppSimpan);
 
         ppGanti.setBackground(new java.awt.Color(242, 242, 242));
-        ppGanti.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        ppGanti.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         ppGanti.setForeground(new java.awt.Color(50, 50, 50));
         ppGanti.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
         ppGanti.setText("Ganti");
@@ -184,7 +184,7 @@ public final class ZISDindingRumahPenerimaDankes extends javax.swing.JDialog {
         Popup.add(ppGanti);
 
         ppHapus.setBackground(new java.awt.Color(242, 242, 242));
-        ppHapus.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        ppHapus.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         ppHapus.setForeground(new java.awt.Color(50, 50, 50));
         ppHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
         ppHapus.setText("Hapus");
@@ -209,7 +209,7 @@ public final class ZISDindingRumahPenerimaDankes extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Master Keterangan Dinding Rumah Penerima Dana Kesehatan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Master Keterangan Dinding Rumah Penerima Dana Kesehatan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

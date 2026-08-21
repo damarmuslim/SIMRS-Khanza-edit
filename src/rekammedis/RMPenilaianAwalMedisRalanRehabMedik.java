@@ -412,7 +412,7 @@ public final class RMPenilaianAwalMedisRalanRehabMedik extends javax.swing.JDial
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnPenilaianMedis.setBackground(new java.awt.Color(255, 255, 254));
-        MnPenilaianMedis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnPenilaianMedis.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnPenilaianMedis.setForeground(new java.awt.Color(50, 50, 50));
         MnPenilaianMedis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnPenilaianMedis.setText("Laporan Pengkajian Medis");
@@ -434,8 +434,8 @@ public final class RMPenilaianAwalMedisRalanRehabMedik extends javax.swing.JDial
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengkajian Awal Medis Ralan Kedokteran Fisik & Rehabilitasi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengkajian Awal Medis Ralan Kedokteran Fisik & Rehabilitasi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setPreferredSize(new java.awt.Dimension(467, 500));
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
@@ -574,7 +574,7 @@ public final class RMPenilaianAwalMedisRalanRehabMedik extends javax.swing.JDial
 
         TabRawat.setBackground(new java.awt.Color(254, 255, 254));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.setPreferredSize(new java.awt.Dimension(457, 480));
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1500,7 +1500,7 @@ public final class RMPenilaianAwalMedisRalanRehabMedik extends javax.swing.JDial
         jSeparator15.setBounds(0, 620, 880, 1);
 
         ChkTerapiLainnya.setBorder(null);
-        ChkTerapiLainnya.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkTerapiLainnya.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkTerapiLainnya.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkTerapiLainnya.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkTerapiLainnya.setName("ChkTerapiLainnya"); // NOI18N
@@ -1513,7 +1513,7 @@ public final class RMPenilaianAwalMedisRalanRehabMedik extends javax.swing.JDial
         ChkTerapiLainnya.setBounds(738, 760, 23, 23);
 
         ChkFisioterapi.setBorder(null);
-        ChkFisioterapi.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkFisioterapi.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkFisioterapi.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkFisioterapi.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkFisioterapi.setName("ChkFisioterapi"); // NOI18N
@@ -1526,7 +1526,7 @@ public final class RMPenilaianAwalMedisRalanRehabMedik extends javax.swing.JDial
         ChkFisioterapi.setBounds(738, 640, 23, 23);
 
         ChkOkupasi.setBorder(null);
-        ChkOkupasi.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkOkupasi.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkOkupasi.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkOkupasi.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkOkupasi.setName("ChkOkupasi"); // NOI18N
@@ -1539,7 +1539,7 @@ public final class RMPenilaianAwalMedisRalanRehabMedik extends javax.swing.JDial
         ChkOkupasi.setBounds(738, 670, 23, 23);
 
         ChkWicara.setBorder(null);
-        ChkWicara.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkWicara.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkWicara.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkWicara.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkWicara.setName("ChkWicara"); // NOI18N
@@ -1552,7 +1552,7 @@ public final class RMPenilaianAwalMedisRalanRehabMedik extends javax.swing.JDial
         ChkWicara.setBounds(738, 700, 23, 23);
 
         ChkAkupungtur.setBorder(null);
-        ChkAkupungtur.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkAkupungtur.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkAkupungtur.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkAkupungtur.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkAkupungtur.setName("ChkAkupungtur"); // NOI18N

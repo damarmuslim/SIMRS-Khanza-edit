@@ -223,14 +223,14 @@ public class TokoPenjualan extends javax.swing.JDialog {
         scrollPane1 = new widget.ScrollPane();
         tbObat = new widget.Table();
 
-        Kd2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Kd2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Kd2.setName("Kd2"); // NOI18N
         Kd2.setPreferredSize(new java.awt.Dimension(207, 23));
 
         Popup.setName("Popup"); // NOI18N
 
         ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
         ppBersihkan.setText("Bersihkan Jumlah");
@@ -254,7 +254,7 @@ public class TokoPenjualan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Penjualan Barang Toko / Minimarket / Koperasi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Penjualan Barang Toko / Minimarket / Koperasi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -400,7 +400,7 @@ public class TokoPenjualan extends javax.swing.JDialog {
 
         LTotal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LTotal.setText("0");
-        LTotal.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LTotal.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LTotal.setName("LTotal"); // NOI18N
         LTotal.setPreferredSize(new java.awt.Dimension(200, 23));
         panelisi5.add(LTotal);
@@ -413,7 +413,7 @@ public class TokoPenjualan extends javax.swing.JDialog {
         label19.setBounds(256, 40, 80, 23);
 
         Bayar.setText("0");
-        Bayar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Bayar.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Bayar.setName("Bayar"); // NOI18N
         Bayar.setPreferredSize(new java.awt.Dimension(150, 23));
         panelisi5.add(Bayar);
@@ -427,7 +427,7 @@ public class TokoPenjualan extends javax.swing.JDialog {
 
         LKembali.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LKembali.setText("0");
-        LKembali.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        LKembali.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         LKembali.setName("LKembali"); // NOI18N
         LKembali.setPreferredSize(new java.awt.Dimension(120, 23));
         panelisi5.add(LKembali);
@@ -447,21 +447,21 @@ public class TokoPenjualan extends javax.swing.JDialog {
 
         TagihanPPn.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         TagihanPPn.setText("0");
-        TagihanPPn.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TagihanPPn.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TagihanPPn.setName("TagihanPPn"); // NOI18N
         TagihanPPn.setPreferredSize(new java.awt.Dimension(200, 23));
         panelisi5.add(TagihanPPn);
         TagihanPPn.setBounds(94, 40, 160, 23);
 
         BesarPPN.setText("0");
-        BesarPPN.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        BesarPPN.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         BesarPPN.setName("BesarPPN"); // NOI18N
         BesarPPN.setPreferredSize(new java.awt.Dimension(150, 23));
         panelisi5.add(BesarPPN);
         BesarPPN.setBounds(382, 10, 158, 23);
 
         Persenppn.setText("0");
-        Persenppn.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Persenppn.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Persenppn.setName("Persenppn"); // NOI18N
         Persenppn.setPreferredSize(new java.awt.Dimension(150, 23));
         Persenppn.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -479,7 +479,7 @@ public class TokoPenjualan extends javax.swing.JDialog {
         label21.setBounds(556, 10, 80, 23);
 
         Ongkir.setText("0");
-        Ongkir.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Ongkir.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Ongkir.setName("Ongkir"); // NOI18N
         Ongkir.setPreferredSize(new java.awt.Dimension(150, 23));
         Ongkir.addKeyListener(new java.awt.event.KeyAdapter() {

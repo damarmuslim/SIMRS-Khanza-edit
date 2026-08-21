@@ -203,7 +203,7 @@ public class DlgBookingMCUPerusahaan extends javax.swing.JDialog {
         Popup.setName("Popup"); // NOI18N
 
         ppPilih.setBackground(new java.awt.Color(255, 255, 254));
-        ppPilih.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppPilih.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppPilih.setForeground(new java.awt.Color(50, 50, 50));
         ppPilih.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppPilih.setText("Pilih Semua");
@@ -219,7 +219,7 @@ public class DlgBookingMCUPerusahaan extends javax.swing.JDialog {
         Popup.add(ppPilih);
 
         ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkan.setText("Bersihkan Pilihan");
@@ -235,7 +235,7 @@ public class DlgBookingMCUPerusahaan extends javax.swing.JDialog {
         Popup.add(ppBersihkan);
 
         ppPengajuanPasienBaru.setBackground(new java.awt.Color(255, 255, 254));
-        ppPengajuanPasienBaru.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppPengajuanPasienBaru.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppPengajuanPasienBaru.setForeground(new java.awt.Color(50, 50, 50));
         ppPengajuanPasienBaru.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppPengajuanPasienBaru.setText("Pengajuan Pasien Baru");
@@ -265,7 +265,7 @@ public class DlgBookingMCUPerusahaan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Booking MCU Perusahaan/Instansi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Booking MCU Perusahaan/Instansi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -413,7 +413,7 @@ public class DlgBookingMCUPerusahaan extends javax.swing.JDialog {
 
         ChkKejadian.setBorder(null);
         ChkKejadian.setSelected(true);
-        ChkKejadian.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkKejadian.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkKejadian.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkKejadian.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkKejadian.setName("ChkKejadian"); // NOI18N

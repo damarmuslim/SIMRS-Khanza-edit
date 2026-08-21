@@ -142,7 +142,7 @@ public final class DlgLhtPembayaranPihakKe3BankMandiri extends javax.swing.JDial
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppMT940.setBackground(new java.awt.Color(255, 255, 254));
-        ppMT940.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppMT940.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppMT940.setForeground(new java.awt.Color(50, 50, 50));
         ppMT940.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppMT940.setText("Eksekusi File MT940");
@@ -166,7 +166,7 @@ public final class DlgLhtPembayaranPihakKe3BankMandiri extends javax.swing.JDial
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Pembayaran Pihak Ke 3 Bank Mandiri ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Pembayaran Pihak Ke 3 Bank Mandiri ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -253,7 +253,7 @@ public final class DlgLhtPembayaranPihakKe3BankMandiri extends javax.swing.JDial
         });
         panelGlass5.add(BtnAll);
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(50, 50, 50));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel10.setName("jLabel10"); // NOI18N

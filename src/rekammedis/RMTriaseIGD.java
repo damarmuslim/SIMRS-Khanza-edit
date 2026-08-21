@@ -587,14 +587,14 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Triase IGD ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Triase IGD ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
         TabPilihan.setBackground(new java.awt.Color(255, 255, 254));
         TabPilihan.setForeground(new java.awt.Color(50, 50, 50));
-        TabPilihan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabPilihan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabPilihan.setName("TabPilihan"); // NOI18N
         TabPilihan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -613,7 +613,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         TabTriase.setBackground(new java.awt.Color(255, 255, 254));
         TabTriase.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         TabTriase.setForeground(new java.awt.Color(50, 50, 50));
-        TabTriase.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabTriase.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabTriase.setName("TabTriase"); // NOI18N
         TabTriase.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1026,7 +1026,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         TabSkala1dan2.setBackground(new java.awt.Color(255, 255, 254));
         TabSkala1dan2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         TabSkala1dan2.setForeground(new java.awt.Color(50, 50, 50));
-        TabSkala1dan2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabSkala1dan2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabSkala1dan2.setName("TabSkala1dan2"); // NOI18N
         TabSkala1dan2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1452,7 +1452,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         TabSkala3dan4dan5.setBackground(new java.awt.Color(255, 255, 254));
         TabSkala3dan4dan5.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         TabSkala3dan4dan5.setForeground(new java.awt.Color(50, 50, 50));
-        TabSkala3dan4dan5.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabSkala3dan4dan5.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabSkala3dan4dan5.setName("TabSkala3dan4dan5"); // NOI18N
         TabSkala3dan4dan5.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

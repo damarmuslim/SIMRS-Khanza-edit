@@ -259,7 +259,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Jadwal Operasi Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Jadwal Operasi Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -884,7 +884,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnKamarInap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKamarInap.setText("Kamar Inap");
         BtnKamarInap.setFocusPainted(false);
-        BtnKamarInap.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKamarInap.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKamarInap.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKamarInap.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKamarInap.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -901,7 +901,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnPermintaanLab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnPermintaanLab.setText("Permintaan Lab");
         BtnPermintaanLab.setFocusPainted(false);
-        BtnPermintaanLab.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnPermintaanLab.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnPermintaanLab.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnPermintaanLab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnPermintaanLab.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -918,7 +918,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnRiwayatPasien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnRiwayatPasien.setText("Riwayat Perawatan");
         BtnRiwayatPasien.setFocusPainted(false);
-        BtnRiwayatPasien.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnRiwayatPasien.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnRiwayatPasien.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnRiwayatPasien.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnRiwayatPasien.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -935,7 +935,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnPenilaianPreInduksi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnPenilaianPreInduksi.setText("Penilaian Pre Induksi");
         BtnPenilaianPreInduksi.setFocusPainted(false);
-        BtnPenilaianPreInduksi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnPenilaianPreInduksi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnPenilaianPreInduksi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnPenilaianPreInduksi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnPenilaianPreInduksi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -952,7 +952,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnChecklistPreOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnChecklistPreOperasi.setText("Check List Pre Operasi");
         BtnChecklistPreOperasi.setFocusPainted(false);
-        BtnChecklistPreOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnChecklistPreOperasi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnChecklistPreOperasi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnChecklistPreOperasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnChecklistPreOperasi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -969,7 +969,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnSignInSebelumAnestesi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnSignInSebelumAnestesi.setText("Sign-In Sebelum Anestesi");
         BtnSignInSebelumAnestesi.setFocusPainted(false);
-        BtnSignInSebelumAnestesi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnSignInSebelumAnestesi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnSignInSebelumAnestesi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnSignInSebelumAnestesi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnSignInSebelumAnestesi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -986,7 +986,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnTimeOutSebelumInsisi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnTimeOutSebelumInsisi.setText("Time-Out Sebelum Insisi");
         BtnTimeOutSebelumInsisi.setFocusPainted(false);
-        BtnTimeOutSebelumInsisi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnTimeOutSebelumInsisi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnTimeOutSebelumInsisi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnTimeOutSebelumInsisi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnTimeOutSebelumInsisi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1003,7 +1003,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnSignOutSebelumMenutupLuka.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnSignOutSebelumMenutupLuka.setText("Sign-Out Sebelum Menutup Luka");
         BtnSignOutSebelumMenutupLuka.setFocusPainted(false);
-        BtnSignOutSebelumMenutupLuka.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnSignOutSebelumMenutupLuka.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnSignOutSebelumMenutupLuka.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnSignOutSebelumMenutupLuka.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnSignOutSebelumMenutupLuka.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1020,7 +1020,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnChecklistPostOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnChecklistPostOperasi.setText("Check List Post Operasi");
         BtnChecklistPostOperasi.setFocusPainted(false);
-        BtnChecklistPostOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnChecklistPostOperasi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnChecklistPostOperasi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnChecklistPostOperasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnChecklistPostOperasi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1037,7 +1037,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnPreOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnPreOperasi.setText("Penilaian Pre Operasi");
         BtnPreOperasi.setFocusPainted(false);
-        BtnPreOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnPreOperasi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnPreOperasi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnPreOperasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnPreOperasi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1054,7 +1054,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnCatatanAnastesiSedasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnCatatanAnastesiSedasi.setText("Catatan Anestesi-Sedasi");
         BtnCatatanAnastesiSedasi.setFocusPainted(false);
-        BtnCatatanAnastesiSedasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnCatatanAnastesiSedasi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnCatatanAnastesiSedasi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnCatatanAnastesiSedasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnCatatanAnastesiSedasi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1071,7 +1071,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnPreAnastesi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnPreAnastesi.setText("Penilaian Pre Anestesi");
         BtnPreAnastesi.setFocusPainted(false);
-        BtnPreAnastesi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnPreAnastesi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnPreAnastesi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnPreAnastesi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnPreAnastesi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1088,7 +1088,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnTagihanOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnTagihanOperasi.setText("Tagihan Operasi/VK");
         BtnTagihanOperasi.setFocusPainted(false);
-        BtnTagihanOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnTagihanOperasi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnTagihanOperasi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnTagihanOperasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnTagihanOperasi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1105,7 +1105,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnObatBhp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnObatBhp.setText("Permintaan Resep");
         BtnObatBhp.setFocusPainted(false);
-        BtnObatBhp.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnObatBhp.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnObatBhp.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnObatBhp.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnObatBhp.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1122,7 +1122,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnTransferAntarRuang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnTransferAntarRuang.setText("Transfer Antar Ruang");
         BtnTransferAntarRuang.setFocusPainted(false);
-        BtnTransferAntarRuang.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnTransferAntarRuang.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnTransferAntarRuang.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnTransferAntarRuang.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnTransferAntarRuang.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1139,7 +1139,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnSkorAldrettePascaAnestesi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnSkorAldrettePascaAnestesi.setText("Skor Aldrette Pasca Anestesi");
         BtnSkorAldrettePascaAnestesi.setFocusPainted(false);
-        BtnSkorAldrettePascaAnestesi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnSkorAldrettePascaAnestesi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnSkorAldrettePascaAnestesi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnSkorAldrettePascaAnestesi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnSkorAldrettePascaAnestesi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1156,7 +1156,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnSkorStewardPascaAnestesi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnSkorStewardPascaAnestesi.setText("Skor Steward Pasca Anestesi");
         BtnSkorStewardPascaAnestesi.setFocusPainted(false);
-        BtnSkorStewardPascaAnestesi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnSkorStewardPascaAnestesi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnSkorStewardPascaAnestesi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnSkorStewardPascaAnestesi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnSkorStewardPascaAnestesi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1173,7 +1173,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnSkorBromagePascaAnestesi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnSkorBromagePascaAnestesi.setText("Skor Bromage Pasca Anestesi");
         BtnSkorBromagePascaAnestesi.setFocusPainted(false);
-        BtnSkorBromagePascaAnestesi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnSkorBromagePascaAnestesi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnSkorBromagePascaAnestesi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnSkorBromagePascaAnestesi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnSkorBromagePascaAnestesi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1190,7 +1190,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnPengkajianPaskaOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnPengkajianPaskaOperasi.setText("Pengkajian Paska Operasi");
         BtnPengkajianPaskaOperasi.setFocusPainted(false);
-        BtnPengkajianPaskaOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnPengkajianPaskaOperasi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnPengkajianPaskaOperasi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnPengkajianPaskaOperasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnPengkajianPaskaOperasi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1207,7 +1207,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         BtnCatatanObservasiRuangOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnCatatanObservasiRuangOperasi.setText("Observasi Ruang Operasi");
         BtnCatatanObservasiRuangOperasi.setFocusPainted(false);
-        BtnCatatanObservasiRuangOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnCatatanObservasiRuangOperasi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnCatatanObservasiRuangOperasi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnCatatanObservasiRuangOperasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnCatatanObservasiRuangOperasi.setMargin(new java.awt.Insets(1, 1, 1, 1));

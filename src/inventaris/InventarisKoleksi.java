@@ -237,7 +237,7 @@ public final class InventarisKoleksi extends javax.swing.JDialog {
         Popup.setName("Popup"); // NOI18N
 
         ppBarcode.setBackground(new java.awt.Color(255, 255, 254));
-        ppBarcode.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBarcode.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBarcode.setForeground(new java.awt.Color(50, 50, 50));
         ppBarcode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         ppBarcode.setText("Barcode");
@@ -253,7 +253,7 @@ public final class InventarisKoleksi extends javax.swing.JDialog {
         Popup.add(ppBarcode);
 
         ppBarcode2.setBackground(new java.awt.Color(255, 255, 254));
-        ppBarcode2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBarcode2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBarcode2.setForeground(new java.awt.Color(50, 50, 50));
         ppBarcode2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         ppBarcode2.setText("Barcode 2");
@@ -269,7 +269,7 @@ public final class InventarisKoleksi extends javax.swing.JDialog {
         Popup.add(ppBarcode2);
 
         ppBarcode3.setBackground(new java.awt.Color(255, 255, 254));
-        ppBarcode3.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBarcode3.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBarcode3.setForeground(new java.awt.Color(50, 50, 50));
         ppBarcode3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         ppBarcode3.setText("Barcode 3");
@@ -293,7 +293,7 @@ public final class InventarisKoleksi extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Aset Inventaris ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Aset Inventaris ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -490,7 +490,7 @@ public final class InventarisKoleksi extends javax.swing.JDialog {
         jLabel6.setPreferredSize(new java.awt.Dimension(70, 23));
         panelGlass9.add(jLabel6);
 
-        TCari.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TCari.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TCari.setName("TCari"); // NOI18N
         TCari.setPreferredSize(new java.awt.Dimension(200, 23));
         TCari.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -503,7 +503,7 @@ public final class InventarisKoleksi extends javax.swing.JDialog {
         BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
         BtnCari.setMnemonic('2');
         BtnCari.setToolTipText("Alt+2");
-        BtnCari.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnCari.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnCari.setName("BtnCari"); // NOI18N
         BtnCari.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnCari.addActionListener(new java.awt.event.ActionListener() {
@@ -695,7 +695,7 @@ public final class InventarisKoleksi extends javax.swing.JDialog {
         FormInput.add(asal_barang);
         asal_barang.setBounds(275, 130, 140, 23);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "Posisi Inventaris Di :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "Posisi Inventaris Di :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setOpaque(false);
         jPanel1.setLayout(null);
@@ -821,7 +821,7 @@ public final class InventarisKoleksi extends javax.swing.JDialog {
         PanelAccor.add(ChkAccor, java.awt.BorderLayout.WEST);
 
         FormPhoto.setBackground(new java.awt.Color(255, 255, 255));
-        FormPhoto.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), " Photo Aset Inventaris : ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        FormPhoto.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), " Photo Aset Inventaris : ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         FormPhoto.setName("FormPhoto"); // NOI18N
         FormPhoto.setPreferredSize(new java.awt.Dimension(115, 73));
         FormPhoto.setLayout(new java.awt.BorderLayout());

@@ -153,7 +153,7 @@ public class DlgCariPermintaan extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppHapus.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapus.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapus.setForeground(new java.awt.Color(50, 50, 50));
         ppHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapus.setText("Hapus Permintaan Barang");
@@ -169,7 +169,7 @@ public class DlgCariPermintaan extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapus);
 
         ppDisetujui.setBackground(new java.awt.Color(255, 255, 254));
-        ppDisetujui.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppDisetujui.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppDisetujui.setForeground(new java.awt.Color(50, 50, 50));
         ppDisetujui.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppDisetujui.setText("Disetujui ( Mutasi )");
@@ -185,7 +185,7 @@ public class DlgCariPermintaan extends javax.swing.JDialog {
         jPopupMenu1.add(ppDisetujui);
 
         ppDisetujui1.setBackground(new java.awt.Color(255, 255, 254));
-        ppDisetujui1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppDisetujui1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppDisetujui1.setForeground(new java.awt.Color(50, 50, 50));
         ppDisetujui1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppDisetujui1.setText("Disetujui ( Stok Keluar )");
@@ -201,7 +201,7 @@ public class DlgCariPermintaan extends javax.swing.JDialog {
         jPopupMenu1.add(ppDisetujui1);
 
         ppTidakDisetujui.setBackground(new java.awt.Color(255, 255, 254));
-        ppTidakDisetujui.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppTidakDisetujui.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppTidakDisetujui.setForeground(new java.awt.Color(50, 50, 50));
         ppTidakDisetujui.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTidakDisetujui.setText("Tidak Disetujui");
@@ -252,7 +252,7 @@ public class DlgCariPermintaan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Permintaan Obat/Alkes/BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Permintaan Obat/Alkes/BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

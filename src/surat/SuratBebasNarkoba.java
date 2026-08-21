@@ -197,7 +197,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnCetakSuratSKBN.setBackground(new java.awt.Color(250, 250, 250));
-        MnCetakSuratSKBN.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratSKBN.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratSKBN.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSKBN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratSKBN.setText("Cetak SKBN 1");
@@ -211,7 +211,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         jPopupMenu1.add(MnCetakSuratSKBN);
 
         MnCetakSuratSKBN1.setBackground(new java.awt.Color(250, 250, 250));
-        MnCetakSuratSKBN1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratSKBN1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratSKBN1.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSKBN1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratSKBN1.setText("Cetak SKBN 2");
@@ -225,7 +225,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         jPopupMenu1.add(MnCetakSuratSKBN1);
 
         MnCetakSuratSKBN2.setBackground(new java.awt.Color(250, 250, 250));
-        MnCetakSuratSKBN2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratSKBN2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratSKBN2.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSKBN2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratSKBN2.setText("Cetak SKBN 3");
@@ -239,7 +239,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         jPopupMenu1.add(MnCetakSuratSKBN2);
 
         MnCetakSuratSKBN3.setBackground(new java.awt.Color(250, 250, 250));
-        MnCetakSuratSKBN3.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratSKBN3.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnCetakSuratSKBN3.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSKBN3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnCetakSuratSKBN3.setText("Cetak SKBN 4");
@@ -261,8 +261,8 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Surat Keterangan Bebas Narkoba ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Surat Keterangan Bebas Narkoba ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

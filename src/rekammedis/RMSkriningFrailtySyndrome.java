@@ -315,7 +315,7 @@ public final class RMSkriningFrailtySyndrome extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnSkriningFrailtySyndrome.setBackground(new java.awt.Color(255, 255, 254));
-        MnSkriningFrailtySyndrome.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSkriningFrailtySyndrome.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnSkriningFrailtySyndrome.setForeground(new java.awt.Color(50, 50, 50));
         MnSkriningFrailtySyndrome.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnSkriningFrailtySyndrome.setText("Formulir Skrining Frailty Syndrome");
@@ -347,8 +347,8 @@ public final class RMSkriningFrailtySyndrome extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Skrining Frailty Syndrome ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Skrining Frailty Syndrome ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -704,7 +704,7 @@ public final class RMSkriningFrailtySyndrome extends javax.swing.JDialog {
 
         ChkKejadian.setBorder(null);
         ChkKejadian.setSelected(true);
-        ChkKejadian.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkKejadian.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkKejadian.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkKejadian.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkKejadian.setName("ChkKejadian"); // NOI18N
@@ -864,7 +864,7 @@ public final class RMSkriningFrailtySyndrome extends javax.swing.JDialog {
 
         jLabel77.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel77.setText("R = Resistensi");
-        jLabel77.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel77.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jLabel77.setName("jLabel77"); // NOI18N
         FormInput.add(jLabel77);
         jLabel77.setBounds(57, 90, 100, 23);
@@ -883,7 +883,7 @@ public final class RMSkriningFrailtySyndrome extends javax.swing.JDialog {
 
         jLabel79.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel79.setText("A = Aktivitas 1");
-        jLabel79.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel79.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jLabel79.setName("jLabel79"); // NOI18N
         FormInput.add(jLabel79);
         jLabel79.setBounds(57, 145, 140, 23);
@@ -923,7 +923,7 @@ public final class RMSkriningFrailtySyndrome extends javax.swing.JDialog {
 
         jLabel81.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel81.setText("P = Penyakit Lebih Dari 5");
-        jLabel81.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel81.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jLabel81.setName("jLabel81"); // NOI18N
         FormInput.add(jLabel81);
         jLabel81.setBounds(57, 190, 160, 23);
@@ -1126,7 +1126,7 @@ public final class RMSkriningFrailtySyndrome extends javax.swing.JDialog {
 
         jLabel83.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel83.setText("U = Usaha Berjalan");
-        jLabel83.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel83.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jLabel83.setName("jLabel83"); // NOI18N
         FormInput.add(jLabel83);
         jLabel83.setBounds(57, 270, 130, 23);
@@ -1202,7 +1202,7 @@ public final class RMSkriningFrailtySyndrome extends javax.swing.JDialog {
 
         jLabel90.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel90.setText("H = Hilangnya Berat Badan");
-        jLabel90.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel90.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         jLabel90.setName("jLabel90"); // NOI18N
         FormInput.add(jLabel90);
         jLabel90.setBounds(57, 325, 240, 23);
@@ -1221,14 +1221,14 @@ public final class RMSkriningFrailtySyndrome extends javax.swing.JDialog {
 
         jLabel97.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel97.setText("Keterangan perhitungan berat badan dalam persen : [(berat badan 1 tahun yang lalu - berat badan sekarang)/ ");
-        jLabel97.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        jLabel97.setFont(new java.awt.Font("Segoe UI", 2, 11)); // NOI18N
         jLabel97.setName("jLabel97"); // NOI18N
         FormInput.add(jLabel97);
         jLabel97.setBounds(57, 370, 670, 23);
 
         jLabel98.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel98.setText("berat badan satu tahun lalu)] x 100 %");
-        jLabel98.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        jLabel98.setFont(new java.awt.Font("Segoe UI", 2, 11)); // NOI18N
         jLabel98.setName("jLabel98"); // NOI18N
         FormInput.add(jLabel98);
         jLabel98.setBounds(57, 385, 670, 23);

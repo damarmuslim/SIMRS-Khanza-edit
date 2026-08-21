@@ -283,7 +283,7 @@ public final class DlgPeriksaLaboratoriumPA extends javax.swing.JDialog {
         Popup.setName("Popup"); // NOI18N
 
         Tinggi150.setBackground(new java.awt.Color(255, 255, 254));
-        Tinggi150.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Tinggi150.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Tinggi150.setForeground(new java.awt.Color(50, 50, 50));
         Tinggi150.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         Tinggi150.setText("Tinggi Baris 150");
@@ -299,7 +299,7 @@ public final class DlgPeriksaLaboratoriumPA extends javax.swing.JDialog {
         Popup.add(Tinggi150);
 
         Tinggi200.setBackground(new java.awt.Color(255, 255, 254));
-        Tinggi200.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Tinggi200.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Tinggi200.setForeground(new java.awt.Color(50, 50, 50));
         Tinggi200.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         Tinggi200.setText("Tinggi Baris 200");
@@ -315,7 +315,7 @@ public final class DlgPeriksaLaboratoriumPA extends javax.swing.JDialog {
         Popup.add(Tinggi200);
 
         Tinggi250.setBackground(new java.awt.Color(255, 255, 254));
-        Tinggi250.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Tinggi250.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Tinggi250.setForeground(new java.awt.Color(50, 50, 50));
         Tinggi250.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         Tinggi250.setText("Tinggi Baris 250");
@@ -331,7 +331,7 @@ public final class DlgPeriksaLaboratoriumPA extends javax.swing.JDialog {
         Popup.add(Tinggi250);
 
         Tinggi300.setBackground(new java.awt.Color(255, 255, 254));
-        Tinggi300.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Tinggi300.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Tinggi300.setForeground(new java.awt.Color(50, 50, 50));
         Tinggi300.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         Tinggi300.setText("Tinggi Baris 300");
@@ -347,7 +347,7 @@ public final class DlgPeriksaLaboratoriumPA extends javax.swing.JDialog {
         Popup.add(Tinggi300);
 
         Tinggi350.setBackground(new java.awt.Color(255, 255, 254));
-        Tinggi350.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Tinggi350.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Tinggi350.setForeground(new java.awt.Color(50, 50, 50));
         Tinggi350.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         Tinggi350.setText("Tinggi Baris 350");
@@ -363,7 +363,7 @@ public final class DlgPeriksaLaboratoriumPA extends javax.swing.JDialog {
         Popup.add(Tinggi350);
 
         Tinggi400.setBackground(new java.awt.Color(255, 255, 254));
-        Tinggi400.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Tinggi400.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         Tinggi400.setForeground(new java.awt.Color(50, 50, 50));
         Tinggi400.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         Tinggi400.setText("Tinggi Baris 400");
@@ -387,7 +387,7 @@ public final class DlgPeriksaLaboratoriumPA extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Input Data Hasil Periksa Laboratorium Patologi Anatomi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Input Data Hasil Periksa Laboratorium Patologi Anatomi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -658,7 +658,7 @@ public final class DlgPeriksaLaboratoriumPA extends javax.swing.JDialog {
         ChkJln.setSelected(true);
         ChkJln.setBorderPainted(true);
         ChkJln.setBorderPaintedFlat(true);
-        ChkJln.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkJln.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkJln.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkJln.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkJln.setName("ChkJln"); // NOI18N

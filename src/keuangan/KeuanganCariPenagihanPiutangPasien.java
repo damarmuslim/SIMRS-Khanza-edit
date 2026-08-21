@@ -182,7 +182,7 @@ public class KeuanganCariPenagihanPiutangPasien extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppHapus.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapus.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapus.setForeground(new java.awt.Color(50, 50, 50));
         ppHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapus.setText("Hapus Penagihan Piutang");
@@ -198,7 +198,7 @@ public class KeuanganCariPenagihanPiutangPasien extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapus);
 
         ppDisetujui.setBackground(new java.awt.Color(255, 255, 254));
-        ppDisetujui.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppDisetujui.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppDisetujui.setForeground(new java.awt.Color(50, 50, 50));
         ppDisetujui.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppDisetujui.setText("Sudah Dibayar");
@@ -214,7 +214,7 @@ public class KeuanganCariPenagihanPiutangPasien extends javax.swing.JDialog {
         jPopupMenu1.add(ppDisetujui);
 
         ppTidakDisetujui.setBackground(new java.awt.Color(255, 255, 254));
-        ppTidakDisetujui.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppTidakDisetujui.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppTidakDisetujui.setForeground(new java.awt.Color(50, 50, 50));
         ppTidakDisetujui.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppTidakDisetujui.setText("Proses Penagihan");
@@ -230,7 +230,7 @@ public class KeuanganCariPenagihanPiutangPasien extends javax.swing.JDialog {
         jPopupMenu1.add(ppTidakDisetujui);
 
         ppVerifikasi.setBackground(new java.awt.Color(255, 255, 254));
-        ppVerifikasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppVerifikasi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppVerifikasi.setForeground(new java.awt.Color(50, 50, 50));
         ppVerifikasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppVerifikasi.setText("Validasi Tagihan");
@@ -276,7 +276,7 @@ public class KeuanganCariPenagihanPiutangPasien extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Penagihan Piutang Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Penagihan Piutang Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -620,7 +620,7 @@ public class KeuanganCariPenagihanPiutangPasien extends javax.swing.JDialog {
         PanelAccor.add(ChkAccor, java.awt.BorderLayout.WEST);
 
         FormPhoto.setBackground(new java.awt.Color(255, 255, 255));
-        FormPhoto.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), " Bukti Penagihan/Bayar : ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        FormPhoto.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1), " Bukti Penagihan/Bayar : ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         FormPhoto.setName("FormPhoto"); // NOI18N
         FormPhoto.setPreferredSize(new java.awt.Dimension(115, 73));
         FormPhoto.setLayout(new java.awt.BorderLayout());

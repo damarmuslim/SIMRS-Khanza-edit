@@ -190,12 +190,12 @@ public class DlgParkirMasuk extends javax.swing.JDialog {
             }
         });
 
-        internalFrame2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(215, 225, 205)), "::[ Input Parkir Masuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(215, 225, 205)), "::[ Input Parkir Masuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
         internalFrame2.setName("internalFrame2"); // NOI18N
         internalFrame2.setWarnaBawah(new java.awt.Color(245, 250, 240));
         internalFrame2.setLayout(null);
 
-        NomorKendaraan.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        NomorKendaraan.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         NomorKendaraan.setHighlighter(null);
         NomorKendaraan.setName("NomorKendaraan"); // NOI18N
         NomorKendaraan.addActionListener(new java.awt.event.ActionListener() {
@@ -213,7 +213,7 @@ public class DlgParkirMasuk extends javax.swing.JDialog {
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("Nomor Kendaraan :");
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
         internalFrame2.add(jLabel3);
         jLabel3.setBounds(20, 80, 195, 30);
@@ -237,12 +237,12 @@ public class DlgParkirMasuk extends javax.swing.JDialog {
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("Nomor Kartu :");
-        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
         internalFrame2.add(jLabel4);
         jLabel4.setBounds(20, 20, 195, 30);
 
-        NomorKartu.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        NomorKartu.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         NomorKartu.setHighlighter(null);
         NomorKartu.setName("NomorKartu"); // NOI18N
         NomorKartu.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -267,7 +267,7 @@ public class DlgParkirMasuk extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Parkir Masuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Parkir Masuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

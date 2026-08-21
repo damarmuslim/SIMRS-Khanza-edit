@@ -175,7 +175,7 @@ public class DlgCariPiutang extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppCetakNota.setBackground(new java.awt.Color(255, 255, 254));
-        ppCetakNota.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppCetakNota.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppCetakNota.setForeground(new java.awt.Color(50, 50, 50));
         ppCetakNota.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppCetakNota.setText("Cetak Ulang Nota");
@@ -192,7 +192,7 @@ public class DlgCariPiutang extends javax.swing.JDialog {
         jPopupMenu1.add(ppCetakNota);
 
         ppHapus.setBackground(new java.awt.Color(255, 255, 254));
-        ppHapus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppHapus.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppHapus.setForeground(new java.awt.Color(50, 50, 50));
         ppHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppHapus.setText("Hapus Piutang");
@@ -209,7 +209,7 @@ public class DlgCariPiutang extends javax.swing.JDialog {
         jPopupMenu1.add(ppHapus);
 
         MnDetailCicilan.setBackground(new java.awt.Color(255, 255, 254));
-        MnDetailCicilan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnDetailCicilan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnDetailCicilan.setForeground(new java.awt.Color(50, 50, 50));
         MnDetailCicilan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnDetailCicilan.setText("Bayar Piutang");
@@ -224,7 +224,7 @@ public class DlgCariPiutang extends javax.swing.JDialog {
         jPopupMenu1.add(MnDetailCicilan);
 
         ppResepObat.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat.setText("Cetak Aturan Pakai Model 1");
@@ -240,7 +240,7 @@ public class DlgCariPiutang extends javax.swing.JDialog {
         jPopupMenu1.add(ppResepObat);
 
         ppResepObat1.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat1.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat1.setText("Cetak Aturan Pakai Model 2");
@@ -256,7 +256,7 @@ public class DlgCariPiutang extends javax.swing.JDialog {
         jPopupMenu1.add(ppResepObat1);
 
         ppResepObat2.setBackground(new java.awt.Color(255, 255, 254));
-        ppResepObat2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResepObat2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppResepObat2.setForeground(new java.awt.Color(50, 50, 50));
         ppResepObat2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppResepObat2.setText("Cetak Aturan Pakai Model 3");
@@ -272,7 +272,7 @@ public class DlgCariPiutang extends javax.swing.JDialog {
         jPopupMenu1.add(ppResepObat2);
 
         ppLembarObat.setBackground(new java.awt.Color(255, 255, 254));
-        ppLembarObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppLembarObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppLembarObat.setForeground(new java.awt.Color(50, 50, 50));
         ppLembarObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppLembarObat.setText("Lembar Pemberian Obat 1");
@@ -288,7 +288,7 @@ public class DlgCariPiutang extends javax.swing.JDialog {
         jPopupMenu1.add(ppLembarObat);
 
         ppLembarObat1.setBackground(new java.awt.Color(255, 255, 254));
-        ppLembarObat1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppLembarObat1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppLembarObat1.setForeground(new java.awt.Color(50, 50, 50));
         ppLembarObat1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppLembarObat1.setText("Lembar Pemberian Obat 2");
@@ -312,7 +312,7 @@ public class DlgCariPiutang extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Piutang Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Cari Piutang Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

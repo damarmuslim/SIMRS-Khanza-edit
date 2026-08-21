@@ -238,7 +238,7 @@ public final class PengajuanInventaris extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppProses.setBackground(new java.awt.Color(255, 255, 254));
-        ppProses.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppProses.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppProses.setForeground(new java.awt.Color(50,50,50));
         ppProses.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppProses.setText("Set Status Proses Pengajuan");
@@ -254,7 +254,7 @@ public final class PengajuanInventaris extends javax.swing.JDialog {
         jPopupMenu1.add(ppProses);
 
         ppDosetujui.setBackground(new java.awt.Color(255, 255, 254));
-        ppDosetujui.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppDosetujui.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppDosetujui.setForeground(new java.awt.Color(50,50,50));
         ppDosetujui.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppDosetujui.setText("Set Status Disetujui");
@@ -270,7 +270,7 @@ public final class PengajuanInventaris extends javax.swing.JDialog {
         jPopupMenu1.add(ppDosetujui);
 
         ppDitolak.setBackground(new java.awt.Color(255, 255, 254));
-        ppDitolak.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppDitolak.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppDitolak.setForeground(new java.awt.Color(50,50,50));
         ppDitolak.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppDitolak.setText("Set Status Ditolak");
@@ -294,8 +294,8 @@ public final class PengajuanInventaris extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengajuan Pembelian Aset/Inventaris ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pengajuan Pembelian Aset/Inventaris ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 

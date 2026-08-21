@@ -414,7 +414,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         Popup.setName("Popup"); // NOI18N
 
         ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkan.setText("Bersihkan Pilihan");
@@ -430,7 +430,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         Popup.add(ppBersihkan);
 
         ppSemua.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemua.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemua.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemua.setForeground(new java.awt.Color(50, 50, 50));
         ppSemua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemua.setText("Pilih Semua");
@@ -460,7 +460,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         PopupMB.setName("PopupMB"); // NOI18N
 
         ppBersihkan1.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan1.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBersihkan1.setText("Bersihkan Pilihan");
@@ -476,7 +476,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         PopupMB.add(ppBersihkan1);
 
         ppSemua1.setBackground(new java.awt.Color(255, 255, 254));
-        ppSemua1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSemua1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSemua1.setForeground(new java.awt.Color(50, 50, 50));
         ppSemua1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSemua1.setText("Pilih Semua");
@@ -500,7 +500,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Input Data Permintaan Laboratorium ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Input Data Permintaan Laboratorium ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -602,7 +602,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
 
         ChkJln.setBorder(null);
         ChkJln.setSelected(true);
-        ChkJln.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkJln.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkJln.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkJln.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkJln.setName("ChkJln"); // NOI18N
@@ -678,7 +678,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         TabRawat.setBackground(new java.awt.Color(255, 255, 253));
         TabRawat.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(241, 246, 236)));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

@@ -222,7 +222,7 @@ public final class DlgCariPerawatanRalan extends javax.swing.JDialog {
         Popup.setName("Popup"); // NOI18N
 
         ppBersihkan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBersihkan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBersihkan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBersihkan.setForeground(new java.awt.Color(50, 50, 50));
         ppBersihkan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
         ppBersihkan.setText("Hilangkan Centang/Tindakan Terpilih");
@@ -238,7 +238,7 @@ public final class DlgCariPerawatanRalan extends javax.swing.JDialog {
         Popup.add(ppBersihkan);
 
         ppDokter.setBackground(new java.awt.Color(255, 255, 254));
-        ppDokter.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppDokter.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppDokter.setForeground(new java.awt.Color(50, 50, 50));
         ppDokter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
         ppDokter.setText("Ubah Ke Tindakan Dokter");
@@ -254,7 +254,7 @@ public final class DlgCariPerawatanRalan extends javax.swing.JDialog {
         Popup.add(ppDokter);
 
         ppPetugas.setBackground(new java.awt.Color(255, 255, 254));
-        ppPetugas.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppPetugas.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppPetugas.setForeground(new java.awt.Color(50, 50, 50));
         ppPetugas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
         ppPetugas.setText("Ubah Ke Tindakan Petugas");
@@ -270,7 +270,7 @@ public final class DlgCariPerawatanRalan extends javax.swing.JDialog {
         Popup.add(ppPetugas);
 
         ppPetugasDokter.setBackground(new java.awt.Color(255, 255, 254));
-        ppPetugasDokter.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppPetugasDokter.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppPetugasDokter.setForeground(new java.awt.Color(50, 50, 50));
         ppPetugasDokter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
         ppPetugasDokter.setText("Ubah Ke Tindakan Dokter & Petugas");
@@ -300,7 +300,7 @@ public final class DlgCariPerawatanRalan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Tarif Tagihan/Perawatan/Tindakan Rawat Jalan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Tarif Tagihan/Perawatan/Tindakan Rawat Jalan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -556,7 +556,7 @@ public final class DlgCariPerawatanRalan extends javax.swing.JDialog {
 
         ChkJln.setBorder(null);
         ChkJln.setSelected(true);
-        ChkJln.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkJln.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkJln.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkJln.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkJln.setName("ChkJln"); // NOI18N

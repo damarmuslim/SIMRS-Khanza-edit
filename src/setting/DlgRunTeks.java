@@ -131,7 +131,7 @@ public class DlgRunTeks extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Set Display Antrian Registrasi & Poli ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Set Display Antrian Registrasi & Poli ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
         internalFrame1.setForeground(new java.awt.Color(50,50,50));
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
@@ -140,7 +140,7 @@ public class DlgRunTeks extends javax.swing.JDialog {
         Scroll.setOpaque(true);
 
         tbAdmin.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
-        tbAdmin.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tbAdmin.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         tbAdmin.setName("tbAdmin"); // NOI18N
         tbAdmin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -282,7 +282,7 @@ public class DlgRunTeks extends javax.swing.JDialog {
         BtnCariGb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         BtnCariGb.setMnemonic('1');
         BtnCariGb.setToolTipText("Alt+1");
-        BtnCariGb.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        BtnCariGb.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         BtnCariGb.setName("BtnCariGb"); // NOI18N
         BtnCariGb.setPreferredSize(new java.awt.Dimension(100, 30));
         BtnCariGb.addActionListener(new java.awt.event.ActionListener() {
@@ -294,7 +294,7 @@ public class DlgRunTeks extends javax.swing.JDialog {
         BtnCariGb.setBounds(287, 130, 25, 23);
 
         EGb.setEditable(false);
-        EGb.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        EGb.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         EGb.setName("EGb"); // NOI18N
         EGb.setPreferredSize(new java.awt.Dimension(207, 23));
         EGb.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -328,7 +328,7 @@ public class DlgRunTeks extends javax.swing.JDialog {
         TTeks.setBorder(null);
         TTeks.setColumns(20);
         TTeks.setRows(5);
-        TTeks.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TTeks.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         TTeks.setName("TTeks"); // NOI18N
         TTeks.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {

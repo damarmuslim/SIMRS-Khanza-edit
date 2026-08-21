@@ -370,7 +370,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         WindowAmbilSampel.setUndecorated(true);
         WindowAmbilSampel.setResizable(false);
 
-        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Update Waktu Pengambilan Sampel ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Update Waktu Pengambilan Sampel ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame5.setName("internalFrame5"); // NOI18N
         internalFrame5.setLayout(null);
 
@@ -430,7 +430,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Permintaan Radiologi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Permintaan Radiologi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -635,7 +635,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
 
         TabPilihRawat.setBackground(new java.awt.Color(255, 255, 254));
         TabPilihRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabPilihRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabPilihRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabPilihRawat.setName("TabPilihRawat"); // NOI18N
         TabPilihRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -700,7 +700,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
 
         TabRawatJalan.setBackground(new java.awt.Color(255, 255, 254));
         TabRawatJalan.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawatJalan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawatJalan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawatJalan.setName("TabRawatJalan"); // NOI18N
         TabRawatJalan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -839,7 +839,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
 
         TabRawatInap.setBackground(new java.awt.Color(255, 255, 254));
         TabRawatInap.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawatInap.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawatInap.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawatInap.setName("TabRawatInap"); // NOI18N
         TabRawatInap.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -949,7 +949,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         BtnCetakHasilRadiologi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnCetakHasilRadiologi.setText("Cetak Permintaan Radiologi");
         BtnCetakHasilRadiologi.setFocusPainted(false);
-        BtnCetakHasilRadiologi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnCetakHasilRadiologi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnCetakHasilRadiologi.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnCetakHasilRadiologi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnCetakHasilRadiologi.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -966,7 +966,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         BtnBarcodePermintaan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnBarcodePermintaan.setText("Barcode No.Permintaan");
         BtnBarcodePermintaan.setFocusPainted(false);
-        BtnBarcodePermintaan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnBarcodePermintaan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnBarcodePermintaan.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnBarcodePermintaan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnBarcodePermintaan.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -983,7 +983,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         BtnBarcodePermintaan2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnBarcodePermintaan2.setText("Barcode No.Permintaan 2");
         BtnBarcodePermintaan2.setFocusPainted(false);
-        BtnBarcodePermintaan2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnBarcodePermintaan2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnBarcodePermintaan2.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnBarcodePermintaan2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnBarcodePermintaan2.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1000,7 +1000,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         BtnKirimDataFuji.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimDataFuji.setText("Kirim Permintaan ke RIS FUJI");
         BtnKirimDataFuji.setFocusPainted(false);
-        BtnKirimDataFuji.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimDataFuji.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimDataFuji.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimDataFuji.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimDataFuji.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1017,7 +1017,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         BtnAmbilDataFUJI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilDataFUJI.setText("Ambil Hasil dari RIS FUJI");
         BtnAmbilDataFUJI.setFocusPainted(false);
-        BtnAmbilDataFUJI.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilDataFUJI.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilDataFUJI.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilDataFUJI.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilDataFUJI.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1034,7 +1034,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         BtnKirimDataCareStream.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnKirimDataCareStream.setText("Kirim Permintaan ke RIS Care Stream");
         BtnKirimDataCareStream.setFocusPainted(false);
-        BtnKirimDataCareStream.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimDataCareStream.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnKirimDataCareStream.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnKirimDataCareStream.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnKirimDataCareStream.setMargin(new java.awt.Insets(1, 1, 1, 1));
@@ -1051,7 +1051,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
         BtnAmbilDataFUJI1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnAmbilDataFUJI1.setText("Ambil Hasil dari RIS Care Stream");
         BtnAmbilDataFUJI1.setFocusPainted(false);
-        BtnAmbilDataFUJI1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnAmbilDataFUJI1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         BtnAmbilDataFUJI1.setGlassColor(new java.awt.Color(255, 255, 255));
         BtnAmbilDataFUJI1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         BtnAmbilDataFUJI1.setMargin(new java.awt.Insets(1, 1, 1, 1));

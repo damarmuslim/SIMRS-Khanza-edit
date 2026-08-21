@@ -301,7 +301,7 @@ public class RMSKriningRawatJalan extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnLembarSkriningRalan.setBackground(new java.awt.Color(255, 255, 254));
-        MnLembarSkriningRalan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnLembarSkriningRalan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnLembarSkriningRalan.setForeground(new java.awt.Color(50, 50, 50));
         MnLembarSkriningRalan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnLembarSkriningRalan.setText("Lembar Skrining Ralan");
@@ -315,7 +315,7 @@ public class RMSKriningRawatJalan extends javax.swing.JDialog {
         jPopupMenu1.add(MnLembarSkriningRalan);
 
         MnPDFSkriningRalan.setBackground(new java.awt.Color(255, 255, 254));
-        MnPDFSkriningRalan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnPDFSkriningRalan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnPDFSkriningRalan.setForeground(new java.awt.Color(50, 50, 50));
         MnPDFSkriningRalan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnPDFSkriningRalan.setText("PDF Skrining Ralan");
@@ -329,7 +329,7 @@ public class RMSKriningRawatJalan extends javax.swing.JDialog {
         jPopupMenu1.add(MnPDFSkriningRalan);
 
         ppPasienCorona.setBackground(new java.awt.Color(255, 255, 254));
-        ppPasienCorona.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppPasienCorona.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppPasienCorona.setForeground(new java.awt.Color(50, 50, 50));
         ppPasienCorona.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppPasienCorona.setText("Bridging Pasien Corona Kemenkes");
@@ -353,7 +353,7 @@ public class RMSKriningRawatJalan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Skrining Rawat Jalan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Skrining Rawat Jalan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -709,7 +709,7 @@ public class RMSKriningRawatJalan extends javax.swing.JDialog {
 
         ChkJln.setBorder(null);
         ChkJln.setSelected(true);
-        ChkJln.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkJln.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         ChkJln.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkJln.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkJln.setName("ChkJln"); // NOI18N

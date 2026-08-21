@@ -214,14 +214,14 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
         nmgolongan = new widget.TextBox();
         BtnGolongan = new widget.Button();
 
-        Kd2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Kd2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Kd2.setName("Kd2"); // NOI18N
         Kd2.setPreferredSize(new java.awt.Dimension(207, 23));
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         ppGrafikJualBanyak.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikJualBanyak.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikJualBanyak.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikJualBanyak.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikJualBanyak.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikJualBanyak.setText("Grafik 10 Barang Penjualan Terbanyak");
@@ -237,7 +237,7 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikJualBanyak);
 
         ppGrafikJualDikit.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikJualDikit.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikJualDikit.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikJualDikit.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikJualDikit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikJualDikit.setText("Grafik 10 Barang Penjualan Tersedikit");
@@ -253,7 +253,7 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikJualDikit);
 
         ppGrafikbeliBanyak.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikbeliBanyak.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikbeliBanyak.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikbeliBanyak.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikbeliBanyak.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikbeliBanyak.setText("Grafik 10 Barang Pembelian Terbanyak");
@@ -269,7 +269,7 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikbeliBanyak);
 
         ppGrafikbelidikit.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikbelidikit.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikbelidikit.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikbelidikit.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikbelidikit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikbelidikit.setText("Grafik 10 Barang Pembelian Tersedikit");
@@ -285,7 +285,7 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikbelidikit);
 
         ppGrafikPiutangBanyak.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiutangBanyak.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiutangBanyak.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiutangBanyak.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiutangBanyak.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiutangBanyak.setText("Grafik 10 Barang Piutang Terbanyak");
@@ -301,7 +301,7 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiutangBanyak);
 
         ppGrafikPiutangDikit.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikPiutangDikit.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikPiutangDikit.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikPiutangDikit.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiutangDikit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiutangDikit.setText("Grafik 10 Barang Piutang Tersedikit");
@@ -317,7 +317,7 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikPiutangDikit);
 
         ppGrafikResepPaliingBanyak.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikResepPaliingBanyak.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikResepPaliingBanyak.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikResepPaliingBanyak.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikResepPaliingBanyak.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikResepPaliingBanyak.setText("Grafik 10 Barang Resep Ke Pasien Terbanyak");
@@ -333,7 +333,7 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikResepPaliingBanyak);
 
         ppGrafikResepPaliingSedikit.setBackground(new java.awt.Color(255, 255, 254));
-        ppGrafikResepPaliingSedikit.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGrafikResepPaliingSedikit.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppGrafikResepPaliingSedikit.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikResepPaliingSedikit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikResepPaliingSedikit.setText("Grafik 10 Barang Resep Ke Pasien Tersedikit");
@@ -349,7 +349,7 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
         jPopupMenu1.add(ppGrafikResepPaliingSedikit);
 
         ppLokasi.setBackground(new java.awt.Color(255, 255, 254));
-        ppLokasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppLokasi.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppLokasi.setForeground(new java.awt.Color(50, 50, 50));
         ppLokasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppLokasi.setText("Tampilkan Per Lokasi");
@@ -373,7 +373,7 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Sirkulasi Obat, Alkes & BHP Medis Keluar Masuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Sirkulasi Obat, Alkes & BHP Medis Keluar Masuk ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -435,7 +435,7 @@ public class DlgSirkulasiBarang5 extends javax.swing.JDialog {
         });
         panelisi1.add(BtnCari);
 
-        label9.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label9.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label9.setName("label9"); // NOI18N
         label9.setPreferredSize(new java.awt.Dimension(39, 30));
         panelisi1.add(label9);

@@ -139,7 +139,7 @@ public final class DlgPelayananApotek extends javax.swing.JDialog {
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
         MnResepRacikan.setBackground(new java.awt.Color(255, 255, 254));
-        MnResepRacikan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnResepRacikan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnResepRacikan.setForeground(new java.awt.Color(50, 50, 50));
         MnResepRacikan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnResepRacikan.setText("Filter Resep Racikan");
@@ -153,7 +153,7 @@ public final class DlgPelayananApotek extends javax.swing.JDialog {
         jPopupMenu1.add(MnResepRacikan);
 
         MnResepNonRacikan.setBackground(new java.awt.Color(255, 255, 254));
-        MnResepNonRacikan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnResepNonRacikan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnResepNonRacikan.setForeground(new java.awt.Color(50, 50, 50));
         MnResepNonRacikan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnResepNonRacikan.setText("Filter Resep Non Racikan");
@@ -175,7 +175,7 @@ public final class DlgPelayananApotek extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Lama Pelayanan Apotek ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Lama Pelayanan Apotek ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
