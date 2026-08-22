@@ -81,6 +81,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     public RMPenilaianAwalKeperawatanIGD(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         ModernStyle.terapkan(this);
         initKepTambahan();
         initKepTambahanHal2();

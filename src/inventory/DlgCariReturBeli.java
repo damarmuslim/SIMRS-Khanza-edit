@@ -59,6 +59,7 @@ public class DlgCariReturBeli extends javax.swing.JDialog {
     public DlgCariReturBeli(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         try {
             prop.loadFromXML(new FileInputStream("setting/database.xml"));   

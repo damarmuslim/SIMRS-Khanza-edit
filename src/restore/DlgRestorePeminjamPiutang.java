@@ -51,6 +51,7 @@ public final class DlgRestorePeminjamPiutang extends javax.swing.JDialog {
     public DlgRestorePeminjamPiutang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"Kode","Peminjam","Alamat","No.Telp","Kode Rekening","Nama Rekening"};
         tabMode=new DefaultTableModel(null,row){

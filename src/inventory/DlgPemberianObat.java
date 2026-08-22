@@ -86,6 +86,7 @@ public class DlgPemberianObat extends javax.swing.JDialog {
     public DlgPemberianObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabModePO=new DefaultTableModel(null,new Object[]{
                 "Tgl.Beri","Jam Beri","No.Rawat","No.R.M.","Nama Pasien","Kode Obat","Nama Obat/Alkes","Embalase",

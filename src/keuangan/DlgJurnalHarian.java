@@ -43,6 +43,7 @@ public class DlgJurnalHarian extends javax.swing.JDialog {
     public DlgJurnalHarian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Tanggal","Kode Akun","Nama Akun","Keterangan","Debet","Kredit"};
         tabMode=new DefaultTableModel(null,row){

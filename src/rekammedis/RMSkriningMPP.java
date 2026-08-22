@@ -62,6 +62,7 @@ public final class RMSkriningMPP extends javax.swing.JDialog {
     public RMSkriningMPP(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","J.K.","Tgl.Lahir","Alamat","Tgl.Skrining","Parameter 1","Parameter 2","Parameter 3","Parameter 4",

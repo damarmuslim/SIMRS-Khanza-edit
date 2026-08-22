@@ -67,6 +67,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     public RMPenilaianAwalMedisIGD(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         isMenu(); // panel ringkasan HTML disembunyikan dulu sampai user klik baris pasien (lihat getData())
 
         // [RM 03-2] Header tabMode SENGAJA diringkas jadi kolom pencarian saja

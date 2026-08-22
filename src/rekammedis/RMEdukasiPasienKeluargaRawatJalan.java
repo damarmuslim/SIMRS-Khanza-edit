@@ -72,6 +72,9 @@ public final class RMEdukasiPasienKeluargaRawatJalan extends javax.swing.JDialog
     public RMEdukasiPasienKeluargaRawatJalan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
+        initAsesmenRM02_1();
+        tambahTombolPelaksanaanEdukasi();
         this.setLocation(8,1);
         setSize(628,674);
 
@@ -2044,7 +2047,348 @@ public final class RMEdukasiPasienKeluargaRawatJalan extends javax.swing.JDialog
     private widget.ScrollPane scrollInput;
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
-    
+
+    // =====================================================================
+    // [RM 02-1] Field baru "Bagian A. Assessment Kebutuhan Edukasi" sesuai
+    // formulir fisik RM 02-1 - lihat initAsesmenRM02_1(), dipanggil dari
+    // konstruktor SETELAH initComponents(). Field lama GEN block (Bicara,
+    // CaraBelajar, HambatanBelajar, PenyakitnyaMerupakan, dst) disembunyikan
+    // (BUKAN dihapus - data lama di DB tetap ada), tidak dipakai lagi.
+    // =====================================================================
+    // Tombol navigasi langsung ke form "Pelaksanaan Informasi Edukasi" -
+    // ditambahkan dari LUAR blok GEN (bukan edit initComponents()), supaya
+    // NetBeans GUI builder tidak menimpanya kalau form ini dibuka lagi di
+    // designer. Disisipkan ke panelGlass8 (toolbar tombol aksi, GEN) yg
+    // sudah ada, tepat sebelum BtnKeluar.
+    private widget.Button BtnPelaksanaanEdukasi;
+
+    private void tambahTombolPelaksanaanEdukasi(){
+        BtnPelaksanaanEdukasi = new widget.Button();
+        BtnPelaksanaanEdukasi.setMnemonic('P');
+        BtnPelaksanaanEdukasi.setText("Pelaksanaan");
+        BtnPelaksanaanEdukasi.setToolTipText("Alt+P - Buka Pelaksanaan Informasi Edukasi utk pasien ini");
+        BtnPelaksanaanEdukasi.setPreferredSize(new java.awt.Dimension(130, 30));
+        BtnPelaksanaanEdukasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnPelaksanaanEdukasiActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(BtnPelaksanaanEdukasi, panelGlass8.getComponentCount() - 1);
+        // Icon dipasang lewat IconStyle (kata kunci "pelaksanaan" -> clipboard-list.svg,
+        // widget/IconStyle.java) - BUKAN icon raster manual, krn widget/Button.java
+        // otomatis menyembunyikan icon raster kalau tombolnya ada teks (fix sesi
+        // sebelumnya utk form2 lain, poin 19 PROGRESS.md). Tombol ini baru dibuat
+        // SETELAH IconStyle.pasang(this) jalan di konstruktor, jadi dipanggil ulang
+        // scoped ke panelGlass8 saja (bukan seluruh form).
+        widget.IconStyle.pasang(panelGlass8);
+        panelGlass8.revalidate();
+        panelGlass8.repaint();
+    }
+
+    /** Buka RMPelaksanaanInformasiEdukasi langsung dari sini (bukan lewat menu utama) utk
+     * pasien/episode rawat yg SEDANG terbuka di form ini - pola identik
+     * DlgRawatJalan.BtnEdukasiPasienKeluargaActionPerformed (yg jg dipakai utk buka
+     * RMPelaksanaanInformasiEdukasi), disamakan persis: guard blm ada pasien terpilih,
+     * cursor wait, isCek()+emptTeks()+setNoRm()+tampil() dipanggil di form target. */
+    private void BtnPelaksanaanEdukasiActionPerformed(java.awt.event.ActionEvent evt){
+        if(TPasien.getText().trim().equals("")||TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+            TCari.requestFocus();
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            RMPelaksanaanInformasiEdukasi form=new RMPelaksanaanInformasiEdukasi(null,false);
+            form.isCek();
+            form.setSize(this.getWidth(), this.getHeight());
+            form.setLocationRelativeTo(this);
+            form.setVisible(true);
+            form.emptTeks();
+            form.setNoRm(TNoRw.getText(),DTPCari2.getDate());
+            form.tampil();
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
+
+    private widget.CekBox chkTinggalAnak, chkTinggalOrangTua, chkTinggalSendiri, chkTinggalSuamiIstri;
+    private widget.CekBox chkHambatanAda, chkHambatanTidak;
+    private widget.CekBox chkHambatanPendengaran, chkHambatanPenglihatan, chkHambatanBicara, chkHambatanEmosi,
+            chkHambatanMotivasi, chkHambatanMemori, chkHambatanFisikLemah, chkHambatanAlkoholik, chkHambatanPerokok,
+            chkHambatanFisiologis;
+    private widget.CekBox chkKepadaPasien, chkKepadaKeluarga;
+    private widget.TextBox txtKepadaKeluargaKet;
+    private widget.CekBox chkBahasaIndonesia, chkBahasaAsing;
+    private widget.TextBox txtBahasaAsingKet;
+    private widget.CekBox chkBacaBisa, chkBacaTidakBisa;
+    private widget.CekBox chkKepercayaanAda, chkKepercayaanTidakAda;
+    private widget.CekBox chkCaraLisan, chkCaraTulisan, chkCaraProsedur;
+    private widget.CekBox chkKebutuhanHakPartisipasi, chkKebutuhanInformedConsent, chkKebutuhanAlatMedisAman,
+            chkKebutuhanCuciTangan, chkKebutuhanRujukanEdukasi, chkKebutuhanDietNutrisi, chkKebutuhanManajemenNyeri,
+            chkKebutuhanBahayaMerokok, chkKebutuhanKondisiKesehatan, chkKebutuhanPenggunaanObat,
+            chkKebutuhanTeknikRehabilitasi, chkKebutuhanLainLain;
+    private widget.TextBox txtKebutuhanLainLainKet;
+
+    private widget.CekBox tambahCek(String teks, int x, int y, int w){
+        widget.CekBox c = new widget.CekBox();
+        c.setText(teks);
+        FormInput.add(c);
+        c.setBounds(x, y, w, 23);
+        return c;
+    }
+    private widget.TextBox tambahTeks(int x, int y, int w){
+        widget.TextBox t = new widget.TextBox();
+        FormInput.add(t);
+        t.setBounds(x, y, w, 23);
+        return t;
+    }
+    // Kolom label pertanyaan (x mulai, jarak ke kolom isian) - lebar kolom
+    // dihitung dinamis via FontMetrics di initAsesmenRM02_1(), supaya tanda
+    // ':' semua baris sejajar & kolom isian mulai di x yg sama persis.
+    private static final int LABEL_X = 10;
+    private static final int LABEL_GAP = 15;
+
+    private widget.Label tambahLabelKanan(String teks, int y, int labelW){
+        widget.Label l = new widget.Label();
+        l.setText(teks);
+        l.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        FormInput.add(l);
+        l.setBounds(LABEL_X, y, labelW, 23);
+        return l;
+    }
+
+    private void initAsesmenRM02_1(){
+        // --- Sembunyikan field lama Bagian A (kategori beda total dari RM 02-1) ---
+        Bicara.setVisible(false); KeteranganBicara.setVisible(false); jLabel52.setVisible(false);
+        BahasaIsyarat.setVisible(false); jLabel53.setVisible(false);
+        CaraBelajar.setVisible(false); jLabel54.setVisible(false);
+        HambatanBelajar.setVisible(false); KeteranganHambatanBelajar.setVisible(false); jLabel50.setVisible(false);
+        KemampuanBelajar.setVisible(false); KeteranganKemampuanBelajar.setVisible(false); jLabel55.setVisible(false);
+        jLabel56.setVisible(false);
+        PenyakitnyaMerupakan.setVisible(false); KeteranganPenyakitnyaMerupakan.setVisible(false); jLabel61.setVisible(false);
+        KeputusanMemilihLayanan.setVisible(false); KeteranganKeputusanMemilihLayanan.setVisible(false); jLabel62.setVisible(false);
+        KeyakinanTerhadapHasil.setVisible(false); KeteranganKeyakinanTerhadapHasil.setVisible(false); jLabel63.setVisible(false);
+        AspekKeyakinan.setVisible(false); KeteranganAspekKeyakinan.setVisible(false); jLabel64.setVisible(false);
+        jLabel45.setVisible(false); jLabel46.setVisible(false); jLabel48.setVisible(false);
+        jLabel49.setVisible(false); jLabel57.setVisible(false); jLabel58.setVisible(false); jLabel59.setVisible(false);
+        jLabel60.setVisible(false); jLabel67.setVisible(false); jLabel72.setVisible(false); jLabel73.setVisible(false);
+        Bahasa.setVisible(false); KeteranganBahasa.setVisible(false);
+        KeteranganPenerjemah.setVisible(false);
+        // Section "B. PERENCANAAN KEBUTUHAN EDUKASI" lama (4 Topik Edukasi) - tidak ada di RM 02-1
+        jLabel100.setVisible(false); jLabel66.setVisible(false);
+        jLabel68.setVisible(false); PenyakitYangDiderita.setVisible(false);
+        jLabel69.setVisible(false); RencanaTindakan.setVisible(false);
+        jLabel70.setVisible(false); PengobatanProsedur.setVisible(false);
+        jLabel71.setVisible(false); HasilLayanan.setVisible(false);
+
+        // --- Judul seksi (reuse jLabel99, override teks sesuai RM 02-1) ---
+        jLabel99.setText("A. ASSESMENT KEBUTUHAN EDUKASI");
+        jLabel99.setBounds(10, 70, 400, 23);
+
+        // --- Kolom label pertanyaan dibuat lebar tetap & rata kanan, supaya
+        // tanda ':' semua baris sejajar vertikal & kolom isian (checkbox/
+        // textbox) mulai di x yg sama persis di semua baris (permintaan
+        // user) - lebar dihitung dari teks label TERPANJANG via FontMetrics
+        // (bukan angka tebakan), supaya tetap presisi walau font LAF beda.
+        widget.Label ukurLabel = new widget.Label();
+        java.awt.FontMetrics fmLabel = ukurLabel.getFontMetrics(ukurLabel.getFont());
+        String[] teksLabelPertanyaan = {"Tinggal Bersama :", "Hambatan :", "Edukasi Diberikan Kepada :",
+            "Kemampuan Bahasa :", "Perlu Penerjemah :", "Baca & Tulis :", "Kepercayaan Lainnya :",
+            "Kesediaan Menerima Edukasi", "Cara Edukasi :", "Kebutuhan Edukasi :"};
+        int labelW = 0;
+        for(String t : teksLabelPertanyaan){ labelW = Math.max(labelW, fmLabel.stringWidth(t)); }
+        final int answerX = LABEL_X + labelW + LABEL_GAP;
+        final int formWidth = answerX + 730;
+
+        // --- Tinggal Bersama + Pendidikan (reuse) ---
+        tambahLabelKanan("Tinggal Bersama :", 95, labelW);
+        chkTinggalAnak = tambahCek("Anak", answerX, 95, 70);
+        chkTinggalOrangTua = tambahCek("Orang Tua", answerX + 75, 95, 100);
+        chkTinggalSendiri = tambahCek("Sendiri", answerX + 180, 95, 90);
+        chkTinggalSuamiIstri = tambahCek("Suami/Istri", answerX + 275, 95, 110);
+        jLabel9.setBounds(answerX + 435, 95, 80, 23);
+        Pendidikan.setBounds(answerX + 520, 95, 150, 23);
+
+        // --- Hambatan (Ada/Tidak + 9 rincian, multi-pilih) ---
+        tambahLabelKanan("Hambatan :", 120, labelW);
+        chkHambatanAda = tambahCek("Ada", answerX, 120, 60);
+        chkHambatanTidak = tambahCek("Tidak", answerX + 65, 120, 70);
+        chkHambatanPendengaran = tambahCek("Gangguan Pendengaran", answerX, 145, 255);
+        chkHambatanEmosi = tambahCek("Gangguan Emosi", answerX + 260, 145, 255);
+        chkHambatanPenglihatan = tambahCek("Gangguan Penglihatan", answerX + 520, 145, 190);
+        chkHambatanBicara = tambahCek("Gangguan Bicara", answerX, 170, 255);
+        chkHambatanMotivasi = tambahCek("Motivasi Kurang/Buruk", answerX + 260, 170, 255);
+        chkHambatanMemori = tambahCek("Memori Hilang", answerX + 520, 170, 190);
+        chkHambatanFisikLemah = tambahCek("Fisik Lemah", answerX, 195, 255);
+        chkHambatanAlkoholik = tambahCek("Alkoholik", answerX + 260, 195, 255);
+        chkHambatanPerokok = tambahCek("Perokok Aktif/Pasif", answerX + 520, 195, 190);
+        chkHambatanFisiologis = tambahCek("Secara Fisiologis Mampu Belajar", answerX, 220, 300);
+
+        // --- Edukasi Diberikan Kepada (cuma Pasien/Keluarga - "Secara
+        // Fisiologis Mampu Belajar" pindah ke Hambatan, "Asing" dihapus krn
+        // cuma relevan di Kemampuan Bahasa, sesuai koreksi user) ---
+        tambahLabelKanan("Edukasi Diberikan Kepada :", 250, labelW);
+        chkKepadaPasien = tambahCek("Pasien", answerX, 250, 80);
+        chkKepadaKeluarga = tambahCek("Keluarga", answerX + 85, 250, 110);
+        txtKepadaKeluargaKet = tambahTeks(answerX + 200, 250, 200);
+
+        // --- Kemampuan Bahasa ---
+        tambahLabelKanan("Kemampuan Bahasa :", 280, labelW);
+        chkBahasaIndonesia = tambahCek("Indonesia", answerX, 280, 100);
+        chkBahasaAsing = tambahCek("Asing", answerX + 105, 280, 70);
+        txtBahasaAsingKet = tambahTeks(answerX + 175, 280, 180);
+
+        // --- Perlu Penerjemah (reuse Penerjemah, sembunyikan keterangan) ---
+        jLabel47.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel47.setBounds(LABEL_X, 305, labelW, 23);
+        Penerjemah.setBounds(answerX, 305, 100, 23);
+
+        // --- Baca & Tulis, Kepercayaan Lainnya ---
+        tambahLabelKanan("Baca & Tulis :", 330, labelW);
+        chkBacaBisa = tambahCek("Bisa", answerX, 330, 80);
+        chkBacaTidakBisa = tambahCek("Tidak Bisa", answerX + 85, 330, 100);
+        tambahLabelKanan("Kepercayaan Lainnya :", 355, labelW);
+        chkKepercayaanAda = tambahCek("Ada", answerX, 355, 70);
+        chkKepercayaanTidakAda = tambahCek("Tidak Ada", answerX + 75, 355, 100);
+
+        // --- Kesediaan Menerima Edukasi (reuse KesediaanInformasi) ---
+        jLabel65.setText("Kesediaan Menerima Edukasi");
+        jLabel65.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel65.setBounds(LABEL_X, 380, labelW, 23);
+        KesediaanInformasi.setBounds(answerX, 380, 90, 23);
+
+        // --- Cara Edukasi ---
+        tambahLabelKanan("Cara Edukasi :", 405, labelW);
+        chkCaraLisan = tambahCek("Lisan", answerX, 405, 80);
+        chkCaraTulisan = tambahCek("Tulisan", answerX + 85, 405, 90);
+        chkCaraProsedur = tambahCek("Prosedur Pemeriksaan Penunjang", answerX + 180, 405, 320);
+
+        // --- Kebutuhan Edukasi (12 item, multi-pilih, reuse jSeparator3) ---
+        jSeparator3.setBounds(0, 435, formWidth, 1);
+        tambahLabelKanan("Kebutuhan Edukasi :", 445, labelW);
+        chkKebutuhanHakPartisipasi = tambahCek("Hak Untuk Berpartisipasi Pada Proses Pelayanan", 30, 470, 380);
+        chkKebutuhanInformedConsent = tambahCek("Proses Pemberian Informed Consent", 420, 470, 380);
+        chkKebutuhanAlatMedisAman = tambahCek("Penggunaan Alat Medis Yang Aman", 30, 495, 380);
+        chkKebutuhanCuciTangan = tambahCek("Cuci Tangan Yang Benar", 420, 495, 380);
+        chkKebutuhanRujukanEdukasi = tambahCek("Rujukan Edukasi", 30, 520, 380);
+        chkKebutuhanDietNutrisi = tambahCek("Diet dan Nutrisi", 420, 520, 380);
+        chkKebutuhanManajemenNyeri = tambahCek("Manajemen Nyeri", 30, 545, 380);
+        chkKebutuhanBahayaMerokok = tambahCek("Bahaya Merokok", 420, 545, 380);
+        chkKebutuhanKondisiKesehatan = tambahCek("Kondisi Kesehatan Diagnosis Pasti dan Penatalaksanaannya", 30, 570, 380);
+        chkKebutuhanPenggunaanObat = tambahCek("Penggunaan Obat Secara Efektif dan Aman", 420, 570, 380);
+        chkKebutuhanTeknikRehabilitasi = tambahCek("Teknik Rehabilitasi", 30, 595, 380);
+        chkKebutuhanLainLain = tambahCek("Lain-lain", 420, 595, 110);
+        txtKebutuhanLainLainKet = tambahTeks(535, 595, 260);
+
+        FormInput.setPreferredSize(new java.awt.Dimension(formWidth, 650));
+    }
+
+    /** "Ya"/"Tidak" dari status centang - dipakai item Kebutuhan Edukasi/Hambatan/Kepada (independen, boleh dicentang lebih dari satu). */
+    private String yt(widget.CekBox c){ return c.isSelected()?"Ya":"Tidak"; }
+    /** Ambil teks checkbox pertama yg tercentang dari sekumpulan pilihan (Tinggal Bersama/Hambatan Ada-Tidak/Kemampuan Bahasa/Baca-Tulis/Kepercayaan/Cara Edukasi) - teks checkbox SENGAJA disamakan persis dgn nilai ENUM di DB. null kalau tidak ada yg dicentang. */
+    private String pilihCek(widget.CekBox... daftar){
+        for(widget.CekBox c : daftar){ if(c.isSelected()){ return c.getText(); } }
+        return null;
+    }
+
+    /** Reset semua checklist RM 02-1 ke kosong - dipanggil emptTeks() & sebelum getDataRM02_1() mengisi ulang. */
+    private void resetChecklistRM02_1(){
+        chkTinggalAnak.setSelected(false); chkTinggalOrangTua.setSelected(false); chkTinggalSendiri.setSelected(false); chkTinggalSuamiIstri.setSelected(false);
+        chkHambatanAda.setSelected(false); chkHambatanTidak.setSelected(false);
+        chkHambatanPendengaran.setSelected(false); chkHambatanPenglihatan.setSelected(false); chkHambatanBicara.setSelected(false); chkHambatanEmosi.setSelected(false);
+        chkHambatanMotivasi.setSelected(false); chkHambatanMemori.setSelected(false); chkHambatanFisikLemah.setSelected(false); chkHambatanAlkoholik.setSelected(false); chkHambatanPerokok.setSelected(false);
+        chkHambatanFisiologis.setSelected(false);
+        chkKepadaPasien.setSelected(false); chkKepadaKeluarga.setSelected(false); txtKepadaKeluargaKet.setText("");
+        chkBahasaIndonesia.setSelected(false); chkBahasaAsing.setSelected(false); txtBahasaAsingKet.setText("");
+        chkBacaBisa.setSelected(false); chkBacaTidakBisa.setSelected(false);
+        chkKepercayaanAda.setSelected(false); chkKepercayaanTidakAda.setSelected(false);
+        chkCaraLisan.setSelected(false); chkCaraTulisan.setSelected(false); chkCaraProsedur.setSelected(false);
+        chkKebutuhanHakPartisipasi.setSelected(false); chkKebutuhanInformedConsent.setSelected(false); chkKebutuhanAlatMedisAman.setSelected(false); chkKebutuhanCuciTangan.setSelected(false);
+        chkKebutuhanRujukanEdukasi.setSelected(false); chkKebutuhanDietNutrisi.setSelected(false); chkKebutuhanManajemenNyeri.setSelected(false); chkKebutuhanBahayaMerokok.setSelected(false);
+        chkKebutuhanKondisiKesehatan.setSelected(false); chkKebutuhanPenggunaanObat.setSelected(false); chkKebutuhanTeknikRehabilitasi.setSelected(false); chkKebutuhanLainLain.setSelected(false);
+        txtKebutuhanLainLainKet.setText("");
+    }
+
+    /**
+     * Isi ulang checklist RM 02-1 dari DB berdasar no_rawat baris yg
+     * diklik - DIPANGGIL TERPISAH dari getData() (bukan dari tabMode/
+     * tbObat, krn 38 kolom baru TIDAK ditambahkan ke tabMode yg dipakai
+     * tbObat spy tabel daftar tetap 34 kolom seperti semula/tidak melebar).
+     * Query dibungkus try/catch - kalau migrasi sik_edukasi_pasien_keluarga_rm02_1.sql
+     * belum diimport (kolom blm ada), checklist cuma tetap kosong (bukan error).
+     */
+    private void getDataRM02_1(){
+        resetChecklistRM02_1();
+        if(tbObat.getSelectedRow()==-1){ return; }
+        java.sql.PreparedStatement psR=null; java.sql.ResultSet rsR=null;
+        try {
+            psR = koneksi.prepareStatement(
+                "select tinggal_bersama_anak,tinggal_bersama_orang_tua,tinggal_bersama_sendiri,tinggal_bersama_suami_istri,"+
+                "hambatan_ada,hambatan_gangguan_pendengaran,hambatan_gangguan_penglihatan,hambatan_gangguan_bicara,hambatan_gangguan_emosi,"+
+                "hambatan_motivasi_kurang,hambatan_memori_hilang,hambatan_fisik_lemah,hambatan_alkoholik,hambatan_perokok,hambatan_fisiologis_mampu_belajar,"+
+                "kepada_pasien,kepada_keluarga,keterangan_kepada_keluarga,"+
+                "kemampuan_bahasa,keterangan_kemampuan_bahasa,baca_tulis,kepercayaan_lainnya,cara_edukasi,"+
+                "kebutuhan_hak_partisipasi,kebutuhan_informed_consent,kebutuhan_alat_medis_aman,kebutuhan_cuci_tangan,"+
+                "kebutuhan_rujukan_edukasi,kebutuhan_diet_nutrisi,kebutuhan_manajemen_nyeri,kebutuhan_bahaya_merokok,"+
+                "kebutuhan_kondisi_kesehatan_diagnosis,kebutuhan_penggunaan_obat,kebutuhan_teknik_rehabilitasi,kebutuhan_lain_lain,"+
+                "keterangan_kebutuhan_lain_lain from edukasi_pasien_keluarga_rj where no_rawat=?");
+            psR.setString(1, tbObat.getValueAt(tbObat.getSelectedRow(),0).toString());
+            rsR = psR.executeQuery();
+            if(rsR.next()){
+                chkTinggalAnak.setSelected("Ya".equals(rsR.getString("tinggal_bersama_anak")));
+                chkTinggalOrangTua.setSelected("Ya".equals(rsR.getString("tinggal_bersama_orang_tua")));
+                chkTinggalSendiri.setSelected("Ya".equals(rsR.getString("tinggal_bersama_sendiri")));
+                chkTinggalSuamiIstri.setSelected("Ya".equals(rsR.getString("tinggal_bersama_suami_istri")));
+                String hambatanAda = rsR.getString("hambatan_ada");
+                chkHambatanAda.setSelected("Ada".equals(hambatanAda));
+                chkHambatanTidak.setSelected("Tidak".equals(hambatanAda));
+                chkHambatanPendengaran.setSelected("Ya".equals(rsR.getString("hambatan_gangguan_pendengaran")));
+                chkHambatanPenglihatan.setSelected("Ya".equals(rsR.getString("hambatan_gangguan_penglihatan")));
+                chkHambatanBicara.setSelected("Ya".equals(rsR.getString("hambatan_gangguan_bicara")));
+                chkHambatanEmosi.setSelected("Ya".equals(rsR.getString("hambatan_gangguan_emosi")));
+                chkHambatanMotivasi.setSelected("Ya".equals(rsR.getString("hambatan_motivasi_kurang")));
+                chkHambatanMemori.setSelected("Ya".equals(rsR.getString("hambatan_memori_hilang")));
+                chkHambatanFisikLemah.setSelected("Ya".equals(rsR.getString("hambatan_fisik_lemah")));
+                chkHambatanAlkoholik.setSelected("Ya".equals(rsR.getString("hambatan_alkoholik")));
+                chkHambatanPerokok.setSelected("Ya".equals(rsR.getString("hambatan_perokok")));
+                chkHambatanFisiologis.setSelected("Ya".equals(rsR.getString("hambatan_fisiologis_mampu_belajar")));
+                chkKepadaPasien.setSelected("Ya".equals(rsR.getString("kepada_pasien")));
+                chkKepadaKeluarga.setSelected("Ya".equals(rsR.getString("kepada_keluarga")));
+                txtKepadaKeluargaKet.setText(kosongkeStripEdukasi(rsR.getString("keterangan_kepada_keluarga")));
+                String bahasa = rsR.getString("kemampuan_bahasa");
+                chkBahasaIndonesia.setSelected("Indonesia".equals(bahasa));
+                chkBahasaAsing.setSelected("Asing".equals(bahasa));
+                txtBahasaAsingKet.setText(kosongkeStripEdukasi(rsR.getString("keterangan_kemampuan_bahasa")));
+                String bacaTulis = rsR.getString("baca_tulis");
+                chkBacaBisa.setSelected("Bisa".equals(bacaTulis));
+                chkBacaTidakBisa.setSelected("Tidak Bisa".equals(bacaTulis));
+                String kepercayaan = rsR.getString("kepercayaan_lainnya");
+                chkKepercayaanAda.setSelected("Ada".equals(kepercayaan));
+                chkKepercayaanTidakAda.setSelected("Tidak Ada".equals(kepercayaan));
+                String caraEdukasi = rsR.getString("cara_edukasi");
+                chkCaraLisan.setSelected("Lisan".equals(caraEdukasi));
+                chkCaraTulisan.setSelected("Tulisan".equals(caraEdukasi));
+                chkCaraProsedur.setSelected("Prosedur Pemeriksaan Penunjang".equals(caraEdukasi));
+                chkKebutuhanHakPartisipasi.setSelected("Ya".equals(rsR.getString("kebutuhan_hak_partisipasi")));
+                chkKebutuhanInformedConsent.setSelected("Ya".equals(rsR.getString("kebutuhan_informed_consent")));
+                chkKebutuhanAlatMedisAman.setSelected("Ya".equals(rsR.getString("kebutuhan_alat_medis_aman")));
+                chkKebutuhanCuciTangan.setSelected("Ya".equals(rsR.getString("kebutuhan_cuci_tangan")));
+                chkKebutuhanRujukanEdukasi.setSelected("Ya".equals(rsR.getString("kebutuhan_rujukan_edukasi")));
+                chkKebutuhanDietNutrisi.setSelected("Ya".equals(rsR.getString("kebutuhan_diet_nutrisi")));
+                chkKebutuhanManajemenNyeri.setSelected("Ya".equals(rsR.getString("kebutuhan_manajemen_nyeri")));
+                chkKebutuhanBahayaMerokok.setSelected("Ya".equals(rsR.getString("kebutuhan_bahaya_merokok")));
+                chkKebutuhanKondisiKesehatan.setSelected("Ya".equals(rsR.getString("kebutuhan_kondisi_kesehatan_diagnosis")));
+                chkKebutuhanPenggunaanObat.setSelected("Ya".equals(rsR.getString("kebutuhan_penggunaan_obat")));
+                chkKebutuhanTeknikRehabilitasi.setSelected("Ya".equals(rsR.getString("kebutuhan_teknik_rehabilitasi")));
+                chkKebutuhanLainLain.setSelected("Ya".equals(rsR.getString("kebutuhan_lain_lain")));
+                txtKebutuhanLainLainKet.setText(kosongkeStripEdukasi(rsR.getString("keterangan_kebutuhan_lain_lain")));
+            }
+        } catch (Exception e) {
+            System.out.println("Notif getDataRM02_1 (migrasi RM 02-1 blm diimport?) : "+e);
+        } finally {
+            try{ if(rsR!=null){ rsR.close(); } if(psR!=null){ psR.close(); } }catch(Exception e){}
+        }
+    }
+
+    private String kosongkeStripEdukasi(String s){ return s==null?"":s; }
+
     private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
@@ -2157,8 +2501,9 @@ public final class RMEdukasiPasienKeluargaRawatJalan extends javax.swing.JDialog
         PengobatanProsedur.setSelectedIndex(0);
         HasilLayanan.setSelectedIndex(0);
         RencanaTindakan.setSelectedIndex(0);
+        resetChecklistRM02_1();
         Bicara.requestFocus();
-    } 
+    }
 
     private void getData() {
         if(tbObat.getSelectedRow()!= -1){
@@ -2199,6 +2544,7 @@ public final class RMEdukasiPasienKeluargaRawatJalan extends javax.swing.JDialog
             Menit.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString().substring(14,16));
             Detik.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString().substring(17,19));
             Valid.SetTgl(Tanggal,tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());
+            getDataRM02_1();
         }
     }
     
@@ -2355,7 +2701,16 @@ public final class RMEdukasiPasienKeluargaRawatJalan extends javax.swing.JDialog
             "keterangan_penerjemah=?,bahasa_isyarat=?,cara_belajar=?,hambatan_belajar=?,keterangan_hambatan_belajar=?,kemampuan_belajar=?,keterangan_kemampuan_belajar=?,"+
             "penyakitnya_merupakan=?,keterangan_penyakitnya_merupakan=?,keputusan_memilih_layanan=?,keterangan_keputusan_memilih_layanan=?,keyakinan_terhadap_terapi=?,"+
             "keterangan_keyakinan_terhadap_terapi=?,aspek_keyakinan_dipertimbangkan=?,keterangan_aspek_keyakinan_dipertimbangkan=?,kesediaan_menerima_informasi=?,"+
-            "topik_edukasi_penyakit=?,topik_edukasi_rencana_tindakan=?,topik_edukasi_pengobatan=?,topik_edukasi_hasil_layanan=?",28,new String[]{
+            "topik_edukasi_penyakit=?,topik_edukasi_rencana_tindakan=?,topik_edukasi_pengobatan=?,topik_edukasi_hasil_layanan=?,"+
+            "tinggal_bersama_anak=?,tinggal_bersama_orang_tua=?,tinggal_bersama_sendiri=?,tinggal_bersama_suami_istri=?,hambatan_ada=?,"+
+            "hambatan_gangguan_pendengaran=?,hambatan_gangguan_penglihatan=?,hambatan_gangguan_bicara=?,hambatan_gangguan_emosi=?,"+
+            "hambatan_motivasi_kurang=?,hambatan_memori_hilang=?,hambatan_fisik_lemah=?,hambatan_alkoholik=?,hambatan_perokok=?,"+
+            "kepada_fisiologis_mampu_belajar=?,kepada_pasien=?,kepada_keluarga=?,keterangan_kepada_keluarga=?,kepada_asing=?,keterangan_kepada_asing=?,"+
+            "kemampuan_bahasa=?,keterangan_kemampuan_bahasa=?,baca_tulis=?,kepercayaan_lainnya=?,cara_edukasi=?,"+
+            "kebutuhan_hak_partisipasi=?,kebutuhan_informed_consent=?,kebutuhan_alat_medis_aman=?,kebutuhan_cuci_tangan=?,"+
+            "kebutuhan_rujukan_edukasi=?,kebutuhan_diet_nutrisi=?,kebutuhan_manajemen_nyeri=?,kebutuhan_bahaya_merokok=?,"+
+            "kebutuhan_kondisi_kesehatan_diagnosis=?,kebutuhan_penggunaan_obat=?,kebutuhan_teknik_rehabilitasi=?,kebutuhan_lain_lain=?,"+
+            "keterangan_kebutuhan_lain_lain=?,hambatan_fisiologis_mampu_belajar=?",67,new String[]{
             TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),
             KdPetugas.getText(),Bicara.getSelectedItem().toString(),KeteranganBicara.getText(),KeteranganBahasa.getText(),Penerjemah.getSelectedItem().toString(),
             KeteranganPenerjemah.getText(),BahasaIsyarat.getSelectedItem().toString(),CaraBelajar.getSelectedItem().toString(),HambatanBelajar.getSelectedItem().toString(),
@@ -2364,7 +2719,23 @@ public final class RMEdukasiPasienKeluargaRawatJalan extends javax.swing.JDialog
             KeteranganKeputusanMemilihLayanan.getText(),KeyakinanTerhadapHasil.getSelectedItem().toString(),KeteranganKeyakinanTerhadapHasil.getText(),
             AspekKeyakinan.getSelectedItem().toString(),KeteranganAspekKeyakinan.getText(),KesediaanInformasi.getSelectedItem().toString(),
             PenyakitYangDiderita.getSelectedItem().toString(),RencanaTindakan.getSelectedItem().toString(),PengobatanProsedur.getSelectedItem().toString(),
-            HasilLayanan.getSelectedItem().toString(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
+            HasilLayanan.getSelectedItem().toString(),
+            yt(chkTinggalAnak),yt(chkTinggalOrangTua),yt(chkTinggalSendiri),yt(chkTinggalSuamiIstri),
+            pilihCek(chkHambatanAda,chkHambatanTidak),
+            yt(chkHambatanPendengaran),yt(chkHambatanPenglihatan),yt(chkHambatanBicara),yt(chkHambatanEmosi),
+            yt(chkHambatanMotivasi),yt(chkHambatanMemori),yt(chkHambatanFisikLemah),yt(chkHambatanAlkoholik),yt(chkHambatanPerokok),
+            "Tidak",yt(chkKepadaPasien),yt(chkKepadaKeluarga),txtKepadaKeluargaKet.getText(),
+            "Tidak","",
+            pilihCek(chkBahasaIndonesia,chkBahasaAsing),txtBahasaAsingKet.getText(),
+            pilihCek(chkBacaBisa,chkBacaTidakBisa),
+            pilihCek(chkKepercayaanAda,chkKepercayaanTidakAda),
+            pilihCek(chkCaraLisan,chkCaraTulisan,chkCaraProsedur),
+            yt(chkKebutuhanHakPartisipasi),yt(chkKebutuhanInformedConsent),yt(chkKebutuhanAlatMedisAman),yt(chkKebutuhanCuciTangan),
+            yt(chkKebutuhanRujukanEdukasi),yt(chkKebutuhanDietNutrisi),yt(chkKebutuhanManajemenNyeri),yt(chkKebutuhanBahayaMerokok),
+            yt(chkKebutuhanKondisiKesehatan),yt(chkKebutuhanPenggunaanObat),yt(chkKebutuhanTeknikRehabilitasi),yt(chkKebutuhanLainLain),
+            txtKebutuhanLainLainKet.getText(),
+            yt(chkHambatanFisiologis),
+            tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
         })==true){
             tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),0);
             tbObat.setValueAt(TNoRM.getText(),tbObat.getSelectedRow(),1);
@@ -2417,7 +2788,8 @@ public final class RMEdukasiPasienKeluargaRawatJalan extends javax.swing.JDialog
     }
 
     private void simpan() {
-        if(Sequel.menyimpantf("edukasi_pasien_keluarga_rj","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","Data",27,new String[]{
+        if(Sequel.menyimpantf("edukasi_pasien_keluarga_rj","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,"+
+            "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","Data",66,new String[]{
             TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),
             KdPetugas.getText(),Bicara.getSelectedItem().toString(),KeteranganBicara.getText(),KeteranganBahasa.getText(),Penerjemah.getSelectedItem().toString(),
             KeteranganPenerjemah.getText(),BahasaIsyarat.getSelectedItem().toString(),CaraBelajar.getSelectedItem().toString(),HambatanBelajar.getSelectedItem().toString(),
@@ -2426,7 +2798,23 @@ public final class RMEdukasiPasienKeluargaRawatJalan extends javax.swing.JDialog
             KeteranganKeputusanMemilihLayanan.getText(),KeyakinanTerhadapHasil.getSelectedItem().toString(),KeteranganKeyakinanTerhadapHasil.getText(),
             AspekKeyakinan.getSelectedItem().toString(),KeteranganAspekKeyakinan.getText(),KesediaanInformasi.getSelectedItem().toString(),
             PenyakitYangDiderita.getSelectedItem().toString(),RencanaTindakan.getSelectedItem().toString(),PengobatanProsedur.getSelectedItem().toString(),
-            HasilLayanan.getSelectedItem().toString()
+            HasilLayanan.getSelectedItem().toString(),
+            // [RM 02-1] 38 kolom baru - lihat sik_edukasi_pasien_keluarga_rm02_1.sql utk urutan persis
+            yt(chkTinggalAnak),yt(chkTinggalOrangTua),yt(chkTinggalSendiri),yt(chkTinggalSuamiIstri),
+            pilihCek(chkHambatanAda,chkHambatanTidak),
+            yt(chkHambatanPendengaran),yt(chkHambatanPenglihatan),yt(chkHambatanBicara),yt(chkHambatanEmosi),
+            yt(chkHambatanMotivasi),yt(chkHambatanMemori),yt(chkHambatanFisikLemah),yt(chkHambatanAlkoholik),yt(chkHambatanPerokok),
+            "Tidak",yt(chkKepadaPasien),yt(chkKepadaKeluarga),txtKepadaKeluargaKet.getText(),
+            "Tidak","",
+            pilihCek(chkBahasaIndonesia,chkBahasaAsing),txtBahasaAsingKet.getText(),
+            pilihCek(chkBacaBisa,chkBacaTidakBisa),
+            pilihCek(chkKepercayaanAda,chkKepercayaanTidakAda),
+            pilihCek(chkCaraLisan,chkCaraTulisan,chkCaraProsedur),
+            yt(chkKebutuhanHakPartisipasi),yt(chkKebutuhanInformedConsent),yt(chkKebutuhanAlatMedisAman),yt(chkKebutuhanCuciTangan),
+            yt(chkKebutuhanRujukanEdukasi),yt(chkKebutuhanDietNutrisi),yt(chkKebutuhanManajemenNyeri),yt(chkKebutuhanBahayaMerokok),
+            yt(chkKebutuhanKondisiKesehatan),yt(chkKebutuhanPenggunaanObat),yt(chkKebutuhanTeknikRehabilitasi),yt(chkKebutuhanLainLain),
+            txtKebutuhanLainLainKet.getText(),
+            yt(chkHambatanFisiologis)
         })==true){
             tabMode.addRow(new Object[]{
                 TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),JK.getText().substring(0,1),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),

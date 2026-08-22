@@ -51,6 +51,7 @@ public class PerpustakaanPengaturanPeminjaman extends javax.swing.JDialog {
     public PerpustakaanPengaturanPeminjaman(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
             "Maksimal Buku Dipinjam","Maksimal Lama Peminjaman","Denda Keterlambatan Perhari(Rp)"}){

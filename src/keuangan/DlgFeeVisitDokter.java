@@ -48,6 +48,7 @@ public class DlgFeeVisitDokter extends javax.swing.JDialog {
     public DlgFeeVisitDokter(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Tgl.Masuk","Tgl.Pulang","Nama Pasien","Ruang","Jenis Bayar",
                       "Jml.Lsg","Jml.ByPhone","Tarif Lsg","Tarif ByPhone","Biaya Visit",

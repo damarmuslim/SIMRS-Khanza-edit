@@ -73,12 +73,14 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
     public RMPelaksanaanInformasiEdukasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
+        initRM02_1BagianB();
         this.setLocation(8,1);
         setSize(628,674);
 
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.R.M.","Nama Pasien","Umur","JK","Tgl.Lahir","Tanggal","Kode Petugas","Nama Petugas/Dokter/Perawat","Materi Edukasi",
-            "Keterangan","Lama Edukasi","Status","Edukasi Kepada","Keterangan Edukasi Diberikan","Metode","Hasil Edukasi"
+            "Keterangan","Lama Edukasi","Status","Edukasi Kepada","Keterangan Edukasi Diberikan","Metode","Hasil Edukasi","Kode Leaflet","Tgl Re-Edukasi"
         }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -153,10 +155,16 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
                 ".isi8 td{font: 8.5px tahoma;border:none;height:12px;background: #ffffff;color:#00AA00;}"+
                 ".isi9 td{font: 8.5px tahoma;border:none;height:12px;background: #ffffff;color:#969696;}"
         );
-        Document doc = kit.createDefaultDocument();
-        LoadHTML.setDocument(doc);
-        LoadHTML2.setDocument(doc);
-        
+        // Document TERPISAH utk masing2 editorpane - sebelumnya keduanya
+        // pakai 1 instance Document yg SAMA, jadi begitu LoadHTML2 (tab
+        // "Bukti Pelaksanaan") ditulis panggilPhoto() ("Kosong"/foto), tab
+        // "Ringkasan" (LoadHTML) IKUT ketiban krn merender document yg
+        // identik - ditemukan dari laporan user (tab Ringkasan selalu
+        // tampil "Kosong" walau ada data).
+        LoadHTML.setDocument(kit.createDefaultDocument());
+        LoadHTML2.setDocument(kit.createDefaultDocument());
+        initRingkasanPelaksanaan();
+
         ChkInput.setSelected(false);
         isForm();
         jam();
@@ -1215,6 +1223,9 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
             } catch (java.lang.NullPointerException e) {
             }
             try {
+                // Tab "Ringkasan" otomatis kebuka begitu klik baris - user tdk
+                // perlu klik toggle accordion (ChkAccor) manual tiap kali.
+                ChkAccor.setSelected(true);
                 isPhoto();
                 panggilPhoto();
             } catch (java.lang.NullPointerException e) {
@@ -1547,7 +1558,301 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
     private widget.ScrollPane scrollPane1;
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
-    
+
+    // [RM 02-1 Bagian B] 2 field baru sesuai formulir fisik ("Kode Leaflet",
+    // "Tgl Re-Edukasi") - lihat initRM02_1BagianB(), dipanggil dari
+    // konstruktor setelah initComponents().
+    private widget.TextBox KodeLeaflet;
+    private widget.Tanggal TglReEdukasi;
+
+    private void initRM02_1BagianB(){
+        widget.Label lblKodeLeaflet = new widget.Label();
+        lblKodeLeaflet.setText("Kode Leaflet :");
+        lblKodeLeaflet.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        FormInput.add(lblKodeLeaflet);
+        lblKodeLeaflet.setBounds(0, 180, 80, 23);
+
+        KodeLeaflet = new widget.TextBox();
+        FormInput.add(KodeLeaflet);
+        KodeLeaflet.setBounds(84, 180, 200, 23);
+
+        widget.Label lblTglReEdukasi = new widget.Label();
+        lblTglReEdukasi.setText("Tgl Re-Edukasi :");
+        lblTglReEdukasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        FormInput.add(lblTglReEdukasi);
+        lblTglReEdukasi.setBounds(300, 180, 100, 23);
+
+        TglReEdukasi = new widget.Tanggal();
+        TglReEdukasi.setDisplayFormat("dd-MM-yyyy");
+        FormInput.add(TglReEdukasi);
+        TglReEdukasi.setBounds(404, 180, 100, 23);
+
+        FormInput.setPreferredSize(new java.awt.Dimension(810, 210));
+    }
+
+    /** Kode Leaflet otomatis dari No.Rawat (format "yyyy/mm/dd/xxxxxx") -
+     * permintaan user: tahun+bulan+tanggal + 4 digit terakhir No.Rawat.
+     * Dibuat dgn buang semua karakter non-angka dulu (bukan split("/") kaku)
+     * biar tetap jalan walau separator No.Rawat beda2 antar instalasi. */
+    private String generateKodeLeaflet(String noRawat){
+        if(noRawat==null) return "";
+        String angka = noRawat.replaceAll("[^0-9]", "");
+        if(angka.length() < 8) return angka;
+        String tanggal = angka.substring(0, 8);
+        String empatDigit = angka.substring(angka.length() - 4);
+        return tanggal + empatDigit;
+    }
+
+    private widget.ScrollPane ScrollHTML;
+    private javax.swing.JTabbedPane TabRingkasanTtd;
+
+    /** Tab "Ringkasan" (LoadHTML, isi dari bangunRingkasanHtml()) + tab
+     * "Bukti Pelaksanaan" (FormPass3+Scroll5/LoadHTML2, direparent dari GEN
+     * block) di dalam FormPhoto - pola identik initRingkasanTransfer() di
+     * RMTransferPasienAntarRuang.java (LoadHTML sendiri sudah ada dari GEN
+     * block sejak awal, cuma dipakai buffer cetak/export - lihat
+     * BtnPrintActionPerformed - belum pernah ditampilkan di panel manapun). */
+    private widget.Button BtnPrint1;
+
+    private void initRingkasanPelaksanaan(){
+        // Tombol cetak RM 02-1 (Lembar/PDF) - DI DALAM tab Ringkasan (bukan
+        // toolbar utama BtnPrint yg bulk-export) - pola identik BtnPrint1 di
+        // RMTriaseIGD.java/RMTransferPasienAntarRuang.java.
+        BtnPrint1 = new widget.Button();
+        BtnPrint1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item (copy).png")));
+        BtnPrint1.setToolTipText("Cetak Formulir RM 02-1 (Edukasi Pasien & Keluarga) pasien ini");
+        BtnPrint1.addActionListener((java.awt.event.ActionEvent evt) -> BtnPrint1ActionPerformed(evt));
+
+        widget.PanelBiasa panelToolbarRingkasan = new widget.PanelBiasa();
+        panelToolbarRingkasan.setLayout(new java.awt.BorderLayout());
+        widget.Label lblRingkasan = new widget.Label();
+        lblRingkasan.setText("Ringkasan & Cetak RM 02-1 :");
+        panelToolbarRingkasan.add(lblRingkasan, java.awt.BorderLayout.WEST);
+        widget.PanelBiasa panelBtnPrint1 = new widget.PanelBiasa();
+        panelBtnPrint1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT,5,2));
+        panelBtnPrint1.add(BtnPrint1);
+        panelToolbarRingkasan.add(panelBtnPrint1, java.awt.BorderLayout.EAST);
+
+        ScrollHTML = new widget.ScrollPane();
+        ScrollHTML.setViewportView(LoadHTML);
+
+        widget.PanelBiasa panelRingkasan = new widget.PanelBiasa();
+        panelRingkasan.setLayout(new java.awt.BorderLayout());
+        panelRingkasan.add(panelToolbarRingkasan, java.awt.BorderLayout.NORTH);
+        panelRingkasan.add(ScrollHTML, java.awt.BorderLayout.CENTER);
+
+        FormPhoto.remove(FormPass3);
+        FormPhoto.remove(Scroll5);
+        widget.PanelBiasa panelBukti = new widget.PanelBiasa();
+        panelBukti.setLayout(new java.awt.BorderLayout());
+        panelBukti.add(FormPass3, java.awt.BorderLayout.PAGE_END);
+        panelBukti.add(Scroll5, java.awt.BorderLayout.CENTER);
+
+        TabRingkasanTtd = new javax.swing.JTabbedPane();
+        TabRingkasanTtd.addTab("Ringkasan", panelRingkasan);
+        TabRingkasanTtd.addTab("Bukti Pelaksanaan", panelBukti);
+
+        FormPhoto.add(TabRingkasanTtd, java.awt.BorderLayout.CENTER);
+    }
+
+    private void BtnPrint1ActionPerformed(java.awt.event.ActionEvent evt){
+        if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data terlebih dahulu..!!!!");
+            return;
+        }
+        String modeCetak = (String)JOptionPane.showInputDialog(null,"Silahkan pilih mode cetak..!","Cetak Formulir Edukasi Pasien & Keluarga (RM 02-1)",JOptionPane.QUESTION_MESSAGE,null,new Object[]{"Lembar","PDF"},"Lembar");
+        if(modeCetak==null){
+            return;
+        }
+        cetakFormulirRM021(modeCetak);
+    }
+
+    /** Cetak RM 02-1 gabungan Bagian A (edukasi_pasien_keluarga_rj, 1 record
+     * per no_rawat - dikirim scalar via parameter) + Bagian B
+     * (pelaksanaan_informasi_edukasi, 1..N baris - dataset utama query) -
+     * pola sama persis cetakLaporanTransfer(mode) di
+     * RMTransferPasienAntarRuang.java. */
+    private void cetakFormulirRM021(String mode){
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        try{
+            String noRawatCetak = TNoRw.getText();
+            Map<String,Object> param = new HashMap<>();
+            param.put("namars", Sequel.cariIsi("select setting.nama_instansi from setting",""));
+            param.put("alamatrs", Sequel.cariIsi("select setting.alamat from setting",""));
+            param.put("kotars", Sequel.cariIsi("select setting.kota from setting",""));
+            param.put("propinsirs", Sequel.cariIsi("select setting.propinsi from setting",""));
+            param.put("kontakrs", Sequel.cariIsi("select setting.telepon from setting",""));
+            param.put("emailrs", Sequel.cariIsi("select setting.email from setting",""));
+            param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+
+            ps=koneksi.prepareStatement(
+                "select pasien.no_rkm_medis,pasien.nm_pasien,date_format(pasien.tgl_lahir,'%d-%m-%Y') as tgl_lahir,pasien.jk,poliklinik.nm_poli "+
+                "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                "left join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli where reg_periksa.no_rawat=?");
+            try{
+                ps.setString(1,noRawatCetak);
+                rs=ps.executeQuery();
+                if(rs.next()){
+                    param.put("pNoRM", rs.getString("no_rkm_medis"));
+                    param.put("pNamaPasien", rs.getString("nm_pasien"));
+                    param.put("pTglLahir", rs.getString("tgl_lahir"));
+                    param.put("pJk", "L".equals(rs.getString("jk"))?"L":"P");
+                    param.put("pRuangan", rs.getString("nm_poli")==null?"":rs.getString("nm_poli"));
+                }
+            } finally {
+                if(rs!=null){ rs.close(); }
+                if(ps!=null){ ps.close(); }
+            }
+
+            ps=koneksi.prepareStatement(
+                "select tinggal_bersama_anak,tinggal_bersama_orang_tua,tinggal_bersama_sendiri,tinggal_bersama_suami_istri,"+
+                "hambatan_ada,hambatan_gangguan_pendengaran,hambatan_gangguan_penglihatan,hambatan_gangguan_bicara,hambatan_gangguan_emosi,"+
+                "hambatan_motivasi_kurang,hambatan_memori_hilang,hambatan_fisik_lemah,hambatan_alkoholik,hambatan_perokok,hambatan_fisiologis_mampu_belajar,"+
+                "kepada_pasien,kepada_keluarga,keterangan_kepada_keluarga,"+
+                "kemampuan_bahasa,keterangan_kemampuan_bahasa,perlu_penerjemah,baca_tulis,kepercayaan_lainnya,kesediaan_menerima_informasi,cara_edukasi,"+
+                "kebutuhan_hak_partisipasi,kebutuhan_informed_consent,kebutuhan_alat_medis_aman,kebutuhan_cuci_tangan,"+
+                "kebutuhan_rujukan_edukasi,kebutuhan_diet_nutrisi,kebutuhan_manajemen_nyeri,kebutuhan_bahaya_merokok,"+
+                "kebutuhan_kondisi_kesehatan_diagnosis,kebutuhan_penggunaan_obat,kebutuhan_teknik_rehabilitasi,kebutuhan_lain_lain,"+
+                "keterangan_kebutuhan_lain_lain from edukasi_pasien_keluarga_rj where no_rawat=?");
+            try{
+                ps.setString(1,noRawatCetak);
+                rs=ps.executeQuery();
+                if(rs.next()){
+                    param.put("aTinggalAnak", ambil(rs,"tinggal_bersama_anak"));
+                    param.put("aTinggalOrangTua", ambil(rs,"tinggal_bersama_orang_tua"));
+                    param.put("aTinggalSendiri", ambil(rs,"tinggal_bersama_sendiri"));
+                    param.put("aTinggalSuamiIstri", ambil(rs,"tinggal_bersama_suami_istri"));
+                    param.put("aHambatanAda", ambil(rs,"hambatan_ada"));
+                    param.put("aHambatanPendengaran", ambil(rs,"hambatan_gangguan_pendengaran"));
+                    param.put("aHambatanEmosi", ambil(rs,"hambatan_gangguan_emosi"));
+                    param.put("aHambatanPenglihatan", ambil(rs,"hambatan_gangguan_penglihatan"));
+                    param.put("aHambatanBicara", ambil(rs,"hambatan_gangguan_bicara"));
+                    param.put("aHambatanMotivasi", ambil(rs,"hambatan_motivasi_kurang"));
+                    param.put("aHambatanMemori", ambil(rs,"hambatan_memori_hilang"));
+                    param.put("aHambatanFisikLemah", ambil(rs,"hambatan_fisik_lemah"));
+                    param.put("aHambatanAlkoholik", ambil(rs,"hambatan_alkoholik"));
+                    param.put("aHambatanPerokok", ambil(rs,"hambatan_perokok"));
+                    param.put("aHambatanFisiologis", ambil(rs,"hambatan_fisiologis_mampu_belajar"));
+                    param.put("aKepadaPasien", ambil(rs,"kepada_pasien"));
+                    param.put("aKepadaKeluarga", ambil(rs,"kepada_keluarga"));
+                    param.put("aKepadaKeluargaKet", ambil(rs,"keterangan_kepada_keluarga"));
+                    param.put("aBahasaIndonesia", ambil(rs,"kemampuan_bahasa"));
+                    param.put("aBahasaAsing", ambil(rs,"kemampuan_bahasa"));
+                    param.put("aBahasaAsingKet", ambil(rs,"keterangan_kemampuan_bahasa"));
+                    param.put("aPerluPenerjemah", ambil(rs,"perlu_penerjemah"));
+                    param.put("aBacaBisa", ambil(rs,"baca_tulis"));
+                    param.put("aBacaTidakBisa", ambil(rs,"baca_tulis"));
+                    param.put("aKepercayaanAda", ambil(rs,"kepercayaan_lainnya"));
+                    param.put("aKepercayaanTidakAda", ambil(rs,"kepercayaan_lainnya"));
+                    param.put("aKesediaanEdukasi", ambil(rs,"kesediaan_menerima_informasi"));
+                    param.put("aCaraLisan", ambil(rs,"cara_edukasi"));
+                    param.put("aCaraTulisan", ambil(rs,"cara_edukasi"));
+                    param.put("aCaraProsedur", ambil(rs,"cara_edukasi"));
+                    param.put("aKebHakPartisipasi", ambil(rs,"kebutuhan_hak_partisipasi"));
+                    param.put("aKebInformedConsent", ambil(rs,"kebutuhan_informed_consent"));
+                    param.put("aKebAlatMedisAman", ambil(rs,"kebutuhan_alat_medis_aman"));
+                    param.put("aKebCuciTangan", ambil(rs,"kebutuhan_cuci_tangan"));
+                    param.put("aKebRujukanEdukasi", ambil(rs,"kebutuhan_rujukan_edukasi"));
+                    param.put("aKebDietNutrisi", ambil(rs,"kebutuhan_diet_nutrisi"));
+                    param.put("aKebManajemenNyeri", ambil(rs,"kebutuhan_manajemen_nyeri"));
+                    param.put("aKebBahayaMerokok", ambil(rs,"kebutuhan_bahaya_merokok"));
+                    param.put("aKebKondisiKesehatan", ambil(rs,"kebutuhan_kondisi_kesehatan_diagnosis"));
+                    param.put("aKebPenggunaanObat", ambil(rs,"kebutuhan_penggunaan_obat"));
+                    param.put("aKebTeknikRehabilitasi", ambil(rs,"kebutuhan_teknik_rehabilitasi"));
+                    param.put("aKebLainLain", ambil(rs,"kebutuhan_lain_lain"));
+                    param.put("aKebLainLainKet", ambil(rs,"keterangan_kebutuhan_lain_lain"));
+                }
+            } finally {
+                if(rs!=null){ rs.close(); }
+                if(ps!=null){ ps.close(); }
+            }
+
+            String qryCetak =
+                "select date_format(pelaksanaan_informasi_edukasi.tanggal,'%d-%m-%Y %H:%i') as tgl_jam_edukasi,"+
+                "pelaksanaan_informasi_edukasi.materi_edukasi,pelaksanaan_informasi_edukasi.kode_leaflet,pelaksanaan_informasi_edukasi.lama_edukasi,"+
+                "pelaksanaan_informasi_edukasi.hasil_verifikasi,date_format(pelaksanaan_informasi_edukasi.tanggal_re_edukasi,'%d-%m-%Y') as tanggal_re_edukasi,"+
+                "pegawai.nama as nama_petugas,pelaksanaan_informasi_edukasi.diberikan_pada,pelaksanaan_informasi_edukasi.keterangan_diberikan_pada "+
+                "from pelaksanaan_informasi_edukasi left join pegawai on pelaksanaan_informasi_edukasi.nik=pegawai.nik "+
+                "where pelaksanaan_informasi_edukasi.no_rawat='"+noRawatCetak+"' order by pelaksanaan_informasi_edukasi.tanggal";
+
+            if("PDF".equals(mode)){
+                Valid.MyReportqrypdf("rptFormulirEdukasiRM021.jasper","report","::[ Formulir Edukasi Pasien & Keluarga RM 02-1 ]::",qryCetak,param);
+            }else{
+                Valid.MyReportqry("rptFormulirEdukasiRM021.jasper","report","::[ Formulir Edukasi Pasien & Keluarga RM 02-1 ]::",qryCetak,param);
+            }
+        }catch(Exception e){
+            System.out.println("Notif cetakFormulirRM021 : "+e);
+        }
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    /** ResultSet.getString() aman thd null - kembalikan "" bukan null, spy
+     * parameter Jasper (String) tidak pernah null. */
+    private String ambil(ResultSet rs, String kolom){
+        try{
+            String v = rs.getString(kolom);
+            return v==null?"":v;
+        }catch(Exception e){
+            return "";
+        }
+    }
+
+    /** class='isi' -> border grid tipis (border-right+border-bottom #e2e7dd),
+     * konsep sama persis dgn ringkasan LoadHTML di RMTriaseIGD.java/
+     * RMPenilaianAwalKeperawatanIGD.java (CSS .isi sudah ada dari
+     * styleSheet.addRule() bawaan konstruktor, cuma belum dipakai). */
+    private String judulBarisPelaksanaan(String judul){
+        return "<tr class='isi'><td colspan='2' bgcolor='#FFFAF8' align='center'><b>"+judul+"</b></td></tr>";
+    }
+
+    private String barisPelaksanaan(String label, String value){
+        return "<tr class='isi'><td width='40%' valign='top'>"+label+"</td><td width='60%' valign='top'>"+((value==null||value.trim().isEmpty())?"-":value)+"</td></tr>";
+    }
+
+    /** widget.Tanggal (JDateTimePicker pihak ketiga) tidak py getText() -
+     * ambil java.util.Date via getDate() lalu format manual. */
+    private String formatTgl(widget.Tanggal t){
+        if(t==null || t.getDate()==null) return "";
+        return new java.text.SimpleDateFormat("dd-MM-yyyy").format(t.getDate());
+    }
+
+    /** Ringkasan HTML data pelaksanaan edukasi yg sedang dipilih di tabel,
+     * dibaca LANGSUNG dari widget yg sudah terisi getData() (bukan query
+     * ulang) - pola sama persis bangunRingkasanHtml() di
+     * RMTransferPasienAntarRuang.java. Dipanggil di baris terakhir getData(). */
+    private void bangunRingkasanHtml(){
+        StringBuilder h = new StringBuilder();
+        h.append("<html><body><table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>");
+
+        h.append(judulBarisPelaksanaan("PASIEN"));
+        h.append(barisPelaksanaan("No.Rawat", TNoRw.getText()));
+        h.append(barisPelaksanaan("No.RM / Nama", TNoRM.getText()+" / "+TPasien.getText()));
+        h.append(barisPelaksanaan("Tgl.Lahir / Umur / J.K.", TglLahir.getText()+" / "+Umur.getText()+" / "+JK.getText()));
+
+        h.append(judulBarisPelaksanaan("WAKTU & PETUGAS"));
+        h.append(barisPelaksanaan("Tanggal / Jam", formatTgl(Tanggal)+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem()));
+        h.append(barisPelaksanaan("Petugas", NIP.getText()+" - "+NamaPetugas.getText()));
+
+        h.append(judulBarisPelaksanaan("EDUKASI"));
+        h.append(barisPelaksanaan("Materi", Materi.getText()));
+        h.append(barisPelaksanaan("Keterangan", Keterangan.getText()));
+        h.append(barisPelaksanaan("Lama Edukasi", Lama.getText().trim().isEmpty()?"-":Lama.getText()+" menit"));
+        h.append(barisPelaksanaan("Status", Status.getSelectedItem()+""));
+
+        h.append(judulBarisPelaksanaan("PENERIMA, METODE & HASIL"));
+        h.append(barisPelaksanaan("Edukasi Kepada", Kepada.getSelectedItem()+(KeteranganKepada.getText().trim().isEmpty()?"":" - "+KeteranganKepada.getText())));
+        h.append(barisPelaksanaan("Metode", Metode.getSelectedItem()+""));
+        h.append(barisPelaksanaan("Hasil Edukasi", Hasil.getSelectedItem()+""));
+
+        h.append(judulBarisPelaksanaan("LEAFLET & RE-EDUKASI"));
+        h.append(barisPelaksanaan("Kode Leaflet", KodeLeaflet.getText()));
+        h.append(barisPelaksanaan("Tgl Re-Edukasi", formatTgl(TglReEdukasi)));
+
+        h.append("</table></body></html>");
+        LoadHTML.setText(h.toString());
+        LoadHTML.setCaretPosition(0);
+    }
+
     public void tampil() {
         Valid.tabelKosong(tabMode);
         try{
@@ -1556,7 +1861,8 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,pasien.jk,pasien.tgl_lahir,pelaksanaan_informasi_edukasi.tanggal,"+
                     "pelaksanaan_informasi_edukasi.nik,pegawai.nama,pelaksanaan_informasi_edukasi.materi_edukasi,pelaksanaan_informasi_edukasi.keterangan,pelaksanaan_informasi_edukasi.diberikan_pada,"+
                     "pelaksanaan_informasi_edukasi.keterangan_diberikan_pada,pelaksanaan_informasi_edukasi.lama_edukasi,pelaksanaan_informasi_edukasi.metode_edukasi,pelaksanaan_informasi_edukasi.hasil_verifikasi,"+
-                    "pelaksanaan_informasi_edukasi.status from pelaksanaan_informasi_edukasi inner join reg_periksa on pelaksanaan_informasi_edukasi.no_rawat=reg_periksa.no_rawat "+
+                    "pelaksanaan_informasi_edukasi.status,pelaksanaan_informasi_edukasi.kode_leaflet,pelaksanaan_informasi_edukasi.tanggal_re_edukasi "+
+                    "from pelaksanaan_informasi_edukasi inner join reg_periksa on pelaksanaan_informasi_edukasi.no_rawat=reg_periksa.no_rawat "+
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join pegawai on pelaksanaan_informasi_edukasi.nik=pegawai.nik where "+
                     "pelaksanaan_informasi_edukasi.tanggal between ? and ? order by pelaksanaan_informasi_edukasi.tanggal");
@@ -1565,7 +1871,8 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,pasien.jk,pasien.tgl_lahir,pelaksanaan_informasi_edukasi.tanggal,"+
                     "pelaksanaan_informasi_edukasi.nik,pegawai.nama,pelaksanaan_informasi_edukasi.materi_edukasi,pelaksanaan_informasi_edukasi.keterangan,pelaksanaan_informasi_edukasi.diberikan_pada,"+
                     "pelaksanaan_informasi_edukasi.keterangan_diberikan_pada,pelaksanaan_informasi_edukasi.lama_edukasi,pelaksanaan_informasi_edukasi.metode_edukasi,pelaksanaan_informasi_edukasi.hasil_verifikasi,"+
-                    "pelaksanaan_informasi_edukasi.status from pelaksanaan_informasi_edukasi inner join reg_periksa on pelaksanaan_informasi_edukasi.no_rawat=reg_periksa.no_rawat "+
+                    "pelaksanaan_informasi_edukasi.status,pelaksanaan_informasi_edukasi.kode_leaflet,pelaksanaan_informasi_edukasi.tanggal_re_edukasi "+
+                    "from pelaksanaan_informasi_edukasi inner join reg_periksa on pelaksanaan_informasi_edukasi.no_rawat=reg_periksa.no_rawat "+
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join pegawai on pelaksanaan_informasi_edukasi.nik=pegawai.nik where "+
                     "pelaksanaan_informasi_edukasi.tanggal between ? and ? and (reg_periksa.no_rawat like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or pelaksanaan_informasi_edukasi.nik like ? or pegawai.nama like ?) "+
@@ -1593,7 +1900,8 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
                         rs.getString("umurdaftar")+" "+rs.getString("sttsumur"),rs.getString("jk"),rs.getDate("tgl_lahir"),
                         rs.getString("tanggal"),rs.getString("nik"),rs.getString("nama"),rs.getString("materi_edukasi"),
                         rs.getString("keterangan"),rs.getString("lama_edukasi"),rs.getString("status"),rs.getString("diberikan_pada"),
-                        rs.getString("keterangan_diberikan_pada"),rs.getString("metode_edukasi"),rs.getString("hasil_verifikasi")
+                        rs.getString("keterangan_diberikan_pada"),rs.getString("metode_edukasi"),rs.getString("hasil_verifikasi"),
+                        rs.getString("kode_leaflet"),rs.getString("tanggal_re_edukasi")
                     });
                 }
             } catch (Exception e) {
@@ -1621,10 +1929,16 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
         KeteranganKepada.setText("");
         Metode.setSelectedIndex(0);
         Hasil.setSelectedIndex(0);
+        // Kode Leaflet di-generate ulang (bukan dikosongkan) - identitas
+        // pasien (TNoRw) TIDAK ikut direset oleh emptTeks(), jadi "Baru"
+        // dipakai utk menambah SESI BARU pasien yg sama (bukan cari ulang
+        // pasien) - lihat cetakFormulirRM021()/generateKodeLeaflet().
+        KodeLeaflet.setText(TNoRw.getText().trim().isEmpty()?"":generateKodeLeaflet(TNoRw.getText()));
+        TglReEdukasi.setDate(new Date());
         Tanggal.setDate(new Date());
         ChkKejadian.setSelected(true);
         Materi.requestFocus();
-    } 
+    }
 
     private void getData() {
         if(tbObat.getSelectedRow()!= -1){
@@ -1642,11 +1956,19 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
             KeteranganKepada.setText(tbObat.getValueAt(tbObat.getSelectedRow(),14).toString());
             Metode.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),15).toString());
             Hasil.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),16).toString());
+            KodeLeaflet.setText(tbObat.getValueAt(tbObat.getSelectedRow(),17)==null?"":tbObat.getValueAt(tbObat.getSelectedRow(),17).toString());
+            String tglReEdukasi = tbObat.getValueAt(tbObat.getSelectedRow(),18)==null?"":tbObat.getValueAt(tbObat.getSelectedRow(),18).toString();
+            if(!tglReEdukasi.trim().equals("")){
+                Valid.SetTgl(TglReEdukasi,tglReEdukasi);
+            }else{
+                TglReEdukasi.setDate(new Date());
+            }
             ChkKejadian.setSelected(false);
             Jam.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString().substring(11,13));
             Menit.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString().substring(14,16));
             Detik.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString().substring(17,19));
             Valid.SetTgl(Tanggal,tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
+            bangunRingkasanHtml();
         }
     }
     
@@ -1666,6 +1988,7 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
                     Umur.setText(rs.getString("umurdaftar")+" "+rs.getString("sttsumur"));
                     TglLahir.setText(rs.getString("tgl_lahir"));
                     TanggalRegistrasi.setText(rs.getString("tgl_registrasi")+" "+rs.getString("jam_reg"));
+                    KodeLeaflet.setText(generateKodeLeaflet(TNoRw.getText()));
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
@@ -1694,8 +2017,13 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
     private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,204));
-            FormInput.setVisible(true);      
+            // 204 -> 230: baris "Kode Leaflet"/"Tgl Re-Edukasi" (initRM02_1BagianB(),
+            // y=180-203) kepotong kalau tetap 204 - PanelInput.setPreferredSize()
+            // ini (bukan FormInput punya) yg sebenarnya membatasi tinggi terlihat,
+            // krn FormInput adalah child BorderLayout.CENTER (preferred size sendiri
+            // diabaikan begitu parent py preferred size tetap).
+            PanelInput.setPreferredSize(new Dimension(WIDTH,230));
+            FormInput.setVisible(true);
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
             ChkInput.setVisible(false);            
@@ -1783,9 +2111,11 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
     }
 
     private void ganti() {
-        if(Sequel.mengedittf("pelaksanaan_informasi_edukasi","tanggal=? and no_rawat=?","no_rawat=?,tanggal=?,nik=?,materi_edukasi=?,keterangan=?,diberikan_pada=?,keterangan_diberikan_pada=?,lama_edukasi=?,metode_edukasi=?,hasil_verifikasi=?,status=?",13,new String[]{
+        if(Sequel.mengedittf("pelaksanaan_informasi_edukasi","tanggal=? and no_rawat=?","no_rawat=?,tanggal=?,nik=?,materi_edukasi=?,keterangan=?,diberikan_pada=?,keterangan_diberikan_pada=?,lama_edukasi=?,metode_edukasi=?,hasil_verifikasi=?,status=?,kode_leaflet=?,tanggal_re_edukasi=?",15,new String[]{
             TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),NIP.getText(),Materi.getText(),Keterangan.getText(),Kepada.getSelectedItem().toString(),KeteranganKepada.getText(),
-            Lama.getText(),Metode.getSelectedItem().toString(),Hasil.getSelectedItem().toString(),Status.getSelectedItem().toString(),tbObat.getValueAt(tbObat.getSelectedRow(),6).toString(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
+            Lama.getText(),Metode.getSelectedItem().toString(),Hasil.getSelectedItem().toString(),Status.getSelectedItem().toString(),
+            KodeLeaflet.getText(),(TglReEdukasi.getSelectedItem()==null||TglReEdukasi.getSelectedItem().toString().trim().equals(""))?null:Valid.SetTgl(TglReEdukasi.getSelectedItem()+""),
+            tbObat.getValueAt(tbObat.getSelectedRow(),6).toString(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
         })==true){
             tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),0);
             tbObat.setValueAt(TNoRM.getText(),tbObat.getSelectedRow(),1);
@@ -1804,6 +2134,8 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
             tbObat.setValueAt(KeteranganKepada.getText(),tbObat.getSelectedRow(),14);
             tbObat.setValueAt(Metode.getSelectedItem().toString(),tbObat.getSelectedRow(),15);
             tbObat.setValueAt(Hasil.getSelectedItem().toString(),tbObat.getSelectedRow(),16);
+            tbObat.setValueAt(KodeLeaflet.getText(),tbObat.getSelectedRow(),17);
+            tbObat.setValueAt(TglReEdukasi.getSelectedItem()==null?"":TglReEdukasi.getSelectedItem().toString(),tbObat.getSelectedRow(),18);
             emptTeks();
         }
     }
@@ -1821,16 +2153,18 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
     }
 
     private void simpan() {
-        if(Sequel.menyimpantf("pelaksanaan_informasi_edukasi","?,?,?,?,?,?,?,?,?,?,?","Data",11,new String[]{
+        if(Sequel.menyimpantf("pelaksanaan_informasi_edukasi","?,?,?,?,?,?,?,?,?,?,?,?,?","Tanggal & Jam Pelaksanaan (klik dulu tombol Baru utk menambah sesi baru)",13,new String[]{
                 TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),
                 NIP.getText(),Materi.getText(),Keterangan.getText(),Kepada.getSelectedItem().toString(),KeteranganKepada.getText(),Lama.getText(),
-                Metode.getSelectedItem().toString(),Hasil.getSelectedItem().toString(),Status.getSelectedItem().toString()
+                Metode.getSelectedItem().toString(),Hasil.getSelectedItem().toString(),Status.getSelectedItem().toString(),
+                KodeLeaflet.getText(),(TglReEdukasi.getSelectedItem()==null||TglReEdukasi.getSelectedItem().toString().trim().equals(""))?null:Valid.SetTgl(TglReEdukasi.getSelectedItem()+"")
         })==true){
             tabMode.addRow(new Object[]{
                 TNoRw.getText(),TNoRM.getText(),TPasien.getText(),Umur.getText(),JK.getText(),TglLahir.getText(),
                 Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),
                 NIP.getText(),NamaPetugas.getText(),Materi.getText(),Keterangan.getText(),Lama.getText(),Status.getSelectedItem().toString(),
-                Kepada.getSelectedItem().toString(),KeteranganKepada.getText(),Metode.getSelectedItem().toString(),Hasil.getSelectedItem().toString()
+                Kepada.getSelectedItem().toString(),KeteranganKepada.getText(),Metode.getSelectedItem().toString(),Hasil.getSelectedItem().toString(),
+                KodeLeaflet.getText(),TglReEdukasi.getSelectedItem()==null?"":TglReEdukasi.getSelectedItem().toString()
             });
             LCount.setText(""+tabMode.getRowCount());
             emptTeks();
@@ -1851,36 +2185,48 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
         }
     }
 
+    /** Ambil label+nama+foto/ttd 1 peran dari tabel bukti-nya sendiri - pola
+     * identik fotoImgTag() di RMTransferPasienAntarRuang.java. "Kosong" jadi
+     * default kalau belum ada rekam bukti/photo null-kosong-strip. */
+    private String fotoImgTag(String tabelBukti, String label, String nama, String noRawat, String tanggal){
+        String namaTampil = (nama==null||nama.trim().isEmpty())?"-":nama;
+        String html = "<b>"+label+"</b><br><font face='tahoma' size='2'>"+namaTampil+"</font><br><font face='tahoma' size='2' color='#434343'>Kosong</font>";
+        try {
+            ps=koneksi.prepareStatement("select photo from "+tabelBukti+" where no_rawat=? and tanggal=?");
+            try{
+                ps.setString(1,noRawat);
+                ps.setString(2,tanggal);
+                rs=ps.executeQuery();
+                if(rs.next() && rs.getString("photo")!=null && !rs.getString("photo").equals("") && !rs.getString("photo").equals("-")){
+                    html = "<b>"+label+"</b><br><font face='tahoma' size='2'>"+namaTampil+"</font><br><img src='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/pelaksanaanedukasi/"+rs.getString("photo")+"' alt='photo' width='220' height='220'/>";
+                }
+            } finally {
+                if(rs!=null){ rs.close(); }
+                if(ps!=null){ ps.close(); }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif fotoImgTag : "+e);
+        }
+        return html;
+    }
+
+    /** 2 peran (Pasien/Keluarga + Pemberi Edukasi), masing2 dari tabel bukti
+     * sendiri-sendiri (bukti_pelaksanaan_informasi_edukasi / baru
+     * bukti_pelaksanaan_edukasi_pemberi - lihat
+     * sik_bukti_pelaksanaan_edukasi_pemberi.sql) - pola identik grid 2x2
+     * RMTransferPasienAntarRuang.panggilPhoto(), disini cuma 2 kolom krn 2
+     * peran. Nama diambil LANGSUNG dari widget yg sudah terisi getData()
+     * (KeteranganKepada/NamaPetugas), bukan query ulang. */
     private void panggilPhoto() {
         if(FormPhoto.isVisible()==true){
-            try {
-                ps=koneksi.prepareStatement("select bukti_pelaksanaan_informasi_edukasi.photo from bukti_pelaksanaan_informasi_edukasi where bukti_pelaksanaan_informasi_edukasi.no_rawat=? and bukti_pelaksanaan_informasi_edukasi.tanggal=?");
-                try {
-                    ps.setString(1,tbObat.getValueAt(tbObat.getSelectedRow(),0).toString());
-                    ps.setString(2,tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
-                    rs=ps.executeQuery();
-                    if(rs.next()){
-                        if(rs.getString("photo").equals("")||rs.getString("photo").equals("-")){
-                            LoadHTML2.setText("<html><body><center><br><br><font face='tahoma' size='2' color='#434343'>Kosong</font></center></body></html>");
-                        }else{
-                            LoadHTML2.setText("<html><body><center><img src='http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"+koneksiDB.HYBRIDWEB()+"/pelaksanaanedukasi/"+rs.getString("photo")+"' alt='photo' width='500' height='500'/></center></body></html>");
-                        }  
-                    }else{
-                        LoadHTML2.setText("<html><body><center><br><br><font face='tahoma' size='2' color='#434343'>Kosong</font></center></body></html>");
-                    }
-                } catch (Exception e) {
-                    System.out.println("Notif : "+e);
-                } finally{
-                    if(rs!=null){
-                        rs.close();
-                    }
-                    if(ps!=null){
-                        ps.close();
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            }
+            String noRawat = tbObat.getValueAt(tbObat.getSelectedRow(),0).toString();
+            String tanggal = tbObat.getValueAt(tbObat.getSelectedRow(),6).toString();
+            String htmlPasien = fotoImgTag("bukti_pelaksanaan_informasi_edukasi","Pasien/Keluarga",KeteranganKepada.getText(),noRawat,tanggal);
+            String htmlPemberi = fotoImgTag("bukti_pelaksanaan_edukasi_pemberi","Pemberi Edukasi",NamaPetugas.getText(),noRawat,tanggal);
+            LoadHTML2.setText("<html><body><table width='100%'><tr>"+
+                "<td align='center' valign='top' width='50%'>"+htmlPasien+"</td>"+
+                "<td align='center' valign='top' width='50%'>"+htmlPemberi+"</td>"+
+                "</tr></table></body></html>");
         }
     }
     

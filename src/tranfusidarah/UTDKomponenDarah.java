@@ -40,6 +40,7 @@ public class UTDKomponenDarah extends javax.swing.JDialog {
     public UTDKomponenDarah(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabModeKomponen=new DefaultTableModel(null,new String[]{"Kode","Nama Komponen","Lama(Hari)","Jasa Sarana","Paket BHP","KSO","Manajemen","Total","Pembatalan"}){
             @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

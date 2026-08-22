@@ -66,6 +66,7 @@ public class DlgPermintaanStokPasien extends javax.swing.JDialog {
     public DlgPermintaanStokPasien(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Jml","Kode Barang","Nama Barang","Jenis","Satuan","Kps","Stok","Harga","HargaBeli","Subtotal","Aturan Pakai",

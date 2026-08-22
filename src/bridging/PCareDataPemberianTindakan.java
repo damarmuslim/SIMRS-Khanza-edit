@@ -64,6 +64,7 @@ public class PCareDataPemberianTindakan extends javax.swing.JDialog {
     public PCareDataPemberianTindakan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Tanggal","Jam","No.Kunjungan","No.Rawat","No.R.M.","Nama Pasien","Kd Tindakan SK","Kode Tindakan",

@@ -70,6 +70,7 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
     public DlgCariPemesanan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         try {
             aktifkanbatch = koneksiDB.AKTIFKANBATCHOBAT();

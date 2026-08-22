@@ -54,6 +54,7 @@ public final class InhealthTindakanLaborat extends javax.swing.JDialog {
     public InhealthTindakanLaborat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         this.setLocation(8,1);
         setSize(628,674);

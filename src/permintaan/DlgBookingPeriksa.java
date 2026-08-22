@@ -80,6 +80,7 @@ public class DlgBookingPeriksa extends javax.swing.JFrame {
      */
     public DlgBookingPeriksa() {
         initComponents();
+        widget.IconStyle.pasang(this);
         
         PanelAccor.setVisible(false);
         

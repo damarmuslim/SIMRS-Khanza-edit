@@ -52,6 +52,7 @@ public class InventoryRingkasanBiayaObatPasienPerTanggal extends javax.swing.JDi
     public InventoryRingkasanBiayaObatPasienPerTanggal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.","Tanggal","No.Rawat","No.RM","Nama Pasien","Alamat","Cara Bayar","Unit/Layanan","Total"

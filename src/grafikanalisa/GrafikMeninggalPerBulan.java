@@ -56,6 +56,7 @@ public class GrafikMeninggalPerBulan extends javax.swing.JDialog {
     public GrafikMeninggalPerBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Bulan","Jumlah Meninggal Per Bulan","Persentase Per Bulan(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

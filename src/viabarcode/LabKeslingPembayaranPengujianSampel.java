@@ -48,6 +48,7 @@ public class LabKeslingPembayaranPengujianSampel extends javax.swing.JDialog {
     public LabKeslingPembayaranPengujianSampel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabModeValidasi=new DefaultTableModel(null,new Object[]{
                 "Tgl.Validasi","No.Validasi","NIP PJ Validasi","Nama PJ Validasi","No.Permintaan","No.Pelanggan","Nama Pelanggan","Kode Sampel","Nama Sampel","Titik Sampel","Penerimaan Sampel","Status Bayar","Catatan","NIP PJ Verifikasi","Nama PJ Verifikasi"

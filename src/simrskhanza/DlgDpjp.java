@@ -63,6 +63,7 @@ public class DlgDpjp extends javax.swing.JDialog {
     public DlgDpjp(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"P","Tgl.Rawat","No.Rawat","No.R.M.","Nama Pasien","Kode Dokter","Nama Dokter"};
         TabModePasien=new DefaultTableModel(null,row){

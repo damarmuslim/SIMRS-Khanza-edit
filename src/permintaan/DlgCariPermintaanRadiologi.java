@@ -65,6 +65,7 @@ public class DlgCariPermintaanRadiologi extends javax.swing.JDialog {
     public DlgCariPermintaanRadiologi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         WindowAmbilSampel.setSize(530,80);
         tabMode=new DefaultTableModel(null,new Object[]{

@@ -47,6 +47,7 @@ public final class DlgLhtBankMandiri extends javax.swing.JDialog {
     public DlgLhtBankMandiri(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(885,674);
         Object[] rowRwJlDr={

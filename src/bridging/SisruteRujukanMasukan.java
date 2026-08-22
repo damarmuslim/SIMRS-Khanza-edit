@@ -76,6 +76,7 @@ public final class SisruteRujukanMasukan extends javax.swing.JDialog {
     public SisruteRujukanMasukan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         WindowAmbilSampel.setSize(540,122);
         tabMode=new DefaultTableModel(null,new String[]{
                 "No.","RM Faskes","Nama Pasien","Kontak","Alamat","Tempat Lahir","Tgl.Lahir",

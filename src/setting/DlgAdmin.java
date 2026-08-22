@@ -53,6 +53,7 @@ public class DlgAdmin extends javax.swing.JDialog {
     public DlgAdmin(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,10);
         setSize(457,249);
 

@@ -26,6 +26,7 @@ public class WindowInputPassword extends javax.swing.JDialog {
     public WindowInputPassword(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setSize(349,180);
         
         PassLama.setDocument(new batasInput((byte)100).getKata(PassLama));

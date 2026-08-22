@@ -52,6 +52,7 @@ public class PerpustakaanKategori extends javax.swing.JDialog {
     public PerpustakaanKategori(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode Kategori","Nama Kategori"};

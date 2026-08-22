@@ -50,6 +50,7 @@ public final class DlgRestoreKamar extends javax.swing.JDialog {
     public DlgRestoreKamar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new String[]{
                 "P","Nomer Bed","Kode Kamar","Nama Kamar","Kelas","Tarif Kamar","Status Kamar"

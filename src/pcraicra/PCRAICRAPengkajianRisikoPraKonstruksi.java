@@ -89,6 +89,7 @@ public final class PCRAICRAPengkajianRisikoPraKonstruksi extends javax.swing.JDi
     public PCRAICRAPengkajianRisikoPraKonstruksi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Pengkajian","No.Proyek","Nama Proyek","Lokasi Proyek","Mulai","Selesai","Deskripsi Pekerjaan","Penangung Jawab Proyek(Pelaksana)",

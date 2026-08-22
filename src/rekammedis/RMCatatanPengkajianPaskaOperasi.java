@@ -66,6 +66,7 @@ public final class RMCatatanPengkajianPaskaOperasi extends javax.swing.JDialog {
     public RMCatatanPengkajianPaskaOperasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","Kode Dokter","Nama Dokter","Tanggal","I. Rawat Paska Operasi/Tindakan","II. Cairan",

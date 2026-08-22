@@ -56,6 +56,7 @@ public class GrafikPasienHAIsBulan extends javax.swing.JDialog {
     public GrafikPasienHAIsBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Bulan Peristiwa HAIs","Jumlah Pasien","Persentase(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

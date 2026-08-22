@@ -38,6 +38,7 @@ public class GrafikKejadianIKPPerBulan extends javax.swing.JDialog {
     public GrafikKejadianIKPPerBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

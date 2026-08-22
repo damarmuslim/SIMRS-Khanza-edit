@@ -59,6 +59,7 @@ public final class DlgRanapPerRuang extends javax.swing.JDialog {
     public DlgRanapPerRuang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(885,674);
         tabMode=new DefaultTableModel(null,new String[]{"No.","Ruangan","Jumlah Pasien","Hari Perawatan"}){

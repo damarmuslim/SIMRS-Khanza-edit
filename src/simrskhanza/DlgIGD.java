@@ -323,6 +323,7 @@ public final class DlgIGD extends javax.swing.JDialog {
     public DlgIGD(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         initIGD();
 
         this.setLocation(8,1);

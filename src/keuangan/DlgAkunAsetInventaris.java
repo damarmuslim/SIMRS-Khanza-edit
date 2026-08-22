@@ -56,6 +56,7 @@ public class DlgAkunAsetInventaris extends javax.swing.JDialog {
     public DlgAkunAsetInventaris(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"P","ID Jenis","Nama Jenis","Kode Akun","Nama Akun Rekening"};
         tabMode=new DefaultTableModel(null,row){

@@ -38,6 +38,7 @@ public class MasterTemplateHasilRadiologi extends javax.swing.JDialog {
     public MasterTemplateHasilRadiologi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.Template","Nama Pemeriksaan","Template Hasil Radiologi"};
         tabMode=new DefaultTableModel(null,row){

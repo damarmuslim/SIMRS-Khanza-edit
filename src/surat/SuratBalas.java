@@ -58,6 +58,7 @@ public final class SuratBalas extends javax.swing.JDialog {
     public SuratBalas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,10);
         setSize(545,599);
 

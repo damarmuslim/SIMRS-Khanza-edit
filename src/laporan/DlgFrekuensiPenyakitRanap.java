@@ -55,6 +55,7 @@ public class DlgFrekuensiPenyakitRanap extends javax.swing.JDialog {
     public DlgFrekuensiPenyakitRanap(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Kode","Nama Penyakit","Diagnosa Lain","Lk2(Hidup)","Pr(Hidup)","Lk2(Mati)","Pr(Mati)","Jumlah"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

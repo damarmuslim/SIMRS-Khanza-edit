@@ -68,6 +68,7 @@ public class DlgBarang extends javax.swing.JDialog {
     public DlgBarang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode = new DefaultTableModel(null,new Object[]{
             "P", "Kode Barang", "Nama Barang", "Kd.Sat Besar", "Nm.Satuan Besar","Isi", "Kd.Sat Kecil", "Nm.Satuan Kecil",

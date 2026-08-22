@@ -38,6 +38,7 @@ public class GrafikKejadianIKPPerDampak extends javax.swing.JDialog {
     public GrafikKejadianIKPPerDampak(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

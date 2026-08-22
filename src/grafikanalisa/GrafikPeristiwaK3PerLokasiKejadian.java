@@ -56,6 +56,7 @@ public class GrafikPeristiwaK3PerLokasiKejadian extends javax.swing.JDialog {
     public GrafikPeristiwaK3PerLokasiKejadian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Lokasi Kejadian","Jumlah Peristiwa","Persentase(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

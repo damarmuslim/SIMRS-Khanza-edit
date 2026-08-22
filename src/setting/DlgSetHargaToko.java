@@ -53,6 +53,7 @@ public class DlgSetHargaToko extends javax.swing.JDialog {
     public DlgSetHargaToko(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Keuntungan Jual Distributor (%)","Keuntungan Jual Grosir (%)","Keuntungan Jual Retail (%)"};
         tabMode=new DefaultTableModel(null,row){

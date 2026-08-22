@@ -60,6 +60,7 @@ public class DlgCariTagihanOperasi extends javax.swing.JDialog {
     public DlgCariTagihanOperasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Tgl.Operasi","No.Rawat","Pasien","Jns.Ans","","","","","","","","","","","","","","","","","","","","","","","","","","",

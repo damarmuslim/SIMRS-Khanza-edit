@@ -67,6 +67,7 @@ public class UTDPenyerahanDarah extends javax.swing.JDialog {
     public UTDPenyerahanDarah(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         warna.kolom=0;
         

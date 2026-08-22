@@ -56,6 +56,7 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
     public DlgPenelusuranLogin(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         tabMode=new DefaultTableModel(null,new Object[]{"NIP","Nama Pegawai","Tanggal Login","Jam Login"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };

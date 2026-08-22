@@ -58,6 +58,7 @@ public class TokoInputStok extends javax.swing.JDialog {
     public TokoInputStok(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Real","Kode Barang","Nama Barang","Kategori",

@@ -40,6 +40,7 @@ public class InventarisAsalHibah extends javax.swing.JDialog {
     public InventarisAsalHibah(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode Pemberi","Nama Pemberi","Alamat Pemberi Hibah","Kota","No.Telp"};
         tabMode=new DefaultTableModel(null,row){

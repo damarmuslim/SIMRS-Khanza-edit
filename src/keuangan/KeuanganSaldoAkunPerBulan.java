@@ -45,6 +45,7 @@ public class KeuanganSaldoAkunPerBulan extends javax.swing.JDialog {
     public KeuanganSaldoAkunPerBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         HTMLEditorKit kit = new HTMLEditorKit();
         LoadHTML.setEditable(true);
         LoadHTML.setEditorKit(kit);

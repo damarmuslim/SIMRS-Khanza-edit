@@ -52,6 +52,7 @@ public class K3RSJenisLuka extends javax.swing.JDialog {
     public K3RSJenisLuka(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode Jenis","Jenis Luka"};

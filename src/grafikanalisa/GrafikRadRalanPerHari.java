@@ -39,6 +39,7 @@ public class GrafikRadRalanPerHari extends javax.swing.JDialog {
     public GrafikRadRalanPerHari(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

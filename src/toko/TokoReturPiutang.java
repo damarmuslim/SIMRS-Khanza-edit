@@ -55,6 +55,7 @@ public class TokoReturPiutang extends javax.swing.JDialog {
     public TokoReturPiutang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Jml","Kode Barang","Nama Barang","Satuan","Harga(Rp)","Total(Rp)","No.Nota","Stok","Dasar"};
         tabMode=new DefaultTableModel(null,judul){

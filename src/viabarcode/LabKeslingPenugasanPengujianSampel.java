@@ -70,6 +70,7 @@ public final class LabKeslingPenugasanPengujianSampel extends javax.swing.JDialo
     public LabKeslingPenugasanPengujianSampel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode","Nama Parameter","Metode Pengujian","Satuan","Kategori"};
         tabMode=new DefaultTableModel(null,row){

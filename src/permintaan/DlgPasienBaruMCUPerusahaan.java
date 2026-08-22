@@ -53,6 +53,7 @@ public class DlgPasienBaruMCUPerusahaan extends javax.swing.JDialog {
     public DlgPasienBaruMCUPerusahaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "P","No.Pengajuan","Nama Pasien","No.KTP","J.K","Tempat Lahir","Tgl.Lahir","Nama Ibu","Alamat","Kelurahan","Kecamatan","Kabupaten","Propinsi",

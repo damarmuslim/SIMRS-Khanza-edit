@@ -66,6 +66,7 @@ public class DlgJumlahPorsiDiet extends javax.swing.JDialog {
     public DlgJumlahPorsiDiet(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tbJadwal.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbJadwal.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

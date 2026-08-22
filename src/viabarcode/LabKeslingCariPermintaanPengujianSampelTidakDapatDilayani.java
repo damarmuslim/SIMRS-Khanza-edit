@@ -49,6 +49,7 @@ public class LabKeslingCariPermintaanPengujianSampelTidakDapatDilayani extends j
     public LabKeslingCariPermintaanPengujianSampelTidakDapatDilayani(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabModeTidakDapatDilayani=new DefaultTableModel(null,new Object[]{
                 "Waktu Diterima","No.Permintaan","No.Pelanggan","Nama Pelanggan","Kode Sampel","Nama Sampel","Unsur Kaji Ulang/Abnornalitas Sampel/Keterangan Lainnya"

@@ -117,6 +117,7 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
     public RMRiwayatPerawatan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(885,674);
         WindowPhrase.setSize(320,100);

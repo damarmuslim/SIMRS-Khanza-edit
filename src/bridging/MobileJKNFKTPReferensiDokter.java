@@ -60,6 +60,7 @@ public final class MobileJKNFKTPReferensiDokter extends javax.swing.JDialog {
     public MobileJKNFKTPReferensiDokter(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         this.setLocation(10,2);
         setSize(628,674);

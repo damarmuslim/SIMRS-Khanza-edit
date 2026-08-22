@@ -57,6 +57,7 @@ public class InventarisCariPemesanan extends javax.swing.JDialog {
     public InventarisCariPemesanan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.Faktur","Suplier","Petugas","Jml","Harga(Rp)","SubTotal(Rp)",
                     "Dis(%)","Bsr.Disk(Rp)","Total(Rp)"};

@@ -40,6 +40,7 @@ public class InventoryPenggunaanBHPOK extends javax.swing.JDialog {
     public InventoryPenggunaanBHPOK(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Tgl.Operasi","No.Rawat","No.RM","Pasien","Kode BHP","Nama BHP","Satuan","Harga Satuan","Jml","Total"

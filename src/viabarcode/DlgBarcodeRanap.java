@@ -82,6 +82,7 @@ public final class DlgBarcodeRanap extends javax.swing.JDialog {
     public DlgBarcodeRanap(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,2);
         setSize(656,250);
         Object[] row={"P","Kode","Nama Perawatan","Kategori Perawatan","Tarif/Biaya","Bagian RS","BHP","JM Dokter","JM Perawat","KSO","Menejemen"};

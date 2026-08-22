@@ -63,6 +63,7 @@ public class DlgUser extends javax.swing.JDialog {
     public DlgUser(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"ID User","Nama User","Jabatan","Password","[J]ICD 10","[J]Obat Penyakit","[C]Dokter","[A]Jadwal Praktek","[C]Petugas","[M]Pasien","[A]Registrasi","[A]Tindakan Ralan",
                 "[A]Rawat Inap","[A]Tindakan Ranap","[A]Operasi","[A]Rujukan Keluar","[A]Rujukan Masuk","[A]Beri Obat, Alkes & BHP","[A]Resep Pulang",

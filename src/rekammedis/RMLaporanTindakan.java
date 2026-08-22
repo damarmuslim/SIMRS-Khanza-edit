@@ -70,6 +70,7 @@ public final class RMLaporanTindakan extends javax.swing.JDialog {
     public RMLaporanTindakan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","Kode Dokter","Dokter Yang Menangani","Kode Petugas","Asisten/Perawat","Tanggal",

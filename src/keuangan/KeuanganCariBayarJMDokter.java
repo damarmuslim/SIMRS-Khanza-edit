@@ -60,6 +60,7 @@ public class KeuanganCariBayarJMDokter extends javax.swing.JDialog {
     public KeuanganCariBayarJMDokter(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Nomor J.M.","Tanggal Bayar","Akun Bayar","Kode Dokter","Nama Dokter","Keterangan","Total J.M."};
         tabMode=new DefaultTableModel(null,row){

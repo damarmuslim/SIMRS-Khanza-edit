@@ -44,6 +44,7 @@ import javax.swing.WindowConstants;
  */
 public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
+    private DefaultTableModel tabModeData;
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
@@ -59,35 +60,41 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     public RMRekonsiliasiObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
-        DlgTambahObatRekonsiliasi.setSize(650,163);
-        
+        widget.IconStyle.pasang(this);
+        initRekonsiliasiTambahan();
+
+        DlgTambahObatRekonsiliasi.setSize(700,163);
+
+        // [RM 03-06A] "Aturan Pakai" & "Waktu Pemberian Terakhir" dihapus dari
+        // fungsi Tambah (tidak ada padanannya di kolom tabel formulir fisik) -
+        // tabMode dipangkas dari 7 kolom jadi 5. Lihat jg
+        // initRekonsiliasiTambahan() (sembunyikan+reflow field di
+        // DlgTambahObatRekonsiliasi), BtnSimpanRekonActionPerformed
+        // (addRow 5 kolom), & BtnSimpanActionPerformed (kolom cara_pemberian/
+        // waktu_pemberian_terakhir di DB tetap ada, tapi selalu diisi null
+        // utk baris baru - additive-safe, tidak perlu migrasi SQL).
         tabMode=new DefaultTableModel(null,new Object[]{
-            "Nama Obat","Dosis Obat","Frekuensi","Cara Pemberian/Aturan Pakai","Waktu Pemberian Terakhir","Tindak Lanjut","Perubahan Aturan Pakai"}){
+            "Nama Obat","Dosis Obat","Frekuensi","Tindak Lanjut","Perubahan Aturan Pakai"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
-        tbPemeriksaan.setModel(tabMode);        
-        
+        tbPemeriksaan.setModel(tabMode);
+
         //tbObat.setDefaultRenderer(Object.class, new WarnaTable(panelJudul.getBackground(),tbObat.getBackground()));
         tbPemeriksaan.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbPemeriksaan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for(i = 0; i < 7; i++) {
+        for(i = 0; i < 5; i++) {
             TableColumn column = tbPemeriksaan.getColumnModel().getColumn(i);
             if(i==0){
-                column.setPreferredWidth(150);
+                column.setPreferredWidth(200);
             }else if(i==1){
                 column.setPreferredWidth(120);
             }else if(i==2){
-                column.setPreferredWidth(80);
+                column.setPreferredWidth(100);
             }else if(i==3){
-                column.setPreferredWidth(200);
+                column.setPreferredWidth(180);
             }else if(i==4){
-                column.setPreferredWidth(140);
-            }else if(i==5){
-                column.setPreferredWidth(90);
-            }else if(i==6){
-                column.setPreferredWidth(200);
+                column.setPreferredWidth(250);
             }
         }
         tbPemeriksaan.setDefaultRenderer(Object.class, new WarnaTable());
@@ -96,8 +103,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         NamaObat.setDocument(new batasInput((int)100).getKata(NamaObat));
         DosisObat.setDocument(new batasInput((byte)20).getKata(DosisObat));
         Frekuensi.setDocument(new batasInput((byte)10).getKata(Frekuensi));
-        AturanPakai.setDocument(new batasInput((int)150).getKata(AturanPakai));
-        PemberianTerakhir.setDocument(new batasInput((byte)20).getKata(PemberianTerakhir));
         PerubahanAturanPakai.setDocument(new batasInput((int)150).getKata(PerubahanAturanPakai));
         TNoRekonsialiasi.setDocument(new batasInput((byte)20).getKata(TNoRekonsialiasi));
         AlergiObat.setDocument(new batasInput((int)70).getKata(AlergiObat));
@@ -105,6 +110,21 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         
         ChkJln.setSelected(true);
         jam();
+
+        // [BARU] Restrukturisasi jadi 2 tab ("Input"/"Data Rekonsiliasi
+        // Obat") - lihat initDataRekonsiliasiTab(). internalFrame1 (seluruh
+        // UI input yg sudah dibangun GEN block + initRekonsiliasiTambahan())
+        // di-reparent apa adanya (Swing otomatis lepas dari getContentPane()
+        // lama) - TIDAK ada widget input yg diubah/dipindah isinya.
+        getContentPane().remove(internalFrame1);
+        TabPilihan = new javax.swing.JTabbedPane();
+        TabPilihan.addTab("Input Rekonsiliasi Obat", internalFrame1);
+        initDataRekonsiliasiTab();
+        getContentPane().add(TabPilihan, java.awt.BorderLayout.CENTER);
+        // Lebar dihitung dari kebutuhan tab Data: tabel (870px, 5 kolom) +
+        // panel ringkasan terbuka (470px) + margin - diverifikasi via render
+        // offscreen (1080px sebelumnya kurang, muncul scrollbar horizontal).
+        this.setSize(1400, 680);
     }
 
     /** This method is called from within the constructor to
@@ -814,13 +834,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));  
-        RMCariRekonsiliasiObat form=new RMCariRekonsiliasiObat(null,false);
-        form.isCek();
-        form.SetNoRw(TNoRw.getText());
-        form.setSize(this.getWidth(),this.getHeight());
-        form.setLocationRelativeTo(this);
-        form.setVisible(true);
+        // [BARU] Dulu membuka RMCariRekonsiliasiObat sbg dialog terpisah -
+        // sekarang diarahkan ke tab "Data Rekonsiliasi Obat" di dialog yg
+        // sama (pola sama "Data Triase" RMTriaseIGD). RMCariRekonsiliasiObat
+        // TIDAK dihapus/disentuh (masih dipakai frmUtama.java lewat menu
+        // terpisah).
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        TabPilihan.setSelectedIndex(1);
+        tampilDataRekonsiliasi();
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnCariActionPerformed
 
@@ -850,14 +871,28 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         }else{
             reply = JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau disimpan..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
-                if(Sequel.menyimpantf("rekonsiliasi_obat","?,?,?,?,?,?,?,?","No.Rawat",8,new String[]{
-                        TNoRekonsialiasi.getText(),TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(), 
+                if(Sequel.menyimpantf("rekonsiliasi_obat","?,?,?,?,?,?,?,?,?,?,?","No.Rawat",11,new String[]{
+                        TNoRekonsialiasi.getText(),TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
                         RekonsiliasiSaat.getSelectedItem().toString(),AlergiObat.getText(),ManifestasiAlergi.getText(),DampakAlergi.getSelectedItem().toString(),KdPetugas.getText(),
+                        // [RM 03-06A] 3 kolom baru - lihat initRekonsiliasiTambahan(). Diletakkan
+                        // di AKHIR array krn kolom baru ditambahkan di ujung tabel (ADD COLUMN
+                        // polos tanpa AFTER) - Sequel.menyimpantf INSERT posisional, urutan array
+                        // harus persis sesuai urutan fisik kolom tabel.
+                        pilihRadio(RbObatSebelumAdmisiYa,"Ya",RbObatSebelumAdmisiTidak,"Tidak"),
+                        pilihRadio(RbSumberRM,"Status Pasien di Rekam Medis",RbSumberPasien,"Pasien/Keluarga Pasien",RbSumberLain,"Lain-lain"),
+                        TSumberLainKet.getText(),
                     })==true){
                         for (i = 0; i < tbPemeriksaan.getRowCount(); i++) {
+                           // [RM 03-06A] tabMode sekarang 5 kolom (Nama Obat/Dosis Obat/
+                           // Frekuensi/Tindak Lanjut/Perubahan Aturan Pakai - Aturan Pakai &
+                           // Waktu Pemberian Terakhir dihapus dari fungsi Tambah). Struktur
+                           // tabel rekonsiliasi_obat_detail_obat TIDAK diubah (additive-safe,
+                           // tanpa migrasi SQL) - kolom cara_pemberian & waktu_pemberian_terakhir
+                           // tetap ada di DB, cuma selalu null utk baris baru krn sudah tidak
+                           // ada sumber datanya lagi di form.
                            Sequel.menyimpan2("rekonsiliasi_obat_detail_obat","?,?,?,?,?,?,?,?",8,new String[]{
                                TNoRekonsialiasi.getText(),tbPemeriksaan.getValueAt(i,0).toString(),tbPemeriksaan.getValueAt(i,1).toString(),tbPemeriksaan.getValueAt(i,2).toString(),
-                               tbPemeriksaan.getValueAt(i,3).toString(),tbPemeriksaan.getValueAt(i,4).toString(),tbPemeriksaan.getValueAt(i,5).toString(),tbPemeriksaan.getValueAt(i,6).toString()
+                               null,null,tbPemeriksaan.getValueAt(i,3).toString(),tbPemeriksaan.getValueAt(i,4).toString()
                            });
                         }
                         Valid.tabelKosong(tabMode);
@@ -884,13 +919,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             Valid.textKosong(DosisObat,"Dosis Obat");
         }else if(Frekuensi.getText().trim().equals("")){
             Valid.textKosong(Frekuensi,"Frekuensi");
-        }else if(AturanPakai.getText().trim().equals("")){
-            Valid.textKosong(AturanPakai,"Aturan Pakai");
-        }else if(PemberianTerakhir.getText().trim().equals("")){
-            Valid.textKosong(PemberianTerakhir,"Waktu Pemberian Terakhir");
         }else{
+            // [RM 03-06A] Aturan Pakai & Waktu Pemberian Terakhir dihapus dari
+            // fungsi ini - lihat catatan di tabMode (konstruktor).
             tabMode.addRow(new Object[]{
-                NamaObat.getText(),DosisObat.getText(),Frekuensi.getText(),AturanPakai.getText(),PemberianTerakhir.getText(),TindakLanjut.getSelectedItem().toString(),PerubahanAturanPakai.getText()
+                NamaObat.getText(),DosisObat.getText(),Frekuensi.getText(),TindakLanjut.getSelectedItem().toString(),PerubahanAturanPakai.getText()
             });
             emptTeksTambahRekon();
         }
@@ -1014,12 +1047,833 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private widget.Table tbPemeriksaan;
     // End of variables declaration//GEN-END:variables
 
+    // =====================================================================
+    // [RM 03-06A] "Penggunaan Obat Sebelum Admisi" + "Sumber Informasi" -
+    // field baru dari formulir fisik RM 03-06A yang sebelumnya sama sekali
+    // tidak punya widget. Ditambahkan terisolasi di luar blok GEN-BEGIN/
+    // GEN-END - lihat initRekonsiliasiTambahan(), dipanggil dari konstruktor
+    // setelah initComponents().
+    // =====================================================================
+    private widget.Label lblObatSebelumAdmisi, lblSumberInformasi;
+    private widget.RadioButton RbObatSebelumAdmisiYa, RbObatSebelumAdmisiTidak;
+    private javax.swing.ButtonGroup bgObatSebelumAdmisi;
+    private widget.RadioButton RbSumberRM, RbSumberPasien, RbSumberLain;
+    private javax.swing.ButtonGroup bgSumberInformasi;
+    private widget.TextBox TSumberLainKet;
+
+    // =====================================================================
+    // [Tab "Data Rekonsiliasi Obat"] Restrukturisasi dialog jadi 2 tab
+    // (Input/Data) - lihat initDataRekonsiliasiTab(), dipanggil dari
+    // konstruktor. Pola identik "Data Triase" milik RMTriaseIGD.java
+    // (TabPilihan/PanelAccor/ChkAccor/FormMenu/ScrollHTML/LoadHTML).
+    // =====================================================================
+    private javax.swing.JTabbedPane TabPilihan;
+    private widget.InternalFrame internalFrameData;
+    private widget.TextBox TCariData;
+    private widget.Tanggal Tgl1Data, Tgl2Data;
+    private widget.Button BtnCariData, BtnAllData;
+    private widget.Table tbDataRekonsiliasi;
+    private widget.PanelBiasa PanelAccor, FormMenu;
+    private widget.CekBox ChkAccor;
+    private widget.Label TNoRM1, TPasien1;
+    private widget.ScrollPane ScrollHTML;
+    private widget.editorpane LoadHTML;
+    private widget.Button BtnPrintRekon;
+
+    /**
+     * [RM 03-06A] Penyesuaian form dgn formulir fisik "REKONSILIASI OBAT"
+     * (RSUD Demang Sepulau Raya):
+     * 1) Sembunyikan field yg tidak ada di lembar fisik ini (Alergi Obat/
+     *    Manifestasi Alergi/Dampak Alergi) - TIDAK dihapus, cuma
+     *    setVisible(false) (additive-only, kolom DB tetap ada).
+     * 2) "Rekonsiliasi Saat" TETAP bisa dipilih bebas (dikoreksi user -
+     *    rekonsiliasi obat py 3 momen proses: Admisi/Transfer/Discharge),
+     *    model dipangkas dari 4 opsi jadi 3 ("Admisi"/"Transfer Antar
+     *    Ruang"/"Pulang") - "Pindah Faskes Lain" dibuang dari pilihan
+     *    (bukan dihapus dari DB, cuma tidak lagi ditawarkan di combo).
+     * 3) Label "Petugas :" -> "Apoteker :" (sesuai kolom tanda tangan
+     *    fisik "Apoteker yang melakukan rekonsiliasi obat").
+     * 4) Model combo TindakLanjut (di DlgTambahObatRekonsiliasi) diperluas
+     *    dari 2 opsi (Stop/Lanjut) jadi 3 opsi sesuai fisik.
+     * 5) 2 baris baru ditambahkan ke PanelInput (null-layout, .setBounds()
+     *    absolut - konsisten gaya file ini): "Penggunaan Obat Sebelum
+     *    Admisi" & "Sumber Informasi".
+     * 6) PanelInput ditata ulang total jadi kartu "Patient Banner" (putih +
+     *    TitledBorder, grid rapat 28px/baris tanpa celah) - pola sama
+     *    RMTriaseIGD.java Fase 4. WAJIB krn PanelInput pakai null-layout:
+     *    menyembunyikan field (poin 1) TIDAK bikin baris di bawahnya
+     *    otomatis naik, jadi SEMUA field (lama+baru) direposisi eksplisit.
+     * Dipanggil sekali dari constructor, setelah initComponents().
+     */
+    private void initRekonsiliasiTambahan(){
+        jLabel55.setVisible(false);
+        AlergiObat.setVisible(false);
+        scrollPane2.setVisible(false);
+        jLabel56.setVisible(false);
+        ManifestasiAlergi.setVisible(false);
+        scrollPane3.setVisible(false);
+        jLabel6.setVisible(false);
+        DampakAlergi.setVisible(false);
+
+        // [BARU, dilaporkan user via screenshot] PanelInput pakai layout
+        // absolut (null) - menyembunyikan field di atas (Alergi Obat dkk)
+        // TIDAK bikin baris di bawahnya otomatis naik (beda dari
+        // GridBagLayout yg mengecualikan komponen invisible dari
+        // perhitungan). Celah kosong besar + "Rekonsiliasi Saat" jadi
+        // mengambang (posisi aslinya di GEN block memang di sebelah kanan
+        // "Dampak Alergi" yg skrg hilang). Diperbaiki dgn menata ULANG semua
+        // field header (lama + baru) jadi grid rapat 28px/baris, mengikuti
+        // pola "Patient Banner" yg sudah dipakai di RMTriaseIGD.java Fase 4:
+        // kartu putih + TitledBorder, label rata kiri x=6, tanpa celah.
+        PanelInput.setBackground(widget.ThemeConfig.SURFACE);
+        javax.swing.border.TitledBorder tbPanelInput = javax.swing.BorderFactory.createTitledBorder("Informasi Pasien & Rekonsiliasi Obat");
+        tbPanelInput.setTitleFont(widget.ThemeConfig.FONT_BOLD);
+        PanelInput.setBorder(tbPanelInput);
+
+        // Baris 1: No.Rawat, No.RM, Nama Pasien, Tgl.Lahir
+        jLabel3.setBounds(6, 22, 75, 23);
+        TNoRw.setBounds(84, 22, 118, 23);
+        TNoRM.setBounds(206, 22, 90, 23);
+        TPasien.setBounds(300, 22, 230, 23);
+        jLabel8.setBounds(542, 22, 70, 23);
+        TglLahir.setBounds(614, 22, 90, 23);
+
+        // Baris 2: J.K., Apoteker
+        jLabel11.setBounds(6, 50, 50, 23);
+        Jk.setBounds(58, 50, 80, 23);
+        jLabel9.setBounds(150, 50, 75, 23);
+        KdPetugas.setBounds(227, 50, 110, 23);
+        NmPetugas.setBounds(339, 50, 250, 23);
+        BtnPetugas.setBounds(591, 50, 28, 23);
+
+        // Baris 3: No.Rekonsiliasi, Tanggal Wawancara
+        jLabel4.setBounds(6, 78, 110, 23);
+        TNoRekonsialiasi.setBounds(118, 78, 140, 23);
+        jLabel15.setBounds(270, 78, 130, 23);
+        Tanggal.setBounds(402, 78, 90, 23);
+        CmbJam.setBounds(494, 78, 50, 23);
+        CmbMenit.setBounds(546, 78, 50, 23);
+        CmbDetik.setBounds(598, 78, 50, 23);
+        ChkJln.setBounds(650, 78, 23, 23);
+
+        // Baris 4: Rekonsiliasi Saat (dulu x=346, terlihat mengambang krn
+        // tetangga aslinya "Dampak Alergi" skrg disembunyikan)
+        jLabel5.setBounds(6, 106, 120, 23);
+        RekonsiliasiSaat.setBounds(132, 106, 160, 23);
+
+        // [KOREKSI] Sebelumnya sempat dikunci ke "Admisi" (dikira RM 03-06A
+        // cuma utk konteks Admisi) - dikoreksi user: rekonsiliasi obat py 3
+        // momen proses (Admisi/Transfer/Discharge), jadi combo TETAP harus
+        // bisa dipilih bebas. Model asli GEN block py 4 opsi ("Admisi",
+        // "Transfer Antar Ruang","Pindah Faskes Lain","Pulang") - dipangkas
+        // jadi 3 sesuai konfirmasi user (Admisi/Transfer/Discharge="Pulang",
+        // istilah Indonesia yg sudah dipakai di enum DB), "Pindah Faskes
+        // Lain" dibuang dari pilihan (BUKAN dihapus dari DB - kolom
+        // rekonsiliasi_obat_saat tetap ENUM lama yg py nilai itu, cuma tidak
+        // lagi ditawarkan di combo - aman, tidak perlu migrasi SQL apapun
+        // krn ke-3 nilai baru ini SUDAH ada di enum lama).
+        RekonsiliasiSaat.setModel(new javax.swing.DefaultComboBoxModel(new String[]{
+            "Admisi","Transfer Antar Ruang","Pulang"
+        }));
+
+        jLabel9.setText("Apoteker :");
+
+        // [BARU] "Aturan Pakai" & "Waktu Pemberian Terakhir" dihapus dari
+        // fungsi Tambah Obat - tidak ada padanan kolom di tabel formulir
+        // fisik RM 03-06A ("Cara Pemberian" & "Waktu Pemberian Terakhir"
+        // bukan bagian formulir ini). Disembunyikan (bukan dihapus objeknya,
+        // widget tetap ada di memori - lihat catatan di BtnSimpanActionPerformed
+        // soal DB tetap py kolomnya), lalu 3 field sisanya (Tindak Lanjut &
+        // Perubahan Aturan Pakai) direflow naik mengisi ruang yg kosong.
+        jLabel111.setVisible(false);
+        AturanPakai.setVisible(false);
+        jLabel112.setVisible(false);
+        PemberianTerakhir.setVisible(false);
+
+        jLabel108.setBounds(367, 40, 110, 23);
+        TindakLanjut.setModel(new javax.swing.DefaultComboBoxModel(new String[]{
+            "Lanjut aturan pakai sama","Lanjut aturan pakai berubah","Stop"
+        }));
+        TindakLanjut.setBounds(480, 40, 190, 23);
+
+        jLabel113.setBounds(0, 70, 140, 23);
+        PerubahanAturanPakai.setBounds(144, 70, 260, 23);
+
+        lblObatSebelumAdmisi = new widget.Label();
+        lblObatSebelumAdmisi.setText("Penggunaan Obat Sebelum Admisi :");
+        lblObatSebelumAdmisi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        PanelInput.add(lblObatSebelumAdmisi);
+        lblObatSebelumAdmisi.setBounds(6, 134, 210, 23);
+
+        RbObatSebelumAdmisiYa = new widget.RadioButton();
+        RbObatSebelumAdmisiYa.setText("Ya, Dengan Rincian Sebagai Berikut");
+        PanelInput.add(RbObatSebelumAdmisiYa);
+        RbObatSebelumAdmisiYa.setBounds(220, 134, 220, 23);
+
+        RbObatSebelumAdmisiTidak = new widget.RadioButton();
+        RbObatSebelumAdmisiTidak.setText("Tidak Menggunakan Obat Sebelum Admisi");
+        PanelInput.add(RbObatSebelumAdmisiTidak);
+        RbObatSebelumAdmisiTidak.setBounds(444, 134, 280, 23);
+
+        bgObatSebelumAdmisi = new javax.swing.ButtonGroup();
+        bgObatSebelumAdmisi.add(RbObatSebelumAdmisiYa);
+        bgObatSebelumAdmisi.add(RbObatSebelumAdmisiTidak);
+
+        lblSumberInformasi = new widget.Label();
+        lblSumberInformasi.setText("Sumber Informasi :");
+        lblSumberInformasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        PanelInput.add(lblSumberInformasi);
+        lblSumberInformasi.setBounds(6, 160, 115, 23);
+
+        RbSumberRM = new widget.RadioButton();
+        RbSumberRM.setText("Status Pasien di Rekam Medis");
+        PanelInput.add(RbSumberRM);
+        RbSumberRM.setBounds(125, 160, 190, 23);
+
+        RbSumberPasien = new widget.RadioButton();
+        RbSumberPasien.setText("Pasien/Keluarga Pasien");
+        PanelInput.add(RbSumberPasien);
+        RbSumberPasien.setBounds(319, 160, 160, 23);
+
+        RbSumberLain = new widget.RadioButton();
+        RbSumberLain.setText("Lain-lain");
+        PanelInput.add(RbSumberLain);
+        RbSumberLain.setBounds(483, 160, 75, 23);
+
+        bgSumberInformasi = new javax.swing.ButtonGroup();
+        bgSumberInformasi.add(RbSumberRM);
+        bgSumberInformasi.add(RbSumberPasien);
+        bgSumberInformasi.add(RbSumberLain);
+
+        TSumberLainKet = new widget.TextBox();
+        PanelInput.add(TSumberLainKet);
+        TSumberLainKet.setBounds(562, 160, 170, 23);
+
+        java.awt.Dimension ukuranLama = PanelInput.getPreferredSize();
+        PanelInput.setPreferredSize(new java.awt.Dimension(ukuranLama.width, 200));
+
+        // [BARU] "Penggunaan Obat Sebelum Admisi" & "Sumber Informasi" cuma
+        // relevan utk formulir fisik RM 03-06A (konteks "saat Admisi") -
+        // dilaporkan user field ini seharusnya tidak muncul saat
+        // RekonsiliasiSaat="Transfer Antar Ruang"/"Pulang". Ditambah
+        // ItemListener supaya toggle visible otomatis tiap combo berubah,
+        // + dipanggil sekali sekarang utk set state awal (default combo =
+        // "Admisi", jadi field ini tampil begitu form pertama dibuka).
+        RekonsiliasiSaat.addItemListener((java.awt.event.ItemEvent e) -> {
+            if(e.getStateChange()==java.awt.event.ItemEvent.SELECTED){
+                perbaruiVisibilitasFieldAdmisi();
+            }
+        });
+        perbaruiVisibilitasFieldAdmisi();
+    }
+
+    /**
+     * [RM 03-06A] "Penggunaan Obat Sebelum Admisi" & "Sumber Informasi"
+     * cuma tampil kalau RekonsiliasiSaat="Admisi" (satu2nya konteks yg
+     * py field ini di formulir fisik) - disembunyikan + dikosongkan kalau
+     * "Transfer Antar Ruang"/"Pulang" dipilih, supaya tidak ada nilai
+     * "nyangkut" dari Admisi ikut tersimpan utk konteks selain Admisi.
+     * Dipanggil dari initRekonsiliasiTambahan() (state awal) dan dari
+     * ItemListener RekonsiliasiSaat (tiap kali combo berubah).
+     */
+    private void perbaruiVisibilitasFieldAdmisi(){
+        boolean admisi = "Admisi".equals(RekonsiliasiSaat.getSelectedItem());
+        lblObatSebelumAdmisi.setVisible(admisi);
+        RbObatSebelumAdmisiYa.setVisible(admisi);
+        RbObatSebelumAdmisiTidak.setVisible(admisi);
+        lblSumberInformasi.setVisible(admisi);
+        RbSumberRM.setVisible(admisi);
+        RbSumberPasien.setVisible(admisi);
+        RbSumberLain.setVisible(admisi);
+        TSumberLainKet.setVisible(admisi);
+        if(!admisi){
+            bgObatSebelumAdmisi.clearSelection();
+            bgSumberInformasi.clearSelection();
+            TSumberLainKet.setText("");
+        }
+    }
+
+    /** Helper generik utk baca pilihan 1 dari 2 RadioButton (null kalau belum ada yg dipilih). */
+    private String pilihRadio(widget.RadioButton a,String na,widget.RadioButton b,String nb){
+        return a.isSelected()?na:(b.isSelected()?nb:null);
+    }
+
+    /** Helper generik utk baca pilihan 1 dari 3 RadioButton (null kalau belum ada yg dipilih). */
+    private String pilihRadio(widget.RadioButton a,String na,widget.RadioButton b,String nb,widget.RadioButton c,String nc){
+        return a.isSelected()?na:(b.isSelected()?nb:(c.isSelected()?nc:null));
+    }
+
+    /**
+     * [Tab "Data Rekonsiliasi Obat"] Dibangun dari nol (bukan reuse
+     * RMCariRekonsiliasiObat.java - class itu JDialog utuh, tidak bisa
+     * ditempel sbg tab, & TETAP dipertahankan utuh krn dipakai jg langsung
+     * dari frmUtama.java). Pola identik "Data Triase" milik RMTriaseIGD.java:
+     * panel cari (PAGE_START) + tabel bersih 1-baris-per-record (CENTER) +
+     * panel ringkasan HTML yg bisa dilipat/dibuka (EAST, ChkAccor/PanelAccor/
+     * FormMenu/ScrollHTML/LoadHTML). Dipanggil sekali dari constructor.
+     */
+    private void initDataRekonsiliasiTab(){
+        internalFrameData = new widget.InternalFrame();
+        internalFrameData.setLayout(new java.awt.BorderLayout(1,1));
+
+        // ----- Panel cari (PAGE_START) -----
+        widget.PanelBiasa panelCariData = new widget.PanelBiasa();
+        panelCariData.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,6,6));
+
+        widget.Label lblCariData = new widget.Label();
+        lblCariData.setText("Cari (No.Rawat/No.RM/Nama/Petugas) :");
+        panelCariData.add(lblCariData);
+
+        TCariData = new widget.TextBox();
+        TCariData.setPreferredSize(new java.awt.Dimension(200,23));
+        panelCariData.add(TCariData);
+
+        widget.Label lblTglData = new widget.Label();
+        lblTglData.setText("Tanggal :");
+        panelCariData.add(lblTglData);
+
+        Tgl1Data = new widget.Tanggal();
+        Tgl1Data.setDisplayFormat("dd-MM-yyyy");
+        Tgl1Data.setDate(new Date());
+        panelCariData.add(Tgl1Data);
+
+        widget.Label lblSdData = new widget.Label();
+        lblSdData.setText("s/d");
+        panelCariData.add(lblSdData);
+
+        Tgl2Data = new widget.Tanggal();
+        Tgl2Data.setDisplayFormat("dd-MM-yyyy");
+        Tgl2Data.setDate(new Date());
+        panelCariData.add(Tgl2Data);
+
+        BtnCariData = new widget.Button();
+        BtnCariData.setText("Cari");
+        BtnCariData.addActionListener((java.awt.event.ActionEvent evt) -> tampilDataRekonsiliasi());
+        panelCariData.add(BtnCariData);
+
+        BtnAllData = new widget.Button();
+        BtnAllData.setText("Tampil Semua");
+        BtnAllData.addActionListener((java.awt.event.ActionEvent evt) -> {
+            TCariData.setText("");
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.add(java.util.Calendar.YEAR,-10);
+            Tgl1Data.setDate(cal.getTime());
+            cal.add(java.util.Calendar.YEAR,20);
+            Tgl2Data.setDate(cal.getTime());
+            tampilDataRekonsiliasi();
+        });
+        panelCariData.add(BtnAllData);
+
+        // Panel cari ditaruh di PAGE_END (footer) - pola sama panelGlass9 di
+        // "Data Triase" RMTriaseIGD.java, bukan di header/PAGE_START.
+        internalFrameData.add(panelCariData, java.awt.BorderLayout.PAGE_END);
+
+        // ----- Tabel bersih: 1 baris = 1 record (CENTER) -----
+        tabModeData = new DefaultTableModel(null, new Object[]{
+            "No.Rekonsiliasi","Pasien","Tanggal Wawancara","Rekonsiliasi Saat","Apoteker"
+        }){
+            @Override public boolean isCellEditable(int rowIndex,int colIndex){ return false; }
+        };
+        tbDataRekonsiliasi = new widget.Table();
+        tbDataRekonsiliasi.setModel(tabModeData);
+        tbDataRekonsiliasi.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tbDataRekonsiliasi.setDefaultRenderer(Object.class, new WarnaTable());
+        tbDataRekonsiliasi.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override public void mouseClicked(java.awt.event.MouseEvent evt){
+                tbDataRekonsiliasiMouseClicked(evt);
+            }
+        });
+        for(int kolom=0; kolom<5; kolom++){
+            TableColumn column = tbDataRekonsiliasi.getColumnModel().getColumn(kolom);
+            if(kolom==0){ column.setPreferredWidth(120); }
+            else if(kolom==1){ column.setPreferredWidth(280); }
+            else if(kolom==2){ column.setPreferredWidth(130); }
+            else if(kolom==3){ column.setPreferredWidth(140); }
+            else if(kolom==4){ column.setPreferredWidth(200); }
+        }
+        widget.ScrollPane ScrollDataRekonsiliasi = new widget.ScrollPane();
+        ScrollDataRekonsiliasi.setViewportView(tbDataRekonsiliasi);
+        internalFrameData.add(ScrollDataRekonsiliasi, java.awt.BorderLayout.CENTER);
+
+        // ----- Panel ringkasan (EAST) - pola identik "Data Triase" RMTriaseIGD -----
+        PanelAccor = new widget.PanelBiasa();
+        PanelAccor.setBackground(new java.awt.Color(255,255,255));
+        PanelAccor.setPreferredSize(new java.awt.Dimension(470,43));
+        PanelAccor.setLayout(new java.awt.BorderLayout(1,1));
+
+        ChkAccor = new widget.CekBox();
+        ChkAccor.setBackground(new java.awt.Color(255,250,250));
+        ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kiri.png")));
+        ChkAccor.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kiri.png")));
+        ChkAccor.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kanan.png")));
+        ChkAccor.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kanan.png")));
+        ChkAccor.setFocusable(false);
+        ChkAccor.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        ChkAccor.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        ChkAccor.setPreferredSize(new java.awt.Dimension(15,20));
+        ChkAccor.addActionListener((java.awt.event.ActionEvent evt) -> isMenu());
+        PanelAccor.add(ChkAccor, java.awt.BorderLayout.WEST);
+
+        FormMenu = new widget.PanelBiasa();
+        FormMenu.setBackground(new java.awt.Color(255,255,255));
+        FormMenu.setBorder(null);
+        FormMenu.setPreferredSize(new java.awt.Dimension(115,43));
+        FormMenu.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,4,9));
+
+        widget.Label lblPasienAccor = new widget.Label();
+        lblPasienAccor.setText("Pasien :");
+        FormMenu.add(lblPasienAccor);
+
+        TNoRM1 = new widget.Label();
+        TNoRM1.setPreferredSize(new java.awt.Dimension(70,23));
+        FormMenu.add(TNoRM1);
+
+        TPasien1 = new widget.Label();
+        TPasien1.setPreferredSize(new java.awt.Dimension(140,23));
+        FormMenu.add(TPasien1);
+
+        // [BARU] Cetak form RM 03-06A - pola identik BtnPrint1 RMTriaseIGD
+        // (icon-only, tanpa teks - lihat widget.Button, icon TIDAK
+        // disembunyikan krn tombol ini tidak punya teks).
+        BtnPrintRekon = new widget.Button();
+        BtnPrintRekon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item (copy).png")));
+        BtnPrintRekon.setMnemonic('T');
+        BtnPrintRekon.setToolTipText("Cetak Form Rekonsiliasi Obat (RM 03-06A)");
+        BtnPrintRekon.setPreferredSize(new java.awt.Dimension(28,23));
+        BtnPrintRekon.addActionListener((java.awt.event.ActionEvent evt) -> cetakFormRekonsiliasi());
+        FormMenu.add(BtnPrintRekon);
+
+        PanelAccor.add(FormMenu, java.awt.BorderLayout.NORTH);
+
+        ScrollHTML = new widget.ScrollPane();
+        ScrollHTML.setBorder(null);
+        ScrollHTML.setOpaque(true);
+        ScrollHTML.setPreferredSize(new java.awt.Dimension(470,16));
+
+        LoadHTML = new widget.editorpane();
+        LoadHTML.setBorder(null);
+        LoadHTML.setEditable(false);
+        javax.swing.text.html.HTMLEditorKit kitData = new javax.swing.text.html.HTMLEditorKit();
+        LoadHTML.setEditorKit(kitData);
+        javax.swing.text.html.StyleSheet styleSheetData = kitData.getStyleSheet();
+        styleSheetData.addRule(
+            "table{border-collapse:collapse;font:11px 'Segoe UI';color:#323232;}"+
+            ".isi td{border:1px solid #e2e7dd;padding:2px 5px;background:#ffffff;}"+
+            ".isi2 td{border:1px solid #e2e7dd;padding:2px 5px;background:#ffffff;font-size:10px;}"
+        );
+        LoadHTML.setDocument(kitData.createDefaultDocument());
+        ScrollHTML.setViewportView(LoadHTML);
+        PanelAccor.add(ScrollHTML, java.awt.BorderLayout.CENTER);
+
+        internalFrameData.add(PanelAccor, java.awt.BorderLayout.EAST);
+
+        TabPilihan.addTab("Data Rekonsiliasi Obat", internalFrameData);
+
+        // Default terlipat (ChkAccor belum pernah diklik) - konsisten pola
+        // "panel ringkasan tersembunyi sampai baris diklik" yg sudah dipakai
+        // di sesi2 RM lain.
+        ChkAccor.setSelected(false);
+        isMenu();
+    }
+
+    /**
+     * [Tab "Data Rekonsiliasi Obat"] Query header saja (TANPA nested-loop ke
+     * detail obat/konfirmasi spt RMCariRekonsiliasiObat.tampil() lama - itu
+     * yg bikin tabelnya berantakan). Detail dimuat terpisah per-klik lewat
+     * bangunRingkasanDataRekonsiliasi(). ps/rs LOKAL (bukan field kelas)
+     * spy tidak tabrakan dgn pemakaian ps/rs kelas di method lain.
+     */
+    private void tampilDataRekonsiliasi(){
+        java.sql.PreparedStatement psData=null;
+        java.sql.ResultSet rsData=null;
+        try {
+            Valid.tabelKosong(tabModeData);
+            psData=koneksi.prepareStatement(
+                "select rekonsiliasi_obat.no_rekonsiliasi,rekonsiliasi_obat.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,"+
+                "reg_periksa.umurdaftar,reg_periksa.sttsumur,rekonsiliasi_obat.tanggal_wawancara,rekonsiliasi_obat.rekonsiliasi_obat_saat,"+
+                "rekonsiliasi_obat.nip,petugas.nama from rekonsiliasi_obat "+
+                "inner join reg_periksa on reg_periksa.no_rawat=rekonsiliasi_obat.no_rawat "+
+                "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                "inner join petugas on rekonsiliasi_obat.nip=petugas.nip "+
+                "where rekonsiliasi_obat.tanggal_wawancara between ? and ? "+
+                (TCariData.getText().trim().equals("")?"":" and (rekonsiliasi_obat.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
+                "pasien.nm_pasien like ? or petugas.nip like ? or petugas.nama like ?) ")+
+                "order by rekonsiliasi_obat.tanggal_wawancara desc");
+            psData.setString(1, Valid.SetTgl(Tgl1Data.getSelectedItem()+"")+" 00:00:00");
+            psData.setString(2, Valid.SetTgl(Tgl2Data.getSelectedItem()+"")+" 23:59:59");
+            if(!TCariData.getText().trim().equals("")){
+                String kw = "%"+TCariData.getText().trim()+"%";
+                psData.setString(3,kw); psData.setString(4,kw); psData.setString(5,kw); psData.setString(6,kw); psData.setString(7,kw);
+            }
+            rsData=psData.executeQuery();
+            while(rsData.next()){
+                tabModeData.addRow(new Object[]{
+                    rsData.getString("no_rekonsiliasi"),
+                    rsData.getString("no_rawat")+" "+rsData.getString("no_rkm_medis")+" "+rsData.getString("nm_pasien")+" ("+rsData.getString("jk")+") ("+rsData.getString("umurdaftar")+rsData.getString("sttsumur")+")",
+                    rsData.getString("tanggal_wawancara"),
+                    rsData.getString("rekonsiliasi_obat_saat"),
+                    rsData.getString("nip")+" "+rsData.getString("nama")
+                });
+            }
+        } catch (Exception e) {
+            System.out.println("Notif tampilDataRekonsiliasi : "+e);
+        } finally {
+            try{ if(rsData!=null){ rsData.close(); } if(psData!=null){ psData.close(); } }catch(Exception e){}
+        }
+    }
+
+    /** Toggle lipat/buka panel ringkasan - pola identik isMenu() milik RMTriaseIGD.java. */
+    private void isMenu(){
+        if(ChkAccor.isSelected()){
+            ChkAccor.setVisible(false);
+            PanelAccor.setPreferredSize(new java.awt.Dimension(470, PanelAccor.getHeight()));
+            FormMenu.setVisible(true);
+            ScrollHTML.setVisible(true);
+            ChkAccor.setVisible(true);
+        }else{
+            ChkAccor.setVisible(false);
+            PanelAccor.setPreferredSize(new java.awt.Dimension(15, PanelAccor.getHeight()));
+            FormMenu.setVisible(false);
+            ScrollHTML.setVisible(false);
+            ChkAccor.setVisible(true);
+        }
+    }
+
+    private void tbDataRekonsiliasiMouseClicked(java.awt.event.MouseEvent evt){
+        if(tbDataRekonsiliasi.getSelectedRow()>-1){
+            ChkAccor.setSelected(true);
+            isMenu();
+            bangunRingkasanDataRekonsiliasi();
+        }
+    }
+
+    /** Kosongkan tampilan "-" utk nilai null/kosong di ringkasan HTML. */
+    private String kosongkeStrip(String s){
+        return (s==null || s.trim().equals(""))?"-":s;
+    }
+
+    /** Baris label:nilai ringkasan HTML - dilewati (string kosong) kalau nilainya kosong/null/"-". */
+    private String barisData(String label,String nilai){
+        if(nilai==null || nilai.trim().equals("") || nilai.trim().equals("-")){ return ""; }
+        return "<tr><td width='170'>"+label+"</td><td>: "+nilai+"</td></tr>";
+    }
+
+    private String judulBarisData(String judul){
+        return "<tr><td colspan='2' bgcolor='#FFFAF8'><b>"+judul+"</b></td></tr>";
+    }
+
+    /**
+     * [Tab "Data Rekonsiliasi Obat"] Ringkasan GABUNGAN semua tahap
+     * rekonsiliasi (Admisi/Transfer Antar Ruang/Pulang) milik 1 episode
+     * rawat (no_rawat) yang sama dengan baris diklik - BUKAN cuma 1 record
+     * yang diklik. Diminta user: kalau pasien baru punya 2 tahap terisi
+     * (mis. Admisi+Transfer), tampilkan 2 seksi saja; kalau ketiganya sudah
+     * terisi (termasuk Pulang), tampilkan 3 seksi; kalau baru 1, tampilkan
+     * 1 - JUMLAH SEKSI MENGIKUTI JUMLAH RECORD YANG BENAR-BENAR ADA di DB,
+     * tidak dipaksa selalu 3.
+     *
+     * Alur: (1) resolve no_rawat + identitas pasien dari no_rekonsiliasi yg
+     * diklik (ditampilkan SEKALI di atas, sama utk semua tahap krn 1 pasien/
+     * 1 episode rawat), (2) SELECT semua rekonsiliasi_obat milik no_rawat
+     * itu diurut sesuai tahapan (Admisi -> Transfer Antar Ruang -> Pindah
+     * Faskes Lain -> Pulang, lalu tanggal_wawancara), (3) render tiap
+     * record yang DITEMUKAN sbg seksi terpisah (header tahap + daftar obat
+     * + konfirmasi kalau ada) - loop nested query per tahap, pola sama
+     * (query lokal per iterasi) dgn RMCariRekonsiliasiObat.tampil() lama.
+     * Kolom penggunaan_obat_sebelum_admisi/sumber_informasi/
+     * sumber_informasi_lain BARU (migrasi sik_rekonsiliasi_obat_rm0306a.sql)
+     * dibungkus try/catch TERPISAH per tahap supaya kalau migrasi blm
+     * diimport, bagian LAIN ringkasan tetap tampil (bukan gagal total).
+     */
+    private void bangunRingkasanDataRekonsiliasi(){
+        String noRekonsiliasiKlik = tbDataRekonsiliasi.getValueAt(tbDataRekonsiliasi.getSelectedRow(),0).toString();
+        StringBuilder html = new StringBuilder();
+        html.append("<html><body><table class='isi' width='100%' cellspacing='0'>");
+
+        String noRawat = null;
+        java.sql.PreparedStatement psId=null; java.sql.ResultSet rsId=null;
+        try {
+            psId = koneksi.prepareStatement(
+                "select rekonsiliasi_obat.no_rawat, reg_periksa.no_rkm_medis, pasien.nm_pasien, pasien.jk, "+
+                "reg_periksa.umurdaftar, reg_periksa.sttsumur "+
+                "from rekonsiliasi_obat "+
+                "inner join reg_periksa on reg_periksa.no_rawat=rekonsiliasi_obat.no_rawat "+
+                "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                "where rekonsiliasi_obat.no_rekonsiliasi=?");
+            psId.setString(1, noRekonsiliasiKlik);
+            rsId = psId.executeQuery();
+            if(rsId.next()){
+                noRawat = rsId.getString("no_rawat");
+                TNoRM1.setText(rsId.getString("no_rkm_medis"));
+                TPasien1.setText(rsId.getString("nm_pasien"));
+
+                html.append(judulBarisData("Identitas Pasien"));
+                html.append(barisData("No.Rawat", noRawat));
+                html.append(barisData("No.RM / Nama", rsId.getString("no_rkm_medis")+" / "+rsId.getString("nm_pasien")+" ("+rsId.getString("jk")+", "+rsId.getString("umurdaftar")+rsId.getString("sttsumur")+")"));
+            }
+        } catch (Exception e) {
+            System.out.println("Notif ringkasan identitas : "+e);
+        } finally {
+            try{ if(rsId!=null){ rsId.close(); } if(psId!=null){ psId.close(); } }catch(Exception e){}
+        }
+
+        if(noRawat != null){
+            java.sql.PreparedStatement psH=null; java.sql.ResultSet rsH=null;
+            try {
+                psH = koneksi.prepareStatement(
+                    "select rekonsiliasi_obat.*, petugas.nama as nama_petugas "+
+                    "from rekonsiliasi_obat "+
+                    "inner join petugas on rekonsiliasi_obat.nip=petugas.nip "+
+                    "where rekonsiliasi_obat.no_rawat=? "+
+                    "order by field(rekonsiliasi_obat.rekonsiliasi_obat_saat,'Admisi','Transfer Antar Ruang','Pindah Faskes Lain','Pulang'), rekonsiliasi_obat.tanggal_wawancara");
+                psH.setString(1, noRawat);
+                rsH = psH.executeQuery();
+                while(rsH.next()){
+                    String noRekonsiliasiTahap = rsH.getString("no_rekonsiliasi");
+
+                    html.append(judulBarisData("Rekonsiliasi Saat: "+kosongkeStrip(rsH.getString("rekonsiliasi_obat_saat"))));
+                    html.append(barisData("No.Rekonsiliasi", noRekonsiliasiTahap));
+                    html.append(barisData("Tanggal Wawancara", rsH.getString("tanggal_wawancara")));
+                    html.append(barisData("Apoteker", rsH.getString("nip")+" "+rsH.getString("nama_petugas")));
+
+                    try {
+                        html.append(barisData("Penggunaan Obat Sebelum Admisi", rsH.getString("penggunaan_obat_sebelum_admisi")));
+                        html.append(barisData("Sumber Informasi", rsH.getString("sumber_informasi")));
+                        html.append(barisData("Keterangan Sumber Lain", rsH.getString("sumber_informasi_lain")));
+                    } catch (Exception eKolomBaru) {
+                        // Kolom RM 03-06A blm ada (migrasi blm diimport) - dilewati saja.
+                    }
+
+                    html.append(barisData("Alergi Obat", rsH.getString("alergi_obat")));
+                    html.append(barisData("Manifestasi Alergi", rsH.getString("manifestasi_alergi")));
+                    html.append(barisData("Dampak Alergi", rsH.getString("dampak_alergi")));
+
+                    html.append("<tr><td colspan='2'><table class='isi2' width='100%' cellspacing='0'>");
+                    html.append("<tr><td><b>Nama Obat</b></td><td><b>Dosis</b></td><td><b>Frekuensi</b></td><td><b>Cara Pemberian</b></td><td><b>Tindak Lanjut</b></td><td><b>Perubahan Aturan Pakai</b></td></tr>");
+                    java.sql.PreparedStatement psO=null; java.sql.ResultSet rsO=null;
+                    try {
+                        psO = koneksi.prepareStatement("select * from rekonsiliasi_obat_detail_obat where no_rekonsiliasi=?");
+                        psO.setString(1, noRekonsiliasiTahap);
+                        rsO = psO.executeQuery();
+                        boolean adaObat=false;
+                        while(rsO.next()){
+                            adaObat=true;
+                            html.append("<tr><td>").append(kosongkeStrip(rsO.getString("nama_obat"))).append("</td>")
+                                .append("<td>").append(kosongkeStrip(rsO.getString("dosis_obat"))).append("</td>")
+                                .append("<td>").append(kosongkeStrip(rsO.getString("frekuensi"))).append("</td>")
+                                .append("<td>").append(kosongkeStrip(rsO.getString("cara_pemberian"))).append("</td>")
+                                .append("<td>").append(kosongkeStrip(rsO.getString("tindak_lanjut"))).append("</td>")
+                                .append("<td>").append(kosongkeStrip(rsO.getString("perubahan_aturan_pakai"))).append("</td></tr>");
+                        }
+                        if(!adaObat){
+                            html.append("<tr><td colspan='6'><i>Belum ada data obat</i></td></tr>");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Notif ringkasan obat : "+e);
+                    } finally {
+                        try{ if(rsO!=null){ rsO.close(); } if(psO!=null){ psO.close(); } }catch(Exception e){}
+                    }
+                    html.append("</table></td></tr>");
+
+                    java.sql.PreparedStatement psK=null; java.sql.ResultSet rsK=null;
+                    try {
+                        psK = koneksi.prepareStatement(
+                            "select rekonsiliasi_obat_konfirmasi.*, petugas.nama from rekonsiliasi_obat_konfirmasi "+
+                            "inner join petugas on rekonsiliasi_obat_konfirmasi.nip=petugas.nip "+
+                            "where rekonsiliasi_obat_konfirmasi.no_rekonsiliasi=?");
+                        psK.setString(1, noRekonsiliasiTahap);
+                        rsK = psK.executeQuery();
+                        if(rsK.next()){
+                            html.append(barisData("Diterima Farmasi", rsK.getString("diterima_farmasi")));
+                            html.append(barisData("Dikonfirmasi Apoteker", rsK.getString("dikonfirmasi_apoteker")));
+                            html.append(barisData("Petugas Farmasi/Apoteker", rsK.getString("nip")+" "+rsK.getString("nama")));
+                            html.append(barisData("Diserahkan Ke Pasien", rsK.getString("diserahkan_pasien")));
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Notif ringkasan konfirmasi : "+e);
+                    } finally {
+                        try{ if(rsK!=null){ rsK.close(); } if(psK!=null){ psK.close(); } }catch(Exception e){}
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notif ringkasan tahap : "+e);
+            } finally {
+                try{ if(rsH!=null){ rsH.close(); } if(psH!=null){ psH.close(); } }catch(Exception e){}
+            }
+        }
+
+        html.append("</table></body></html>");
+        LoadHTML.setText(html.toString());
+        LoadHTML.setCaretPosition(0);
+    }
+
+    /** Baca kolom yg mungkin blm ada (migrasi RM 03-06A blm diimport) - null kalau gagal, bukan exception. */
+    private String safeGetString(java.sql.ResultSet rs, String kolom){
+        try { return rs.getString(kolom); } catch (Exception e) { return null; }
+    }
+
+    /**
+     * [BARU] Tombol cetak - resolve episode rawat (no_rawat) dari baris yg
+     * diklik, cari SEMUA tahap (Admisi/Transfer Antar Ruang/Pulang) yg
+     * punya record utk episode itu, lalu tampilkan dialog checkbox supaya
+     * user PILIH tahap mana yg mau dicetak (bisa lebih dari satu - tiap
+     * tahap = 1 halaman/1 jendela JasperViewer terpisah, krn 1 fill Jasper
+     * = 1 parameter set = 1 tahap, lihat cetakSatuTahapRekonsiliasi()).
+     * Checkbox tahap yg TIDAK punya record didisable (bukan disembunyikan)
+     * spy user tetap lihat ke-3 opsi standar tapi jelas mana yg tersedia.
+     * Default tercentang: tahap dari baris yg diklik saja.
+     */
+    private void cetakFormRekonsiliasi(){
+        if(tbDataRekonsiliasi.getSelectedRow()<0){
+            JOptionPane.showMessageDialog(null,"Pilih dulu baris data yang mau dicetak.");
+            return;
+        }
+        String noRekonsiliasiKlik = tbDataRekonsiliasi.getValueAt(tbDataRekonsiliasi.getSelectedRow(),0).toString();
+
+        String noRawat = null;
+        java.sql.PreparedStatement psR=null; java.sql.ResultSet rsR=null;
+        try {
+            psR = koneksi.prepareStatement("select no_rawat from rekonsiliasi_obat where no_rekonsiliasi=?");
+            psR.setString(1, noRekonsiliasiKlik);
+            rsR = psR.executeQuery();
+            if(rsR.next()){ noRawat = rsR.getString("no_rawat"); }
+        } catch (Exception e) {
+            System.out.println("Notif resolve no_rawat cetak : "+e);
+        } finally {
+            try{ if(rsR!=null){ rsR.close(); } if(psR!=null){ psR.close(); } }catch(Exception e){}
+        }
+        if(noRawat==null){
+            JOptionPane.showMessageDialog(null,"Data tidak ditemukan.");
+            return;
+        }
+
+        String[] urutanTahap = {"Admisi","Transfer Antar Ruang","Pulang"};
+        java.util.Map<String,String> tahapKeNoRekon = new java.util.LinkedHashMap<>();
+        java.sql.PreparedStatement psT=null; java.sql.ResultSet rsT=null;
+        try {
+            psT = koneksi.prepareStatement("select no_rekonsiliasi, rekonsiliasi_obat_saat from rekonsiliasi_obat where no_rawat=?");
+            psT.setString(1, noRawat);
+            rsT = psT.executeQuery();
+            while(rsT.next()){
+                tahapKeNoRekon.put(rsT.getString("rekonsiliasi_obat_saat"), rsT.getString("no_rekonsiliasi"));
+            }
+        } catch (Exception e) {
+            System.out.println("Notif daftar tahap cetak : "+e);
+        } finally {
+            try{ if(rsT!=null){ rsT.close(); } if(psT!=null){ psT.close(); } }catch(Exception e){}
+        }
+
+        javax.swing.JPanel panelPilihan = new javax.swing.JPanel(new java.awt.GridLayout(0,1,4,4));
+        panelPilihan.add(new javax.swing.JLabel("Pilih tahap rekonsiliasi yang akan dicetak:"));
+        javax.swing.JCheckBox[] chkTahap = new javax.swing.JCheckBox[urutanTahap.length];
+        for(int i=0;i<urutanTahap.length;i++){
+            chkTahap[i] = new javax.swing.JCheckBox(urutanTahap[i]);
+            boolean ada = tahapKeNoRekon.containsKey(urutanTahap[i]);
+            chkTahap[i].setEnabled(ada);
+            chkTahap[i].setSelected(ada && tahapKeNoRekon.get(urutanTahap[i]).equals(noRekonsiliasiKlik));
+            panelPilihan.add(chkTahap[i]);
+        }
+
+        int pilih = JOptionPane.showConfirmDialog(null, panelPilihan, "Cetak Form Rekonsiliasi Obat (RM 03-06A)", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if(pilih != JOptionPane.OK_OPTION){ return; }
+
+        boolean adaDipilih=false;
+        for(int i=0;i<urutanTahap.length;i++){
+            if(chkTahap[i].isSelected()){
+                adaDipilih=true;
+                cetakSatuTahapRekonsiliasi(tahapKeNoRekon.get(urutanTahap[i]));
+            }
+        }
+        if(!adaDipilih){
+            JOptionPane.showMessageDialog(null,"Tidak ada tahap yang dipilih untuk dicetak.");
+        }
+    }
+
+    /**
+     * [BARU] Cetak 1 tahap (1 halaman) form RM 03-06A
+     * (rptRekonsiliasiObatForm.jasper) - replika layout formulir fisik RSUD
+     * Demang Sepulau Raya. Identitas pasien/checkbox/apoteker dikirim
+     * lewat parameter Jasper (1 nilai per print, di-query manual di sini);
+     * dataset utama (daftar obat) di-query LANGSUNG oleh Valid.MyReportqry
+     * sendiri (pola sama BtnPrintActionPerformed di RMCariRekonsiliasiObat.java
+     * - qry string biasa, BUKAN PreparedStatement, krn MyReportqry cuma
+     * terima 1 string query lalu dieksekusinya sendiri).
+     * TTD Apoteker pakai QR-code tanda tangan elektronik (parameter
+     * "finger") - pola PERSIS sama dgn BtnPrint1ActionPerformed RMTriaseIGD.java
+     * (SHA1 sidik jari dari tabel sidikjari via pegawai.nik, fallback ke
+     * NIP kalau blm rekam sidik jari). petugas.nip di app ini = pegawai.nik
+     * (nilai sama, tabel beda - dicek langsung ke DB sebelum implementasi).
+     */
+    private void cetakSatuTahapRekonsiliasi(String noRekonsiliasi){
+        if(noRekonsiliasi==null){ return; }
+        java.sql.PreparedStatement psH=null; java.sql.ResultSet rsH=null;
+        try {
+            psH = koneksi.prepareStatement(
+                "select rekonsiliasi_obat.*, pasien.no_rkm_medis, pasien.nm_pasien, pasien.tgl_lahir, petugas.nama as nama_petugas "+
+                "from rekonsiliasi_obat "+
+                "inner join reg_periksa on reg_periksa.no_rawat=rekonsiliasi_obat.no_rawat "+
+                "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                "inner join petugas on rekonsiliasi_obat.nip=petugas.nip "+
+                "where rekonsiliasi_obat.no_rekonsiliasi=?");
+            psH.setString(1, noRekonsiliasi);
+            rsH = psH.executeQuery();
+            if(!rsH.next()){
+                JOptionPane.showMessageDialog(null,"Data tidak ditemukan.");
+                return;
+            }
+
+            String nipApoteker = rsH.getString("nip");
+            String namaApoteker = rsH.getString("nama_petugas");
+            String fingerHash = Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?", nipApoteker);
+
+            java.util.Map<String,Object> param = new java.util.HashMap<>();
+            param.put("namars",akses.getnamars());
+            param.put("alamatrs",akses.getalamatrs());
+            param.put("kotars",akses.getkabupatenrs());
+            param.put("propinsirs",akses.getpropinsirs());
+            param.put("kontakrs",akses.getkontakrs());
+            param.put("emailrs",akses.getemailrs());
+            param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+            param.put("pNoRM", rsH.getString("no_rkm_medis"));
+            param.put("pNamaPasien", rsH.getString("nm_pasien"));
+            param.put("pTglLahir", rsH.getString("tgl_lahir"));
+            param.put("pPenggunaanObatSebelumAdmisi", safeGetString(rsH,"penggunaan_obat_sebelum_admisi"));
+            param.put("pRekonsiliasiSaat", rsH.getString("rekonsiliasi_obat_saat"));
+            param.put("pTanggalWawancara", rsH.getString("tanggal_wawancara"));
+            param.put("pSumberInformasi", safeGetString(rsH,"sumber_informasi"));
+            param.put("pSumberInformasiLain", safeGetString(rsH,"sumber_informasi_lain"));
+            param.put("pApotekerNama", namaApoteker);
+            param.put("pApotekerNip", nipApoteker);
+            param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+
+                "\nDitandatangani secara elektronik oleh "+namaApoteker+
+                "\nID "+((fingerHash==null||fingerHash.isEmpty())?nipApoteker:fingerHash)+
+                "\n"+rsH.getString("tanggal_wawancara"));
+
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            Valid.MyReportqry("rptRekonsiliasiObatForm.jasper","report","::[ Form Rekonsiliasi Obat - RM 03-06A ]::",
+                "select nama_obat, dosis_obat, frekuensi, cara_pemberian, tindak_lanjut, perubahan_aturan_pakai "+
+                "from rekonsiliasi_obat_detail_obat where no_rekonsiliasi='"+noRekonsiliasi+"'", param);
+            this.setCursor(Cursor.getDefaultCursor());
+        } catch (Exception e) {
+            this.setCursor(Cursor.getDefaultCursor());
+            System.out.println("Notif cetak form rekonsiliasi : "+e);
+            JOptionPane.showMessageDialog(null,"Gagal cetak : "+e);
+        } finally {
+            try{ if(rsH!=null){ rsH.close(); } if(psH!=null){ psH.close(); } }catch(Exception e){}
+        }
+    }
+
     public void emptTeks() {
         Tanggal.setDate(new Date());
         AlergiObat.setText("");
         ManifestasiAlergi.setText("");
         DampakAlergi.setSelectedIndex(0);
-        
+
+        // [RM 03-06A] reset field baru - lihat initRekonsiliasiTambahan()
+        bgObatSebelumAdmisi.clearSelection();
+        bgSumberInformasi.clearSelection();
+        TSumberLainKet.setText("");
+
         autoNomor();
         TNoRekonsialiasi.requestFocus();
     }
@@ -1131,8 +1985,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         NamaObat.setText("");
         DosisObat.setText("");
         Frekuensi.setText("");
-        PemberianTerakhir.setText("");
-        AturanPakai.setText("");
         PerubahanAturanPakai.setText("");
         TindakLanjut.setSelectedIndex(0);
         NamaObat.requestFocus();

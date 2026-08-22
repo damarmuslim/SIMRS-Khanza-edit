@@ -38,6 +38,7 @@ public class GrafikKeslingLimbahDomestikPertanggal extends javax.swing.JDialog {
     public GrafikKeslingLimbahDomestikPertanggal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

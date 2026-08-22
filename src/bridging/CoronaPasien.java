@@ -68,6 +68,7 @@ public class CoronaPasien extends javax.swing.JDialog {
     public CoronaPasien(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.KTP/Paspor","No.RM","Nama Pasien","Inisial","Kode JK","Jenis Kelamin","Tgl.Lahir","E-mail","No.Telp",

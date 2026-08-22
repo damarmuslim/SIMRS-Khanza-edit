@@ -45,6 +45,7 @@ public final class ZISPengeluaranPenerimaDankes extends javax.swing.JDialog {
     public ZISPengeluaranPenerimaDankes(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,2);
         setSize(628,674);
 

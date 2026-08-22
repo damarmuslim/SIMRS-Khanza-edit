@@ -67,6 +67,7 @@ public final class RMPenilaianPreOperasi extends javax.swing.JDialog {
     public RMPenilaianPreOperasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","Kode Dokter","Nama Dokter","Tanggal","Ringkasan Klinik","Pemeriksaan Fisik",

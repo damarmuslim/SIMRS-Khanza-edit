@@ -65,6 +65,7 @@ public class DlgPermintaanKonsultasiPerawat extends javax.swing.JDialog {
     public DlgPermintaanKonsultasiPerawat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Permintaan","No.Rawat","No.RM","Nama Pasien","J.K.","Umur","No.Telp","Cara Bayar","Tanggal Konsultasi",

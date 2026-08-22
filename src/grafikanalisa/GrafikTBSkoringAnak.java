@@ -38,6 +38,7 @@ public class GrafikTBSkoringAnak extends javax.swing.JDialog {
     public GrafikTBSkoringAnak(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

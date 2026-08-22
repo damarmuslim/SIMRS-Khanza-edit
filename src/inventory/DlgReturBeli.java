@@ -57,6 +57,7 @@ public class DlgReturBeli extends javax.swing.JDialog {
     public DlgReturBeli(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         try {
             aktifkanbatch = koneksiDB.AKTIFKANBATCHOBAT();

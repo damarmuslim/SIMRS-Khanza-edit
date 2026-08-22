@@ -38,6 +38,7 @@ public class GrafikTBSumberObat extends javax.swing.JDialog {
     public GrafikTBSumberObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

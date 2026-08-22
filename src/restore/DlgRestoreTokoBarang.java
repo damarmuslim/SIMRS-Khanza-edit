@@ -50,6 +50,7 @@ public final class DlgRestoreTokoBarang extends javax.swing.JDialog {
     public DlgRestoreTokoBarang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row = {
             "P","Kode Barang","Nama Barang","Satuan","Jenis","Stok","H. Dasar","H. Beli","H. Distributor","H. Grosir","H. Retail"

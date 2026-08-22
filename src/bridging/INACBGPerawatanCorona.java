@@ -40,6 +40,7 @@ public class INACBGPerawatanCorona extends javax.swing.JDialog {
     public INACBGPerawatanCorona(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Rawat","No.RM","Nama Pasien","Tgl.Masuk","Pemulasaran Jenazah","Kantong Jenazah","Peti Jenazah","Plastik Erat",

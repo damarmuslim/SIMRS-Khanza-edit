@@ -49,6 +49,7 @@ public class DlgCariBookingMCUPerusahaan extends javax.swing.JDialog {
     public DlgCariBookingMCUPerusahaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "P","No.RM","Nama Pasien","JK","Umur","No.HP","No.KTP","No.Pegawai","No.Booking","Tgl.Booking","Jam Booking","Status MCU","Kode Instansi","Nama Instansi",

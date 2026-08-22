@@ -55,6 +55,7 @@ public class GrafikPengajuanAsetDepartemen extends javax.swing.JDialog {
     public GrafikPengajuanAsetDepartemen(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Departemen","Jumlah Pengajuan","Persentase Jumlah(%)","Nilai Pengajuan","Persentase Nilai(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

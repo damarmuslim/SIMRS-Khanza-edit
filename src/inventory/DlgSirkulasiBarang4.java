@@ -61,6 +61,7 @@ public class DlgSirkulasiBarang4 extends javax.swing.JDialog {
     public DlgSirkulasiBarang4(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
               "Kode Barang","Nama Barang","Satuan","Tgl.Opname","Stok Awal","Pengadaan","Penerimaan","Penjualan",

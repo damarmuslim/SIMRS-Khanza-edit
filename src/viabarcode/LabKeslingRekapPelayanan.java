@@ -48,6 +48,7 @@ public class LabKeslingRekapPelayanan extends javax.swing.JDialog {
     public LabKeslingRekapPelayanan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabModeRekapPelayanan=new DefaultTableModel(null,new Object[]{
                 "Waktu Diterima","No.Permintaan","No.Pelanggan","Nama Pelanggan","Alamat Pelanggan","Kegiatan Usaha","Personal Dihubungi","Kontak Pelanggan",

@@ -49,6 +49,7 @@ public class TokoCariPembelian extends javax.swing.JDialog {
     public TokoCariPembelian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Tgl.Beli","No.Faktur","Barang",
                     "Satuan","Jml","Harga(Rp)","SubTotal(Rp)",

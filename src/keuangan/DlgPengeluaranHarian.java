@@ -75,6 +75,7 @@ public final class DlgPengeluaranHarian extends javax.swing.JDialog {
     public DlgPengeluaranHarian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         DlgBayarMandiri.setSize(562,193);
 
         Object[] row={"Nomor","Tanggal","Kategori","Petugas","Pengeluaran","Keterangan","Kode","NIP"};

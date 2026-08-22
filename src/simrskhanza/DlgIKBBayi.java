@@ -73,6 +73,7 @@ public class DlgIKBBayi extends javax.swing.JDialog {
     public DlgIKBBayi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.RM","Nama Anak/Bayi","J.K","Tgl.Lahir","Jam Lahir",

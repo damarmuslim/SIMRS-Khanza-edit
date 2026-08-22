@@ -63,6 +63,7 @@ public final class RMPenilaianLanjutanRisikoJatuhLansia extends javax.swing.JDia
     public RMPenilaianLanjutanRisikoJatuhLansia(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(628,674);
 

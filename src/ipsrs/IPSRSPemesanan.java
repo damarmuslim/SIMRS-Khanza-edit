@@ -66,6 +66,7 @@ public class IPSRSPemesanan extends javax.swing.JDialog {
     public IPSRSPemesanan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Jml","Kode Barang","Nama Barang","Satuan","G","Hrg.Beli(Rp)","Subtotal Beli(Rp)","Disk(%)","Diskon(Rp)","Ttl.Beli"};
         tabMode=new DefaultTableModel(null,judul){

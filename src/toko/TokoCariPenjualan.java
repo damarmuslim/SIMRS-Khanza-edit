@@ -62,6 +62,7 @@ public class TokoCariPenjualan extends javax.swing.JDialog {
     public TokoCariPenjualan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"Tanggal","No.Nota","Petugas","Member","Catatan","Jns.Jual","Cara Bayar"};
         tabMode=new DefaultTableModel(null,row){

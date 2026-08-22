@@ -109,6 +109,7 @@ public class DlgBilingParsialRalan extends javax.swing.JDialog {
     public DlgBilingParsialRalan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));
         kdptg.setDocument(new batasInput((byte)20).getKata(kdptg));

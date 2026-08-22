@@ -196,6 +196,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
     public DlgBilingRalan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabModeRwJlDr=new DefaultTableModel(null,new Object[]{
             "Pilih","Keterangan","Tagihan/Tindakan/Terapi","","Biaya","Jml","Tambahan","Total Biaya",""}){

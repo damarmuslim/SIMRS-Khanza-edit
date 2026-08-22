@@ -66,6 +66,7 @@ public class SKPPenilaianPegawai extends javax.swing.JDialog {
     public SKPPenilaianPegawai(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Kode Kriteria","Kriteria","Ya","Tidak"};
         tabMode=new DefaultTableModel(null,judul){

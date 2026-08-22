@@ -51,6 +51,7 @@ public final class DlgRestoreObat extends javax.swing.JDialog {
     public DlgRestoreObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row = {
             "P", "Kode Barang", "Nama Barang", "Kode Satuan", "Nama Satuan", "Kandungan",

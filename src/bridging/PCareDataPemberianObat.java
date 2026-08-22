@@ -62,6 +62,7 @@ public class PCareDataPemberianObat extends javax.swing.JDialog {
     public PCareDataPemberianObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Tgl.Beri","Jam Beri","No.Kunjungan","No.Rawat","No.R.M.",

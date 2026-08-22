@@ -67,6 +67,7 @@ public final class SuratPenolakanResusitasi extends javax.swing.JDialog {
     public SuratPenolakanResusitasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Penolakan","No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","Tanggal","Pembuat Pernyataan","Alamat Pembuat Pernyataan",

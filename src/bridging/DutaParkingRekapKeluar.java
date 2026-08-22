@@ -36,6 +36,7 @@ public class DutaParkingRekapKeluar extends javax.swing.JDialog {
     public DutaParkingRekapKeluar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
         HTMLEditorKit kit = new HTMLEditorKit();
         LoadHTML.setEditable(true);

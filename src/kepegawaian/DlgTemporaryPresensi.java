@@ -54,6 +54,7 @@ public final class DlgTemporaryPresensi extends javax.swing.JDialog {
     public DlgTemporaryPresensi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         Object[] row={"P","Id","NIK","Nama","Shift","Jam Datang","Saat Ini","Status","Keterlambatan","Durasi","Photo"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){

@@ -47,6 +47,7 @@ public class DapurVerifikasiPenerimaan extends javax.swing.JDialog {
     public DapurVerifikasiPenerimaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         NoFaktur.setDocument(new batasInput((byte)25).getKata(NoFaktur));
         kdsup.setDocument(new batasInput((byte)5).getKata(kdsup));

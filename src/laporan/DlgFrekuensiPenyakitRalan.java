@@ -55,6 +55,7 @@ public class DlgFrekuensiPenyakitRalan extends javax.swing.JDialog {
     public DlgFrekuensiPenyakitRalan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode","Nama Penyakit","Diagnosa Lain","Lk2(Hidup)","Pr(Hidup)","Lk2(Mati)","Pr(Mati)","Jumlah"};
         tabMode=new DefaultTableModel(null,row){

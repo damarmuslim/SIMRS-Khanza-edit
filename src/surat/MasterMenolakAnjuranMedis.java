@@ -52,6 +52,7 @@ public class MasterMenolakAnjuranMedis extends javax.swing.JDialog {
     public MasterMenolakAnjuranMedis(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode","Penolakan Anjuran"};

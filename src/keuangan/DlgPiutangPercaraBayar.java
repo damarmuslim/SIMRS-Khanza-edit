@@ -45,6 +45,7 @@ public class DlgPiutangPercaraBayar extends javax.swing.JDialog {
     public DlgPiutangPercaraBayar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Cara Bayar","Tanggal Piutang","Total Piutang","Sisa Piutang","Jatuh Tempo"};
         tabMode=new DefaultTableModel(null,row){

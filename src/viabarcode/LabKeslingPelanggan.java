@@ -40,6 +40,7 @@ public class LabKeslingPelanggan extends javax.swing.JDialog {
     public LabKeslingPelanggan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.Pelanggan","Nama Pelanggan","Alamat Pelanggan","Kota","No.Telp","Kegiatan Usaha","Personal Yang Dihubungi"};
         tabMode=new DefaultTableModel(null,row){

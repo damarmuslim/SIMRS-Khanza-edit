@@ -55,6 +55,7 @@ public class InventoryStokAkhirFarmasiPerTanggal extends javax.swing.JDialog {
     public InventoryStokAkhirFarmasiPerTanggal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tbDokter.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

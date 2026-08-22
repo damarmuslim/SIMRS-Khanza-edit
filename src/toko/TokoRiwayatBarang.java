@@ -42,6 +42,7 @@ public class TokoRiwayatBarang extends javax.swing.JDialog {
     public TokoRiwayatBarang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
             "Barang","Awal","Masuk","Keluar","Akhir","Posisi","Tanggal","Jam","Petugas","Status"

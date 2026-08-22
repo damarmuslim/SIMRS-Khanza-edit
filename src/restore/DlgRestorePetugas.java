@@ -51,6 +51,7 @@ public final class DlgRestorePetugas extends javax.swing.JDialog {
     public DlgRestorePetugas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row = {
             "P", "NIP","Nama Petugas","J.K.","Tmp.Lahir","Tgl.Lahir","G.D.","Agama","Stts.Nikah","Alamat","Jabatan","No.Telp"

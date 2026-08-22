@@ -53,6 +53,7 @@ public class LabKeslingRekapPembayaran extends javax.swing.JDialog {
     public LabKeslingRekapPembayaran(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabModePembayaran=new DefaultTableModel(null,new Object[]{
                 "Tanggal Bayar","No.Bayar/Nota","Dibayar Oleh","No.Permintaan","No.Pelanggan","Nama Pelanggan","Kode Sampel","Nama Sampel","Pembayaran"

@@ -46,6 +46,7 @@ public class DlgRekapObatPasien extends javax.swing.JDialog {
     public DlgRekapObatPasien(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"No.","Tanggal","No.RM","Nama Pasien","Jml","Nama Obat","Biaya Obat","Embalase","Tuslah","Total"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

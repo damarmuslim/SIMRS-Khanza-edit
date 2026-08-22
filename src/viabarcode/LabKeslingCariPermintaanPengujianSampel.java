@@ -51,6 +51,7 @@ public class LabKeslingCariPermintaanPengujianSampel extends javax.swing.JDialog
     public LabKeslingCariPermintaanPengujianSampel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabModePermintaan=new DefaultTableModel(null,new Object[]{
                 "Waktu Diterima","No.Permintaan","No.Pelanggan","Nama Pelanggan","Alamat Pelanggan","Kegiatan Usaha","Personal Dihubungi","Kontak Pelanggan",

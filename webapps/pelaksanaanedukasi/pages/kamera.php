@@ -65,12 +65,13 @@
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <style type="text/css">
         #results { padding: 0px; background:#EEFFEE; width: 490; height: 390 }
+        #ttdCanvas { border:1px solid #999; background:#fff; touch-action:none; }
     </style>
 </head>
 <body>
     <div class="container">
         <h5 class="text-dark"><center><button class="btn btn-secondary" onclick="window.location.reload();">Refresh</button><br/><br/>PENGAMBILAN BUKTI PELAKSANAAN INFORMASI & EDUKASI <br>NO.RAWAT <?=$norawat;?></center></h5>
-        <h7 class="text-dark"><center>Tanggal <?=$tanggaledukasi;?></center></h7><br/>
+        <h7 class="text-dark"><center>Tanggal <?=$tanggaledukasi;?> - Peran: <b>PASIEN/KELUARGA</b> (1/2)</center></h7><br/>
         <form method="POST" action="pages/storeImage.php" onsubmit="return validasiIsi();" enctype=multipart/form-data>
             <input type="hidden" name="tanggal" value="<?=$tanggal;?>">
             <input type="hidden" name="norawat" value="<?=$norawat;?>">
@@ -116,7 +117,23 @@
             <br/>
             <br/>
             <h7 class="text-dark"><center>Yang Membuat Pernyataan</center></h7>
+            <input type="hidden" name="jenis_bukti" id="TxtJenisBukti" value="Tanda Tangan">
+            <h7 class="text-dark"><center>Bukti Pelaksanaan - pilih Tanda Tangan atau Foto</center></h7>
             <div class="row">
+                <div class="col-md-12 text-center">
+                    <button type="button" class="btn btn-outline-primary" onclick="modeTtd()">Tanda Tangan</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="modeFoto()">Ambil Foto</button>
+                    <br/><br/>
+                </div>
+            </div>
+            <div class="row" id="blokTtd">
+                <div class="col-md-12 text-center">
+                    <canvas id="ttdCanvas" width="490" height="390"></canvas><br/>
+                    <button type="button" class="btn btn-secondary" onclick="clearCanvas()">Hapus</button>
+                    <button type="button" class="btn btn-warning" onclick="take_signature()">Gunakan Tanda Tangan Ini</button>
+                </div>
+            </div>
+            <div class="row" id="blokFoto" style="display:none;">
                 <div class="col-md-6">
                     <div id="my_camera"></div>
                     <input type="hidden" name="image" class="image-tag" onkeydown="setDefault(this, document.getElementById('MsgIsi1'));" id="TxtIsi1">
@@ -128,8 +145,11 @@
                 <div class="col-md-12 text-center">
                     <br>
                     <input type="button" class="btn btn-warning" value="Ya, Saya sebagai pembuat pernyataan" onClick="take_snapshot()">
-                    <button class="btn btn-danger">Simpan</button>
                 </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <br>
+                <button class="btn btn-danger">Simpan</button>
             </div>
         </form>
     </div>
@@ -141,14 +161,47 @@
             image_format: 'jpeg',
             jpeg_quality: 90
         });
-
         Webcam.attach( '#my_camera' );
 
         function take_snapshot() {
+            document.getElementById('TxtJenisBukti').value = 'Foto';
             Webcam.snap( function(data_uri) {
                 $(".image-tag").val(data_uri);
                 document.getElementById('results').innerHTML = '<img src="'+data_uri+'"/>';
             } );
+        }
+
+        function modeFoto(){
+            document.getElementById('blokFoto').style.display = '';
+            document.getElementById('blokTtd').style.display = 'none';
+            document.getElementById('TxtJenisBukti').value = 'Foto';
+        }
+        function modeTtd(){
+            document.getElementById('blokFoto').style.display = 'none';
+            document.getElementById('blokTtd').style.display = '';
+            document.getElementById('TxtJenisBukti').value = 'Tanda Tangan';
+        }
+
+        var canvas = document.getElementById('ttdCanvas');
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+        var drawing = false;
+        function posCanvas(e){
+            var r = canvas.getBoundingClientRect();
+            var p = e.touches ? e.touches[0] : e;
+            return { x: p.clientX - r.left, y: p.clientY - r.top };
+        }
+        function startDraw(e){ drawing = true; var p = posCanvas(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); }
+        function moveDraw(e){ if(!drawing) return; var p = posCanvas(e); ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); }
+        function endDraw(){ drawing = false; }
+        canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', moveDraw);
+        canvas.addEventListener('mouseup', endDraw); canvas.addEventListener('mouseleave', endDraw);
+        canvas.addEventListener('touchstart', startDraw); canvas.addEventListener('touchmove', moveDraw); canvas.addEventListener('touchend', endDraw);
+        function clearCanvas(){ ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height); }
+        function take_signature() {
+            $(".image-tag").val(canvas.toDataURL('image/jpeg', 0.92));
+            document.getElementById('TxtJenisBukti').value = 'Tanda Tangan';
         }
     </script>
 </body>

@@ -51,6 +51,7 @@ public class UTDStokDarah extends javax.swing.JDialog {
     public UTDStokDarah(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={
             "No.Kantung","Komponen","G.D.","Rhesus","Aftap","Kadaluarsa",

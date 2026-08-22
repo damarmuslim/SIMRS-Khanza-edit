@@ -50,6 +50,7 @@ public final class DlgRestoreTarifRadiologi extends javax.swing.JDialog {
     public DlgRestoreTarifRadiologi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode Periksa","Nama Pemeriksaan","J.S.Rumah Sakit","Paket BHP",
             "J.M.Perujuk","J.M. Dokter","J.M. Petugas","K.S.O.","Menejemen",

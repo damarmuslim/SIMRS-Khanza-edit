@@ -63,6 +63,7 @@ public final class LabKeslingHasilPengujianSampel extends javax.swing.JDialog {
     public LabKeslingHasilPengujianSampel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode","Nama Parameter","Metode Pengujian","Satuan","Kategori","Nilai Normal","Hasil Pengujian"};
         tabMode=new DefaultTableModel(null,row){

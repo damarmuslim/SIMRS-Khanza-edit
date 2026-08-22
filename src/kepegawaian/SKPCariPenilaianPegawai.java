@@ -54,6 +54,7 @@ public class SKPCariPenilaianPegawai extends javax.swing.JDialog {
     public SKPCariPenilaianPegawai(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         NoPenilaian.setDocument(new batasInput((int)20).getKata(NoPenilaian));  
         TCari.setDocument(new batasInput((int)100).getKata(TCari));          

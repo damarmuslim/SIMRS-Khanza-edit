@@ -78,6 +78,7 @@ public final class KeuanganHutangObatBelumLunas extends javax.swing.JDialog {
     public KeuanganHutangObatBelumLunas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         DlgBayarMandiri.setSize(562,163);
 
         Object[] rowRwJlDr={

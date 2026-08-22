@@ -50,6 +50,7 @@ public class UTDPenunjangRusak extends javax.swing.JDialog {
     public UTDPenunjangRusak(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Jml","Kode Barang","Nama Barang","Harga","Subtotal","Satuan","Stok"};
         tabMode=new DefaultTableModel(null,judul){

@@ -57,6 +57,7 @@ public final class DlgAuditKamarJenazah extends javax.swing.JDialog {
     public DlgAuditKamarJenazah(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(628,674);
 

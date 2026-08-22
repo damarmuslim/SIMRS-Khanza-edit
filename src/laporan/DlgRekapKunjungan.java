@@ -29,6 +29,7 @@ public class DlgRekapKunjungan extends javax.swing.JDialog {
     public DlgRekapKunjungan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         
         HTMLEditorKit kit = new HTMLEditorKit();

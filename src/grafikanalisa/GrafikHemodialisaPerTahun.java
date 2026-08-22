@@ -56,6 +56,7 @@ public class GrafikHemodialisaPerTahun extends javax.swing.JDialog {
     public GrafikHemodialisaPerTahun(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Tahun","Jumlah Hemodialisa Per Tahun","Persentase Per Tahun(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

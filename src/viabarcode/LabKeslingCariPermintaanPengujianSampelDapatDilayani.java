@@ -51,6 +51,7 @@ public class LabKeslingCariPermintaanPengujianSampelDapatDilayani extends javax.
     public LabKeslingCariPermintaanPengujianSampelDapatDilayani(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabModeTidakDapatDilayani=new DefaultTableModel(null,new Object[]{
                 "Waktu Diterima","No.Permintaan","No.Pelanggan","Nama Pelanggan","Kode Sampel","Nama Sampel","Status Penugasan","Kebutuhan Sub Kontrak Pengujian/Keterangan Lainnya"

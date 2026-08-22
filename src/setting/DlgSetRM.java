@@ -52,6 +52,7 @@ public class DlgSetRM extends javax.swing.JDialog {
     public DlgSetRM(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"No.Rekam Medis Terakhir Digunakan"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

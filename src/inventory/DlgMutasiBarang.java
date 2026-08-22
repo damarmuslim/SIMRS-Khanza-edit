@@ -63,6 +63,7 @@ public class DlgMutasiBarang extends javax.swing.JDialog {
     public DlgMutasiBarang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Jml","Harga","Total","Kode Barang","Nama Barang","Satuan","Stok Asal","Stok Tujuan","No.Batch","No.Faktur","Kadaluarsa"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){

@@ -53,6 +53,7 @@ public class LabKeslingCariVerifikasiPengujianSampel extends javax.swing.JDialog
     public LabKeslingCariVerifikasiPengujianSampel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabModeVerifikasi=new DefaultTableModel(null,new Object[]{
                 "Tgl.Verifikasi","No.Verifikasi","NIP PJ","Nama PJ Verifikasi","No.Permintaan","No.Pelanggan","Nama Pelanggan","Kode Sampel","Nama Sampel","Status Validasi","Catatan","Mulai Pengujian","Selesai Pengujian"

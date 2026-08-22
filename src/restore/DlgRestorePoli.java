@@ -51,6 +51,7 @@ public final class DlgRestorePoli extends javax.swing.JDialog {
     public DlgRestorePoli(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode Unit","Nama Unit","Registrasi Baru","Registrasi Lama"};
         tabMode=new DefaultTableModel(null,row){

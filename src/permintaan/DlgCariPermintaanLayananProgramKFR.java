@@ -63,6 +63,7 @@ public class DlgCariPermintaanLayananProgramKFR extends javax.swing.JDialog {
     public DlgCariPermintaanLayananProgramKFR(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Permintaan","No.Rawat","No.RM","Nama Pasien","J.K.","Tgl.Lahir","Cara Bayar","Tgl.Permintaan",

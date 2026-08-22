@@ -56,6 +56,7 @@ public class GrafikItemApotekPerKategori extends javax.swing.JDialog {
     public GrafikItemApotekPerKategori(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Kategori Item Apotek","Jumlah Kategori Item Apotek","Persentase Kategori Item Apotek(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

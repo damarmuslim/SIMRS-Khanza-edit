@@ -70,6 +70,7 @@ public class OrthancDICOM extends javax.swing.JDialog {
     public OrthancDICOM(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         initComponents2();
         AccessionNumber.setDocument(new batasInput((byte)16).getKata(AccessionNumber));
     }

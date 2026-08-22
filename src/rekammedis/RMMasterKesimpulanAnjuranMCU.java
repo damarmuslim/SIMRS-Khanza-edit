@@ -52,6 +52,7 @@ public class RMMasterKesimpulanAnjuranMCU extends javax.swing.JDialog {
     public RMMasterKesimpulanAnjuranMCU(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kesimpulan/Diagnosa","Anjuran"};

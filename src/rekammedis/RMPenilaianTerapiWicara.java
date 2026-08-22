@@ -66,6 +66,7 @@ public final class RMPenilaianTerapiWicara extends javax.swing.JDialog {
     public RMPenilaianTerapiWicara(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","J.K.","Tgl.Lahir","Tanggal","Diagnosa Terapi Wicara","Diagnosa Medis","Anamnesa","Suhu(°C)","RR(x/menit)","Nadi(x/menit)",

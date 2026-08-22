@@ -44,6 +44,7 @@ public class DlgRBObatBangsal extends javax.swing.JDialog {
     public DlgRBObatBangsal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Bangsal","Jml","Nama Obat","Biaya Obat","Embalase","Tuslah","Total"};
         tabMode=new DefaultTableModel(null,row){

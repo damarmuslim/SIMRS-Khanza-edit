@@ -87,6 +87,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
     public RMDataResumePasienRanap(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         WindowURLSertisign.setSize(570,100);
         WindowPhrase.setSize(320,100);
         

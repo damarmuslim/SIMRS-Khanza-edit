@@ -68,6 +68,7 @@ public class SKPRekapitulasiPenilaianPegawai extends javax.swing.JDialog {
     public SKPRekapitulasiPenilaianPegawai(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Kode Kriteria","Kriteria","Ya","Tidak"};
         tabMode=new DefaultTableModel(null,judul){

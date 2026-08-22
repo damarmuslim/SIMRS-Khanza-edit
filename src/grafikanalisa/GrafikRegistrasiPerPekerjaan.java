@@ -38,6 +38,7 @@ public class GrafikRegistrasiPerPekerjaan extends javax.swing.JDialog {
     public GrafikRegistrasiPerPekerjaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

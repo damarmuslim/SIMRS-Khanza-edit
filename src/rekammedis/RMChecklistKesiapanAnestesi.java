@@ -68,6 +68,7 @@ public final class RMChecklistKesiapanAnestesi extends javax.swing.JDialog {
     public RMChecklistKesiapanAnestesi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(628,674);
 

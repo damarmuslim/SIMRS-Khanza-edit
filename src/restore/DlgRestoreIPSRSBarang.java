@@ -51,6 +51,7 @@ public final class DlgRestoreIPSRSBarang extends javax.swing.JDialog {
     public DlgRestoreIPSRSBarang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row = {
             "P","Kode Barang","Nama Barang","Satuan","Jenis","Stok","Harga"

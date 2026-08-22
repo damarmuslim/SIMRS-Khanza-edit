@@ -43,6 +43,7 @@ public class KeuanganNilaiPiutangPerJenisBayarPerBulan extends javax.swing.JDial
     public KeuanganNilaiPiutangPerJenisBayarPerBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"Kode","Jenis/Cara Bayar","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember","Total"};
         tabMode=new DefaultTableModel(null,row){

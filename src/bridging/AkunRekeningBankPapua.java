@@ -57,6 +57,7 @@ public class AkunRekeningBankPapua extends javax.swing.JDialog {
     public AkunRekeningBankPapua(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode Akun","Akun Rekening","Nama User","Pasword"};
         tabMode=new DefaultTableModel(null,row){

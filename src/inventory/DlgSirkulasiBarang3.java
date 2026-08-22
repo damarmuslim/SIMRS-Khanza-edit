@@ -59,6 +59,7 @@ public class DlgSirkulasiBarang3 extends javax.swing.JDialog {
     public DlgSirkulasiBarang3(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode Barang","Nama Barang","Satuan","Stok","Stok(Rp)","Pengadaan","Pengadaan(Rp)",
                       "Penerimaan","Penerimaan(Rp)","Penjualan","Penjualan(Rp)","Ke Pasien","Ke Pasien(Rp)",

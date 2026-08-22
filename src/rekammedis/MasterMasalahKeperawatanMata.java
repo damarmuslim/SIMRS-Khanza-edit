@@ -52,6 +52,7 @@ public class MasterMasalahKeperawatanMata extends javax.swing.JDialog {
     public MasterMasalahKeperawatanMata(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode","Masalah Keperawatan"};

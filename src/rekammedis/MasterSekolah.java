@@ -52,6 +52,7 @@ public class MasterSekolah extends javax.swing.JDialog {
     public MasterSekolah(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode","Nama Sekolah"};

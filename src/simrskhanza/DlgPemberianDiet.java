@@ -50,6 +50,7 @@ public class DlgPemberianDiet extends javax.swing.JDialog {
     public DlgPemberianDiet(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Rawat","Nama Pasien","Kamar","Tanggal","Waktu","Jam","Diet","Diagnosa","Kode Kamar","Kode Diet"

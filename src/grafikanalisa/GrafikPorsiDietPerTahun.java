@@ -56,6 +56,7 @@ public class GrafikPorsiDietPerTahun extends javax.swing.JDialog {
     public GrafikPorsiDietPerTahun(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Tahun","Jumlah Porsi Diet Per Tahun","Persentase Per Tahun(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

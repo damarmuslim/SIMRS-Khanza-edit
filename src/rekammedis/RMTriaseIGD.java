@@ -76,7 +76,9 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     public RMTriaseIGD(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         initHeaderTambahan();
+        initPatientBanner();
         this.setLocation(8,1);
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Rawat","No.RM","Nama Pasien","Tgl.Kunjungan","Cara Masuk","Transportasi",
@@ -4822,6 +4824,11 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     // =====================================================================
     private widget.CekBox PacsInfus, PacsNgt, PacsKateter;
     private widget.TextBox PacsNamaPengantar, PacsTelpPengantar;
+    // Fase 4 (Patient Banner): 4 label ini awalnya variabel LOKAL di dalam
+    // initHeaderTambahan() - dinaikkan jadi field kelas supaya bisa
+    // direparent ulang oleh initPatientBanner() (lihat method itu). Bukan
+    // rename/hapus variabel UI - cuma perubahan scope, teks/isi tidak berubah.
+    private widget.Label lblTerpasang, lblIdentitasPengantar, lblNamaPengantar, lblTelpPengantar;
 
     // =====================================================================
     // [PACS] Field baru - Patient's Acuity Categorization Scale (formulir
@@ -4868,7 +4875,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
      * Dipanggil sekali dari constructor, setelah initComponents().
      */
     private void initHeaderTambahan(){
-        widget.Label lblTerpasang = new widget.Label();
+        lblTerpasang = new widget.Label();
         lblTerpasang.setText("Sudah Terpasang :");
         FormInput.add(lblTerpasang);
         lblTerpasang.setBounds(0, 100, 110, 23);
@@ -4885,12 +4892,12 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         FormInput.add(PacsKateter);
         PacsKateter.setBounds(228, 100, 100, 23);
 
-        widget.Label lblIdentitasPengantar = new widget.Label();
+        lblIdentitasPengantar = new widget.Label();
         lblIdentitasPengantar.setText("Identitas Pengantar :");
         FormInput.add(lblIdentitasPengantar);
         lblIdentitasPengantar.setBounds(340, 100, 145, 23);
 
-        widget.Label lblNamaPengantar = new widget.Label();
+        lblNamaPengantar = new widget.Label();
         lblNamaPengantar.setText("Nama :");
         FormInput.add(lblNamaPengantar);
         lblNamaPengantar.setBounds(490, 100, 45, 23);
@@ -4899,7 +4906,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         FormInput.add(PacsNamaPengantar);
         PacsNamaPengantar.setBounds(535, 100, 175, 23);
 
-        widget.Label lblTelpPengantar = new widget.Label();
+        lblTelpPengantar = new widget.Label();
         lblTelpPengantar.setText("Telp :");
         FormInput.add(lblTelpPengantar);
         lblTelpPengantar.setBounds(715, 100, 40, 23);
@@ -4927,6 +4934,82 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     }
 
     /**
+     * [Fase 4 - Patient Banner] Header form (No.Rawat s/d Dokter/Petugas IGD)
+     * sebelumnya tersebar renggang di FormInput (null-layout GEN block, 5
+     * baris y=10..130, tanpa pengelompokan visual/border). Dibungkus jadi
+     * SATU kartu ("Patient Banner") - latar putih + TitledBorder - dgn
+     * komponen yg SAMA (tidak ada yg dibuat baru/dihapus) direparent ke
+     * dalamnya & dirapikan jadi 5 baris padat berkelompok (26px per baris,
+     * dari 30px sebelumnya): Identitas Utama / Detail Kunjungan (2 baris,
+     * krn Macam Kasus+Keterangan terlalu lebar utk 1 baris bareng
+     * Tgl-CaraMasuk-Alasan) / Status Tambahan+Petugas (2 baris).
+     *
+     * Teknik: sama persis pola reparent yg sudah terbukti aman di sesi²
+     * sebelumnya (RM 03-2/03-4-05-06/Transfer Pasien) - panggil
+     * `panelPatientBanner.add(komponenLama)` pada komponen yg SUDAH ada
+     * (dibuat GEN block/initHeaderTambahan), Swing otomatis melepasnya dari
+     * parent lama (FormInput) tanpa perlu FormInput.remove() manual, lalu
+     * `.setBounds()` dipanggil ULANG relatif ke parent BARU (panelPatientBanner).
+     * FormInput SENDIRI TIDAK dihapus/diganti (masih target GEN block
+     * `FormInput.add(...)` & `FormTriase.add(FormInput, PAGE_START)`,
+     * keduanya di dalam GEN-BEGIN/GEN-END - tidak disentuh) - cuma jadi
+     * "bingkai transparan" tipis yg membungkus 1 kartu panelPatientBanner.
+     */
+    private void initPatientBanner(){
+        widget.PanelBiasa panelPatientBanner = new widget.PanelBiasa();
+        panelPatientBanner.setLayout(null);
+        panelPatientBanner.setBackground(widget.ThemeConfig.SURFACE);
+        javax.swing.border.TitledBorder tbBanner = javax.swing.BorderFactory.createTitledBorder("Informasi Registrasi & Pasien");
+        tbBanner.setTitleFont(widget.ThemeConfig.FONT_BOLD);
+        panelPatientBanner.setBorder(tbBanner);
+
+        // ----- Baris 1: Identitas Utama (No.Rawat, No.RM, Nama Pasien, Transportasi) -----
+        panelPatientBanner.add(jLabel4); jLabel4.setBounds(6,22,75,23);
+        panelPatientBanner.add(TNoRw); TNoRw.setBounds(84,22,118,23);
+        panelPatientBanner.add(TNoRM); TNoRM.setBounds(206,22,65,23);
+        panelPatientBanner.add(TPasien); TPasien.setBounds(276,22,230,23);
+        panelPatientBanner.add(jLabel22); jLabel22.setBounds(518,22,80,23);
+        panelPatientBanner.add(Transportasi); Transportasi.setBounds(600,22,95,23);
+
+        // ----- Baris 2 (2 sub-baris): Detail Kunjungan -----
+        panelPatientBanner.add(jLabel18); jLabel18.setBounds(6,50,90,23);
+        panelPatientBanner.add(TanggalKunjungan); TanggalKunjungan.setBounds(98,50,135,23);
+        panelPatientBanner.add(jLabel20); jLabel20.setBounds(245,50,78,23);
+        panelPatientBanner.add(CaraMasuk); CaraMasuk.setBounds(325,50,105,23);
+        panelPatientBanner.add(jLabel23); jLabel23.setBounds(442,50,130,23);
+        panelPatientBanner.add(AlasanKedatangan); AlasanKedatangan.setBounds(574,50,150,23);
+
+        panelPatientBanner.add(jLabel5); jLabel5.setBounds(6,78,90,23);
+        panelPatientBanner.add(KdKasus); KdKasus.setBounds(98,78,50,23);
+        panelPatientBanner.add(NmKasus); NmKasus.setBounds(152,78,240,23);
+        panelPatientBanner.add(btnKasus); btnKasus.setBounds(396,78,28,23);
+        panelPatientBanner.add(jLabel8); jLabel8.setBounds(436,78,86,23);
+        panelPatientBanner.add(KeteranganKedatangan); KeteranganKedatangan.setBounds(526,78,195,23);
+
+        // ----- Baris 3 (2 sub-baris): Status Tambahan & Petugas -----
+        panelPatientBanner.add(lblTerpasang); lblTerpasang.setBounds(6,106,110,23);
+        panelPatientBanner.add(PacsInfus); PacsInfus.setBounds(119,106,60,23);
+        panelPatientBanner.add(PacsNgt); PacsNgt.setBounds(179,106,55,23);
+        panelPatientBanner.add(PacsKateter); PacsKateter.setBounds(234,106,100,23);
+        panelPatientBanner.add(lblIdentitasPengantar); lblIdentitasPengantar.setBounds(346,106,145,23);
+        panelPatientBanner.add(lblNamaPengantar); lblNamaPengantar.setBounds(496,106,45,23);
+        panelPatientBanner.add(PacsNamaPengantar); PacsNamaPengantar.setBounds(541,106,175,23);
+        panelPatientBanner.add(lblTelpPengantar); lblTelpPengantar.setBounds(721,106,40,23);
+        panelPatientBanner.add(PacsTelpPengantar); PacsTelpPengantar.setBounds(761,106,110,23);
+
+        panelPatientBanner.add(jLabel30); jLabel30.setBounds(6,134,130,23);
+        panelPatientBanner.add(SekunderKodePetugas); SekunderKodePetugas.setBounds(140,134,110,23);
+        panelPatientBanner.add(SekunderNamaPetugas); SekunderNamaPetugas.setBounds(252,134,210,23);
+        panelPatientBanner.add(btnSekunderPetugas); btnSekunderPetugas.setBounds(462,134,28,23);
+
+        FormInput.add(panelPatientBanner);
+        panelPatientBanner.setBounds(2,2,885,172);
+
+        java.awt.Dimension ukuranBanner = FormInput.getPreferredSize();
+        FormInput.setPreferredSize(new java.awt.Dimension(ukuranBanner.width, 180));
+    }
+
+    /**
      * Membangun tab "PACS" secara terpisah dari initComponents() (blok
      * GEN-BEGIN/GEN-END) sesuai pola Khanza yang sudah ada (widget.* +
      * widget.Tanggal utk tanggal/jam, widget.Button utk buka DlgCariPegawai).
@@ -4938,13 +5021,53 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints c;
         int row = 0;
 
-        row = tambahBarisPacsLabel(row, "Triase (PACS)");
+        row = tambahBarisPacsLabel(PanelPacs, row, "Triase (PACS)");
         // ["Sudah Terpasang" dan "Identitas Pengantar" dipindah ke header bersama - lihat initHeaderTambahan()]
+
+        // [Fase 3 - Pilot Modernisasi Layout] Tab PACS diubah dari satu kolom
+        // vertikal panjang jadi DUA KOLOM berdampingan (memanfaatkan ruang
+        // horizontal, memperpendek scroll): panelPacsKiri (Anamnesa & Tanda
+        // Vital) dan panelPacsKanan (Skor EWS & Keputusan). Urutan/isi tiap
+        // baris TIDAK berubah - cuma dipindah ke kolom masing-masing lewat
+        // parameter "panel" baru pada tambahBarisPacsLabel()/
+        // tambahBarisPacsField() (sebelumnya selalu hardcode ke PanelPacs).
+        widget.PanelBiasa panelPacsKiri = new widget.PanelBiasa();
+        panelPacsKiri.setLayout(new java.awt.GridBagLayout());
+        javax.swing.border.TitledBorder tbKiri = javax.swing.BorderFactory.createTitledBorder("Anamnesa & Tanda Vital");
+        tbKiri.setTitleFont(widget.ThemeConfig.FONT_BOLD);
+        panelPacsKiri.setBorder(tbKiri);
+
+        // Bugfix alignment (dikonfirmasi via screenshot user + render offscreen):
+        // panelPacsKiri sendiri MELEBAR mengisi setengah lebar PanelPacs (lihat
+        // fill=HORIZONTAL+weightx=0.5 di bawah), tapi isinya (label+field) TIDAK
+        // boleh ikut melebar/menempel di kiri - harus TETAP di lebar alaminya,
+        // diposisikan TENGAH horizontal dgn ruang kosong SAMA RATA kiri-kanan.
+        // Solusinya: seluruh baris label/field ditaruh ke panel PEMBUNGKUS BARU
+        // (innerKiri, lebar alami, tak diregangkan), baru innerKiri itu sendiri
+        // ditempel ke panelPacsKiri dgn anchor=NORTH (rata TENGAH horizontal +
+        // rata ATAS vertikal - gotcha GridBagLayout yg sama yg dulu jadi masalah,
+        // sekarang dipakai sengaja sbg fitur di sini).
+        widget.PanelBiasa innerKiri = new widget.PanelBiasa();
+        innerKiri.setLayout(new java.awt.GridBagLayout());
+        int rowKiri = 0;
+
+        widget.PanelBiasa panelPacsKanan = new widget.PanelBiasa();
+        panelPacsKanan.setLayout(new java.awt.GridBagLayout());
+        javax.swing.border.TitledBorder tbKanan = javax.swing.BorderFactory.createTitledBorder("Skor EWS & Keputusan");
+        tbKanan.setTitleFont(widget.ThemeConfig.FONT_BOLD);
+        panelPacsKanan.setBorder(tbKanan);
+
+        // innerKanan: sama alasan dgn innerKiri di atas.
+        widget.PanelBiasa innerKanan = new widget.PanelBiasa();
+        innerKanan.setLayout(new java.awt.GridBagLayout());
+        int rowKanan = 0;
+
+        // ===== KOLOM KIRI: Mekanisme Trauma, Keluhan Utama, Tanda Vital =====
 
         // [Mekanisme Trauma] Hanya tampil kalau Kasus = Trauma (KdKasus != "004").
         // Diperbarui oleh perbaruiVisibilitasMekanismeTrauma() - dipanggil dari
         // btnKasusActionPerformed, tampilPacs(), dan resetPacsTab().
-        row = tambahBarisPacsLabel(row, "Mekanisme Trauma (khusus Kasus = Trauma)");
+        rowKiri = tambahBarisPacsLabel(innerKiri, rowKiri, "Mekanisme Trauma (khusus Kasus = Trauma)");
         panelMekanismeTrauma = new widget.PanelBiasa();
         panelMekanismeTrauma.setLayout(new java.awt.GridBagLayout());
         int rowMt = 0;
@@ -4974,34 +5097,65 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         rowMt = tambahBarisMekanismeTrauma(panelMekanismeTrauma,rowMt,"Trauma Fisik",CekTraumaFisik = new widget.CekBox(),TTraumaFisikKet = new widget.TextBox());
         rowMt = tambahBarisMekanismeTrauma(panelMekanismeTrauma,rowMt,"Trauma Zat Kimia",CekTraumaZatKimia = new widget.CekBox(),TTraumaZatKimiaKet = new widget.TextBox());
         rowMt = tambahBarisMekanismeTrauma(panelMekanismeTrauma,rowMt,"Trauma Zat Lainnya",CekTraumaZatLainnya = new widget.CekBox(),TTraumaZatLainnyaKet = new widget.TextBox());
+        // Bugfix alignment (lihat javadoc tambahPengisiKolom()): tanpa ini,
+        // checkbox/field di dalam panelMekanismeTrauma (Lawan, Tempat Kejadian,
+        // dll) ikut mengambang ke tengah begitu panel ini direntangkan lebih
+        // lebar dari kontennya sendiri oleh baris di bawah.
+        tambahPengisiKolom(panelMekanismeTrauma);
 
-        c = pacsConstraint(0,row); c.gridwidth=2; PanelPacs.add(panelMekanismeTrauma,c); row++;
+        c = pacsConstraint(0,rowKiri); c.gridwidth=2;
+        // Celah vertikal ekstra (atas 10px, bawah 14px) supaya saat panel ini
+        // muncul (Kasus = Trauma) tidak menabrak "Keluhan Utama" di atas /
+        // "Tanda Vital (PACS)" di bawah - insets baku pacsConstraint (3px)
+        // terlalu rapat utk panel yang baru pop-up.
+        c.insets = new java.awt.Insets(10,5,14,5);
+        innerKiri.add(panelMekanismeTrauma,c); rowKiri++;
         panelMekanismeTrauma.setVisible(false);
 
         PacsKeluhanUtama = new widget.TextArea();
         PacsKeluhanUtama.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        PacsKeluhanUtama.setColumns(20);
+        // Kolom dilebarkan (20->32) - mengurangi margin kosong di luar kartu
+        // dua-kolom (diverifikasi via render offscreen) TANPA menyentuh lebar
+        // kotak input angka (Nadi/Suhu/dll tetap 130px pendek).
+        PacsKeluhanUtama.setColumns(32);
         PacsKeluhanUtama.setRows(5);
         widget.ScrollPane scrollKeluhanUtama = new widget.ScrollPane();
         scrollKeluhanUtama.setViewportView(PacsKeluhanUtama);
-        row = tambahBarisPacsField(row, "Keluhan Utama", scrollKeluhanUtama);
+        // Bugfix border: widget.ScrollPane bawaan sudah py LineBorder, tapi
+        // warnanya (239,244,234, krem nyaris putih) nyaris tak kelihatan di
+        // atas latar putih - jadi TextArea ini kelihatan "tanpa border" spt
+        // dilaporkan. Ditimpa border eksplisit pakai warna Design System
+        // (ThemeConfig.BORDER, dipakai jg oleh FlatLaf Component.borderColor
+        // sejak Fase 2.5) supaya konsisten & terlihat jelas spt TextField
+        // di sekitarnya.
+        scrollKeluhanUtama.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER));
+        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Keluhan Utama", scrollKeluhanUtama);
 
-        row = tambahBarisPacsLabel(row, "Tanda Vital (PACS)");
-        row = tambahBarisPacsField(row, "Tekanan Darah", PacsTensi = new widget.TextBox());
-        row = tambahBarisPacsField(row, "Nadi (/menit)", PacsNadi = new widget.TextBox());
-        row = tambahBarisPacsField(row, "Pernapasan (/menit)", PacsRespirasi = new widget.TextBox());
-        row = tambahBarisPacsField(row, "Suhu (C)", PacsSuhu = new widget.TextBox());
-        row = tambahBarisPacsField(row, "Saturasi O2 (%)", PacsSaturasi = new widget.TextBox());
-        row = tambahBarisPacsField(row, "Nyeri", PacsNyeri = new widget.TextBox());
+        rowKiri = tambahBarisPacsLabel(innerKiri, rowKiri, "Tanda Vital (PACS)");
+        // Bugfix ukuran field: widget.TextBox/ComboBox py gotcha lawas
+        // (constructor diam2 setSize(WIDTH,23) dgn WIDTH=1 dari
+        // ImageObserver.WIDTH, BUKAN lebar pixel - sudah didokumentasikan &
+        // diperbaiki di sesi RM 03-2/03-4-05-06 dgn pola yg sama) - tanpa
+        // .setPreferredSize() eksplisit, lebar kolom field jadi "kebetulan"
+        // ikut komponen lain yg lebih lebar. Diberi lebar TETAP & PENDEK
+        // (130px, cukup utk angka) sesuai permintaan "kotak input angka
+        // tetap pas/pendek, jangan melebar" - bukan diperlebar.
+        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Tekanan Darah", ukuranPacsFieldPendek(PacsTensi = new widget.TextBox()));
+        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Nadi (/menit)", ukuranPacsFieldPendek(PacsNadi = new widget.TextBox()));
+        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Pernapasan (/menit)", ukuranPacsFieldPendek(PacsRespirasi = new widget.TextBox()));
+        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Suhu (C)", ukuranPacsFieldPendek(PacsSuhu = new widget.TextBox()));
+        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Saturasi O2 (%)", ukuranPacsFieldPendek(PacsSaturasi = new widget.TextBox()));
+        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Nyeri", ukuranPacsFieldPendek(PacsNyeri = new widget.TextBox()));
 
         PacsKesadaran = new widget.ComboBox();
         PacsKesadaran.addItem("Sadar Penuh");
         PacsKesadaran.addItem("Respon Suara");
         PacsKesadaran.addItem("Respon Nyeri");
         PacsKesadaran.addItem("Tidak Respon");
-        row = tambahBarisPacsField(row, "Kesadaran (AVPU)", PacsKesadaran);
-        row = tambahBarisPacsField(row, "Berat Badan (kg)", PacsBeratBadan = new widget.TextBox());
-        row = tambahBarisPacsField(row, "Tinggi Badan (cm)", PacsTinggiBadan = new widget.TextBox());
+        PacsKesadaran.setPreferredSize(new java.awt.Dimension(160,23));
+        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Kesadaran (AVPU)", PacsKesadaran);
+        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Berat Badan (kg)", ukuranPacsFieldPendek(PacsBeratBadan = new widget.TextBox()));
+        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Tinggi Badan (cm)", ukuranPacsFieldPendek(PacsTinggiBadan = new widget.TextBox()));
 
         // [PACS] Stage: skor 0-3 dihitung otomatis (bukan dipilih manual) begitu
         // petugas selesai mengisi tanda vital - lihat hitungSkorOtomatisPacs()
@@ -5019,7 +5173,9 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         PacsSaturasi.addFocusListener(pemicuSkorOtomatis);
         PacsKesadaran.addItemListener((java.awt.event.ItemEvent e) -> hitungSkorOtomatisPacs());
 
-        row = tambahBarisPacsLabel(row, "Level Triage (PACS)");
+        // ===== KOLOM KANAN: Level Triage, Skor EWS, Total Skor, Catatan Khusus, Keputusan =====
+
+        rowKanan = tambahBarisPacsLabel(innerKanan, rowKanan, "Level Triage (PACS)");
         widget.PanelBiasa panelLevel = new widget.PanelBiasa();
         panelLevel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         bgLevelPacs = new javax.swing.ButtonGroup();
@@ -5029,15 +5185,15 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         RbPacs4 = new widget.RadioButton(); RbPacs4.setText(PacsLevel.PACS_4.getLabel()); pewarnaanTombolPacs(RbPacs4,PacsLevel.PACS_4);
         bgLevelPacs.add(RbPacs1); bgLevelPacs.add(RbPacs2); bgLevelPacs.add(RbPacs3); bgLevelPacs.add(RbPacs4);
         panelLevel.add(RbPacs1); panelLevel.add(RbPacs2); panelLevel.add(RbPacs3); panelLevel.add(RbPacs4);
-        c = pacsConstraint(1,row); PanelPacs.add(panelLevel,c); row++;
+        c = pacsConstraint(1,rowKanan); innerKanan.add(panelLevel,c); rowKanan++;
 
-        row = tambahBarisPacsLabel(row, "Skor EWS (0-3 per parameter)");
-        row = tambahBarisPacsField(row, "Skor Kesadaran", CmbSkorKesadaranPacs = buatComboSkor());
-        row = tambahBarisPacsField(row, "Skor TD Sistolik", CmbSkorTDPacs = buatComboSkor());
-        row = tambahBarisPacsField(row, "Skor Nadi", CmbSkorNadiPacs = buatComboSkor());
-        row = tambahBarisPacsField(row, "Skor Respirasi", CmbSkorRespirasiPacs = buatComboSkor());
-        row = tambahBarisPacsField(row, "Skor Temperatur", CmbSkorTemperaturPacs = buatComboSkor());
-        row = tambahBarisPacsField(row, "Skor Saturasi O2", CmbSkorSaturasiPacs = buatComboSkor());
+        rowKanan = tambahBarisPacsLabel(innerKanan, rowKanan, "Skor EWS (0-3 per parameter)");
+        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor Kesadaran", CmbSkorKesadaranPacs = buatComboSkor());
+        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor TD Sistolik", CmbSkorTDPacs = buatComboSkor());
+        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor Nadi", CmbSkorNadiPacs = buatComboSkor());
+        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor Respirasi", CmbSkorRespirasiPacs = buatComboSkor());
+        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor Temperatur", CmbSkorTemperaturPacs = buatComboSkor());
+        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor Saturasi O2", CmbSkorSaturasiPacs = buatComboSkor());
         java.awt.event.ItemListener hitungSkor = (java.awt.event.ItemEvent e) -> hitungTotalSkorPacs();
         CmbSkorKesadaranPacs.addItemListener(hitungSkor);
         CmbSkorTDPacs.addItemListener(hitungSkor);
@@ -5048,17 +5204,20 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
 
         LblTotalSkorPacs = new widget.Label();
         LblTotalSkorPacs.setText("0");
-        row = tambahBarisPacsField(row, "Total Skor", LblTotalSkorPacs);
+        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Total Skor", LblTotalSkorPacs);
 
         PacsCatatanKhusus = new widget.TextArea();
         PacsCatatanKhusus.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        PacsCatatanKhusus.setColumns(20);
+        // Kolom dilebarkan (20->32), sama alasan spt PacsKeluhanUtama di atas.
+        PacsCatatanKhusus.setColumns(32);
         PacsCatatanKhusus.setRows(3);
         widget.ScrollPane scrollCatatanKhusus = new widget.ScrollPane();
         scrollCatatanKhusus.setViewportView(PacsCatatanKhusus);
-        row = tambahBarisPacsField(row, "Catatan Khusus", scrollCatatanKhusus);
+        // Bugfix border: sama alasan spt scrollKeluhanUtama di atas.
+        scrollCatatanKhusus.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER));
+        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Catatan Khusus", scrollCatatanKhusus);
 
-        row = tambahBarisPacsLabel(row, "Keputusan");
+        rowKanan = tambahBarisPacsLabel(innerKanan, rowKanan, "Keputusan");
         widget.PanelBiasa panelKeputusan = new widget.PanelBiasa();
         panelKeputusan.setLayout(new java.awt.GridLayout(4,1));
         bgKeputusanPacs = new javax.swing.ButtonGroup();
@@ -5070,30 +5229,159 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         bgKeputusanPacs.add(RbPacsPoliKlinik); bgKeputusanPacs.add(RbPacsDOA);
         panelKeputusan.add(RbPacsResusitasi); panelKeputusan.add(RbPacsNonResusitasi);
         panelKeputusan.add(RbPacsPoliKlinik); panelKeputusan.add(RbPacsDOA);
-        c = pacsConstraint(1,row); PanelPacs.add(panelKeputusan,c); row++;
+        c = pacsConstraint(1,rowKanan); innerKanan.add(panelKeputusan,c); rowKanan++;
 
         // (Pukul Keputusan & Tanggal/Jam Triase dihapus dari sini - sudah terwakili oleh
         // Tanggal Kunjungan/Kontak Awal Pasien di header. Nilainya diturunkan otomatis
         // dari TanggalKunjungan saat simpan - lihat BtnSimpanActionPerformed/ganti().)
         // (Petugas Triase PACS dihapus dari sini - dipakai bersama dengan Dokter/Petugas tab Sekunder)
 
+        // [REVISI, dikonfirmasi via screenshot user + render offscreen] Dulu di
+        // sini dipanggil tambahPengisiKolom(panelPacsKiri/Kanan) - filler di
+        // ujung kanan supaya isi tetap rata kiri saat panel direntangkan (dulu
+        // dikira itu yg dimaksud "center"). TERNYATA yg dimaksud user adalah isi
+        // (innerKiri/innerKanan) diposisikan TENGAH dgn ruang kosong SAMA RATA
+        // kiri-kanan, bukan rata kiri dgn kosong menumpuk di kanan. Makanya
+        // sekarang SEMUA baris di atas (tambahBarisPacsLabel/Field, panelLevel,
+        // panelKeputusan, panelMekanismeTrauma) ditaruh ke innerKiri/innerKanan
+        // (panel baru, lebar alami/tak diregangkan) - ditempel ke tengah di sini.
+        java.awt.GridBagConstraints cInnerKiri = new java.awt.GridBagConstraints();
+        cInnerKiri.gridx = 0; cInnerKiri.gridy = 0;
+        cInnerKiri.anchor = java.awt.GridBagConstraints.NORTH; // tengah horizontal, atas vertikal
+        panelPacsKiri.add(innerKiri, cInnerKiri);
+
+        java.awt.GridBagConstraints cInnerKanan = new java.awt.GridBagConstraints();
+        cInnerKanan.gridx = 0; cInnerKanan.gridy = 0;
+        cInnerKanan.anchor = java.awt.GridBagConstraints.NORTH;
+        panelPacsKanan.add(innerKanan, cInnerKanan);
+
+        // ===== Gabungkan kedua kolom sejajar (side-by-side) ke PanelPacs =====
+        // weightx=0.5 di masing-masing + insets kanan/kiri 10px (total 20px
+        // celah antar blok) sesuai permintaan spacing minimal 10-15px.
+        // Bugfix (lanjutan): fill=HORIZONTAL SAJA (bukan BOTH) + anchor=NORTH -
+        // tiap kolom TIDAK direntangkan mengikuti tinggi kolom sebelahnya yang
+        // lebih tinggi (dulu fill=BOTH memaksa panelPacsKanan setinggi
+        // panelPacsKiri begitu Mekanisme Trauma tampil, lalu krn TIDAK ada
+        // weighty di baris manapun panelPacsKanan, isinya ikut "mengambang di
+        // tengah" secara VERTIKAL juga - kotak kanan jadi kosong besar di atas
+        // & konten "Skor EWS" ikut turun/geser tiap Mekanisme Trauma di-toggle).
+        // Sekarang tiap kolom tingginya murni mengikuti konten sendiri, rata
+        // atas (NORTH) - independen dari tinggi kolom sebelahnya.
+        java.awt.GridBagConstraints cKolom;
+        cKolom = pacsConstraint(0,row);
+        cKolom.anchor = java.awt.GridBagConstraints.NORTH;
+        cKolom.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cKolom.weightx = 0.5;
+        cKolom.insets = new java.awt.Insets(5,5,10,10);
+        PanelPacs.add(panelPacsKiri,cKolom);
+
+        cKolom = pacsConstraint(1,row);
+        cKolom.anchor = java.awt.GridBagConstraints.NORTH;
+        cKolom.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cKolom.weightx = 0.5;
+        cKolom.insets = new java.awt.Insets(5,10,10,5);
+        PanelPacs.add(panelPacsKanan,cKolom);
+        row++;
+
         widget.PanelBiasa panelCetak = new widget.PanelBiasa();
         panelCetak.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         btnPrintPacs = new widget.Button(); btnPrintPacs.setText("Cetak Lembar Triase PACS");
         btnPrintPacs.addActionListener((java.awt.event.ActionEvent evt) -> btnPrintPacsActionPerformed(evt));
         panelCetak.add(btnPrintPacs);
-        c = pacsConstraint(1,row); PanelPacs.add(panelCetak,c); row++;
+        c = pacsConstraint(0,row); c.gridwidth=2; PanelPacs.add(panelCetak,c); row++;
 
-        // [PACS] Isi tab ini panjang (banyak seksi baru). Dibungkus widget.ScrollPane
-        // dengan ukuran preferred TETAP (bukan mengikuti tinggi asli kontennya), persis
-        // pola yang sudah dipakai tab Primer/Sekunder (ScrollTriase, ScrollHTML, dst.) -
-        // supaya TabTriase TIDAK melaporkan ukuran preferred raksasa ke layout di atasnya
+        // [PACS] Dibungkus widget.ScrollPane dengan ukuran preferred TETAP
+        // (bukan mengikuti tinggi asli kontennya), persis pola yang sudah
+        // dipakai tab Primer/Sekunder (ScrollTriase, ScrollHTML, dst.) - supaya
+        // TabTriase TIDAK melaporkan ukuran preferred raksasa ke layout di atasnya
         // (yang bisa memaksa seluruh dialog/tab Primer-Sekunder ikut menyusut/bergeser).
+        // Fase 3: lebar dinaikkan (960->1250) utk menampung layout dua-kolom;
+        // tinggi TETAP 420 (konten per kolom kini jauh lebih pendek drpd versi
+        // satu-kolom lama, jadi scroll vertikal berkurang signifikan).
+        // Bugfix lanjutan: 1250 ternyata KELEBARAN drpd lebar asli kedua kolom
+        // (weightx=0.5 di PanelPacs cuma membagi 2 lebar yg TERSEDIA - kalau
+        // yg tersedia jauh lebih besar dari kebutuhan konten, sisanya jadi
+        // area kosong menganga di kanan viewport scrollPacs, dilaporkan user).
+        // Diturunkan ke 1000 - lebih dekat ke kebutuhan nyata kedua kolom
+        // (kiri ~450px + kanan ~350px + spacing/border), jadi tidak ada lagi
+        // celah kosong lebar tak wajar, sekaligus tetap muat dua kolom penuh.
+        //
+        // [BUGFIX AKAR MASALAH] Menurunkan angka di setPreferredSize() TIDAK
+        // cukup - itu cuma mengecilkan apa yg scrollPacs LAPORKAN sbg
+        // kebutuhannya ke TabTriase, TAPI javax.swing.JTabbedPane SELALU
+        // merentangkan komponen tab yg sedang aktif memenuhi SELURUH lebar
+        // area tab yg tersedia (brp pun lebar dialog sungguhan - bisa lebih
+        // lebar dari 1000px kalau tab lain/dialog di-resize besar), TANPA
+        // peduli preferredSize scrollPacs. Begitu scrollPacs sendiri
+        // direntangkan lebih lebar dari isinya (PanelPacs, dua kolom), sisa
+        // lebarnya numpuk sbg area kosong di KANAN (JViewport default
+        // menaruh view rata kiri-atas) - inilah akar "tidak di tengah".
+        // Fix: viewport TIDAK lagi langsung menampilkan PanelPacs, tapi
+        // dibungkus wrapperPacs (implements Scrollable,
+        // getScrollableTracksViewportWidth()=true) - ini memaksa JViewport
+        // merentangkan wrapperPacs SAMA LEBAR dgn viewport sungguhan (brp pun
+        // itu), lalu GridBagLayout wrapperPacs (1 anak, weightx=0 default -
+        // constraint kosong) men-TENGAH-KAN PanelPacs di dalamnya - PanelPacs
+        // sendiri TETAP di lebar aslinya (dua kolom TIDAK ikut melebar),
+        // cuma posisinya sekarang center, bukan rata kiri.
+        //
+        // [REVISI, dikonfirmasi via screenshot user] "Center" yg dimaksud
+        // TERNYATA bukan "PanelPacs tetap sempit & mengambang di tengah
+        // dgn margin kosong besar di kiri-kanan" (hasil dari constraint
+        // kosong di atas) - user menandai margin kosong itu sbg masalah
+        // (screenshot dgn tanda silang X), dan minta kedua KARTU (kiri/
+        // kanan) yg MELEBAR mengisi ruang spt referensi screenshot lain,
+        // SEMENTARA kolom inputan (Nadi/Suhu/dll) di dalamnya tetap pendek
+        // spt semula. Solusinya BUKAN mengecilkan margin, tapi memberi
+        // PanelPacs fill=HORIZONTAL+weightx=1.0 di sini (bukan lagi
+        // constraint kosong) - PanelPacs (& panelPacsKiri/panelPacsKanan,
+        // weightx=0.5 masing2 dari constraint cKolom di atas) ikut
+        // meregang mengisi SELURUH lebar wrapperPacs. Kotak input TETAP
+        // pendek krn filler tambahPengisiKolom() (gridx=2, weightx=1.0) di
+        // masing2 kolom yg menyerap kelebihan lebar itu, BUKAN field-nya -
+        // jadi ruang ekstra jatuh sbg blank space DI DALAM kartu (kanan
+        // field, sebelum tepi kartu), bukan lagi di LUAR kartu. Diverifikasi
+        // via render offscreen sebelum diterapkan di sini.
+        ViewportTengahPacs wrapperPacs = new ViewportTengahPacs();
+        java.awt.GridBagConstraints cWrapperPacs = new java.awt.GridBagConstraints();
+        cWrapperPacs.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cWrapperPacs.weightx = 1.0;
+        cWrapperPacs.anchor = java.awt.GridBagConstraints.NORTH;
+        wrapperPacs.add(PanelPacs, cWrapperPacs);
+
         widget.ScrollPane scrollPacs = new widget.ScrollPane();
-        scrollPacs.setViewportView(PanelPacs);
-        scrollPacs.setPreferredSize(new java.awt.Dimension(960,420));
+        scrollPacs.setViewportView(wrapperPacs);
+        scrollPacs.setPreferredSize(new java.awt.Dimension(1000,420));
         TabTriase.addTab("PACS", scrollPacs);
         perbaruiVisibilitasMekanismeTrauma();
+    }
+
+    /**
+     * Panel pembungkus generik supaya 1 anak (PanelPacs) bisa diregangkan
+     * mengisi SELURUH lebar viewport widget.ScrollPane, brp pun lebar
+     * viewport sungguhan saat dirender (JTabbedPane merentangkan komponen
+     * tab aktif ke lebar area tab yg tersedia, TIDAK peduli preferredSize
+     * scrollPacs - lihat catatan di initPacsTab() persis sebelum dipakai).
+     * `implements Scrollable` + getScrollableTracksViewportWidth() TRUE
+     * adalah mekanisme baku Swing utk kasus ini - JViewport otomatis
+     * meregangkan view (wrapperPacs ini) SELEBAR dirinya kalau method ini
+     * true. Nama kelas ("Tengah") sejarahnya dari percobaan pertama yg
+     * men-tengah-kan PanelPacs (constraint kosong/weightx=0) - sekarang
+     * dipakai kebalikannya (constraint fill=HORIZONTAL+weightx=1.0 di
+     * initPacsTab()) supaya PanelPacs ikut meregang penuh, bukan cuma
+     * ditengahkan sempit - class-nya sendiri generik, cukup 1x reparenting,
+     * perilaku akhirnya ditentukan constraint yg dipakai saat .add().
+     */
+    private static class ViewportTengahPacs extends javax.swing.JPanel implements javax.swing.Scrollable {
+        ViewportTengahPacs(){
+            super(new java.awt.GridBagLayout());
+            setOpaque(false);
+        }
+        @Override public java.awt.Dimension getPreferredScrollableViewportSize(){ return getPreferredSize(); }
+        @Override public int getScrollableUnitIncrement(java.awt.Rectangle visibleRect,int orientation,int direction){ return 20; }
+        @Override public int getScrollableBlockIncrement(java.awt.Rectangle visibleRect,int orientation,int direction){ return 100; }
+        @Override public boolean getScrollableTracksViewportWidth(){ return true; }
+        @Override public boolean getScrollableTracksViewportHeight(){ return false; }
     }
 
     /** Item 3/6: tampilkan warna cetak PacsLevel di tombol pilihan form (PacsLevel.getWarnaCetakHex()). */
@@ -5115,7 +5403,26 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         widget.ComboBox cmb = new widget.ComboBox();
         cmb.addItem("0"); cmb.addItem("1"); cmb.addItem("2"); cmb.addItem("3"); cmb.addItem("?");
         cmb.setEnabled(false);
+        // Ukuran tetap PENDEK (bukan melebar) - isinya cuma 1 digit, lihat
+        // catatan ukuranPacsFieldPendek() soal gotcha widget.TextBox/ComboBox.
+        cmb.setPreferredSize(new java.awt.Dimension(70,23));
         return cmb;
+    }
+
+    /**
+     * Ukuran preferred TETAP & PENDEK (130x23) utk field angka tab PACS
+     * (Tekanan Darah/Nadi/Suhu/dst). widget.TextBox constructor diam2
+     * memanggil setSize(WIDTH,23) dgn WIDTH=1 (java.awt.image.ImageObserver.
+     * WIDTH, BUKAN lebar pixel - gotcha lawas yg sama sudah didokumentasikan
+     * & diperbaiki dgn pola identik di sesi RM 03-2/03-4-05-06), jadi tanpa
+     * .setPreferredSize() eksplisit lebar kolom field GridBagLayout jadi
+     * "kebetulan" ikut komponen lain yg lebih lebar di kolom yg sama -
+     * bukan lebar yg disengaja. 130px cukup lega utk angka tapi tetap
+     * "pas/pendek" (bukan melebar) sesuai permintaan.
+     */
+    private widget.TextBox ukuranPacsFieldPendek(widget.TextBox t){
+        t.setPreferredSize(new java.awt.Dimension(130,23));
+        return t;
     }
 
     private void CekBoxIsiTeks(widget.CekBox cek,String teks){
@@ -5125,6 +5432,12 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     private widget.Label pacsLabelTeks(String teks){
         widget.Label lbl = new widget.Label();
         lbl.setText(teks);
+        // Bugfix alignment: widget.Label (usu.widget.Label) defaultnya RATA
+        // KANAN - sudah pernah dicatat di sesi RM 03-2 sbg bug identik di
+        // tambahBarisPacsLabel() milik file ini, saat itu sengaja tidak
+        // diperbaiki krn di luar scope permintaan waktu itu. Sekarang
+        // diperbaiki eksplisit (diverifikasi via render offscreen).
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         return lbl;
     }
 
@@ -5188,23 +5501,60 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         return c;
     }
 
-    private int tambahBarisPacsLabel(int row,String judul){
+    /**
+     * Bugfix alignment (Fase 3, layout dua-kolom tab PACS): gotcha baku
+     * GridBagLayout - kalau SEMUA komponen dalam satu container punya
+     * weightx=0 (kasus pacsConstraint() di atas, dipakai konsisten oleh
+     * label/field PACS), dan container itu diberi lebih banyak lebar drpd
+     * total preferred width kontennya (spt panelPacsKiri/panelPacsKanan yang
+     * di-stretch fill=BOTH di kolom 0.5 lebar tab), GridBagLayout MEN-TENGAH-
+     * KAN seluruh grid di dalam container-nya, bukan rata kiri - ini akar
+     * penyebab label & field "mengambang di tengah/kanan" yang dilaporkan.
+     * Filler tak-terlihat (Box.createHorizontalGlue) ditaruh di kolom PALING
+     * KANAN (gridx=2 - belum pernah dipakai baris manapun) dengan weightx=1.0
+     * supaya SEMUA sisa lebar diserap di situ (tak terlihat), bukan komponen
+     * label/field sungguhan - jadi kolom 0 (label) & kolom 1 (input) tetap di
+     * lebar aslinya, rata kiri (LEADING), tidak ikut melebar/bergeser.
+     * Dipanggil sekali per panel, setelah SEMUA baris isinya selesai ditambah.
+     */
+    private void tambahPengisiKolom(widget.PanelBiasa panel){
+        java.awt.GridBagConstraints cIsi = new java.awt.GridBagConstraints();
+        cIsi.gridx = 2; cIsi.gridy = 0;
+        cIsi.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        cIsi.weightx = 1.0;
+        cIsi.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        panel.add(javax.swing.Box.createHorizontalGlue(), cIsi);
+    }
+
+    /**
+     * Fase 3 (layout dua-kolom tab PACS): parameter "panel" ditambahkan
+     * supaya baris section-header bisa ditaruh di PanelPacs (judul tab),
+     * panelPacsKiri, ATAU panelPacsKanan - sebelumnya hardcode ke
+     * PanelPacs. Satu-satunya pemanggil method ini ada di initPacsTab(),
+     * jadi aman diubah signature-nya (bukan variabel/field UI).
+     */
+    private int tambahBarisPacsLabel(widget.PanelBiasa panel,int row,String judul){
         widget.Label lbl = new widget.Label();
         lbl.setText(judul);
         lbl.setFont(lbl.getFont().deriveFont(java.awt.Font.BOLD));
+        // Bugfix alignment: lihat catatan pacsLabelTeks() - widget.Label
+        // defaultnya rata kanan, dipaksa rata kiri (LEADING) di sini.
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         java.awt.GridBagConstraints c = pacsConstraint(0,row);
         c.gridwidth = 2;
-        PanelPacs.add(lbl,c);
+        panel.add(lbl,c);
         return row+1;
     }
 
-    private int tambahBarisPacsField(int row,String label,java.awt.Component field){
+    /** Fase 3: lihat catatan javadoc tambahBarisPacsLabel() di atas - parameter "panel" sama alasannya. */
+    private int tambahBarisPacsField(widget.PanelBiasa panel,int row,String label,java.awt.Component field){
         widget.Label lbl = new widget.Label();
         lbl.setText(label+" :");
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         java.awt.GridBagConstraints c1 = pacsConstraint(0,row);
-        PanelPacs.add(lbl,c1);
+        panel.add(lbl,c1);
         java.awt.GridBagConstraints c2 = pacsConstraint(1,row);
-        PanelPacs.add(field,c2);
+        panel.add(field,c2);
         return row+1;
     }
 

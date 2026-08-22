@@ -64,6 +64,7 @@ public class InventoryPengajuanBarangMedis extends javax.swing.JDialog {
     public InventoryPengajuanBarangMedis(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Jml","Sat.Pengajuan","Kode Barang","Nama Barang","Satuan","Jenis Obat","Kategori","Golongan","H.Pengajuan","Sub Total","Jml2","Isi","Isi Besar"};
         tabMode=new DefaultTableModel(null,judul){

@@ -37,6 +37,7 @@ public class DlgCopyResep extends javax.swing.JDialog {
     public DlgCopyResep(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"No.Resep","Tgl.Resep","Jam Resep","No.Rawat","No.RM","Pasien","Dokter Peresep","Kode Dokter","Status"};
         tabMode=new DefaultTableModel(null,row){

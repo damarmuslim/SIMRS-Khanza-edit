@@ -57,6 +57,7 @@ public final class DlgKtgPenyakit extends javax.swing.JDialog {
     public DlgKtgPenyakit(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,5);
         setSize(545,599);
 

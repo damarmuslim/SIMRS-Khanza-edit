@@ -25,8 +25,8 @@ public class WarnaTable extends DefaultTableCellRenderer {
             // foreground baris terpilih sudah putih (dari
             // JTable.selectionForeground) - hasilnya teks tak terbaca
             // saat baris diklik. Paksa eksplisit ikut Design System.
-            component.setBackground(ThemeConfig.PRIMARY);
-            component.setForeground(ThemeConfig.SURFACE);
+            component.setBackground(ThemeConfig.TABLE_SELECTION_BG);
+            component.setForeground(ThemeConfig.TABLE_SELECTION_TEXT);
         } else if (row % 2 == 1){
             // Logika zebra (selang-seling) bawaan Khanza - biarkan saja
             component.setBackground(new Color(255,244,244));

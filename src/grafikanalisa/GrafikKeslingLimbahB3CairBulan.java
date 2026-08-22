@@ -38,6 +38,7 @@ public class GrafikKeslingLimbahB3CairBulan extends javax.swing.JDialog {
     public GrafikKeslingLimbahB3CairBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

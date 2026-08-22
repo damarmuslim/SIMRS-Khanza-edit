@@ -44,6 +44,7 @@ public class DlgFeePeriksaRalan extends javax.swing.JDialog {
     public DlgFeePeriksaRalan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Tgl.Periksa","Nama Pasien","Jenis Bayar","Biaya","Jasa Dokter","Uang RS"};
         

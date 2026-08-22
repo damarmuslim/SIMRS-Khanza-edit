@@ -1244,6 +1244,15 @@ public class frmUtama extends javax.swing.JFrame {
     private frmUtama() {
         super();
         initComponents();
+        widget.IconStyle.pasang(this);
+        // [BARU] Hapus ikon pensil berwarna pada teks credit - lihat
+        // widget.IconStyle. jLabel7.setIcon(null) menimpa
+        // .setIcon(file-edit-16x16.png) yg ada di GEN block
+        // (initComponents(), tidak boleh diedit manual).
+        // (Ikon status bar admin/tanggal/alamat IP DICOBA tapi dicabut lagi
+        // atas permintaan user - lebar label fixed di GEN block bikin ikon
+        // ketiban/ketutup teks.)
+        jLabel7.setIcon(null);
         initKhanza();
         initKhanza2();
         setIconImage(new ImageIcon(super.getClass().getResource("/picture/yaski24.png")).getImage());

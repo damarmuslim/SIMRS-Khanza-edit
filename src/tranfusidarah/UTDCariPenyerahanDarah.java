@@ -59,6 +59,7 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
     public UTDCariPenyerahanDarah(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new String[]{
             "No.Penyerahan","Tanggal","Dinas","Petugas Cross","Keterangan","Status",

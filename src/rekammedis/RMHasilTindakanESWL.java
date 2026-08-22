@@ -68,6 +68,7 @@ public final class RMHasilTindakanESWL extends javax.swing.JDialog {
     public RMHasilTindakanESWL(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","Kode Dokter","Nama Ahli Bedah","NIP","Nama Asisten/Perawat","Waktu Mulai","Waktu Selesai",

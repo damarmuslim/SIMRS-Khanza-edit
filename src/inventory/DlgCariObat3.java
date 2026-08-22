@@ -67,6 +67,7 @@ public final class DlgCariObat3 extends javax.swing.JDialog {
     public DlgCariObat3(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,2);
         setSize(856,350);
         Object[] row={"K","Kode Barang","Nama Barang","Msk","Pg","Sg","Sr","Ml","Ttl.Msk","Ttl.Klr","Retur","Rtr.Sh","Ttl.Hlg","No.Batch","No.Faktur","Aturan Pakai",

@@ -50,6 +50,7 @@ public class IPSRSCariPengeluaran extends javax.swing.JDialog {
     public IPSRSCariPengeluaran(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Tgl.Keluar","No.Keluar","Keterangan","Petugas","Barang","Satuan","Jml","Harga(Rp)","Total(Rp)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

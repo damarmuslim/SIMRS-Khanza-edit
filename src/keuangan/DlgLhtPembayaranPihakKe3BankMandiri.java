@@ -58,6 +58,7 @@ public final class DlgLhtPembayaranPihakKe3BankMandiri extends javax.swing.JDial
     public DlgLhtPembayaranPihakKe3BankMandiri(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(885,674);
         Object[] rowRwJlDr={

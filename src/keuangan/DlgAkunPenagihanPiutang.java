@@ -57,6 +57,7 @@ public class DlgAkunPenagihanPiutang extends javax.swing.JDialog {
     public DlgAkunPenagihanPiutang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"P","Kode Rekening","Nama Rekening","Nama Bank","Atas Nama","No. Rekening"};
         tabMode=new DefaultTableModel(null,row){

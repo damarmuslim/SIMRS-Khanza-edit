@@ -56,6 +56,7 @@ public final class DlgBarcode extends javax.swing.JDialog {
     public DlgBarcode(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"ID","NIP","Nama Pegawai","Barcode"};
         tabMode=new DefaultTableModel(null,row){

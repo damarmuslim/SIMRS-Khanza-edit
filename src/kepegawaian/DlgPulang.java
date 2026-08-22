@@ -55,6 +55,7 @@ public final class DlgPulang extends javax.swing.JDialog {
     public DlgPulang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"NIK","Nama","Shift","Jam Datang","Jam Pulang","Status","Keterlambatan","Durasi","Catatan"};
         tabMode=new DefaultTableModel(null,row){

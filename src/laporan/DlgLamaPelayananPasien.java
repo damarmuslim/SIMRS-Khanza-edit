@@ -42,6 +42,7 @@ public class DlgLamaPelayananPasien extends javax.swing.JDialog {
     public DlgLamaPelayananPasien(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         
         HTMLEditorKit kit = new HTMLEditorKit();

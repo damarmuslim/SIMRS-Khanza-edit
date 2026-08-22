@@ -38,6 +38,7 @@ public class GrafikTBStatusHIV extends javax.swing.JDialog {
     public GrafikTBStatusHIV(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

@@ -48,6 +48,7 @@ public class DlgProyeksiBeriObat2 extends javax.swing.JDialog {
     public DlgProyeksiBeriObat2(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Tgl.Beri","No.Rawat","Barang","Satuan","Biaya Obat","Jml.Obat",
                       "Subtotal Biaya","Emb+Tsl","Total Biaya",

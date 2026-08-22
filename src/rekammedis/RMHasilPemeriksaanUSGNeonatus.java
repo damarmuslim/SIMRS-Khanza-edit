@@ -83,6 +83,7 @@ public final class RMHasilPemeriksaanUSGNeonatus extends javax.swing.JDialog {
     public RMHasilPemeriksaanUSGNeonatus(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","Kode Dokter","Nama Dokter","Tanggal","Kiriman Dari","Diagnosa Klinis","Ventrikel Sinistra","Ventrikel Dextra","Kesan","Kesimpulan","Saran"

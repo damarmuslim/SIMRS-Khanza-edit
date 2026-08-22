@@ -79,6 +79,7 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
     public ICareRiwayatPerawatan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         initComponents2();
         
         this.setLocation(10,2);

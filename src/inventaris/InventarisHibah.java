@@ -65,6 +65,7 @@ public class InventarisHibah extends javax.swing.JDialog {
     public InventarisHibah(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Jml","Kode Barang","Nama Barang","Produsen","Merk","Kategori","Jenis","Harga(Rp)","Subtotal(Rp)"};
         tabMode=new DefaultTableModel(null,judul){

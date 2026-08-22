@@ -39,6 +39,7 @@ public class GrafikRegistrasiPerCaraBayar extends javax.swing.JDialog {
     public GrafikRegistrasiPerCaraBayar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

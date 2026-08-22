@@ -42,6 +42,7 @@ public class DlgBulananKlasifikasiPasienRanap extends javax.swing.JDialog {
     public DlgBulananKlasifikasiPasienRanap(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         
         HTMLEditorKit kit = new HTMLEditorKit();

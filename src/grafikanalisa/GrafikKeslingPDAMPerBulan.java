@@ -38,6 +38,7 @@ public class GrafikKeslingPDAMPerBulan extends javax.swing.JDialog {
     public GrafikKeslingPDAMPerBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

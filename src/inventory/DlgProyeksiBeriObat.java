@@ -48,6 +48,7 @@ public class DlgProyeksiBeriObat extends javax.swing.JDialog {
     public DlgProyeksiBeriObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Tgl.Beri","No.Rawat","Barang","Satuan","Biaya Obat","Jml.Obat","Subtotal Biaya","Emb+Tsl","Total Biaya","Harga Beli","Total Beli","Keuntungan"

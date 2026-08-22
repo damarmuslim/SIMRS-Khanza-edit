@@ -57,6 +57,7 @@ public class DlgReturJual extends javax.swing.JDialog {
     public DlgReturJual(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         try {
             aktifkanbatch = koneksiDB.AKTIFKANBATCHOBAT();

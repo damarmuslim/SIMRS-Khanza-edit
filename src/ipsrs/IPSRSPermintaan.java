@@ -58,6 +58,7 @@ public class IPSRSPermintaan extends javax.swing.JDialog {
     public IPSRSPermintaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={
             "Jml","Kode Barang","Nama Barang","Satuan","Jenis Barang","Keterangan"};

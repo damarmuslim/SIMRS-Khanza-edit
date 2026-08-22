@@ -47,6 +47,7 @@ public class DlgKIPPasienRalan extends javax.swing.JDialog {
     public DlgKIPPasienRalan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         
         HTMLEditorKit kit = new HTMLEditorKit();

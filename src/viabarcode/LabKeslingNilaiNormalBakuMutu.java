@@ -60,6 +60,7 @@ public final class LabKeslingNilaiNormalBakuMutu extends javax.swing.JDialog {
     public LabKeslingNilaiNormalBakuMutu(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,10);
         setSize(545,599);
 

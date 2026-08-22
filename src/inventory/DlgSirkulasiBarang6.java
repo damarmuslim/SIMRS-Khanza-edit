@@ -63,6 +63,7 @@ public class DlgSirkulasiBarang6 extends javax.swing.JDialog {
     public DlgSirkulasiBarang6(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
               "Kode Barang","No.Batch","No.Faktur","Nama Barang","Satuan","Tgl.Awal","Stok Awal","Stok Awal(Rp)","Pengadaan","Pengadaan(Rp)",

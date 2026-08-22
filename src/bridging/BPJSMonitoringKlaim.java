@@ -60,6 +60,7 @@ public class BPJSMonitoringKlaim extends javax.swing.JDialog {
     public BPJSMonitoringKlaim(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.SEP","No.Rawat","No.RM","Nama Pasien","Tanggal SEP","Tanggal Rujukan", 

@@ -52,6 +52,7 @@ public class K3RSBagianTubuh extends javax.swing.JDialog {
     public K3RSBagianTubuh(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode Bagian","Bagian Tubuh"};

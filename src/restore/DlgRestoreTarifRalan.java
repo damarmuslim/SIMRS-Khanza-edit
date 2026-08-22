@@ -50,6 +50,7 @@ public final class DlgRestoreTarifRalan extends javax.swing.JDialog {
     public DlgRestoreTarifRalan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode Tindakan",
                       "Nama Tnd/Prw/Tagihan",

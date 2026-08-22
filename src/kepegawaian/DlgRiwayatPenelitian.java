@@ -72,6 +72,7 @@ public class DlgRiwayatPenelitian extends javax.swing.JDialog {
     public DlgRiwayatPenelitian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         initComponents2();
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));

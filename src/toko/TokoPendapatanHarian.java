@@ -54,6 +54,7 @@ public final class TokoPendapatanHarian extends javax.swing.JDialog {
     public TokoPendapatanHarian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(885,674);
         tabMode=new DefaultTableModel(null,new String[]{

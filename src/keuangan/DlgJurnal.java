@@ -36,6 +36,7 @@ public class DlgJurnal extends javax.swing.JDialog {
     public DlgJurnal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode Rekening",
                     "Nama Rekening",

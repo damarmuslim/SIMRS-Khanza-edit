@@ -51,6 +51,7 @@ public final class DlgRestorePemberiHutangLain extends javax.swing.JDialog {
     public DlgRestorePemberiHutangLain(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"Kode","Pemberi Hutang","Alamat","No.Telp","Kode Rekening","Nama Rekening"};
         tabMode=new DefaultTableModel(null,row){

@@ -50,6 +50,7 @@ public class DlgDataSasaranUsiaLansia extends javax.swing.JDialog {
     public DlgDataSasaranUsiaLansia(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         
         HTMLEditorKit kit = new HTMLEditorKit();

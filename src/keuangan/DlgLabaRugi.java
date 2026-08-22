@@ -39,6 +39,7 @@ public class DlgLabaRugi extends javax.swing.JDialog {
     public DlgLabaRugi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"","",""}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

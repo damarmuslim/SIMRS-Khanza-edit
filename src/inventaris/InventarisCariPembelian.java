@@ -49,6 +49,7 @@ public class InventarisCariPembelian extends javax.swing.JDialog {
     public InventarisCariPembelian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Tgl.Beli","No.Faktur","Suplier","Petugas","Jml","Harga(Rp)","SubTotal(Rp)","Disk(%)","Bsr.Disk(Rp)","Total(Rp)"};
         tabMode=new DefaultTableModel(null,row){

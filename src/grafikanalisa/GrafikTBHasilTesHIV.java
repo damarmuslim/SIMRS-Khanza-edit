@@ -39,6 +39,7 @@ public class GrafikTBHasilTesHIV extends javax.swing.JDialog {
     public GrafikTBHasilTesHIV(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

@@ -56,6 +56,7 @@ public class GrafikPeristiwaK3PerPenyebab extends javax.swing.JDialog {
     public GrafikPeristiwaK3PerPenyebab(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Penyebab Kecelakaan","Jumlah Peristiwa","Persentase(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

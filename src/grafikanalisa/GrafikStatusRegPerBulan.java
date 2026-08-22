@@ -39,6 +39,7 @@ public class GrafikStatusRegPerBulan extends javax.swing.JDialog {
     public GrafikStatusRegPerBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

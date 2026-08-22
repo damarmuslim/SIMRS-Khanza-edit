@@ -46,6 +46,7 @@ public class DlgRekapObatPoli extends javax.swing.JDialog {
     public DlgRekapObatPoli(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Poliklinik","Jml","Nama Obat","Biaya Obat","Embalase","Tuslah","Total"};
         tabMode=new DefaultTableModel(null,row){

@@ -59,6 +59,7 @@ public class DlgPengeluaranApotek extends javax.swing.JDialog {
     public DlgPengeluaranApotek(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
             "Jml","Kode Barang","No.Batch","Nama Barang","Kategori",

@@ -47,6 +47,7 @@ public class KeuanganRingkasanJasaTindakan extends javax.swing.JDialog {
     public KeuanganRingkasanJasaTindakan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         KdDokter.setDocument(new batasInput((byte)20).getKata(KdDokter));
                 

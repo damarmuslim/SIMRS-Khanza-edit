@@ -41,6 +41,7 @@ public class DlgProyeksiJual extends javax.swing.JDialog {
     public DlgProyeksiJual(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Tgl.Jual","No.Nota","Barang","Satuan","Harga Jual","Jml.Jual",

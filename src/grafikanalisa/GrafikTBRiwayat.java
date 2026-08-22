@@ -38,6 +38,7 @@ public class GrafikTBRiwayat extends javax.swing.JDialog {
     public GrafikTBRiwayat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

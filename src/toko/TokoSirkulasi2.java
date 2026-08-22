@@ -46,6 +46,7 @@ public class TokoSirkulasi2 extends javax.swing.JDialog {
     public TokoSirkulasi2(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Kode Barang","Nama Barang","Satuan","Tgl.Opname","Stok Awal","Stok Awal(Rp)","Pengadaan","Pengadaan(Rp)","Penerimaan","Penerimaan(Rp)","Penjualan","Penjualan(Rp)","Piutang","Piutang(Rp)","Retur Sup","Retur Sup(Rp)","Retur Jual","Retur Jual(Rp)","Retur Piutang","Retur Piutang(Rp)","Stok Akhir","Stok Akhir(Rp)"

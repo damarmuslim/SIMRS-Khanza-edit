@@ -56,6 +56,7 @@ public class GrafikPeristiwaK3PerJenisLuka extends javax.swing.JDialog {
     public GrafikPeristiwaK3PerJenisLuka(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Jenis Luka","Jumlah Peristiwa","Persentase(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

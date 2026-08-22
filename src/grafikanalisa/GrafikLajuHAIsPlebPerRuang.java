@@ -56,6 +56,7 @@ public class GrafikLajuHAIsPlebPerRuang extends javax.swing.JDialog {
     public GrafikLajuHAIsPlebPerRuang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Kamar/Bangsal","Jumlah Hari IVL (Denumerator)","Jumlah Kasus Plebitis (Numerator)","Laju Plebitis","Persentase Plebitis(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

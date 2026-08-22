@@ -50,6 +50,7 @@ public class KeuanganCariPenagihanPiutangPasien extends javax.swing.JDialog {
     public KeuanganCariPenagihanPiutangPasien(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Tgl.Penagihan","Tempo","Tgl.Tempo","No.Penagihan","Bagian Penagihan","Menyetujui","Penjamin","Catatan","Transfer Ke","Status Penagihan"};
         tabMode=new DefaultTableModel(null,row){

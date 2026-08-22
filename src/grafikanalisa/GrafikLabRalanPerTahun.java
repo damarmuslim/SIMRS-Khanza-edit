@@ -39,6 +39,7 @@ public class GrafikLabRalanPerTahun extends javax.swing.JDialog {
     public GrafikLabRalanPerTahun(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

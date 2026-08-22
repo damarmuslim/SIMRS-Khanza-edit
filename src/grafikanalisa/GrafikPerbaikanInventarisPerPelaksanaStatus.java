@@ -56,6 +56,7 @@ public class GrafikPerbaikanInventarisPerPelaksanaStatus extends javax.swing.JDi
     public GrafikPerbaikanInventarisPerPelaksanaStatus(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Pelaksana Perbaikan","Status Perbaikan","Jumlah Perbaikan","Persentase Perbaikan(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

@@ -38,6 +38,7 @@ public class GrafikKejadianIKPPerJenis extends javax.swing.JDialog {
     public GrafikKejadianIKPPerJenis(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

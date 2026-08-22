@@ -38,6 +38,7 @@ public class GrafikTBPeriodeLaporan extends javax.swing.JDialog {
     public GrafikTBPeriodeLaporan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

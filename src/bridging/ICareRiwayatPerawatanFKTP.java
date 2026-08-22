@@ -80,6 +80,7 @@ public final class ICareRiwayatPerawatanFKTP extends javax.swing.JDialog {
     public ICareRiwayatPerawatanFKTP(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         initComponents2();
         
         this.setLocation(10,2);

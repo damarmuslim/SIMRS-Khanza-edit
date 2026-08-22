@@ -66,6 +66,7 @@ public final class LabKeslingVerifikasiPengujianSampel extends javax.swing.JDial
     public LabKeslingVerifikasiPengujianSampel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
               "No.Penugasan","Kode","Nama Parameter","Satuan","Hasil Pemeriksaan","Keterangan","Nilai Normal","Metode Pengujian","Kategori"

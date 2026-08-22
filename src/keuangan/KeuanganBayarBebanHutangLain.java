@@ -77,6 +77,7 @@ public final class KeuanganBayarBebanHutangLain extends javax.swing.JDialog {
     public KeuanganBayarBebanHutangLain(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         DlgBayarMandiri.setSize(562,163);
 
         tabMode=new DefaultTableModel(null,new Object[]{

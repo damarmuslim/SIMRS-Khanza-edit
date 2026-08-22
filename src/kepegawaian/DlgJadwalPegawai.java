@@ -66,6 +66,7 @@ public class DlgJadwalPegawai extends javax.swing.JDialog {
     public DlgJadwalPegawai(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tbJadwal.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbJadwal.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

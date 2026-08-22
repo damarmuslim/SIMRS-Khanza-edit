@@ -64,6 +64,7 @@ public class IPSRSSuratPemesanan extends javax.swing.JDialog {
     public IPSRSSuratPemesanan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
             "Jml","Satuan","Kode Barang","Nama Barang",

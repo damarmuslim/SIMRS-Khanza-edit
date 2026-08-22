@@ -45,6 +45,7 @@ public class DlgDaftarPasienRanapPolri extends javax.swing.JDialog {
     public DlgDaftarPasienRanapPolri(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] rowRwJlDr={"No.","No.RM","Nama Pasien","Cara Bayar","Tgl.Masuk","Tgl.Pulang","Ruangan","H.P.","Pangkat","Satuan","Golongan","Jabatan"};
         tabMode=new DefaultTableModel(null,rowRwJlDr){

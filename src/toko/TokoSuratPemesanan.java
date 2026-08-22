@@ -54,6 +54,7 @@ public class TokoSuratPemesanan extends javax.swing.JDialog {
     public TokoSuratPemesanan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
             "Jml","Satuan","Kode Barang","Nama Barang",

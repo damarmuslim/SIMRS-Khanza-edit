@@ -81,6 +81,7 @@ public final class LabKeslingPermintaanPengujianSampel extends javax.swing.JDial
     public LabKeslingPermintaanPengujianSampel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode","Nama Parameter","Metode Pengujian","Satuan","Kategori"};
         tabMode=new DefaultTableModel(null,row){

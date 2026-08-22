@@ -50,6 +50,7 @@ public final class DlgRestoreCaraBayar extends javax.swing.JDialog {
     public DlgRestoreCaraBayar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode Asuransi","Nama Asuransi","Perusahaan Asuransi","Alamat Asuransi","No.Telp","Attn"};
         tabMode=new DefaultTableModel(null,row){

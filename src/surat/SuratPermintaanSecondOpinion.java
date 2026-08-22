@@ -67,6 +67,7 @@ public final class SuratPermintaanSecondOpinion extends javax.swing.JDialog {
     public SuratPermintaanSecondOpinion(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Surat","No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","Tanggal","Pemohon","Alamat Pemohon",

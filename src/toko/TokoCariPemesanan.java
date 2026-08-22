@@ -50,6 +50,7 @@ public class TokoCariPemesanan extends javax.swing.JDialog {
     public TokoCariPemesanan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.Faktur","Suplier","Petugas","Jml","Harga(Rp)","SubTotal(Rp)",
                     "Disk(%)","Bsr.Disk(Rp)","Total(Rp)"};

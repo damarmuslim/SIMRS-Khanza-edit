@@ -57,6 +57,7 @@ public class frmPengaduan extends javax.swing.JFrame {
      */
     public frmPengaduan() {
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "P","Id","Tanggal","No.RM","Nama Pasien","Pesan","Balasan"

@@ -46,6 +46,7 @@ public class KeuanganBubes extends javax.swing.JDialog {
     public KeuanganBubes(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Tgl.Jurnal","No.Jurnal","No.Bukti","Keterangan","Saldo Awal","Debet","Kredit","Saldo Akhir"

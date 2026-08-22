@@ -68,6 +68,7 @@ public final class RMPenilaianAwalMedisRanapNeonatus extends javax.swing.JDialog
     public RMPenilaianAwalMedisRanapNeonatus(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         DlgRiwayatPersalinan.setSize(650,192);
         

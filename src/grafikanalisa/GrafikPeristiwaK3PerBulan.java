@@ -56,6 +56,7 @@ public class GrafikPeristiwaK3PerBulan extends javax.swing.JDialog {
     public GrafikPeristiwaK3PerBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Bulan Peristiwa","Jumlah Peristiwa K3 Per Bulan","Persentase K3 Per Bulan(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

@@ -63,6 +63,7 @@ public final class KeslingLimbahB3MedisCair extends javax.swing.JDialog {
     public KeslingLimbahB3MedisCair(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(628,674);
 

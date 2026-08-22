@@ -48,6 +48,7 @@ public class RMCariRekonsiliasiObat extends javax.swing.JDialog {
     public RMCariRekonsiliasiObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         DlgKonfirmasiObatRekonsiliasi.setSize(572,165);
 

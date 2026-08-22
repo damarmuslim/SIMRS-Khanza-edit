@@ -47,6 +47,7 @@ public class DlgSOAPRalanAggotaTNI extends javax.swing.JDialog {
     public DlgSOAPRalanAggotaTNI(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         HTMLEditorKit kit = new HTMLEditorKit();
         LoadHTML.setEditable(true);

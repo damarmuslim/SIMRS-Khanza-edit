@@ -41,6 +41,7 @@ public class DlgIndustriFarmasi extends javax.swing.JDialog {
     public DlgIndustriFarmasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode I.F.","Industri Farmasi","Alamat Industri Farmasi","Kota","No.Telp"};
         tabMode=new DefaultTableModel(null,row){

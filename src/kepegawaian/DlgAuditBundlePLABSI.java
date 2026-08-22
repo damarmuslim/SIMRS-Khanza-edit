@@ -61,6 +61,7 @@ public final class DlgAuditBundlePLABSI extends javax.swing.JDialog {
     public DlgAuditBundlePLABSI(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(628,674);
 

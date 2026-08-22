@@ -38,6 +38,7 @@ public class GrafikKeslingPDAMPertanggal extends javax.swing.JDialog {
     public GrafikKeslingPDAMPertanggal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

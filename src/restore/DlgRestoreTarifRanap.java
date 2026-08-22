@@ -51,6 +51,7 @@ public final class DlgRestoreTarifRanap extends javax.swing.JDialog {
     public DlgRestoreTarifRanap(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode Tindakan","Nama Tnd/Prw/Tagihan","Kategori",
                       "J.S.Rumah Sakit","BHP/Paket Obat","J.Medis Dr",

@@ -47,6 +47,7 @@ public class DlgPenggunaObat extends javax.swing.JDialog {
     public DlgPenggunaObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode Barang","Nama Barang","Jml","Asal Stok","Status","Alamat Pasien","No.Resep","Dokter Peresep"};
         tabMode=new DefaultTableModel(null,row){

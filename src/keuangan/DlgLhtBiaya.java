@@ -55,6 +55,7 @@ public final class DlgLhtBiaya extends javax.swing.JDialog {
     public DlgLhtBiaya(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(885,674);
         tabMode=new DefaultTableModel(null,new Object[]{

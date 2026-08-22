@@ -51,6 +51,7 @@ public class InventoryRingkasanBeriObat extends javax.swing.JDialog {
     public InventoryRingkasanBeriObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode Barang","Nama Barang","Satuan","Jenis","Jumlah","Total","Kode Sat"};
         tabMode=new DefaultTableModel(null,row){

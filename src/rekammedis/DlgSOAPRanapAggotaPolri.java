@@ -48,6 +48,7 @@ public class DlgSOAPRanapAggotaPolri extends javax.swing.JDialog {
     public DlgSOAPRanapAggotaPolri(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         HTMLEditorKit kit = new HTMLEditorKit();
         LoadHTML.setEditable(true);

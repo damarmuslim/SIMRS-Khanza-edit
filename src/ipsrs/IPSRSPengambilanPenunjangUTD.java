@@ -53,6 +53,7 @@ public class IPSRSPengambilanPenunjangUTD extends javax.swing.JDialog {
     public IPSRSPengambilanPenunjangUTD(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Jml","Kode Barang","Nama Barang","Harga","Subtotal","Satuan","Stok Asal","Stok Tujuan"};
         tabMode=new DefaultTableModel(null,judul){

@@ -39,6 +39,7 @@ public class DlgRL4ASebab extends javax.swing.JDialog {
     public DlgRL4ASebab(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         HTMLEditorKit kit = new HTMLEditorKit();
         LoadHTML.setEditable(true);

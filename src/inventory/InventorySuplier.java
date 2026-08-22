@@ -40,6 +40,7 @@ public class InventorySuplier extends javax.swing.JDialog {
     public InventorySuplier(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode Supplier","Nama Supplier","Alamat Supplier","Kota","No.Telp","Nama Bank","No.Rekening"};
         tabMode=new DefaultTableModel(null,row){

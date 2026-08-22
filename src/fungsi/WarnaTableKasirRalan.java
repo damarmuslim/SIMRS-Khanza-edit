@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import widget.ThemeConfig;
 
 /**
  *
@@ -17,6 +18,17 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
         Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        if (isSelected) {
+            // Bugfix: warna zebra/status (Sudah/Batal/Dirujuk/Dirawat/Sudah
+            // Bayar) di bawah dulu SELALU menimpa background terlepas dari
+            // isSelected, jadi baris yg diklik di "Data Rawat Jalan" tak
+            // pernah kelihatan terpilih (beda dgn "Data IGD" yg pakai
+            // WarnaTable.java, sudah lebih dulu diperbaiki). Paksa eksplisit
+            // ikut Design System saat baris dipilih, sama spt WarnaTable.java.
+            component.setBackground(ThemeConfig.TABLE_SELECTION_BG);
+            component.setForeground(ThemeConfig.TABLE_SELECTION_TEXT);
+            return component;
+        }
         if (row % 2 == 1){
             component.setBackground(new Color(255,244,244));
             component.setForeground(new Color(50,50,50));

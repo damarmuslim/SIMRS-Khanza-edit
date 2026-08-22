@@ -70,6 +70,7 @@ public class MasterTemplatePemeriksaanDokter extends javax.swing.JDialog {
     public MasterTemplatePemeriksaanDokter(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.Template","Kode Dokter","Nama Dokter","Subjek","Objek","Asesmen","Plan","Instruksi","Evaluasi"};
         tabMode=new DefaultTableModel(null,row){

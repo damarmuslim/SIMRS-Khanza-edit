@@ -54,6 +54,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
     public DlgLhtPiutang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(885,674);
 

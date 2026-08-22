@@ -87,6 +87,7 @@ public final class BPJSRujukanKhusus extends javax.swing.JDialog {
     public BPJSRujukanKhusus(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(628,674);        
         tabMode=new DefaultTableModel(null,new Object[]{

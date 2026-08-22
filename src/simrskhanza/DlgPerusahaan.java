@@ -40,6 +40,7 @@ public class DlgPerusahaan extends javax.swing.JDialog {
     public DlgPerusahaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode","Nama Instansi/Perusahaan","Alamat Instansi/Perusahaan","Kota","No.Telp","Password"};
         tabMode=new DefaultTableModel(null,row){

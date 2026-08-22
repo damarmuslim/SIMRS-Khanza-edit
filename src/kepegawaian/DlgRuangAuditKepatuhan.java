@@ -53,6 +53,7 @@ public class DlgRuangAuditKepatuhan extends javax.swing.JDialog {
     public DlgRuangAuditKepatuhan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"ID Ruang","Nama Ruang"};
         tabMode=new DefaultTableModel(null,row){

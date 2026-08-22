@@ -52,6 +52,7 @@ public class K3RSDampakCidera extends javax.swing.JDialog {
     public K3RSDampakCidera(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode","Dampak Cidera"};

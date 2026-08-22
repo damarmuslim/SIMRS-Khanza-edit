@@ -26,8 +26,8 @@ public class WarnaTable2 extends DefaultTableCellRenderer {
             // sehingga baris yg diklik tak pernah benar-benar terlihat
             // "terpilih" (teks putih dari selection ketimpa lagi). Paksa
             // eksplisit ikut Design System saat baris dipilih.
-            component.setBackground(ThemeConfig.PRIMARY);
-            component.setForeground(ThemeConfig.SURFACE);
+            component.setBackground(ThemeConfig.TABLE_SELECTION_BG);
+            component.setForeground(ThemeConfig.TABLE_SELECTION_TEXT);
             return component;
         }
         // Logika zebra (selang-seling) + highlight kolom bawaan Khanza - biarkan saja

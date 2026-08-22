@@ -63,6 +63,7 @@ public class DapurHibah extends javax.swing.JDialog {
     public DapurHibah(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Jml","Kode Barang","Nama Barang","Satuan","Harga(Rp)","Subtotal(Rp)"};
         tabMode=new DefaultTableModel(null,judul){

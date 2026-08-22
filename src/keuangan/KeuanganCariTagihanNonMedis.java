@@ -45,6 +45,7 @@ public class KeuanganCariTagihanNonMedis extends javax.swing.JDialog {
     public KeuanganCariTagihanNonMedis(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.Tagihan","Tanggal","Diajukan Oleh","Keteragan","Status Tagihan"};
         tabMode=new DefaultTableModel(null,row){

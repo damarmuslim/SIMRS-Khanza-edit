@@ -51,6 +51,7 @@ public class DlgRekapPenerimaan extends javax.swing.JDialog {
     public DlgRekapPenerimaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Faktur","No.Order","Suplier","Petugas","Tgl.Pesan","Tgl.Faktur",

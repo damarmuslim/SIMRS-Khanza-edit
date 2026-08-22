@@ -42,6 +42,7 @@ public class DlgPembayaranPerPoli extends javax.swing.JDialog {
     public DlgPembayaranPerPoli(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Bagian/Unit","Jumlah Pasien","Pemasukan"};
         tabMode=new DefaultTableModel(null,row){

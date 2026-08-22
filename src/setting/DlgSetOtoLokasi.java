@@ -57,6 +57,7 @@ public class DlgSetOtoLokasi extends javax.swing.JDialog {
     public DlgSetOtoLokasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,10);
         setSize(457,249);
         tabMode=new DefaultTableModel(null,new Object[]{"Kode Lokasi","Nama Lokasi","Penggunaan Stok Ranap"}){

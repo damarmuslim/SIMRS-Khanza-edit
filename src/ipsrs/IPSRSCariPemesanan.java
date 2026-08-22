@@ -54,6 +54,7 @@ public class IPSRSCariPemesanan extends javax.swing.JDialog {
     public IPSRSCariPemesanan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.Faktur","Suplier","Petugas","Jml","Harga Beli(Rp)","SubTotal(Rp)",
                     "Disk(%)","Bsr.Disk(Rp)","Total(Rp)"};

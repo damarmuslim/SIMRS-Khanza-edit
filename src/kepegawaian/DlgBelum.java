@@ -51,6 +51,7 @@ public final class DlgBelum extends javax.swing.JDialog {
     public DlgBelum(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"NIK","Nama","JK","Jabatan","Jenjang Jabatan","Departemen","Bidang"};
         

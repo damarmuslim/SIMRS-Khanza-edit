@@ -48,6 +48,7 @@ public class UTDPendonor extends javax.swing.JDialog {
     public UTDPendonor(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.ID","Nama Pendonor","No.KTP","J.K.","Tempat Lahir","Tgl.Lahir","Alamat","Kd.Kel","Kelurahan",

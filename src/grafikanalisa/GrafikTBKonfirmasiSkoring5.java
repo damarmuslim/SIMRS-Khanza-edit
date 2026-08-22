@@ -38,6 +38,7 @@ public class GrafikTBKonfirmasiSkoring5 extends javax.swing.JDialog {
     public GrafikTBKonfirmasiSkoring5(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

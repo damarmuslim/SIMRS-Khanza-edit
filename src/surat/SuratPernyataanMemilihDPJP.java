@@ -67,6 +67,7 @@ public final class SuratPernyataanMemilihDPJP extends javax.swing.JDialog {
     public SuratPernyataanMemilihDPJP(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Pernyataan","No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","Tanggal","Pembuat Pernyataan","Alamat Pembuat Pernyataan",

@@ -59,6 +59,7 @@ public class DlgRunTeksApotek extends javax.swing.JDialog {
     public DlgRunTeksApotek(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Teks Berjalan","Aktifkan?","Wallpaper"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

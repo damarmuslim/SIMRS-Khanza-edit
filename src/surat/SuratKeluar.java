@@ -70,6 +70,7 @@ public final class SuratKeluar extends javax.swing.JDialog {
     public SuratKeluar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         initComponents2();
         try {

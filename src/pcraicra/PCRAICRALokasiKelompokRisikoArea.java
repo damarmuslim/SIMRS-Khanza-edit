@@ -53,6 +53,7 @@ public final class PCRAICRALokasiKelompokRisikoArea extends javax.swing.JDialog 
     public PCRAICRALokasiKelompokRisikoArea(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,10);
         tabMode=new DefaultTableModel(null,new Object[]{"Kode Area","Nama Lokasi & Kelompok Risiko Area"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

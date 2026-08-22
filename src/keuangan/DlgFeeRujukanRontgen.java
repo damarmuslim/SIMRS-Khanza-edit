@@ -45,6 +45,7 @@ public class DlgFeeRujukanRontgen extends javax.swing.JDialog {
     public DlgFeeRujukanRontgen(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Tgl.Expose","Nama Pasien","Jenis Bayar","Kode","Rontgen(Rp)","USG(Rp)","Keterangan"};
         

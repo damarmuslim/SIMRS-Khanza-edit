@@ -108,6 +108,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
     public BPJSDataSEP(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         
         WindowUpdatePulang.setSize(525,135);

@@ -51,6 +51,7 @@ public class DlgCariPembelian extends javax.swing.JDialog {
     public DlgCariPembelian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         try {
             aktifkanbatch = koneksiDB.AKTIFKANBATCHOBAT();

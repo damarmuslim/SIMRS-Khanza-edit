@@ -39,6 +39,7 @@ public class DlgKadaluarsaBatch extends javax.swing.JDialog {
     public DlgKadaluarsaBatch(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={
             "No.Batch","Kode Barang","Nama Barang","Satuan","Tgl.Datang",

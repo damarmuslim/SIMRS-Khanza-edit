@@ -107,6 +107,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
     public PCareDataPendaftaran(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         
         tabMode=new DefaultTableModel(null,new Object[]{

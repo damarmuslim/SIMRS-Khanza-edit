@@ -50,6 +50,7 @@ public final class DlgRestoreTarifLab extends javax.swing.JDialog {
     public DlgRestoreTarifLab(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode Periksa","Nama Pemeriksaan","J.S. RS","Paket BHP","J.M. Perujuk","J.M. Dokter","J.M. Petugas","K.S.O.","Menejemen","Total Tarif","Jenis Bayar","Kelas"};
         tabMode=new DefaultTableModel(null,row){

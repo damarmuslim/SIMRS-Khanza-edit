@@ -52,6 +52,7 @@ public class PerpustakaanPengarang extends javax.swing.JDialog {
     public PerpustakaanPengarang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode","Nama Pengarang/Penulis"};

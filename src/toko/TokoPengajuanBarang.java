@@ -48,6 +48,7 @@ public class TokoPengajuanBarang extends javax.swing.JDialog {
     public TokoPengajuanBarang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Jml","Kode Barang","Nama Barang","Satuan","Jenis Barang","Harga Pengajuan","Sub Total"};
         tabMode=new DefaultTableModel(null,judul){

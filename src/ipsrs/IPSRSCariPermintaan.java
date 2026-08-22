@@ -43,6 +43,7 @@ public class IPSRSCariPermintaan extends javax.swing.JDialog {
     public IPSRSCariPermintaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Tanggal","No.Permintaan","Ruangan","Pegawai","Status"};
         tabMode=new DefaultTableModel(null,row){

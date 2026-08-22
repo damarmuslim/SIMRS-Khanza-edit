@@ -38,6 +38,7 @@ public class DlgLaporanPenyakitTNI extends javax.swing.JDialog {
     public DlgLaporanPenyakitTNI(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         
         HTMLEditorKit kit = new HTMLEditorKit();

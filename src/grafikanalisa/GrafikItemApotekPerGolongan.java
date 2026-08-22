@@ -56,6 +56,7 @@ public class GrafikItemApotekPerGolongan extends javax.swing.JDialog {
     public GrafikItemApotekPerGolongan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Golongan Item Apotek","Jumlah Golongan Item Apotek","Persentase Golongan Item Apotek(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

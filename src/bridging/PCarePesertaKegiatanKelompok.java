@@ -80,6 +80,7 @@ public class PCarePesertaKegiatanKelompok extends javax.swing.JDialog {
     public PCarePesertaKegiatanKelompok(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Edu Id","Pelayanan","Kegiatan","Kelompok","Materi","Pembicara",

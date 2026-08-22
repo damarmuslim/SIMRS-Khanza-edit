@@ -56,6 +56,7 @@ public class GrafikKunjunganRanapPerTanggal extends javax.swing.JDialog {
     public GrafikKunjunganRanapPerTanggal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Tanggal Kunjungan Ranap","Jumlah Kunjungan Ranap Per Tanggal","Persentase Kunjungan Ranap Per Tanggal(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

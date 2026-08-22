@@ -55,6 +55,7 @@ public final class DlgPesanMasuk extends javax.swing.JDialog {
     public DlgPesanMasuk(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] rowRwJlDr={"Id","SMS ","No.HP","PDU","Encoding","Id Gtateway","Tanggal & Jam SMS"};
         tabMode=new DefaultTableModel(null,rowRwJlDr){

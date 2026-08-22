@@ -45,6 +45,7 @@ public final class DlgPilihanCetakDokumen extends javax.swing.JDialog {
     public DlgPilihanCetakDokumen(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,2);
         setSize(656,250);
 

@@ -73,6 +73,7 @@ public final class KeuanganHutangToko extends javax.swing.JDialog {
     public KeuanganHutangToko(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         DlgBayarMandiri.setSize(562,163);
 
         Object[] rowRwJlDr={

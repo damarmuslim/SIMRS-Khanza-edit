@@ -78,6 +78,7 @@ public final class RMHasilPemeriksaanEchoPediatrik extends javax.swing.JDialog {
     public RMHasilPemeriksaanEchoPediatrik(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","Kode Dokter","Nama Dokter","Tanggal","Diagnosa Klinis","Kiriman Dari",

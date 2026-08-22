@@ -40,6 +40,7 @@ public class DlgRBiayaHarianIPSRS extends javax.swing.JDialog {
     public DlgRBiayaHarianIPSRS(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Tanggal","Biaya Terpakai"};
         tabMode=new DefaultTableModel(null,row){

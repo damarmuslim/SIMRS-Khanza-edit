@@ -75,6 +75,7 @@ public final class KeuanganPiutangBelumLunas extends javax.swing.JDialog {
     public KeuanganPiutangBelumLunas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         
         WindowHitungPaket.setSize(320,230);

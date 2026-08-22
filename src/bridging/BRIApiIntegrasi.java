@@ -56,6 +56,7 @@ public class BRIApiIntegrasi extends javax.swing.JDialog {
     public BRIApiIntegrasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode Akun","Akun Rekening","Consumer Key","Consumer Secret","Institution Code","BRIVA No","URL API"};
         tabMode=new DefaultTableModel(null,row){

@@ -51,6 +51,7 @@ public class LabKeslingCariHasilPengujianSampel extends javax.swing.JDialog {
     public LabKeslingCariHasilPengujianSampel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabModeHasilPengujian=new DefaultTableModel(null,new Object[]{
                 "Tgl.Keluar Hasil","No.Permintaan","Kode","Nama Parameter","Hasil Pengujian","Status Verifikasi","NIP Analis","Nama Analis","No.Penugasan","No.Pelanggan","Nama Pelanggan","Kode Sampel","Nama Sampel"

@@ -50,6 +50,7 @@ public class DlgVakum extends javax.swing.JDialog {
     public DlgVakum(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         tabMode=new DefaultTableModel(null,new Object[]{"P","Nama Tabel"}){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;

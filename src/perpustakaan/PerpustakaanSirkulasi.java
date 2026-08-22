@@ -54,6 +54,7 @@ public class PerpustakaanSirkulasi extends javax.swing.JDialog {
     public PerpustakaanSirkulasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Inventaris","Kode Koleksi","Judul Koleksi","Penerbit","Pengarang","Terbit","ISBN",

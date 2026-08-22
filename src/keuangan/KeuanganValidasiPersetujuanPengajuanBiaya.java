@@ -52,6 +52,7 @@ public final class KeuanganValidasiPersetujuanPengajuanBiaya extends javax.swing
     public KeuanganValidasiPersetujuanPengajuanBiaya(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(885,674);
 

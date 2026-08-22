@@ -52,6 +52,7 @@ public class MasterTemplateInformasiEdukasi extends javax.swing.JDialog {
     public MasterTemplateInformasiEdukasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode","Template Informasi & Edukasi","Lama Edukasi","Metode"};

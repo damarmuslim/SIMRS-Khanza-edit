@@ -50,6 +50,7 @@ public class DapurCariPembelian extends javax.swing.JDialog {
     public DapurCariPembelian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Tgl.Beli","No.Faktur","Suplier","Petugas","Barang",
                     "Satuan","Jml","Harga(Rp)","SubTotal(Rp)",

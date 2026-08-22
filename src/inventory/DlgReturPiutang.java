@@ -53,6 +53,7 @@ public class DlgReturPiutang extends javax.swing.JDialog {
     public DlgReturPiutang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         try {
             aktifkanbatch = koneksiDB.AKTIFKANBATCHOBAT();

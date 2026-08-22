@@ -56,6 +56,7 @@ public class GrafikPerbaikanInventarisPerTanggal extends javax.swing.JDialog {
     public GrafikPerbaikanInventarisPerTanggal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Tanggal Perbaikan Inventaris","Jumlah Perbaikan Inventaris Per Tanggal","Persentase Perbaikan Inventaris Per Tanggal(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

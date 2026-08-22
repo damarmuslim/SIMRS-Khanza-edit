@@ -67,6 +67,7 @@ public final class RMPenilaianPasienPenyakitMenular extends javax.swing.JDialog 
     public RMPenilaianPasienPenyakitMenular(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","Kode Dokter","Nama Dokter","Tanggal","Anamnesis","Hubungan","Mengetahui Penyakitnya",

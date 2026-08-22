@@ -56,6 +56,7 @@ public class GrafikPorsiDietPerRuang extends javax.swing.JDialog {
     public GrafikPorsiDietPerRuang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Ruang/Bangsal/Kamar","Jumlah Porsi Diet Per Ruang","Persentase Porsi Diet Per Ruang(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

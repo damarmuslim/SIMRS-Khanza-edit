@@ -39,6 +39,7 @@ public class GrafikRegistrasiPerTanggal extends javax.swing.JDialog {
     public GrafikRegistrasiPerTanggal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

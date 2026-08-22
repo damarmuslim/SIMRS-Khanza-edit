@@ -61,6 +61,7 @@ public final class SuratSakitPihak2 extends javax.swing.JDialog {
     public SuratSakitPihak2(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(628,674);
         

@@ -45,6 +45,7 @@ public class DlgCariPengajuanBarangMedis extends javax.swing.JDialog {
     public DlgCariPengajuanBarangMedis(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Tanggal","No.Pengajuan","Status","Keterangan","Yang Mengajukan"};
         tabMode=new DefaultTableModel(null,row){

@@ -45,6 +45,7 @@ public class DlgRBKSO extends javax.swing.JDialog {
     public DlgRBKSO(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Cara Bayar","Tindakan Medis","Jumlah","KSO"};
         tabMode=new DefaultTableModel(null,row){

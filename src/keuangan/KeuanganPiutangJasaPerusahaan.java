@@ -67,6 +67,7 @@ public class KeuanganPiutangJasaPerusahaan extends javax.swing.JDialog {
     public KeuanganPiutangJasaPerusahaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Kode","Kategori","Jml","Harga(Rp)","Subtotal(Rp)","Disk(%)","Diskon(Rp)","Total(Rp)"

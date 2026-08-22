@@ -55,6 +55,7 @@ public class DlgSetPenjabLab extends javax.swing.JDialog {
     public DlgSetPenjabLab(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "P.J.Laboratorium PK","P.J.Radiologi","P.J.Hemodialisa","P.J.Tranfusi Darah","P.J.Laboratorium PA","P.J.Laboratorium MB",

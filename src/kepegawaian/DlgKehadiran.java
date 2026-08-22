@@ -58,6 +58,7 @@ public final class DlgKehadiran extends javax.swing.JDialog {
     public DlgKehadiran(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         tabMode=new DefaultTableModel(null,new Object[]{
                 "NIP","Nama","Departemen","Kehadiran","Pagi","Siang","Malam","Tepat Waktu","Toleransi","Terlambat I","Terlambat II","Keterlambatan","Durasi","Wajib Masuk","% Hadir"
             }){

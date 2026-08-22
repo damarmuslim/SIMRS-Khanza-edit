@@ -44,6 +44,7 @@ public class DapurRHPembelian extends javax.swing.JDialog {
     public DapurRHPembelian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Faktur","Suplier","Petugas","Tgl.Beli","Kode Barang","Barang","Satuan","Jml.Beli",

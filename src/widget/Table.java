@@ -23,8 +23,11 @@ public class Table extends JTable {
         setRowHeight(22);
         // Fase 2.5: warna baris terpilih dipindah ke tema Teal/Navy
         // terpusat (widget.ThemeConfig), bukan lagi hex literal lawas.
-        setSelectionBackground(ThemeConfig.PRIMARY);
-        setSelectionForeground(ThemeConfig.SURFACE);
+        // [Modernisasi highlight tabel] PRIMARY (teal) dirasa terlalu
+        // terang/mencolok - diganti muted navy blue (TABLE_SELECTION_BG)
+        // senada header tabel.
+        setSelectionBackground(ThemeConfig.TABLE_SELECTION_BG);
+        setSelectionForeground(ThemeConfig.TABLE_SELECTION_TEXT);
         // Fase 2.5: header JTable dimodernisasi - Navy/Surface/Bold sesuai
         // Design System (widget.ThemeConfig), border header lama (garis
         // off-white) dihapus supaya diambil alih FlatLaf.

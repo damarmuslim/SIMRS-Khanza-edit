@@ -58,6 +58,7 @@ public class DlgRekapPerShift extends javax.swing.JDialog {
     public DlgRekapPerShift(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,10);
         setSize(457,249);
         tabModeRalan=new DefaultTableModel(null,new Object[]{

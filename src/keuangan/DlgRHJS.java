@@ -47,6 +47,7 @@ public class DlgRHJS extends javax.swing.JDialog {
     public DlgRHJS(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Cara Bayar","Tgl.Tindakan","Nama Pasien","Tindakan Medis","Jasa Sarana"};
         tabMode=new DefaultTableModel(null,row){

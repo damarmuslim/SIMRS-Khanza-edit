@@ -38,6 +38,7 @@ public class GrafikKeslingLimbahB3CairPertanggal extends javax.swing.JDialog {
     public GrafikKeslingLimbahB3CairPertanggal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

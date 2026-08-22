@@ -56,6 +56,7 @@ public class GrafikLajuHAIsVAPPerRuang extends javax.swing.JDialog {
     public GrafikLajuHAIsVAPPerRuang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Kamar/Bangsal","Jumlah Pasien (Numerator)","Jumlah Hari (Denumerator)","Laju VAP","Persentase VAP(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

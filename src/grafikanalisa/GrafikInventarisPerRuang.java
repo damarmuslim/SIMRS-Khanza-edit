@@ -56,6 +56,7 @@ public class GrafikInventarisPerRuang extends javax.swing.JDialog {
     public GrafikInventarisPerRuang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Nama Ruang","Jumlah","Persentase(%)","Nilai Aset","Nilai Aset(%)"}){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

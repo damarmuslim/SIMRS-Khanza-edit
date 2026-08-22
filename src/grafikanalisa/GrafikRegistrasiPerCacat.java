@@ -39,6 +39,7 @@ public class GrafikRegistrasiPerCacat extends javax.swing.JDialog {
     public GrafikRegistrasiPerCacat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

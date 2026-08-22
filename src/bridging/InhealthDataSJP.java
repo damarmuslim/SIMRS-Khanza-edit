@@ -72,6 +72,7 @@ public final class InhealthDataSJP extends javax.swing.JDialog {
     public InhealthDataSJP(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         
         WindowUpdatePulang.setSize(630,80);

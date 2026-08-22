@@ -41,6 +41,7 @@ public class DlgDetailTambahan extends javax.swing.JDialog {
     public DlgDetailTambahan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Tanggal","Nama Pasien","Nama Tambahan","Besar Tambahan"};
         tabMode=new DefaultTableModel(null,row){

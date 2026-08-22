@@ -81,6 +81,7 @@ public final class KeuanganBayarPesanToko extends javax.swing.JDialog {
     public KeuanganBayarPesanToko(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         DlgBayarMandiri.setSize(562,163);
 
         Object[] row={"Tgl.Bayar","Tgl.Faktur","Tgl.Datang","Tgl.Tempo","No.Faktur","Supplier","Akun Bayar","No.Bukti","Pembayaran","Keterangan","Petugas","Nip","Nama"};

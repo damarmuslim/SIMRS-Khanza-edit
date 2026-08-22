@@ -45,6 +45,7 @@ public class DlgRBPaketBHP extends javax.swing.JDialog {
     public DlgRBPaketBHP(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Cara Bayar","Tindakan Medis","Jumlah","BHP Medis/Paket Obat"};
         tabMode=new DefaultTableModel(null,row){

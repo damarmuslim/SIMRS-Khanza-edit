@@ -64,6 +64,7 @@ public final class RMPengkajianRestrain extends javax.swing.JDialog {
     public RMPengkajianRestrain(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(628,674);
         

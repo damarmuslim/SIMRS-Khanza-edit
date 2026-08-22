@@ -51,6 +51,7 @@ public final class DlgRestoreBangsal extends javax.swing.JDialog {
     public DlgRestoreBangsal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode Kamar","Nama Kamar"};
         

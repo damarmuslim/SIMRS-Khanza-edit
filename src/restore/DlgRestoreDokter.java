@@ -51,6 +51,7 @@ public final class DlgRestoreDokter extends javax.swing.JDialog {
     public DlgRestoreDokter(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row = {
             "P","Kode Dokter","Nama Dokter","J.K.","Tmp.Lahir",

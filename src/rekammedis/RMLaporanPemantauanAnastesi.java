@@ -60,6 +60,7 @@ public final class RMLaporanPemantauanAnastesi extends javax.swing.JDialog {
     public RMLaporanPemantauanAnastesi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         DlgRiwayatPersalinan.setSize(650,192);
         

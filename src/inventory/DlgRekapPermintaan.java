@@ -46,6 +46,7 @@ public class DlgRekapPermintaan extends javax.swing.JDialog {
     public DlgRekapPermintaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"P","Kode Barang","Nama Barang","Satuan","Jenis","Jumlah","Kode Sat","Isi Besar"};
         tabMode=new DefaultTableModel(null,row){

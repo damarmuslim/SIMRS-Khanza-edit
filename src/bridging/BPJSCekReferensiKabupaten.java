@@ -62,6 +62,7 @@ public final class BPJSCekReferensiKabupaten extends javax.swing.JDialog {
     public BPJSCekReferensiKabupaten(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         this.setLocation(10,2);
         setSize(628,674);

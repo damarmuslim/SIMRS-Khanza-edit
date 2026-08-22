@@ -38,6 +38,7 @@ public class MasterTemplateLaporanOperasi extends javax.swing.JDialog {
     public MasterTemplateLaporanOperasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.Template","Nama Operasi","Diagnosis Pre-operatif","Diagnosis Post-operatif","Jaringan di-Eksisi / -Insisi","Dikirim PA","Template Laporan Operasi"};
         tabMode=new DefaultTableModel(null,row){

@@ -40,6 +40,7 @@ public class DlgHAIsPerBangsal extends javax.swing.JDialog {
     public DlgHAIsPerBangsal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         
         HTMLEditorKit kit = new HTMLEditorKit();

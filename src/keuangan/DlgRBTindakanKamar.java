@@ -51,6 +51,7 @@ public class DlgRBTindakanKamar extends javax.swing.JDialog {
     public DlgRBTindakanKamar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Bangsal","Tgl.Masuk","Tgl.Keluar","Cara Bayar","Obt+Emb+Tsl","Laborat","Paket Tindakan","Tambahan","Potongan","Registrasi","Radiologi","Kamar","Total"};
         tabMode=new DefaultTableModel(null,row){

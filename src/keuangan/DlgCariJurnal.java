@@ -42,6 +42,7 @@ public class DlgCariJurnal extends javax.swing.JDialog {
     public DlgCariJurnal(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"No.Jurnal","No.Bukti","Tgl.Jurnal","Jenis","Keterangan","Debet","Kredit"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

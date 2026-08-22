@@ -85,6 +85,7 @@ public class DlgDeposit extends javax.swing.JDialog {
     public DlgDeposit(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.Deposit","No.Rawat","No.RM","Pasien","Tanggal","Akun Bayar","Besar Deposit","PPN","Biaya PPN/Admin","Dibayar Pasien","Kode Petugas","Petugas","Kode Rek","Keterangan"};
         tabMode=new DefaultTableModel(null,row){

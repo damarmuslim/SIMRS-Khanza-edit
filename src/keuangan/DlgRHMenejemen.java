@@ -45,6 +45,7 @@ public class DlgRHMenejemen extends javax.swing.JDialog {
     public DlgRHMenejemen(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Cara Bayar","Tgl.Tindakan","Nama Pasien","Tindakan Medis","Menejemen"};
         tabMode=new DefaultTableModel(null,row){

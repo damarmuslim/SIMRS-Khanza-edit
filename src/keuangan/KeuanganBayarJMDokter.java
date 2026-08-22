@@ -76,6 +76,7 @@ public final class KeuanganBayarJMDokter extends javax.swing.JDialog {
     public KeuanganBayarJMDokter(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         DlgBayarMandiri.setSize(562,193);
 
         tabMode=new DefaultTableModel(null,new Object[]{

@@ -67,6 +67,7 @@ public final class RMTransferPasienAntarRuang extends javax.swing.JDialog {
     public RMTransferPasienAntarRuang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         // [RM 04-1/04-2] tabMode diringkas dari 38 kolom jadi 12 kolom
         // pencarian saja (pola sama seperti modernisasi RM 03-2/03-4-05-06) -

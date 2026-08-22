@@ -82,6 +82,7 @@ public final class DlgPermintaanRadiologi extends javax.swing.JDialog {
     public DlgPermintaanRadiologi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"P","Kode Periksa","Nama Pemeriksaan"};
         tabMode=new DefaultTableModel(null,row){

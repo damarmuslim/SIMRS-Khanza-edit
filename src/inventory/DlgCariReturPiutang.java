@@ -52,6 +52,7 @@ public class DlgCariReturPiutang extends javax.swing.JDialog {
     public DlgCariReturPiutang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         try {
             aktifkanbatch = koneksiDB.AKTIFKANBATCHOBAT();

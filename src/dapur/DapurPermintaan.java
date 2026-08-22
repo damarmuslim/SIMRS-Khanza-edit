@@ -59,6 +59,7 @@ public class DapurPermintaan extends javax.swing.JDialog {
     public DapurPermintaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={
             "Jml","Kode Barang","Nama Barang","Satuan","Jenis Barang","Keterangan"};

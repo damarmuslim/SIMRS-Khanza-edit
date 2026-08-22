@@ -43,6 +43,7 @@ public class DlgHarianHAIs2 extends javax.swing.JDialog {
     public DlgHarianHAIs2(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         
         HTMLEditorKit kit = new HTMLEditorKit();

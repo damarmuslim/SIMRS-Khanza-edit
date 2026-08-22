@@ -55,6 +55,7 @@ public class CoronaDiagnosa extends javax.swing.JDialog {
     public CoronaDiagnosa(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"P","Kode ICD X","Nama Penyakit"};
         tabMode=new DefaultTableModel(null,judul){

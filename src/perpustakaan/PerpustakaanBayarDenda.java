@@ -60,6 +60,7 @@ public class PerpustakaanBayarDenda extends javax.swing.JDialog {
     public PerpustakaanBayarDenda(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Tgl.Denda","No.Anggota","Nama Anggota","No.Inventaris",

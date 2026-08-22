@@ -52,6 +52,7 @@ public class MasterTriasePemeriksaan extends javax.swing.JDialog {
     public MasterTriasePemeriksaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode","Pemeriksaan"};

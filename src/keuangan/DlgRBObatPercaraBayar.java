@@ -46,6 +46,7 @@ public class DlgRBObatPercaraBayar extends javax.swing.JDialog {
     public DlgRBObatPercaraBayar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Cara Bayar","Tanggal","Nama Obat","Jml","Biaya Obat","Embalase","Tuslah"};
         tabMode=new DefaultTableModel(null,row){

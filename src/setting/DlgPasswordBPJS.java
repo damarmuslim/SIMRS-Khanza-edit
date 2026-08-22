@@ -56,6 +56,7 @@ public class DlgPasswordBPJS extends javax.swing.JDialog {
     public DlgPasswordBPJS(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         this.setLocation(10,10);
         

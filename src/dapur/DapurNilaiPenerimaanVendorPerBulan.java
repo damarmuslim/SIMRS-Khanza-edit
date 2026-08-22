@@ -47,6 +47,7 @@ public class DapurNilaiPenerimaanVendorPerBulan extends javax.swing.JDialog {
     public DapurNilaiPenerimaanVendorPerBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"Kode Suplier","Nama Suplier","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember","Total"};
         tabMode=new DefaultTableModel(null,row){

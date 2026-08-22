@@ -66,6 +66,7 @@ public class TokoPembelian extends javax.swing.JDialog {
     public TokoPembelian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Jml","Kode Barang","Nama Barang","Satuan","G","Harga(Rp)","Subtotal(Rp)","Disk(%)","Diskon(Rp)","Total","Dasar","Distributor","Grosir","Retail"};
         tabMode=new DefaultTableModel(null,judul){

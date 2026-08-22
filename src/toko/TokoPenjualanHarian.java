@@ -56,6 +56,7 @@ public final class TokoPenjualanHarian extends javax.swing.JDialog {
     public TokoPenjualanHarian(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         tabMode=new DefaultTableModel(null,new String[]{
             "No.Nota","Tanggal","NIP","Petugas","No.Member","Nama Member","Ongkir","PPN","Total","Jenis Jual","Pembayaran","Keterangan"
         }){

@@ -52,6 +52,7 @@ public final class CoronaReferensiStatusRawat extends javax.swing.JDialog {
     public CoronaReferensiStatusRawat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         this.setLocation(10,2);
         setSize(628,674);

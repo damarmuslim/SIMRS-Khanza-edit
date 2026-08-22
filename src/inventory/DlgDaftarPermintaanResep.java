@@ -75,6 +75,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
     public DlgDaftarPermintaanResep(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Resep","Tgl.Peresepan","Jam Peresepan","No.Rawat","No.RM","Pasien","Dokter Peresep",

@@ -57,6 +57,7 @@ public final class SuratKlasifikasi extends javax.swing.JDialog {
     public SuratKlasifikasi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(10,10);
         setSize(545,599);
 

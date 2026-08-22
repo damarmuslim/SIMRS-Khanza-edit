@@ -56,6 +56,7 @@ public class GrafikRegistrasiPerBulan extends javax.swing.JDialog {
     public GrafikRegistrasiPerBulan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Bulan Registrasi","Jumlah Registrasi Per Bulan","Persentase Registrasi Per Bulan(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

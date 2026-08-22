@@ -72,6 +72,7 @@ public class PerpustakaanEbook extends javax.swing.JDialog {
     public PerpustakaanEbook(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         initComponents2();
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));

@@ -305,6 +305,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
     public DlgKasirRalan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         initKasirRalan();
 
         this.setLocation(8,1);

@@ -207,6 +207,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
     public DlgRawatInap(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         initRawatInap();
 
         this.setLocation(8,1);

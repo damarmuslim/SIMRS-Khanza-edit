@@ -44,6 +44,7 @@ public class DlgSisaStok extends javax.swing.JDialog {
     public DlgSisaStok(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         try {
             aktifkanbatch = koneksiDB.AKTIFKANBATCHOBAT();

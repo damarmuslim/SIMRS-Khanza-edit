@@ -63,6 +63,7 @@ public final class RMMonitoringAldrettePascaAnestesi extends javax.swing.JDialog
     public RMMonitoringAldrettePascaAnestesi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         this.setLocation(8,1);
         setSize(800,674);
 

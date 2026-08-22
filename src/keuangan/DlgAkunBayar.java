@@ -57,6 +57,7 @@ public class DlgAkunBayar extends javax.swing.JDialog {
     public DlgAkunBayar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"P","Nama Akun","Kode Rekening","Nama Rekening","PPN(%)"};
         tabMode=new DefaultTableModel(null,row){

@@ -55,6 +55,7 @@ public final class DlgSidikJari extends javax.swing.JDialog {
     public DlgSidikJari(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"ID","NIP","Nama Pegawai","Template Sidik Jari"};
         tabMode=new DefaultTableModel(null,row){

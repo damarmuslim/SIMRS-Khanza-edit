@@ -33,6 +33,11 @@ public final class ThemeConfig {
     public static final Color TAB_ACTIVE   = PRIMARY;
     public static final Color TABLE_HEADER_BG   = NAVY;   // alternatif: PRIMARY
     public static final Color TABLE_HEADER_TEXT = Color.WHITE;
+    // Muted navy blue (turunan NAVY, dilembutkan ~15% ke arah putih) -
+    // "senada" dgn header tabel tapi tidak sekontras/segelap header, dipakai
+    // utk baris tabel terpilih (ganti PRIMARY/teal yg dirasa terlalu terang).
+    public static final Color TABLE_SELECTION_BG   = new Color(0x3A, 0x51, 0x68);
+    public static final Color TABLE_SELECTION_TEXT = Color.WHITE;
 
     // ---------- FONT ----------
     public static final String FONT_FAMILY = "Segoe UI";
@@ -72,6 +77,8 @@ public final class ThemeConfig {
 
         UIManager.put("TableHeader.background", TABLE_HEADER_BG);
         UIManager.put("TableHeader.foreground", TABLE_HEADER_TEXT);
+        UIManager.put("Table.selectionBackground", TABLE_SELECTION_BG);
+        UIManager.put("Table.selectionForeground", TABLE_SELECTION_TEXT);
 
         UIManager.put("Panel.background", BACKGROUND);
         UIManager.put("Component.borderColor", BORDER);

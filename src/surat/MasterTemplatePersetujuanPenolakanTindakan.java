@@ -37,6 +37,7 @@ public class MasterTemplatePersetujuanPenolakanTindakan extends javax.swing.JDia
     public MasterTemplatePersetujuanPenolakanTindakan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Template","Diagnosa","Tindakan Kedokteran","Indikasi Tindakan","Tata Cara","Tujuan","Risiko","Komplikasi","Prognosis","Alternatif & Resikonya","Lain-lain","Biaya"

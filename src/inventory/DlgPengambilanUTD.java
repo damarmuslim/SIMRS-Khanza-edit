@@ -52,6 +52,7 @@ public class DlgPengambilanUTD extends javax.swing.JDialog {
     public DlgPengambilanUTD(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] judul={"Jml","Kode Barang","Nama Barang","Harga","Subtotal","Satuan","Stok Asal","Stok Tujuan","No.Batch","No.Faktur"};
         tabMode=new DefaultTableModel(null,judul){

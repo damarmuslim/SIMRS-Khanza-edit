@@ -55,6 +55,7 @@ public class TokoPiutang extends javax.swing.JDialog {
     public TokoPiutang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Jml","Kode Barang","Nama Barang","Kategori","Satuan","Harga(Rp)",

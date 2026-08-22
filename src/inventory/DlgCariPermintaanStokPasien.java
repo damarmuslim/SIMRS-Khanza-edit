@@ -37,6 +37,7 @@ public class DlgCariPermintaanStokPasien extends javax.swing.JDialog {
     public DlgCariPermintaanStokPasien(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         Object[] row={"No.Permintaan","Tanggal","Jam","No.Rawat","No.RM","Pasien","Dokter Yang Meminta","Kode Dokter"};
         tabMode=new DefaultTableModel(null,row){

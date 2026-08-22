@@ -58,6 +58,7 @@ public class AkunRekeningBankMandiri extends javax.swing.JDialog {
     public AkunRekeningBankMandiri(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Kode Akun","Akun Rekening","Kode Biaya","Akun Biaya Transaksi","Username","Password","Client ID","Client Secret","Kode Faskes","Kode MCM","No.Rekening"};
         tabMode=new DefaultTableModel(null,row){

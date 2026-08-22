@@ -77,6 +77,7 @@ public final class LabKeslingBayarTagihanPengujianSampel extends javax.swing.JDi
     public LabKeslingBayarTagihanPengujianSampel(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
               "No.","Nama Parameter","Jumlah","Biaya (Rp)","Total Biaya (Rp)"

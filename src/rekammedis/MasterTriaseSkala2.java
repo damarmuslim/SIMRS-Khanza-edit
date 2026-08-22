@@ -55,6 +55,7 @@ public class MasterTriaseSkala2 extends javax.swing.JDialog {
     public MasterTriaseSkala2(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
 
         Object[] row={"Kode Pemeriksaan","Pemeriksaan","Kode","Pengkajian"};

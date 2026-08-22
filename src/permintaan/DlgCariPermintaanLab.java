@@ -90,6 +90,7 @@ public class DlgCariPermintaanLab extends javax.swing.JDialog {
     public DlgCariPermintaanLab(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         WindowAmbilSampel.setSize(530,80);
         WindowTerkirim.setSize(300,90);

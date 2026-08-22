@@ -77,6 +77,7 @@ public final class RMPenilaianAwalKeperawatanRanapBayiAnak extends javax.swing.J
     public RMPenilaianAwalKeperawatanRanapBayiAnak(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         DlgRiwayatImunisasi.setSize(465,112);
         

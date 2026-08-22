@@ -56,6 +56,7 @@ public class GrafikInventarisPerMerk extends javax.swing.JDialog {
     public GrafikInventarisPerMerk(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Nama Merk","Jumlah","Persentase(%)","Nilai Aset","Nilai Aset(%)"

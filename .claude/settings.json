@@ -25,7 +25,9 @@
       "Read(//c/xampp/htdocs/**)",
       "Read(//c/xampp/htdocs/webapps/**)",
       "Read(//c/xampp/htdocs/webapps/persetujuantransferruang/**)",
-      "Read(//c/xampp/htdocs/webapps edit canvas/**)"
+      "Read(//c/xampp/htdocs/webapps edit canvas/**)",
+      "Bash(\"C:\\\\Program Files\\\\NetBeans-14\\\\netbeans\\\\extide\\\\ant\\\\bin\\\\ant.bat\" jar)",
+      "Bash(git status *)"
     ]
   },
   "hooks": {

@@ -72,6 +72,7 @@ public class DlgInputStokPasien extends javax.swing.JDialog {
     public DlgInputStokPasien(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "Jml","Kode Barang","Nama Barang","Kategori","Satuan","Kps","Stok","Harga","HargaBeli","Subtotal","No.Batch","No.Faktur","Aturan Pakai",

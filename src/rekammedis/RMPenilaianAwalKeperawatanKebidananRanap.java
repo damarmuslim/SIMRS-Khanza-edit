@@ -61,6 +61,7 @@ public final class RMPenilaianAwalKeperawatanKebidananRanap extends javax.swing.
     public RMPenilaianAwalKeperawatanKebidananRanap(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         DlgRiwayatPersalinan.setSize(650,192);
         

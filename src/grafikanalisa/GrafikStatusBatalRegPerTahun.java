@@ -39,6 +39,7 @@ public class GrafikStatusBatalRegPerTahun extends javax.swing.JDialog {
     public GrafikStatusBatalRegPerTahun(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         
     }

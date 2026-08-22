@@ -58,6 +58,7 @@ public class UTDPemisahanDarah extends javax.swing.JDialog {
     public UTDPemisahanDarah(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabModeMedis=new DefaultTableModel(null,new Object[]{"Jml","Kode Barang","Nama Barang","Harga","Subtotal","Satuan","Stok"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){

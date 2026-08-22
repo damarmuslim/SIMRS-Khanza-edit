@@ -56,6 +56,7 @@ public class GrafikKunjunganRanapPerRuang extends javax.swing.JDialog {
     public GrafikKunjunganRanapPerRuang(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         tabMode=new DefaultTableModel(null,new Object[]{"Ruang/Bangsal/Kamar","Jumlah Kunjungan Ranap Per Ruang","Persentase Kunjungan Ranap Per Ruang(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

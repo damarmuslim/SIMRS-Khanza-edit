@@ -30,6 +30,7 @@ public class frmSmsView extends javax.swing.JFrame {
      */
     public frmSmsView() {
         initComponents();
+        widget.IconStyle.pasang(this);
         setIconImage(new ImageIcon(super.getClass().getResource("/picture/addressbook-edit24.png")).getImage());
         this.setLocation(10,10);
         setSize(552,638);

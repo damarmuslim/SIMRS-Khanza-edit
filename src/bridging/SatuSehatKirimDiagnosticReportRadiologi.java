@@ -68,6 +68,7 @@ public final class SatuSehatKirimDiagnosticReportRadiologi extends javax.swing.J
     public SatuSehatKirimDiagnosticReportRadiologi(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         this.setLocation(10,2);
         setSize(628,674);

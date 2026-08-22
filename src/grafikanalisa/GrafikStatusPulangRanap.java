@@ -56,6 +56,7 @@ public class GrafikStatusPulangRanap extends javax.swing.JDialog {
     public GrafikStatusPulangRanap(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{"Status Kepulangan Rawat Inap","Jumlah Status Kepulangan Rawat Inap","Persentase Status Kepulangan Rawat Inap(%)"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}

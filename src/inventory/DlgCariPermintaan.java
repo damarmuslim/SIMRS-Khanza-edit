@@ -50,6 +50,7 @@ public class DlgCariPermintaan extends javax.swing.JDialog {
     public DlgCariPermintaan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"Tanggal","No.Permintaan","Asal Permintaan","Pegawai","Ditujukan Ke"};
         tabMode=new DefaultTableModel(null,row){

@@ -67,6 +67,7 @@ public class DlgCariPeriksaLabMB extends javax.swing.JDialog {
     public DlgCariPeriksaLabMB(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.Rawat","Pasien","Petugas","Tanggal Periksa","Jam","Dokter Perujuk","Penanggung Jawab"};
         tabMode=new DefaultTableModel(null,row){

@@ -61,6 +61,7 @@ public final class RMPelaporanEfekSampingObat extends javax.swing.JDialog {
     public RMPelaporanEfekSampingObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","Umur","Pekerjaan","Suku","No Laporan","Tanggal Laporan","Profesi Pelapor","Kode Pelapor","Nama Pelapor","Kode Ruangan","Nama Ruangan","BB(Kg)",

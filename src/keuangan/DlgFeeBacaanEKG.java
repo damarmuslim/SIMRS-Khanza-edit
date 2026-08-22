@@ -39,6 +39,7 @@ public class DlgFeeBacaanEKG extends javax.swing.JDialog {
     public DlgFeeBacaanEKG(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         Object[] row={"No.","Tgl.Masuk","Tgl.Keluar","Nama Pasien","Ruang","Jenis Bayar",
                       "Jml.Bacaan","Fee(Rp)","Total Fee(Rp)"};

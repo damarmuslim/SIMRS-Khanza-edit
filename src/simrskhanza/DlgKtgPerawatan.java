@@ -52,6 +52,7 @@ public final class DlgKtgPerawatan extends javax.swing.JDialog {
     public DlgKtgPerawatan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        widget.IconStyle.pasang(this);
 
         this.setLocation(10,10);
         
