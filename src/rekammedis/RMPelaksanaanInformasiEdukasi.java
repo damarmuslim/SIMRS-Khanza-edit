@@ -26,10 +26,16 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
@@ -1385,11 +1391,63 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
                 Sequel.queryu("delete from antripelaksanaanedukasi");
                 Sequel.queryu("insert into antripelaksanaanedukasi values('"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"','"+tbObat.getValueAt(tbObat.getSelectedRow(),6).toString()+"')");
                 Sequel.queryu("delete from bukti_pelaksanaan_informasi_edukasi where no_rawat='"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"' and tanggal='"+tbObat.getValueAt(tbObat.getSelectedRow(),6).toString()+"'");
+                // Antrian sudah disiapkan diatas - langsung buka webapp
+                // pelaksanaanedukasi (Peran 1: Pasien/Keluarga, kamera.php)
+                // di browser, spy staf tak perlu ketik URL manual.
+                bukaWebappPelaksanaanEdukasi();
             }else{
                 JOptionPane.showMessageDialog(rootPane,"Silahkan anda pilih data terlebih dahulu..!!");
             }
         }
     }//GEN-LAST:event_btnAmbilActionPerformed
+
+    /** Buka webapps/pelaksanaanedukasi/login.php (Peran 1, kamera.php) lgs di
+     * browser default stlh antrian disiapkan - user tak perlu ketik URL
+     * manual/scan QR fisik. login.php butuh parameter "?iyem=<JSON
+     * terenkripsi>" (lihat webapps/conf/conf.php fungsi encrypt_decrypt) -
+     * BELUM ada versi Java-nya di codebase ini sblm sesi ini (dicek dulu via
+     * riset, bukan diasumsikan), jadi direplikasi manual di
+     * encryptIyem()/sha256Hex() - diverifikasi byte-persis cocok dgn PHP
+     * (roundtrip test lwt `php -r`) sebelum dipasang ke tombol sungguhan. */
+    private void bukaWebappPelaksanaanEdukasi(){
+        try{
+            String iyem = encryptIyem(koneksiDB.USERHYBRIDWEB(), koneksiDB.PASHYBRIDWEB());
+            Valid.panggilUrl("pelaksanaanedukasi/login.php?iyem="+java.net.URLEncoder.encode(iyem,"UTF-8"));
+        }catch(Exception e){
+            System.out.println("Notif bukaWebappPelaksanaanEdukasi : "+e);
+        }
+    }
+
+    /** Replika PERSIS fungsi PHP encrypt_decrypt($string,"e") di
+     * webapps/conf/conf.php: AES-256-CBC, key = 32 karakter PERTAMA (bukan
+     * byte hex-decoded) dari sha256(secret_key) dlm bentuk hex-string, iv =
+     * 16 karakter pertama sha256(secret_iv) - PHP openssl_encrypt() dgn
+     * $options=0 (bukan OPENSSL_RAW_DATA) SUDAH auto base64-encode hasilnya,
+     * lalu encrypt_decrypt() bungkus base64_encode() SEKALI LAGI di atasnya
+     * (double base64) - kalau cuma di-base64 sekali, login.php PHP akan
+     * gagal decode & selalu redirect ke Home (silent fail, tak ada pesan
+     * error) - ditemukan lewat verifikasi byte-persis, bukan tebakan. */
+    private String encryptIyem(String usere, String passwordte) throws Exception {
+        String json = "{\"usere\":\""+usere+"\",\"passwordte\":\""+passwordte+"\"}";
+        String secretKey = "Bar12345Bar12345";
+        String secretIv = "sayangsamakhanza";
+        MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+        String keyHex = sha256Hex(sha256.digest(secretKey.getBytes(StandardCharsets.UTF_8)));
+        String ivHex = sha256Hex(sha256.digest(secretIv.getBytes(StandardCharsets.UTF_8))).substring(0,16);
+        byte[] keyBytes = keyHex.substring(0,32).getBytes(StandardCharsets.UTF_8);
+        byte[] ivBytes = ivHex.getBytes(StandardCharsets.UTF_8);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(keyBytes,"AES"), new IvParameterSpec(ivBytes));
+        byte[] enc = cipher.doFinal(json.getBytes(StandardCharsets.UTF_8));
+        String once = Base64.getEncoder().encodeToString(enc);
+        return Base64.getEncoder().encodeToString(once.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private String sha256Hex(byte[] digestBytes){
+        StringBuilder sb = new StringBuilder();
+        for(byte b : digestBytes){ sb.append(String.format("%02x", b)); }
+        return sb.toString();
+    }
 
     private void BtnRefreshPhoto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRefreshPhoto1ActionPerformed
         if(tbObat.getSelectedRow()>-1){
