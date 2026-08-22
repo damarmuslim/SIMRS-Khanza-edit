@@ -1388,9 +1388,21 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
             TCari.requestFocus();
         }else{
             if(tbObat.getSelectedRow()>-1){
+                String noRawatAmbil = tbObat.getValueAt(tbObat.getSelectedRow(),0).toString();
+                String tanggalAmbil = tbObat.getValueAt(tbObat.getSelectedRow(),6).toString();
                 Sequel.queryu("delete from antripelaksanaanedukasi");
-                Sequel.queryu("insert into antripelaksanaanedukasi values('"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"','"+tbObat.getValueAt(tbObat.getSelectedRow(),6).toString()+"')");
-                Sequel.queryu("delete from bukti_pelaksanaan_informasi_edukasi where no_rawat='"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"' and tanggal='"+tbObat.getValueAt(tbObat.getSelectedRow(),6).toString()+"'");
+                Sequel.queryu("insert into antripelaksanaanedukasi values('"+noRawatAmbil+"','"+tanggalAmbil+"')");
+                // Bersihkan bukti KEDUA peran (Pasien/Keluarga + Pemberi
+                // Edukasi) supaya re-queue selalu mulai dari kosong utk
+                // keduanya - pola sama persis btnAmbilActionPerformed di
+                // RMTransferPasienAntarRuang.java (hapus SEMUA tabel peran,
+                // bukan cuma 1). Sebelumnya cuma tabel peran 1 yg dihapus -
+                // itu penyebab INSERT peran 2 (storeImage2.php) gagal dgn
+                // pesan "sudah pernah diambil sebelumnya" (duplikat PK
+                // no_rawat+tanggal) padahal user belum pernah isi peran 2
+                // utk sesi INI, cuma sisa baris dr percobaan sebelumnya.
+                Sequel.queryu("delete from bukti_pelaksanaan_informasi_edukasi where no_rawat='"+noRawatAmbil+"' and tanggal='"+tanggalAmbil+"'");
+                Sequel.queryu("delete from bukti_pelaksanaan_edukasi_pemberi where no_rawat='"+noRawatAmbil+"' and tanggal='"+tanggalAmbil+"'");
                 // Antrian sudah disiapkan diatas - langsung buka webapp
                 // pelaksanaanedukasi (Peran 1: Pasien/Keluarga, kamera.php)
                 // di browser, spy staf tak perlu ketik URL manual.
