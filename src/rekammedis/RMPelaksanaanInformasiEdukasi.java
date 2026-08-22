@@ -1735,12 +1735,19 @@ public final class RMPelaksanaanInformasiEdukasi extends javax.swing.JDialog {
         try{
             String noRawatCetak = TNoRw.getText();
             Map<String,Object> param = new HashMap<>();
-            param.put("namars", Sequel.cariIsi("select setting.nama_instansi from setting",""));
-            param.put("alamatrs", Sequel.cariIsi("select setting.alamat from setting",""));
-            param.put("kotars", Sequel.cariIsi("select setting.kota from setting",""));
-            param.put("propinsirs", Sequel.cariIsi("select setting.propinsi from setting",""));
-            param.put("kontakrs", Sequel.cariIsi("select setting.telepon from setting",""));
-            param.put("emailrs", Sequel.cariIsi("select setting.email from setting",""));
+            // Ambil dari objek "akses" (setting sudah di-load sekali saat
+            // login), BUKAN query manual ke tabel setting - kolom SQL tebakan
+            // sebelumnya (alamat/kota/telepon) SALAH, nama kolom sungguhan di
+            // DB adalah alamat_instansi/kabupaten/kontak (ditemukan pas user
+            // lapor kop cetak kosong) - pola akses.getXxx() ini persis sama
+            // dgn yg sudah dipakai MnCetakPelaksanaanEdukasiActionPerformed
+            // di file ini sendiri & RMTransferPasienAntarRuang.java.
+            param.put("namars", akses.getnamars());
+            param.put("alamatrs", akses.getalamatrs());
+            param.put("kotars", akses.getkabupatenrs());
+            param.put("propinsirs", akses.getpropinsirs());
+            param.put("kontakrs", akses.getkontakrs());
+            param.put("emailrs", akses.getemailrs());
             param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
 
             ps=koneksi.prepareStatement(

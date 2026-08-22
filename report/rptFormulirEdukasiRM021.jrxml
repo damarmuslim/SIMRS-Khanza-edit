@@ -462,7 +462,7 @@
 				<graphicElement><pen lineWidth="0.5"/></graphicElement>
 			</ellipse>
 			<ellipse>
-				<reportElement x="285" y="4" width="4" height="4" uuid="d2e5f610-000b-4000-8000-000000000006">
+				<reportElement x="285" y="4" width="4" height="4" mode="Opaque" backcolor="#000000" uuid="d2e5f610-000b-4000-8000-000000000006">
 					<printWhenExpression><![CDATA[new Boolean("Sudah Mengerti".equals($F{hasil_verifikasi}))]]></printWhenExpression>
 				</reportElement>
 				<graphicElement><pen lineWidth="0.5"/></graphicElement>
@@ -474,7 +474,7 @@
 				<graphicElement><pen lineWidth="0.5"/></graphicElement>
 			</ellipse>
 			<ellipse>
-				<reportElement x="285" y="17" width="4" height="4" uuid="d2e5f610-000b-4000-8000-000000000009">
+				<reportElement x="285" y="17" width="4" height="4" mode="Opaque" backcolor="#000000" uuid="d2e5f610-000b-4000-8000-000000000009">
 					<printWhenExpression><![CDATA[new Boolean("Re-Edukasi".equals($F{hasil_verifikasi}))]]></printWhenExpression>
 				</reportElement>
 				<graphicElement><pen lineWidth="0.5"/></graphicElement>
@@ -486,7 +486,7 @@
 				<graphicElement><pen lineWidth="0.5"/></graphicElement>
 			</ellipse>
 			<ellipse>
-				<reportElement x="285" y="30" width="4" height="4" uuid="d2e5f610-000b-4000-8000-00000000000c">
+				<reportElement x="285" y="30" width="4" height="4" mode="Opaque" backcolor="#000000" uuid="d2e5f610-000b-4000-8000-00000000000c">
 					<printWhenExpression><![CDATA[new Boolean("Re-Demonstrasi".equals($F{hasil_verifikasi}))]]></printWhenExpression>
 				</reportElement>
 				<graphicElement><pen lineWidth="0.5"/></graphicElement>
