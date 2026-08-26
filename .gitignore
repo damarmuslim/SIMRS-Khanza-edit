@@ -3,3 +3,9 @@ dist/
 _tmp_compile/
 cache/
 *.class
+
+# Keluaran knowledge graph - murni hasil generate ulang (`graphify update .`),
+# bukan source code. Ukurannya ~3 GB di disk dan satu kali regenerasi
+# menghasilkan diff sekitar 4 juta baris pada graph.json, yang membuat riwayat
+# git tidak terbaca dan folder .git membengkak.
+graphify-out/
