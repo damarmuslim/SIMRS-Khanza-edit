@@ -848,12 +848,21 @@ public class frmUtama extends javax.swing.JFrame {
                                                     }
 else{
     //=== PATCH: pasien BPJS onsite ===
+    try{
+    TeksArea.append("Masuk blok JKN Onsite: "+rs.getString("no_rawat")+"\n");
     String nokartuJkn   = Sequel.cariIsi("select bridging_sep.no_kartu from bridging_sep where bridging_sep.no_rawat=?",rs.getString("no_rawat"));
     String norujukanJkn = Sequel.cariIsi("select bridging_sep.no_rujukan from bridging_sep where bridging_sep.no_rawat=?",rs.getString("no_rawat"));
     String noskdpJkn    = Sequel.cariIsi("select bridging_sep.noskdp from bridging_sep where bridging_sep.no_rawat=?",rs.getString("no_rawat"));
     String asalRujukan  = Sequel.cariIsi("select bridging_sep.asal_rujukan from bridging_sep where bridging_sep.no_rawat=?",rs.getString("no_rawat"));
     String nikJkn       = Sequel.cariIsi("select pasien.no_ktp from pasien where pasien.no_rkm_medis=?",rs.getString("no_rkm_medis"));
     String nohpJkn      = Sequel.cariIsi("select pasien.no_tlp from pasien where pasien.no_rkm_medis=?",rs.getString("no_rkm_medis"));
+
+    if(nokartuJkn==null){ nokartuJkn=""; }
+    if(norujukanJkn==null){ norujukanJkn=""; }
+    if(noskdpJkn==null){ noskdpJkn=""; }
+    if(asalRujukan==null){ asalRujukan=""; }
+    if(nikJkn==null||nikJkn.equals("")){ nikJkn="-"; }
+    if(nohpJkn==null||nohpJkn.equals("")){ nohpJkn="-"; }
 
     // tentukan jenis kunjungan + nomor referensi
     int jenisKunjunganJkn = 1;                 // 1 = Rujukan FKTP
@@ -864,9 +873,6 @@ else{
     }else if(asalRujukan.startsWith("2")){
         jenisKunjunganJkn = 4;                 // 4 = Rujukan Antar RS
     }
-
-    if(nikJkn.equals("")){ nikJkn="-"; }
-    if(nohpJkn.equals("")){ nohpJkn="-"; }
 
     if(nokartuJkn.equals("")||nomorReferensiJkn.equals("")){
         TeksArea.append("Lewati "+rs.getString("no_rawat")+" : SEP / nomor rujukan belum tersedia\n");
@@ -910,6 +916,9 @@ else{
         root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.POST, requestEntity, String.class).getBody());
         nameNode = root.path("metadata");
         TeksArea.append("respon WS BPJS : "+nameNode.path("code").asText()+" "+nameNode.path("message").asText()+"\n");
+    }
+    }catch(Exception exJkn){
+        TeksArea.append("ERROR blok JKN Onsite: "+exJkn.toString()+"\n");
     }
     //=== AKHIR PATCH ===
 }

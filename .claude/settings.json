@@ -96,7 +96,14 @@
       "Bash(PYTHONIOENCODING=utf-8 python page4.py)",
       "Bash(PYTHONIOENCODING=utf-8 python cek_kolom.py rptRM19_4.jrxml)",
       "Bash(awk '{print $NF, $5}')",
-      "Bash(cd \"d:/Damar/SIMRS/SIMRS-Khanza-edit\" && rm -f dist/report/rptRM19_[1-4].pdf && echo \"PDF lama \\(4 berkas 1-lembar\\) dihapus\" && ls dist/report/ | grep rptRM19)"
+      "Bash(cd \"d:/Damar/SIMRS/SIMRS-Khanza-edit\" && rm -f dist/report/rptRM19_[1-4].pdf && echo \"PDF lama \\(4 berkas 1-lembar\\) dihapus\" && ls dist/report/ | grep rptRM19)",
+      "Bash(unzip -l dist/KhanzaHMSServiceMobileJKNERM.jar)",
+      "Bash(cd \"d:/Damar/SIMRS/SIMRS-Khanza-edit\" && ls -d lib 2>/dev/null && ls lib | wc -l; echo \"=== d:/lib ===\"; ls -d /d/lib 2>/dev/null; echo \"=== javac ===\"; which javac java ant 2>/dev/null; javac -version 2>&1 | head -2)",
+      "Read(//d//**)",
+      "Bash(unzip -p dist/KhanzaHMSServiceMobileJKNERM.jar META-INF/MANIFEST.MF)",
+      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\NetBeans-14\\\\netbeans\" -Recurse -Filter \"ant.bat\" -ErrorAction SilentlyContinue | Select-Object -First 5 | ForEach-Object { $_.FullName })",
+      "PowerShell(Get-ChildItem \"d:\\\\Damar\\\\SIMRS\\\\SIMRS-Khanza-edit\\\\KhanzaHMSServiceMobileJKNERM\\\\src\" -Recurse -File | ForEach-Object { $_.FullName.Replace\\(\"d:\\\\Damar\\\\SIMRS\\\\SIMRS-Khanza-edit\\\\KhanzaHMSServiceMobileJKNERM\\\\\",\"\"\\) })",
+      "Bash(javap -p -c -cp build/classes fungsi.koneksiDB)"
     ],
     "additionalDirectories": [
       "\\tmp",
