@@ -46,6 +46,10 @@
 	<parameter name="emailrs" class="java.lang.String"/>
 	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="dokter" class="java.lang.String"/>
+	<!-- Tanggal & jam masuk rawat inap, sudah diformat dari SQL. Lihat catatan
+	     pada kedua textField di blok "MASUK RAWAT INAP". -->
+	<parameter name="tglmasukranap" class="java.lang.String"/>
+	<parameter name="jammasukranap" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select pasien.no_rkm_medis, pasien.nm_pasien, pasien.no_ktp, pasien.jk, 
 pasien.tmp_lahir, pasien.tgl_lahir,pasien.nm_ibu, concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat, pasien.gol_darah, pasien.pekerjaan,
@@ -933,21 +937,29 @@ and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{kelas}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy">
+			<!--
+			  Tanggal blok "MASUK RAWAT INAP". Sebelumnya new Date(), yang berarti
+			  yang tercetak adalah tanggal SAAT MENCETAK - bukan tanggal pasien
+			  masuk. Sekarang diisi dari kamar_inap baris paling awal, dikirim
+			  sebagai String yang sudah diformat dari SQL (karena itu atribut
+			  pattern="dd/MM/yyyy" dilepas: pattern hanya berlaku untuk Date/Number).
+			-->
+			<textField isBlankWhenNull="true">
 				<reportElement x="56" y="354" width="103" height="11" uuid="a932c689-e77e-4c8b-bfe2-eae7ea5c7496"/>
 				<textElement>
 					<font fontName="Tahoma" size="8"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tglmasukranap}]]></textFieldExpression>
 			</textField>
-			<textField pattern="HH.mm.ss">
+			<!-- Jam blok "MASUK RAWAT INAP" - alasan sama dengan tanggal di atas. -->
+			<textField isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="195" y="352" width="60" height="11" uuid="9ea935a9-31aa-43e9-b255-1d5e5f6deb86"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{jammasukranap}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="443" y="552" width="85" height="11" uuid="c6ef50fd-0d53-4e6f-a8df-28df0262d219"/>

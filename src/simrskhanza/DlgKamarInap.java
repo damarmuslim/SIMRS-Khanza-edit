@@ -12256,6 +12256,86 @@ public class DlgKamarInap extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_MnPenilaianFisioterapiActionPerformed
 
+    /**
+     * [RM.02 Ringkasan Masuk Keluar] Query cetak untuk SATU pasien.
+     *
+     * <p>Laporan {@code rptRM2D_2.jasper} isinya berbasis {@code $F{...}}, jadi
+     * WAJIB dipanggil lewat {@code Valid.MyReportqry} (query dari sini) dan
+     * BUKAN {@code Valid.MyReport}. Dengan {@code MyReport}, JasperReports
+     * menjalankan {@code <queryString>} bawaan berkas .jasper - dan query bawaan
+     * itu TIDAK punya klausa WHERE sama sekali, sehingga mengembalikan SELURUH
+     * tabel pasien lalu merender baris pertamanya. Akibatnya lembar rekam medis
+     * tercetak dengan identitas pasien LAIN, siapa pun yang dipilih petugas.</p>
+     *
+     * <p>Daftar SELECT sengaja memuat SEMUA {@code <field>} yang dideklarasikan
+     * di jrxml (bukan hanya yang dipakai di badan laporan) - kalau ada field yang
+     * dirujuk tapi tidak ada di ResultSet, JasperReports gagal dengan
+     * "Unknown column name", jebakan yang sudah pernah terjadi di modul lain.</p>
+     *
+     * <p>JOIN wilayah &amp; penjamin memakai LEFT JOIN, bukan INNER JOIN seperti
+     * query bawaan jrxml: dengan INNER JOIN, pasien yang kode
+     * kelurahan/kecamatan/kabupaten/penjaminnya belum lengkap akan menghasilkan
+     * NOL baris, sehingga lembarnya tercetak kosong melompong tanpa pesan error.</p>
+     */
+    private String qryRingkasanMasukKeluar(String noRm){
+        return "select pasien.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,pasien.jk,"+
+               "pasien.tmp_lahir,pasien.tgl_lahir,pasien.nm_ibu,"+
+               "concat(ifnull(pasien.alamat,''),', ',ifnull(kelurahan.nm_kel,''),', ',ifnull(kecamatan.nm_kec,''),', ',ifnull(kabupaten.nm_kab,'')) as alamat,"+
+               "pasien.gol_darah,pasien.pekerjaan,pasien.stts_nikah,pasien.agama,pasien.tgl_daftar,"+
+               "pasien.no_tlp,pasien.umur,pasien.pnd,pasien.keluarga,pasien.namakeluarga,"+
+               "ifnull(penjab.png_jawab,'') as png_jawab,pasien.pekerjaanpj,pasien.no_peserta,"+
+               "concat(ifnull(pasien.alamatpj,''),', ',ifnull(pasien.kelurahanpj,''),', ',ifnull(pasien.kecamatanpj,''),', ',ifnull(pasien.kabupatenpj,'')) as alamatpj "+
+               "from pasien "+
+               "left join kelurahan on pasien.kd_kel=kelurahan.kd_kel "+
+               "left join kecamatan on pasien.kd_kec=kecamatan.kd_kec "+
+               "left join kabupaten on pasien.kd_kab=kabupaten.kd_kab "+
+               "left join penjab on pasien.kd_pj=penjab.kd_pj "+
+               "where pasien.no_rkm_medis='"+noRm+"'";
+    }
+
+    /**
+     * [RM.02] Isi kotak "SMF" pada lembar Ringkasan Masuk Keluar.
+     *
+     * <p>SMF (Staf Medis Fungsional) adalah kelompok spesialisasi, jadi yang
+     * diambil {@code spesialis.nm_sps} - bukan nama dokternya. Diutamakan dari
+     * DPJP ranap; kalau episode itu belum punya DPJP, jatuh ke dokter pada
+     * registrasi. Parameter ini ADA di jrxml tapi sebelumnya tidak pernah
+     * dikirim sama sekali, sehingga kotak SMF selalu tercetak "null".</p>
+     */
+    private String smfRanap(String noRawat){
+        String smf = Sequel.cariIsi(
+            "select ifnull(spesialis.nm_sps,'-') from dpjp_ranap "+
+            "inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter "+
+            "left join spesialis on dokter.kd_sps=spesialis.kd_sps "+
+            "where dpjp_ranap.no_rawat=? limit 1",noRawat);
+        if(smf==null || smf.trim().isEmpty()){
+            smf = Sequel.cariIsi(
+                "select ifnull(spesialis.nm_sps,'-') from reg_periksa "+
+                "inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter "+
+                "left join spesialis on dokter.kd_sps=spesialis.kd_sps "+
+                "where reg_periksa.no_rawat=?",noRawat);
+        }
+        return (smf==null || smf.trim().isEmpty()) ? "-" : smf;
+    }
+
+    /**
+     * [RM.02] Tanggal/jam pada blok "MASUK RAWAT INAP".
+     *
+     * <p>Diambil baris kamar_inap PALING AWAL ({@code order by tgl_masuk asc}),
+     * yaitu saat pasien pertama kali masuk ranap - baris berikutnya adalah
+     * perpindahan kamar, yang di formulir punya blok "PINDAH RAWAT INAP"
+     * sendiri. Sebelumnya kedua nilai ini ditulis {@code new Date()} di jrxml,
+     * jadi yang tercetak tanggal &amp; jam SAAT MENCETAK, bukan saat pasien
+     * masuk.</p>
+     *
+     * @param bagian "tgl" untuk tanggal (dd/MM/yyyy), selain itu jam masuk.
+     */
+    private String masukRanap(String noRawat,String bagian){
+        String kolom = "tgl".equals(bagian) ? "DATE_FORMAT(kamar_inap.tgl_masuk,'%d/%m/%Y')" : "kamar_inap.jam_masuk";
+        String hasil = Sequel.cariIsi("select "+kolom+" from kamar_inap where kamar_inap.no_rawat=? order by kamar_inap.tgl_masuk asc limit 1",noRawat);
+        return hasil==null ? "" : hasil;
+    }
+
     private void MnRingkasanMasukKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnRingkasanMasukKeluarActionPerformed
         if(tabMode.getRowCount()==0){
             JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
@@ -12318,15 +12398,19 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                         "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc ",rs2.getString("no_rkm_medis")));
                                 param.put("petugas",Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",akses.getkode()));
 
+                                param.put("dokter",smfRanap(rs2.getString("no_rawat2")));
+                                param.put("tglmasukranap",masukRanap(rs2.getString("no_rawat2"),"tgl"));
+                                param.put("jammasukranap",masukRanap(rs2.getString("no_rawat2"),"jam"));
 
                                 param.put("namars",akses.getnamars());
                                 param.put("alamatrs",akses.getalamatrs());
                                 param.put("kotars",akses.getkabupatenrs());
                                 param.put("propinsirs",akses.getpropinsirs());
                                 param.put("kontakrs",akses.getkontakrs());
-                                param.put("emailrs",akses.getemailrs());   
-                                param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-                                Valid.MyReport("rptRM2D_2.jasper","report","::[ Lembar Assasmen ]::",param); 
+                                param.put("emailrs",akses.getemailrs());
+                                param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+                                Valid.MyReportqry("rptRM2D_2.jasper","report","::[ Ringkasan Masuk Keluar ]::",
+                                        qryRingkasanMasukKeluar(rs2.getString("no_rkm_medis")),param);
                             }else{
                                   JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
                                   tbKamIn.requestFocus();
@@ -12393,14 +12477,19 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc ",TNoRMCari.getText()));
                         param.put("petugas",Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",akses.getkode()));
 
+                        param.put("dokter",smfRanap(TNoRwCari.getText()));
+                        param.put("tglmasukranap",masukRanap(TNoRwCari.getText(),"tgl"));
+                        param.put("jammasukranap",masukRanap(TNoRwCari.getText(),"jam"));
+
                         param.put("namars",akses.getnamars());
                         param.put("alamatrs",akses.getalamatrs());
                         param.put("kotars",akses.getkabupatenrs());
                         param.put("propinsirs",akses.getpropinsirs());
                         param.put("kontakrs",akses.getkontakrs());
-                        param.put("emailrs",akses.getemailrs());   
-                        param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-                        Valid.MyReport("rptRM2D_2.jasper","report","::[ Lembar Assasmen ]::",param); 
+                        param.put("emailrs",akses.getemailrs());
+                        param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+                        Valid.MyReportqry("rptRM2D_2.jasper","report","::[ Ringkasan Masuk Keluar ]::",
+                                qryRingkasanMasukKeluar(TNoRMCari.getText()),param);
                     }
                 }  
             }
