@@ -291,7 +291,7 @@ public class DlgUser extends javax.swing.JDialog {
                 "[M]Catatan Observasi Ruang Operasi","[M]Hasil USG Abdomen","[M]Intervensi Nyeri Farmakologi","[M]Intervensi Nyeri Non Farmakologi","[P]Surat Pengajuan Cuti Perawatan",
                 "[M]Check List Kriteria Masuk Isolasi","[L]Mapping Tindakan Ralan KPTL Satu Sehat","[L]Mapping Tindakan Ranap KPTL Satu Sehat","[L]Mapping Tindakan Radiologi KPTL Satu Sehat",
                 "[L]Mapping Tindakan Laborat KPTL Satu Sehat","[L]Mapping Tindakan Operasi KPTL Satu Sehat","[L]Mapping Tarif Kamar KPTL Satu Sehat","[M]Check List Kriteria Keluar Isolasi",
-                "[M]Asesmen Medis Rawat Inap"
+                "[M]Asesmen Medis Rawat Inap","[M]Ringkasan Pasien Masuk Keluar"
         };
         
         tabMode=new DefaultTableModel(null,row){
@@ -627,7 +627,7 @@ public class DlgUser extends javax.swing.JDialog {
         tbUser.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbUser.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 1216;i++) {
+        for (i = 0; i < 1217;i++) {
             TableColumn column = tbUser.getColumnModel().getColumn(i);
             switch (i) {
                 case 0:
@@ -4188,7 +4188,7 @@ public class DlgUser extends javax.swing.JDialog {
                     false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
                     false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
                     false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
-                    false,false,false,false,false
+                    false,false,false,false,false,false
                 });
                 emptTeks();
                 LCount.setText(""+tabMode.getRowCount());
@@ -5461,6 +5461,7 @@ public class DlgUser extends javax.swing.JDialog {
                     "checklist_kriteria_keluar_isolasi='"+tbUser.getValueAt(i,1214).toString()+"'";
 
                 setHakAkses += ",asesmen_medis_ranap='"+tbUser.getValueAt(i,1215).toString()+"'";
+                setHakAkses += ",ringkasan_pasien_masuk_keluar='"+tbUser.getValueAt(i,1216).toString()+"'";
 
                 if(Sequel.mengedittf("user","id_user=AES_ENCRYPT('"+tbUser.getValueAt(i,0).toString()+"','nur')",
                     setHakAkses)==true){
@@ -6968,6 +6969,7 @@ private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                         "checklist_kriteria_keluar_isolasi='"+tbUser.getValueAt(barisdicopy,1214).toString()+"'";
 
                                     salinHakAkses += ",asesmen_medis_ranap='"+tbUser.getValueAt(barisdicopy,1215).toString()+"'";
+                                    salinHakAkses += ",ringkasan_pasien_masuk_keluar='"+tbUser.getValueAt(barisdicopy,1216).toString()+"'";
 
                                     Sequel.mengedit("user","id_user=AES_ENCRYPT('"+tbUser.getValueAt(i,0).toString()+"','nur')",
                                         salinHakAkses);
@@ -7310,7 +7312,8 @@ private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                             "user.surat_permintaan_second_opinion,user.surat_keterangan_berobat,user.surat_penolakan_resusitasi,user.catatan_observasi_ruang_ok,user.hasil_pemeriksaan_usg_abdomen,"+
                             "user.intervensi_nyeri_farmakologi,user.intervensi_nyeri_nonfarmakologi,user.surat_pengajuan_cuti_pasien,user.checklist_kriteria_masuk_isolasi,user.satu_sehat_mapping_kptl_tindakan_ralan,"+
                             "user.satu_sehat_mapping_kptl_tindakan_ranap,user.satu_sehat_mapping_kptl_tindakan_radiologi,user.satu_sehat_mapping_kptl_tindakan_laborat,user.satu_sehat_mapping_kptl_tindakan_operasi,"+
-                            "user.satu_sehat_mapping_kptl_tarif_kamar,user.checklist_kriteria_keluar_isolasi,user.asesmen_medis_ranap from user order by AES_DECRYPT(user.id_user,'nur')");
+                            "user.satu_sehat_mapping_kptl_tarif_kamar,user.checklist_kriteria_keluar_isolasi,user.asesmen_medis_ranap,"+
+                            "user.ringkasan_pasien_masuk_keluar from user order by AES_DECRYPT(user.id_user,'nur')");
                         try {
                             rs=ps.executeQuery();
                             i=0;
@@ -8540,7 +8543,8 @@ private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                            rs.getBoolean("satu_sehat_mapping_kptl_tindakan_operasi"),
                                            rs.getBoolean("satu_sehat_mapping_kptl_tarif_kamar"),
                                            rs.getBoolean("checklist_kriteria_keluar_isolasi"),
-                                           rs.getBoolean("asesmen_medis_ranap")
+                                           rs.getBoolean("asesmen_medis_ranap"),
+                                           rs.getBoolean("ringkasan_pasien_masuk_keluar")
                                         });
                                     }   
                                 } catch (Exception e) {
@@ -9758,7 +9762,8 @@ private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                        rs.getBoolean("satu_sehat_mapping_kptl_tindakan_operasi"),
                                        rs.getBoolean("satu_sehat_mapping_kptl_tarif_kamar"),
                                        rs.getBoolean("checklist_kriteria_keluar_isolasi"),
-                                       rs.getBoolean("asesmen_medis_ranap")
+                                       rs.getBoolean("asesmen_medis_ranap"),
+                                           rs.getBoolean("ringkasan_pasien_masuk_keluar")
                                     });
                                 }                                             
                              }
