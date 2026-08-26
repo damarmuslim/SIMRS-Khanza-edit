@@ -65,7 +65,121 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
     private JsonNode response;
     private FileReader myObj;
     private String TANGGALMUNDUR="yes";
-    
+
+    // === Tahap 1 RM 19 Pengkajian Awal Keperawatan Rawat Inap: Riwayat Alergi + Riwayat Kesehatan ===
+    private widget.PanelBiasa panelAlergi, panelRiwayatKesehatan, panelAlasanMasuk;
+    private widget.TextBox KeluhanUtama;
+    private widget.CekBox chkAlergiTidakAda, chkAlergiObat, chkAlergiMakanan, chkAlergiLainnya, chkAlergiTidakDiketahui, chkAlergiTandaDipasang;
+    private widget.TextBox txtAlergiObatSebutkan, txtAlergiObatReaksi, txtAlergiMakananSebutkan, txtAlergiMakananReaksi, txtAlergiLainnyaSebutkan, txtAlergiLainnyaReaksi, txtAlergiTidakDiketahuiReaksi;
+    private widget.CekBox chkRpdHipertensi, chkRpdDm, chkRpdJantung, chkRpdHepatitis, chkRpdOperasi, chkRpdAnemia, chkRpdAsthma, chkRpdStroke, chkRpdParu, chkRpdLainlain;
+    private widget.TextBox txtRpdLainlainSebutkan;
+    private widget.CekBox chkRpkHipertensi, chkRpkDm, chkRpkJantung, chkRpkThalasemia, chkRpkLainlain;
+    private widget.TextBox txtRpkLainlainSebutkan;
+    private widget.TextBox txtNamaKeluargaAnamnesis, txtHubunganAnamnesis;
+    private widget.ComboBox TingkatKesadaran;
+    private widget.TextBox LLA;
+    private widget.TextBox GCSE, GCSM, GCSV;
+    private widget.ComboBox Menstruasi, StatusHamil, Papsmear, Mamografi, Sadari, ScreeningProstat;
+    private widget.TextBox HPHT, TglPapsmear, TglMamografi, TglSadari, TglScreeningProstat, SkalaBranden;
+    private widget.TextBox PupilKananUkuran, PupilKananReaksi, PupilKiriUkuran, PupilKiriReaksi;
+    // --- Tahap 10: restrukturisasi "4. Pemeriksaan Fisik" sesuai foto formulir fisik ---
+    // b. Fungsi Pernafasan
+    private widget.CekBox chkAirwayNormal, chkAirwayOropharingeal, chkAirwaySekret, chkAirwayTumor, chkAirwayTrajeostomy, chkAirwayRTT;
+    private widget.TextBox txtAirwayRTTUkuran;
+    private widget.CekBox chkBreathingNormal, chkBreathingSesakDyspnea, chkBreathingBatuk, chkBreathingTakipneu, chkBreathingBatukDarah, chkBreathingSleepApnea, chkBreathingNgorok, chkBreathingLain;
+    private widget.TextBox txtBreathingLain;
+    private widget.CekBox chkBunyiParuNormal, chkBunyiParuOrthopnea, chkBunyiParuStidor, chkBunyiParuRonkhiKanan, chkBunyiParuRonkhiKiri, chkBunyiParuWheezingKanan, chkBunyiParuWheezingKiri, chkBunyiParuLain;
+    private widget.TextBox txtBunyiParuLain;
+    private widget.CekBox chkKesulitanBernafasTidak, chkKesulitanBernafasYa;
+    private widget.CekBox chkOtotBantuNafasTidak, chkOtotBantuNafasYa;
+    private widget.CekBox chkO2Tidak, chkO2Ya, chkO2Nasal, chkO2Sungkup;
+    private widget.TextBox txtO2LiterMenit, txtSaturasiO2;
+    // c. Status Cardiovaskuler
+    private widget.CekBox chkCardioTidakAdaKelainan, chkCardioBradikardi, chkCardioTakikardi, chkCardioMurMur, chkCardioGallop, chkCardioPucatSianosis, chkCardioNyeriDada;
+    private widget.TextBox txtCardioLain;
+    // d. Fungsi Gastrointestinal
+    private widget.CekBox chkGiTidakAdaKeluhan, chkGiPenurunanBisingUsus, chkGiGigiPalsuAtasKanan, chkGiGigiPalsuAtasKiri, chkGiGigiPalsuBawahKanan, chkGiGigiPalsuBawahKiri,
+            chkGiPembatasanMakanan, chkGiTidakNafsuMakan, chkGiMual, chkGiMuntah, chkGiKonstipasi, chkGiTerpasangNGT, chkGiSulitMenelan,
+            chkGiDiare, chkGiKolostomi, chkGiDistensiAbdomen, chkGiMakanHabis, chkGiIVFD;
+    private widget.TextBox txtGiPembatasanMakanan, txtGiMuntahKali, txtGiDiareX, txtGiIVFDTts;
+    // e. Fungsi Perkemihan
+    private widget.CekBox chkKemihTidakAdaKeluhan, chkKemihDistensiBladder, chkKemihHaematuria, chkKemihRetensiUrine, chkKemihOliguri, chkKemihPoliuri, chkKemihDisuria, chkKemihAnuri, chkKemihTerpasangKateter, chkKemihInkontinensiaUrine;
+    private widget.TextBox txtKemihLain;
+    // f. Status Neurosensori
+    private widget.CekBox chkPendengaranTAK, chkPendengaranBerdengung, chkPendengaranTuli, chkPendengaranKeluarCairan, chkPendengaranNyeri;
+    private widget.CekBox chkPenglihatanTAK, chkPenglihatanAnemis, chkPenglihatanIcterik, chkPenglihatanTidakAdaReaksiCahaya, chkPenglihatanKacaMata, chkPenglihatanLensaKontak, chkPenglihatanMerah, chkPenglihatanKabur;
+    private widget.TextBox txtPenglihatanLain;
+    private widget.CekBox chkWicaraNormal, chkWicaraCadelPelo, chkWicaraAphasia, chkWicaraKerusakanWicara;
+    private widget.CekBox chkOrientasiBaik, chkOrientasiOrang, chkOrientasiTempat, chkOrientasiWaktu, chkOrientasiSituasi;
+    private widget.CekBox chkMemoriBaik, chkMemoriSedang, chkMemoriBuruk;
+    private widget.CekBox chkKonsentrasiBaik, chkKonsentrasiSedang, chkKonsentrasiBuruk;
+    private widget.TextBox txtKekuatanOtot, txtKekuatanOtotTremorDi;
+    private widget.CekBox chkKekuatanOtotInkoordinasi, chkKekuatanOtotKejang;
+    private widget.TextBox txtHemiplegiDi, txtParaseDi;
+    // g. Fungsi Ekstremitas
+    private widget.CekBox chkFrakturTanganKanan, chkFrakturTanganKiri, chkFrakturKakiKanan, chkFrakturKakiKiri;
+    private widget.TextBox txtEkstremitasLain;
+    // h. Kulit dan Kelamin
+    private widget.CekBox chkWarnaKulitNormal, chkWarnaKulitPucat, chkWarnaKulitMerah, chkWarnaKulitIkterik, chkWarnaKulitKemerahan;
+    private widget.TextBox txtWarnaKulitLain;
+    private widget.CekBox chkIntegritasKulitUtuh, chkIntegritasKulitRuam, chkIntegritasKulitMelepuh, chkIntegritasKulitKemerahan;
+    private widget.TextBox txtIntegritasKulitMelepuhDi, txtIntegritasKulitKemerahanDi;
+    private widget.ComboBox StatusPernikahan;
+    private widget.TextBox NamaKerabatTerdekat, HubunganKerabatTerdekat, TelpKerabatTerdekat;
+    // --- "5. STATUS PSIKO-SOSIAL-EKONOMI DAN SPIRITUAL" (restrukturisasi total dari GEN lama
+    // "V. RIWAYAT PSIKOLOGIS-SOSIAL-EKONOMI-BUDAYA-SPIRITUAL", sesuai foto RM19) ---
+    // a. Status Psikologi
+    private widget.CekBox chkPsikoTAK, chkPsikoMarah, chkPsikoGelisah, chkPsikoSedih, chkPsikoCemas, chkPsikoTakut, chkPsikoAcuhTakAcuh, chkPsikoBunuhDiri;
+    // b. Status Sosial-Ekonomi
+    private widget.CekBox chkHubKeluargaBaik, chkHubKeluargaTidakBaik;
+    private widget.CekBox chkTempatTinggalRumah, chkTempatTinggalAsrama, chkTempatTinggalPanti, chkTempatTinggalLainnya;
+    private widget.TextBox txtTempatTinggalLainnya;
+    private widget.CekBox chkTinggalSuamiIstri, chkTinggalAnak, chkTinggalOrangTua, chkTinggalLainnya;
+    private widget.TextBox txtTinggalLainnya;
+    private widget.CekBox chkPekerjaanBekerja, chkPekerjaanPNS, chkPekerjaanSwasta, chkPekerjaanTNIPolri, chkPekerjaanTaniBuruh;
+    private widget.CekBox chkKebiasaanMerokok, chkKebiasaanAlkohol, chkKebiasaanLainnya;
+    private widget.TextBox txtKebiasaanJenisJumlah;
+    // c. Status Kepribadian
+    private widget.CekBox chkKepribadianTidakAdaKeluhan, chkKepribadianPerluPendampingan, chkKepribadianPerluDibantuIbadah, chkKepribadianBerdoa, chkKepribadianBacaLiteratur;
+    private widget.TextBox txtKepribadianGangguPraktik, txtKepribadianNilaiBudaya, txtKepribadianLainLain;
+    // --- Poin 41: "6. PENAPISAN / SKRINING NYERI" (RM19-3) - gantikan blok GEN lama "VI. PENGKAJIAN TINGKAT NYERI" ---
+    private KanvasNyeri kanvasNyeri;
+    private widget.Button btnHapusCoretanNyeri;
+    private widget.TextBox txtNyeriP, txtNyeriQ, txtNyeriR, txtNyeriS, txtNyeriT;
+    private widget.CekBox chkKeluhanNyeriKronik, chkKeluhanNyeriAkut, chkKeluhanTidakAdaNyeri;
+    private widget.CekBox chkNyeriHilangMinumObat, chkNyeriHilangIstirahat, chkNyeriHilangBerubahPosisi, chkNyeriHilangMendengarMusik, chkNyeriHilangLainLain;
+    private widget.TextBox txtNyeriHilangLainLain;
+    // --- Poin 41: "7. STATUS FUNGSIONAL" (RM19-3) - gantikan blok GEN lama "VII. PENGKAJIAN RESIKO JATUH" ---
+    private widget.CekBox chkFungsionalMandiri, chkFungsionalBantuanMinimal, chkFungsionalBantuanSebagian, chkFungsionalKetergantungan;
+    private widget.CekBox chkBerjalanNormal, chkBerjalanPerluBantuan, chkBerjalanSeringJatuh, chkBerjalanKelumpuhan;
+    // --- Tahap 6: Kebutuhan Edukasi (RM19 section 9, blm ada sama sekali sblmnya) ---
+    private widget.CekBox chkEduBicaraTidak, chkEduBicaraYa;
+    private widget.TextBox txtEduBicaraJelaskan;
+    private widget.CekBox chkEduBahasaIndonesia, chkEduBahasaDaerah, chkEduBahasaAsing, chkEduBahasaIsyarat;
+    private widget.TextBox txtEduBahasaDaerah, txtEduBahasaAsing;
+    private widget.CekBox chkEduPenerjemahTidak, chkEduPenerjemahYa;
+    private widget.TextBox txtEduPenerjemahBahasa;
+    private widget.CekBox chkCaraAudioVisual, chkCaraDiskusi, chkCaraMembaca, chkCaraMenulis,
+            chkCaraMengerjakan, chkCaraGambar, chkCaraMendengar, chkCaraDemonstrasi;
+    private widget.CekBox chkHambatanEduTidak, chkHambatanEduYa;
+    private widget.CekBox chkHambatanBahasa, chkHambatanEmosi, chkHambatanCaregiver, chkHambatanFisiologisBelajar,
+            chkHambatanPendengaran, chkHambatanPenglihatan, chkHambatanMemori, chkHambatanMotivasi, chkHambatanBicara;
+    private widget.CekBox chkPendidikanTK, chkPendidikanSD, chkPendidikanSMP, chkPendidikanSMA,
+            chkPendidikanD3D4, chkPendidikanS1, chkPendidikanS2, chkPendidikanS3;
+    private widget.CekBox chkKebutuhanProsesPenyakit, chkKebutuhanDiitNutrisi, chkKebutuhanPerawatanLuka,
+            chkKebutuhanManajemenNyeri, chkKebutuhanObatObatan, chkKebutuhanRehabilitasi, chkKebutuhanLainLain;
+    private widget.TextBox txtKebutuhanLainLain;
+    // --- Tahap 6: Discharge Planning (RM19 section 10, 7 komponen, blm ada sama sekali) ---
+    private widget.CekBox[] chkDischargeYa = new widget.CekBox[7];
+    private widget.CekBox[] chkDischargeTidak = new widget.CekBox[7];
+    private widget.TextBox[] txtDischargeKet = new widget.TextBox[7];
+    // Poin 42: 1 baris tambahan Discharge Planning yg komponennya diisi manual
+    // (di bawah "Dirujuk ke kelompok") - nama komponen + Ya/Tidak + keterangan
+    private widget.TextBox txtDischargeManualKomponen, txtDischargeManualKet;
+    private widget.CekBox chkDischargeManualYa, chkDischargeManualTidak;
+    // --- Tahap 6: Data Penunjang (RM19 section 11, 4 baris bebas, blm ada sama sekali) ---
+    private widget.TextBox[] txtDataPenunjang = new widget.TextBox[4];
+
     /** Creates new form DlgRujuk
      * @param parent
      * @param modal */
@@ -73,7 +187,8 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         widget.IconStyle.pasang(this);
-        
+        initRiwayatRM19();
+
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","NIP Pengkaji 1","Nama Pengkaji 1","NIP Pengkaji 2","Nama Pengkaji 2","Kode DPJP","Nama DPJP",
             "Tgl.Asuhan","Macam Kasus","Anamnesis","Tiba Di Ruang Rawat","Cara Masuk","Riwayat Penyakit Saat Ini","Riwayat Penyakit Dahulu","Riwayat Penyakit Keluarga",
@@ -93,7 +208,97 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
             "Skala Sydney 5","N.S. 5","Skala Sydney 6","N.S. 6","Skala Sydney 7","N.S. 7","Skala Sydney 8","N.S. 8","Skala Sydney 9","N.S. 9","Skala Sydney 10","N.S. 10",
             "Skala Sydney 11","N.S. 11","T.S.","1. Apakah ada penurunan BB yang tidak diinginkan selama 6 bulan terakhir ?","Skor 1","2. Apakah asupan makan berkurang karena tidak nafsu makan ?",
             "Skor 2","Total Skor","Pasien dengan diagnosis khusus","Keterangan Diagnosa Khusus","Sudah dibaca dan diketahui oleh Dietisen","Jam Dibaca Dietisen",
-            "Rencana Keperawatan Lainnya"
+            "Rencana Keperawatan Lainnya",
+                "Riwayat Alergi",
+                "Alergi Obat (sebutkan/reaksi)",
+                "Alergi Makanan (sebutkan/reaksi)",
+                "Alergi Lainnya (sebutkan/reaksi)",
+                "Alergi Tdk Diketahui (reaksi)",
+                "RPD (checklist)",
+                "RPD Lain-lain",
+                "RPK (checklist)",
+                "RPK Lain-lain",
+                "Alloanamnesis Nama/Hubungan",
+                "Keluhan Utama",
+                "Tingkat Kesadaran",
+                "LLA",
+                "GCS E/M/V",
+                "Airway",
+                "Airway RTT Ukuran",
+                "Breathing",
+                "Breathing Lain-lain",
+                "Bunyi Paru",
+                "Bunyi Paru Lain-lain",
+                "Kesulitan Bernafas",
+                "Otot Bantu Nafas",
+                "Saturasi O2 (%)",
+                "Pemberian O2",
+                "O2 Liter/Menit",
+                "Cardiovaskuler",
+                "Cardiovaskuler Lain",
+                "Gastrointestinal",
+                "GI Pembatasan Makanan",
+                "GI Muntah/Diare/IVFD",
+                "Fungsi Perkemihan",
+                "Perkemihan Lain-lain",
+                "Status Reproduksi",
+                "Papsmear/Mamografi/Sadari",
+                "Screening Prostat (Pria)",
+                "Pendengaran",
+                "Penglihatan",
+                "Penglihatan Lain",
+                "Wicara",
+                "Orientasi",
+                "Memori",
+                "Konsentrasi",
+                "Pupil Kanan (ukuran/reaksi)",
+                "Pupil Kiri (ukuran/reaksi)",
+                "Kekuatan Otot",
+                "Kekuatan Otot (checklist)",
+                "Tremor/Hemiplegi/Parase di",
+                "Fraktur di",
+                "Ekstremitas Lain-lain",
+                "Warna Kulit",
+                "Warna Kulit Lain",
+                "Integritas Kulit",
+                "Melepuh/Kemerahan di",
+                "Skala Branden",
+                "Status Psikologi",
+                "Status Pernikahan",
+                "Kerabat Terdekat",
+                "Sosial-Ekonomi",
+                "Sosek Keterangan",
+                "Status Kepribadian",
+                "Kepribadian Keterangan",
+                "Skala Nyeri (coretan)",
+                "Nyeri P/Q/R/S/T",
+                "Keluhan Nyeri",
+                "Nyeri Hilang Bila",
+                "Nyeri Hilang Lain-lain",
+                "Status Fungsional",
+                "Edukasi Bicara",
+                "Edukasi Bicara Jelaskan",
+                "Bahasa Sehari-hari",
+                "Bahasa Daerah/Asing",
+                "Dibutuhkan Penerjemah",
+                "Penerjemah Bahasa",
+                "Cara Belajar Disukai",
+                "Hambatan Pembelajaran",
+                "Tingkat Pendidikan",
+                "Kebutuhan Pembelajaran",
+                "Kebutuhan Lain-lain",
+                "DP: Home Care",
+                "DP: Perawatan Luka",
+                "DP: Alat Bantu",
+                "DP: Pemesanan Alat",
+                "DP: Tim Terapis",
+                "DP: Ahli Gizi",
+                "DP: Kelompok",
+                "DP: Manual (komponen)",
+                "Data Penunjang 1",
+                "Data Penunjang 2",
+                "Data Penunjang 3",
+                "Data Penunjang 4"
         }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -103,7 +308,7 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 175; i++) {
+        for (i = 0; i < 265; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(105);
@@ -455,6 +660,186 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                 column.setPreferredWidth(107);
             }else if(i==174){
                 column.setPreferredWidth(200);
+            }else if(i==175){
+                column.setPreferredWidth(170);
+            }else if(i==176){
+                column.setPreferredWidth(170);
+            }else if(i==177){
+                column.setPreferredWidth(170);
+            }else if(i==178){
+                column.setPreferredWidth(170);
+            }else if(i==179){
+                column.setPreferredWidth(170);
+            }else if(i==180){
+                column.setPreferredWidth(170);
+            }else if(i==181){
+                column.setPreferredWidth(170);
+            }else if(i==182){
+                column.setPreferredWidth(170);
+            }else if(i==183){
+                column.setPreferredWidth(170);
+            }else if(i==184){
+                column.setPreferredWidth(170);
+            }else if(i==185){
+                column.setPreferredWidth(170);
+            }else if(i==186){
+                column.setPreferredWidth(170);
+            }else if(i==187){
+                column.setPreferredWidth(170);
+            }else if(i==188){
+                column.setPreferredWidth(170);
+            }else if(i==189){
+                column.setPreferredWidth(170);
+            }else if(i==190){
+                column.setPreferredWidth(170);
+            }else if(i==191){
+                column.setPreferredWidth(170);
+            }else if(i==192){
+                column.setPreferredWidth(170);
+            }else if(i==193){
+                column.setPreferredWidth(170);
+            }else if(i==194){
+                column.setPreferredWidth(170);
+            }else if(i==195){
+                column.setPreferredWidth(170);
+            }else if(i==196){
+                column.setPreferredWidth(170);
+            }else if(i==197){
+                column.setPreferredWidth(170);
+            }else if(i==198){
+                column.setPreferredWidth(170);
+            }else if(i==199){
+                column.setPreferredWidth(170);
+            }else if(i==200){
+                column.setPreferredWidth(170);
+            }else if(i==201){
+                column.setPreferredWidth(170);
+            }else if(i==202){
+                column.setPreferredWidth(170);
+            }else if(i==203){
+                column.setPreferredWidth(170);
+            }else if(i==204){
+                column.setPreferredWidth(170);
+            }else if(i==205){
+                column.setPreferredWidth(170);
+            }else if(i==206){
+                column.setPreferredWidth(170);
+            }else if(i==207){
+                column.setPreferredWidth(170);
+            }else if(i==208){
+                column.setPreferredWidth(170);
+            }else if(i==209){
+                column.setPreferredWidth(170);
+            }else if(i==210){
+                column.setPreferredWidth(170);
+            }else if(i==211){
+                column.setPreferredWidth(170);
+            }else if(i==212){
+                column.setPreferredWidth(170);
+            }else if(i==213){
+                column.setPreferredWidth(170);
+            }else if(i==214){
+                column.setPreferredWidth(170);
+            }else if(i==215){
+                column.setPreferredWidth(170);
+            }else if(i==216){
+                column.setPreferredWidth(170);
+            }else if(i==217){
+                column.setPreferredWidth(170);
+            }else if(i==218){
+                column.setPreferredWidth(170);
+            }else if(i==219){
+                column.setPreferredWidth(170);
+            }else if(i==220){
+                column.setPreferredWidth(170);
+            }else if(i==221){
+                column.setPreferredWidth(170);
+            }else if(i==222){
+                column.setPreferredWidth(170);
+            }else if(i==223){
+                column.setPreferredWidth(170);
+            }else if(i==224){
+                column.setPreferredWidth(170);
+            }else if(i==225){
+                column.setPreferredWidth(170);
+            }else if(i==226){
+                column.setPreferredWidth(170);
+            }else if(i==227){
+                column.setPreferredWidth(170);
+            }else if(i==228){
+                column.setPreferredWidth(170);
+            }else if(i==229){
+                column.setPreferredWidth(170);
+            }else if(i==230){
+                column.setPreferredWidth(170);
+            }else if(i==231){
+                column.setPreferredWidth(170);
+            }else if(i==232){
+                column.setPreferredWidth(170);
+            }else if(i==233){
+                column.setPreferredWidth(170);
+            }else if(i==234){
+                column.setPreferredWidth(170);
+            }else if(i==235){
+                column.setPreferredWidth(170);
+            }else if(i==236){
+                column.setPreferredWidth(170);
+            }else if(i==237){
+                column.setPreferredWidth(170);
+            }else if(i==238){
+                column.setPreferredWidth(170);
+            }else if(i==239){
+                column.setPreferredWidth(170);
+            }else if(i==240){
+                column.setPreferredWidth(170);
+            }else if(i==241){
+                column.setPreferredWidth(170);
+            }else if(i==242){
+                column.setPreferredWidth(170);
+            }else if(i==243){
+                column.setPreferredWidth(170);
+            }else if(i==244){
+                column.setPreferredWidth(170);
+            }else if(i==245){
+                column.setPreferredWidth(170);
+            }else if(i==246){
+                column.setPreferredWidth(170);
+            }else if(i==247){
+                column.setPreferredWidth(170);
+            }else if(i==248){
+                column.setPreferredWidth(170);
+            }else if(i==249){
+                column.setPreferredWidth(170);
+            }else if(i==250){
+                column.setPreferredWidth(170);
+            }else if(i==251){
+                column.setPreferredWidth(170);
+            }else if(i==252){
+                column.setPreferredWidth(170);
+            }else if(i==253){
+                column.setPreferredWidth(170);
+            }else if(i==254){
+                column.setPreferredWidth(170);
+            }else if(i==255){
+                column.setPreferredWidth(170);
+            }else if(i==256){
+                column.setPreferredWidth(170);
+            }else if(i==257){
+                column.setPreferredWidth(170);
+            }else if(i==258){
+                column.setPreferredWidth(170);
+            }else if(i==259){
+                column.setPreferredWidth(170);
+            }else if(i==260){
+                column.setPreferredWidth(170);
+            }else if(i==261){
+                column.setPreferredWidth(170);
+            }else if(i==262){
+                column.setPreferredWidth(170);
+            }else if(i==263){
+                column.setPreferredWidth(170);
+            }else if(i==264){
+                column.setPreferredWidth(170);
             }
         }
         tbObat.setDefaultRenderer(Object.class, new WarnaTable());
@@ -5423,7 +5808,8 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                     "penilaian_awal_keperawatan_ranap.nilai_gizi2,penilaian_awal_keperawatan_ranap.nilai_total_gizi,penilaian_awal_keperawatan_ranap.skrining_gizi_diagnosa_khusus,penilaian_awal_keperawatan_ranap.skrining_gizi_ket_diagnosa_khusus,"+
                     "penilaian_awal_keperawatan_ranap.skrining_gizi_diketahui_dietisen,penilaian_awal_keperawatan_ranap.skrining_gizi_jam_diketahui_dietisen,penilaian_awal_keperawatan_ranap.rencana,penilaian_awal_keperawatan_ranap.nip1,"+
                     "penilaian_awal_keperawatan_ranap.nip2,penilaian_awal_keperawatan_ranap.kd_dokter,pasien.tgl_lahir,pasien.jk,pengkaji1.nama as pengkaji1,pengkaji2.nama as pengkaji2,dokter.nm_dokter,"+
-                    "reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.agama,pasien.pekerjaan,pasien.pnd,penjab.png_jawab,bahasa_pasien.nama_bahasa "+
+                    "reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.agama,pasien.pekerjaan,pasien.pnd,penjab.png_jawab,bahasa_pasien.nama_bahasa,"+
+                    "penilaian_awal_keperawatan_ranap.alergi_tidak_ada,penilaian_awal_keperawatan_ranap.alergi_obat,penilaian_awal_keperawatan_ranap.alergi_obat_sebutkan,penilaian_awal_keperawatan_ranap.alergi_obat_reaksi,penilaian_awal_keperawatan_ranap.alergi_makanan,penilaian_awal_keperawatan_ranap.alergi_makanan_sebutkan,penilaian_awal_keperawatan_ranap.alergi_makanan_reaksi,penilaian_awal_keperawatan_ranap.alergi_lainnya,penilaian_awal_keperawatan_ranap.alergi_lainnya_sebutkan,penilaian_awal_keperawatan_ranap.alergi_lainnya_reaksi,penilaian_awal_keperawatan_ranap.alergi_tidak_diketahui,penilaian_awal_keperawatan_ranap.alergi_tidak_diketahui_reaksi,penilaian_awal_keperawatan_ranap.alergi_tanda_dipasang,penilaian_awal_keperawatan_ranap.rpd_hipertensi,penilaian_awal_keperawatan_ranap.rpd_dm,penilaian_awal_keperawatan_ranap.rpd_jantung,penilaian_awal_keperawatan_ranap.rpd_hepatitis,penilaian_awal_keperawatan_ranap.rpd_operasi,penilaian_awal_keperawatan_ranap.rpd_anemia,penilaian_awal_keperawatan_ranap.rpd_asthma,penilaian_awal_keperawatan_ranap.rpd_stroke,penilaian_awal_keperawatan_ranap.rpd_paru,penilaian_awal_keperawatan_ranap.rpd_lainlain,penilaian_awal_keperawatan_ranap.rpd_lainlain_sebutkan,penilaian_awal_keperawatan_ranap.rpk_hipertensi,penilaian_awal_keperawatan_ranap.rpk_dm,penilaian_awal_keperawatan_ranap.rpk_jantung,penilaian_awal_keperawatan_ranap.rpk_thalasemia,penilaian_awal_keperawatan_ranap.rpk_lainlain,penilaian_awal_keperawatan_ranap.rpk_lainlain_sebutkan,penilaian_awal_keperawatan_ranap.informasi_nama_keluarga,penilaian_awal_keperawatan_ranap.informasi_hubungan_keluarga,penilaian_awal_keperawatan_ranap.tingkat_kesadaran,penilaian_awal_keperawatan_ranap.lla,penilaian_awal_keperawatan_ranap.reproduksi_menstruasi,penilaian_awal_keperawatan_ranap.reproduksi_hamil,penilaian_awal_keperawatan_ranap.reproduksi_hpht,penilaian_awal_keperawatan_ranap.reproduksi_papsmear,penilaian_awal_keperawatan_ranap.reproduksi_papsmear_tanggal,penilaian_awal_keperawatan_ranap.reproduksi_mamografi,penilaian_awal_keperawatan_ranap.reproduksi_mamografi_tanggal,penilaian_awal_keperawatan_ranap.reproduksi_sadari,penilaian_awal_keperawatan_ranap.reproduksi_sadari_tanggal,penilaian_awal_keperawatan_ranap.reproduksi_screening_prostat,penilaian_awal_keperawatan_ranap.reproduksi_screening_prostat_tanggal,penilaian_awal_keperawatan_ranap.skala_branden,penilaian_awal_keperawatan_ranap.status_pernikahan,penilaian_awal_keperawatan_ranap.kerabat_nama,penilaian_awal_keperawatan_ranap.kerabat_hubungan,penilaian_awal_keperawatan_ranap.kerabat_telp,penilaian_awal_keperawatan_ranap.edu_bicara_tidak,penilaian_awal_keperawatan_ranap.edu_bicara_ya,penilaian_awal_keperawatan_ranap.edu_bicara_jelaskan,penilaian_awal_keperawatan_ranap.edu_bahasa_indonesia,penilaian_awal_keperawatan_ranap.edu_bahasa_daerah,penilaian_awal_keperawatan_ranap.edu_bahasa_daerah_ket,penilaian_awal_keperawatan_ranap.edu_bahasa_asing,penilaian_awal_keperawatan_ranap.edu_bahasa_asing_ket,penilaian_awal_keperawatan_ranap.edu_bahasa_isyarat,penilaian_awal_keperawatan_ranap.edu_penerjemah_tidak,penilaian_awal_keperawatan_ranap.edu_penerjemah_ya,penilaian_awal_keperawatan_ranap.edu_penerjemah_bahasa,penilaian_awal_keperawatan_ranap.edu_cara_audiovisual,penilaian_awal_keperawatan_ranap.edu_cara_diskusi,penilaian_awal_keperawatan_ranap.edu_cara_membaca,penilaian_awal_keperawatan_ranap.edu_cara_menulis,penilaian_awal_keperawatan_ranap.edu_cara_mengerjakan,penilaian_awal_keperawatan_ranap.edu_cara_gambar,penilaian_awal_keperawatan_ranap.edu_cara_mendengar,penilaian_awal_keperawatan_ranap.edu_cara_demonstrasi,penilaian_awal_keperawatan_ranap.edu_hambatan_tidak,penilaian_awal_keperawatan_ranap.edu_hambatan_ya,penilaian_awal_keperawatan_ranap.edu_hambatan_bahasa,penilaian_awal_keperawatan_ranap.edu_hambatan_emosi,penilaian_awal_keperawatan_ranap.edu_hambatan_caregiver,penilaian_awal_keperawatan_ranap.edu_hambatan_fisiologis,penilaian_awal_keperawatan_ranap.edu_hambatan_pendengaran,penilaian_awal_keperawatan_ranap.edu_hambatan_penglihatan,penilaian_awal_keperawatan_ranap.edu_hambatan_memori,penilaian_awal_keperawatan_ranap.edu_hambatan_motivasi,penilaian_awal_keperawatan_ranap.edu_hambatan_bicara,penilaian_awal_keperawatan_ranap.edu_pendidikan_tk,penilaian_awal_keperawatan_ranap.edu_pendidikan_sd,penilaian_awal_keperawatan_ranap.edu_pendidikan_smp,penilaian_awal_keperawatan_ranap.edu_pendidikan_sma,penilaian_awal_keperawatan_ranap.edu_pendidikan_d3d4,penilaian_awal_keperawatan_ranap.edu_pendidikan_s1,penilaian_awal_keperawatan_ranap.edu_pendidikan_s2,penilaian_awal_keperawatan_ranap.edu_pendidikan_s3,penilaian_awal_keperawatan_ranap.edu_kebutuhan_proses_penyakit,penilaian_awal_keperawatan_ranap.edu_kebutuhan_diit_nutrisi,penilaian_awal_keperawatan_ranap.edu_kebutuhan_perawatan_luka,penilaian_awal_keperawatan_ranap.edu_kebutuhan_manajemen_nyeri,penilaian_awal_keperawatan_ranap.edu_kebutuhan_obat,penilaian_awal_keperawatan_ranap.edu_kebutuhan_rehabilitasi,penilaian_awal_keperawatan_ranap.edu_kebutuhan_lainlain,penilaian_awal_keperawatan_ranap.edu_kebutuhan_lainlain_ket,penilaian_awal_keperawatan_ranap.discharge_homecare_ya,penilaian_awal_keperawatan_ranap.discharge_homecare_tidak,penilaian_awal_keperawatan_ranap.discharge_homecare_ket,penilaian_awal_keperawatan_ranap.discharge_perawatanluka_ya,penilaian_awal_keperawatan_ranap.discharge_perawatanluka_tidak,penilaian_awal_keperawatan_ranap.discharge_perawatanluka_ket,penilaian_awal_keperawatan_ranap.discharge_alatbantu_ya,penilaian_awal_keperawatan_ranap.discharge_alatbantu_tidak,penilaian_awal_keperawatan_ranap.discharge_alatbantu_ket,penilaian_awal_keperawatan_ranap.discharge_pemesananalat_ya,penilaian_awal_keperawatan_ranap.discharge_pemesananalat_tidak,penilaian_awal_keperawatan_ranap.discharge_pemesananalat_ket,penilaian_awal_keperawatan_ranap.discharge_timterapis_ya,penilaian_awal_keperawatan_ranap.discharge_timterapis_tidak,penilaian_awal_keperawatan_ranap.discharge_timterapis_ket,penilaian_awal_keperawatan_ranap.discharge_gizi_ya,penilaian_awal_keperawatan_ranap.discharge_gizi_tidak,penilaian_awal_keperawatan_ranap.discharge_gizi_ket,penilaian_awal_keperawatan_ranap.discharge_kelompok_ya,penilaian_awal_keperawatan_ranap.discharge_kelompok_tidak,penilaian_awal_keperawatan_ranap.discharge_kelompok_ket,penilaian_awal_keperawatan_ranap.data_penunjang1,penilaian_awal_keperawatan_ranap.data_penunjang2,penilaian_awal_keperawatan_ranap.data_penunjang3,penilaian_awal_keperawatan_ranap.data_penunjang4,penilaian_awal_keperawatan_ranap.gcs_e,penilaian_awal_keperawatan_ranap.gcs_m,penilaian_awal_keperawatan_ranap.gcs_v,penilaian_awal_keperawatan_ranap.pupil_kanan_ukuran,penilaian_awal_keperawatan_ranap.pupil_kanan_reaksi,penilaian_awal_keperawatan_ranap.pupil_kiri_ukuran,penilaian_awal_keperawatan_ranap.pupil_kiri_reaksi,penilaian_awal_keperawatan_ranap.keluhan_utama,penilaian_awal_keperawatan_ranap.airway_normal,penilaian_awal_keperawatan_ranap.airway_oropharingeal,penilaian_awal_keperawatan_ranap.airway_sekret,penilaian_awal_keperawatan_ranap.airway_tumor,penilaian_awal_keperawatan_ranap.airway_trajeostomy,penilaian_awal_keperawatan_ranap.airway_rtt,penilaian_awal_keperawatan_ranap.breathing_normal,penilaian_awal_keperawatan_ranap.breathing_sesak_dyspnea,penilaian_awal_keperawatan_ranap.breathing_batuk,penilaian_awal_keperawatan_ranap.breathing_takipneu,penilaian_awal_keperawatan_ranap.breathing_batuk_darah,penilaian_awal_keperawatan_ranap.breathing_sleep_apnea,penilaian_awal_keperawatan_ranap.breathing_orthopnea,penilaian_awal_keperawatan_ranap.bunyiparu_normal,penilaian_awal_keperawatan_ranap.bunyiparu_ngorok,penilaian_awal_keperawatan_ranap.bunyiparu_stidor,penilaian_awal_keperawatan_ranap.bunyiparu_ronkhi_kanan,penilaian_awal_keperawatan_ranap.bunyiparu_ronkhi_kiri,penilaian_awal_keperawatan_ranap.bunyiparu_wheezing_kanan,penilaian_awal_keperawatan_ranap.bunyiparu_wheezing_kiri,penilaian_awal_keperawatan_ranap.kesulitan_bernafas_tidak,penilaian_awal_keperawatan_ranap.kesulitan_bernafas_ya,penilaian_awal_keperawatan_ranap.otot_bantu_nafas_tidak,penilaian_awal_keperawatan_ranap.otot_bantu_nafas_ya,penilaian_awal_keperawatan_ranap.o2_tidak,penilaian_awal_keperawatan_ranap.o2_ya,penilaian_awal_keperawatan_ranap.o2_nasal,penilaian_awal_keperawatan_ranap.o2_sungkup,penilaian_awal_keperawatan_ranap.cardio_tidak_ada_kelainan,penilaian_awal_keperawatan_ranap.cardio_bradikardi,penilaian_awal_keperawatan_ranap.cardio_takikardi,penilaian_awal_keperawatan_ranap.cardio_murmur,penilaian_awal_keperawatan_ranap.cardio_gallop,penilaian_awal_keperawatan_ranap.cardio_pucat_sianosis,penilaian_awal_keperawatan_ranap.cardio_nyeri_dada,penilaian_awal_keperawatan_ranap.gi_tidak_ada_keluhan,penilaian_awal_keperawatan_ranap.gi_penurunan_bising_usus,penilaian_awal_keperawatan_ranap.gi_gigipalsu_atas_kanan,penilaian_awal_keperawatan_ranap.gi_gigipalsu_atas_kiri,penilaian_awal_keperawatan_ranap.gi_gigipalsu_bawah_kanan,penilaian_awal_keperawatan_ranap.gi_gigipalsu_bawah_kiri,penilaian_awal_keperawatan_ranap.gi_pembatasan_makanan,penilaian_awal_keperawatan_ranap.gi_tidak_nafsu_makan,penilaian_awal_keperawatan_ranap.gi_mual,penilaian_awal_keperawatan_ranap.gi_muntah,penilaian_awal_keperawatan_ranap.gi_konstipasi,penilaian_awal_keperawatan_ranap.gi_terpasang_ngt,penilaian_awal_keperawatan_ranap.gi_sulit_menelan,penilaian_awal_keperawatan_ranap.gi_diare,penilaian_awal_keperawatan_ranap.gi_kolostomi,penilaian_awal_keperawatan_ranap.gi_distensi_abdomen,penilaian_awal_keperawatan_ranap.gi_makan_habis,penilaian_awal_keperawatan_ranap.gi_ivfd,penilaian_awal_keperawatan_ranap.kemih_tidak_ada_keluhan,penilaian_awal_keperawatan_ranap.kemih_distensi_bladder,penilaian_awal_keperawatan_ranap.kemih_haematuria,penilaian_awal_keperawatan_ranap.kemih_retensi_urine,penilaian_awal_keperawatan_ranap.kemih_oliguri,penilaian_awal_keperawatan_ranap.kemih_disuria,penilaian_awal_keperawatan_ranap.kemih_anuri,penilaian_awal_keperawatan_ranap.kemih_terpasang_kateter,penilaian_awal_keperawatan_ranap.kemih_inkontinensia_urine,penilaian_awal_keperawatan_ranap.pendengaran_tak,penilaian_awal_keperawatan_ranap.pendengaran_berdengung,penilaian_awal_keperawatan_ranap.pendengaran_tuli,penilaian_awal_keperawatan_ranap.pendengaran_keluar_cairan,penilaian_awal_keperawatan_ranap.pendengaran_nyeri,penilaian_awal_keperawatan_ranap.penglihatan_tak,penilaian_awal_keperawatan_ranap.penglihatan_anemis,penilaian_awal_keperawatan_ranap.penglihatan_icterik,penilaian_awal_keperawatan_ranap.penglihatan_tidak_ada_reaksi_cahaya,penilaian_awal_keperawatan_ranap.penglihatan_kacamata,penilaian_awal_keperawatan_ranap.penglihatan_lensakontak,penilaian_awal_keperawatan_ranap.penglihatan_merah,penilaian_awal_keperawatan_ranap.penglihatan_kabur,penilaian_awal_keperawatan_ranap.wicara_normal,penilaian_awal_keperawatan_ranap.wicara_cadelpelo,penilaian_awal_keperawatan_ranap.wicara_aphasia,penilaian_awal_keperawatan_ranap.wicara_kerusakan,penilaian_awal_keperawatan_ranap.orientasi_baik,penilaian_awal_keperawatan_ranap.orientasi_orang,penilaian_awal_keperawatan_ranap.orientasi_tempat,penilaian_awal_keperawatan_ranap.orientasi_waktu,penilaian_awal_keperawatan_ranap.orientasi_situasi,penilaian_awal_keperawatan_ranap.memori_baik,penilaian_awal_keperawatan_ranap.memori_sedang,penilaian_awal_keperawatan_ranap.memori_buruk,penilaian_awal_keperawatan_ranap.konsentrasi_baik,penilaian_awal_keperawatan_ranap.konsentrasi_sedang,penilaian_awal_keperawatan_ranap.konsentrasi_buruk,penilaian_awal_keperawatan_ranap.kekuatanotot_inkoordinasi,penilaian_awal_keperawatan_ranap.kekuatanotot_kejang,penilaian_awal_keperawatan_ranap.fraktur_tangan_kanan,penilaian_awal_keperawatan_ranap.fraktur_tangan_kiri,penilaian_awal_keperawatan_ranap.fraktur_kaki_kanan,penilaian_awal_keperawatan_ranap.fraktur_kaki_kiri,penilaian_awal_keperawatan_ranap.warnakulit_normal,penilaian_awal_keperawatan_ranap.warnakulit_pucat,penilaian_awal_keperawatan_ranap.warnakulit_merah,penilaian_awal_keperawatan_ranap.warnakulit_ikterik,penilaian_awal_keperawatan_ranap.warnakulit_kemerahan,penilaian_awal_keperawatan_ranap.integritaskulit_utuh,penilaian_awal_keperawatan_ranap.integritaskulit_ruam,penilaian_awal_keperawatan_ranap.integritaskulit_melepuh,penilaian_awal_keperawatan_ranap.airway_rtt_ukuran,penilaian_awal_keperawatan_ranap.o2_liter_menit,penilaian_awal_keperawatan_ranap.o2_saturasi,penilaian_awal_keperawatan_ranap.cardio_lain,penilaian_awal_keperawatan_ranap.gi_pembatasan_makanan_ket,penilaian_awal_keperawatan_ranap.gi_muntah_kali,penilaian_awal_keperawatan_ranap.gi_diare_x,penilaian_awal_keperawatan_ranap.gi_ivfd_tts,penilaian_awal_keperawatan_ranap.kemih_lain,penilaian_awal_keperawatan_ranap.penglihatan_lain,penilaian_awal_keperawatan_ranap.kekuatanotot_tremor_di,penilaian_awal_keperawatan_ranap.hemiplegi_di,penilaian_awal_keperawatan_ranap.parase_di,penilaian_awal_keperawatan_ranap.warnakulit_lain,penilaian_awal_keperawatan_ranap.integritaskulit_melepuh_di,penilaian_awal_keperawatan_ranap.breathing_lain,penilaian_awal_keperawatan_ranap.breathing_lain_ket,penilaian_awal_keperawatan_ranap.bunyiparu_lain,penilaian_awal_keperawatan_ranap.bunyiparu_lain_ket,penilaian_awal_keperawatan_ranap.kemih_poliuri,penilaian_awal_keperawatan_ranap.kekuatanotot_nilai,penilaian_awal_keperawatan_ranap.ekstremitas_lain,penilaian_awal_keperawatan_ranap.integritaskulit_kemerahan,penilaian_awal_keperawatan_ranap.integritaskulit_kemerahan_di,penilaian_awal_keperawatan_ranap.psiko_tak,penilaian_awal_keperawatan_ranap.psiko_marah,penilaian_awal_keperawatan_ranap.psiko_gelisah,penilaian_awal_keperawatan_ranap.psiko_sedih,penilaian_awal_keperawatan_ranap.psiko_cemas,penilaian_awal_keperawatan_ranap.psiko_takut,penilaian_awal_keperawatan_ranap.psiko_acuhtakacuh,penilaian_awal_keperawatan_ranap.psiko_bunuhdiri,penilaian_awal_keperawatan_ranap.sosek_hubkeluarga_baik,penilaian_awal_keperawatan_ranap.sosek_hubkeluarga_tidakbaik,penilaian_awal_keperawatan_ranap.sosek_tinggal_rumah,penilaian_awal_keperawatan_ranap.sosek_tinggal_asrama,penilaian_awal_keperawatan_ranap.sosek_tinggal_panti,penilaian_awal_keperawatan_ranap.sosek_tinggal_lainnya,penilaian_awal_keperawatan_ranap.sosek_tinggal_lainnya_ket,penilaian_awal_keperawatan_ranap.sosek_bersama_suamiistri,penilaian_awal_keperawatan_ranap.sosek_bersama_anak,penilaian_awal_keperawatan_ranap.sosek_bersama_orangtua,penilaian_awal_keperawatan_ranap.sosek_bersama_lainnya,penilaian_awal_keperawatan_ranap.sosek_bersama_lainnya_ket,penilaian_awal_keperawatan_ranap.sosek_kerja_bekerja,penilaian_awal_keperawatan_ranap.sosek_kerja_pns,penilaian_awal_keperawatan_ranap.sosek_kerja_swasta,penilaian_awal_keperawatan_ranap.sosek_kerja_tnipolri,penilaian_awal_keperawatan_ranap.sosek_kerja_tani_buruh,penilaian_awal_keperawatan_ranap.sosek_kebiasaan_merokok,penilaian_awal_keperawatan_ranap.sosek_kebiasaan_alkohol,penilaian_awal_keperawatan_ranap.sosek_kebiasaan_lainnya,penilaian_awal_keperawatan_ranap.sosek_kebiasaan_jenis_jumlah,penilaian_awal_keperawatan_ranap.kepribadian_tidakadakeluhan,penilaian_awal_keperawatan_ranap.kepribadian_perlupendampingan,penilaian_awal_keperawatan_ranap.kepribadian_perludibantuibadah,penilaian_awal_keperawatan_ranap.kepribadian_berdoa,penilaian_awal_keperawatan_ranap.kepribadian_bacaliteratur,penilaian_awal_keperawatan_ranap.kepribadian_ganggu_praktik,penilaian_awal_keperawatan_ranap.kepribadian_nilai_budaya,penilaian_awal_keperawatan_ranap.kepribadian_lainlain,penilaian_awal_keperawatan_ranap.nyeri_canvas_gambar,penilaian_awal_keperawatan_ranap.nyeri_p,penilaian_awal_keperawatan_ranap.nyeri_q,penilaian_awal_keperawatan_ranap.nyeri_r,penilaian_awal_keperawatan_ranap.nyeri_s,penilaian_awal_keperawatan_ranap.nyeri_t,penilaian_awal_keperawatan_ranap.keluhan_nyeri_kronik,penilaian_awal_keperawatan_ranap.keluhan_nyeri_akut,penilaian_awal_keperawatan_ranap.keluhan_tidak_ada_nyeri,penilaian_awal_keperawatan_ranap.nyerihilang_minum_obat,penilaian_awal_keperawatan_ranap.nyerihilang_istirahat,penilaian_awal_keperawatan_ranap.nyerihilang_berubah_posisi,penilaian_awal_keperawatan_ranap.nyerihilang_mendengar_musik,penilaian_awal_keperawatan_ranap.nyerihilang_lainlain,penilaian_awal_keperawatan_ranap.nyerihilang_lainlain_ket,penilaian_awal_keperawatan_ranap.fungsional_mandiri,penilaian_awal_keperawatan_ranap.fungsional_bantuan_minimal,penilaian_awal_keperawatan_ranap.fungsional_bantuan_sebagian,penilaian_awal_keperawatan_ranap.fungsional_ketergantungan,penilaian_awal_keperawatan_ranap.fungsional_berjalan_normal,penilaian_awal_keperawatan_ranap.fungsional_berjalan_perlu_bantuan,penilaian_awal_keperawatan_ranap.fungsional_berjalan_sering_jatuh,penilaian_awal_keperawatan_ranap.fungsional_berjalan_kelumpuhan,penilaian_awal_keperawatan_ranap.discharge_manual_komponen,penilaian_awal_keperawatan_ranap.discharge_manual_ya,penilaian_awal_keperawatan_ranap.discharge_manual_tidak,penilaian_awal_keperawatan_ranap.discharge_manual_ket "+
                     "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join penilaian_awal_keperawatan_ranap on reg_periksa.no_rawat=penilaian_awal_keperawatan_ranap.no_rawat "+
                     "inner join petugas as pengkaji1 on penilaian_awal_keperawatan_ranap.nip1=pengkaji1.nip "+
@@ -5630,9 +6016,99 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                                         "<td valign='middle' bgcolor='#FFFAFA' align='center'>Keterangan Diagnosa Khusus</td>").append(
                                         "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sudah dibaca dan diketahui oleh Dietisen</td>").append(
                                         "<td valign='middle' bgcolor='#FFFAFA' align='center'>Jam Dibaca Dietisen</td>").append(
-                                        "<td valign='middle' bgcolor='#FFFAFA' align='center'>Rencana Keperawatan Lainnya</td>").append(
-                                    "</tr>"
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center'>Rencana Keperawatan Lainnya</td>"
                                 );
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Riwayat Alergi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Alergi Obat (sebutkan/reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Alergi Makanan (sebutkan/reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Alergi Lainnya (sebutkan/reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Alergi Tdk Diketahui (reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>RPD (checklist)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>RPD Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>RPK (checklist)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>RPK Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Alloanamnesis Nama/Hubungan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Keluhan Utama</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Tingkat Kesadaran</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>LLA</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>GCS E/M/V</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Airway</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Airway RTT Ukuran</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Breathing</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Breathing Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Bunyi Paru</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Bunyi Paru Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kesulitan Bernafas</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Otot Bantu Nafas</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Saturasi O2 (%)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Pemberian O2</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>O2 Liter/Menit</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Cardiovaskuler</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Cardiovaskuler Lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Gastrointestinal</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>GI Pembatasan Makanan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>GI Muntah/Diare/IVFD</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Fungsi Perkemihan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Perkemihan Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Status Reproduksi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Papsmear/Mamografi/Sadari</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Screening Prostat (Pria)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Pendengaran</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Penglihatan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Penglihatan Lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Wicara</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Orientasi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Memori</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Konsentrasi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Pupil Kanan (ukuran/reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Pupil Kiri (ukuran/reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kekuatan Otot</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kekuatan Otot (checklist)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Tremor/Hemiplegi/Parase di</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Fraktur di</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Ekstremitas Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Warna Kulit</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Warna Kulit Lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Integritas Kulit</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Melepuh/Kemerahan di</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Skala Branden</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Status Psikologi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Status Pernikahan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kerabat Terdekat</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Sosial-Ekonomi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Sosek Keterangan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Status Kepribadian</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kepribadian Keterangan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Skala Nyeri (coretan)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Nyeri P/Q/R/S/T</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Keluhan Nyeri</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Nyeri Hilang Bila</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Nyeri Hilang Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Status Fungsional</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Edukasi Bicara</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Edukasi Bicara Jelaskan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Bahasa Sehari-hari</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Bahasa Daerah/Asing</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Dibutuhkan Penerjemah</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Penerjemah Bahasa</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Cara Belajar Disukai</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Hambatan Pembelajaran</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Tingkat Pendidikan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kebutuhan Pembelajaran</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kebutuhan Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Home Care</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Perawatan Luka</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Alat Bantu</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Pemesanan Alat</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Tim Terapis</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Ahli Gizi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Kelompok</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Manual (komponen)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Data Penunjang 1</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Data Penunjang 2</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Data Penunjang 3</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Data Penunjang 4</td>");
+                                htmlContent.append("</tr>");
                                 while(rs.next()){
                                     htmlContent.append(
                                         "<tr class='isi'>").append(
@@ -5810,16 +6286,106 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                                             "<td valign='top'>").append(rs.getString("skrining_gizi_ket_diagnosa_khusus")).append("</td>").append(
                                             "<td valign='top'>").append(rs.getString("skrining_gizi_diketahui_dietisen")).append("</td>").append(
                                             "<td valign='top'>").append(rs.getString("skrining_gizi_jam_diketahui_dietisen")).append("</td>").append(
-                                            "<td valign='top'>").append(rs.getString("rencana")).append("</td>").append(
-                                        "</tr>"
+                                            "<td valign='top'>").append(rs.getString("rencana")).append("</td>"
                                     );
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"alergi_tidak_ada","alergi_obat","alergi_makanan","alergi_lainnya","alergi_tidak_diketahui","alergi_tanda_dipasang")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"alergi_obat_sebutkan","alergi_obat_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"alergi_makanan_sebutkan","alergi_makanan_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"alergi_lainnya_sebutkan","alergi_lainnya_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"alergi_tidak_diketahui_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"rpd_hipertensi","rpd_dm","rpd_jantung","rpd_hepatitis","rpd_operasi","rpd_anemia","rpd_asthma","rpd_stroke","rpd_paru","rpd_lainlain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"rpd_lainlain_sebutkan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"rpk_hipertensi","rpk_dm","rpk_jantung","rpk_thalasemia","rpk_lainlain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"rpk_lainlain_sebutkan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"informasi_nama_keluarga","informasi_hubungan_keluarga")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"keluhan_utama")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"tingkat_kesadaran")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"lla")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"gcs_e","gcs_m","gcs_v")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"airway_normal","airway_oropharingeal","airway_sekret","airway_tumor","airway_trajeostomy","airway_rtt")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"airway_rtt_ukuran")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"breathing_normal","breathing_sesak_dyspnea","breathing_batuk","breathing_takipneu","breathing_batuk_darah","breathing_sleep_apnea","breathing_lain","breathing_orthopnea")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"breathing_lain_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"bunyiparu_ngorok","bunyiparu_normal","bunyiparu_stidor","bunyiparu_ronkhi_kanan","bunyiparu_ronkhi_kiri","bunyiparu_wheezing_kanan","bunyiparu_wheezing_kiri","bunyiparu_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"bunyiparu_lain_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"kesulitan_bernafas_tidak","kesulitan_bernafas_ya")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"otot_bantu_nafas_tidak","otot_bantu_nafas_ya")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"o2_saturasi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"o2_tidak","o2_ya","o2_nasal","o2_sungkup")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"o2_liter_menit")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"cardio_tidak_ada_kelainan","cardio_bradikardi","cardio_takikardi","cardio_murmur","cardio_gallop","cardio_pucat_sianosis","cardio_nyeri_dada")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"cardio_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"gi_tidak_ada_keluhan","gi_penurunan_bising_usus","gi_gigipalsu_atas_kanan","gi_gigipalsu_atas_kiri","gi_gigipalsu_bawah_kanan","gi_gigipalsu_bawah_kiri","gi_pembatasan_makanan","gi_tidak_nafsu_makan","gi_mual","gi_muntah","gi_konstipasi","gi_terpasang_ngt","gi_sulit_menelan","gi_diare","gi_kolostomi","gi_distensi_abdomen","gi_makan_habis","gi_ivfd")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"gi_pembatasan_makanan_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"gi_muntah_kali","gi_diare_x","gi_ivfd_tts")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"kemih_tidak_ada_keluhan","kemih_distensi_bladder","kemih_haematuria","kemih_retensi_urine","kemih_oliguri","kemih_poliuri","kemih_disuria","kemih_anuri","kemih_terpasang_kateter","kemih_inkontinensia_urine")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"kemih_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"reproduksi_menstruasi","reproduksi_hamil","reproduksi_hpht")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"reproduksi_papsmear","reproduksi_papsmear_tanggal","reproduksi_mamografi","reproduksi_mamografi_tanggal","reproduksi_sadari","reproduksi_sadari_tanggal")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"reproduksi_screening_prostat","reproduksi_screening_prostat_tanggal")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"pendengaran_tak","pendengaran_berdengung","pendengaran_tuli","pendengaran_keluar_cairan","pendengaran_nyeri")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"penglihatan_tak","penglihatan_anemis","penglihatan_icterik","penglihatan_tidak_ada_reaksi_cahaya","penglihatan_kacamata","penglihatan_lensakontak","penglihatan_merah","penglihatan_kabur")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"penglihatan_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"wicara_normal","wicara_cadelpelo","wicara_aphasia","wicara_kerusakan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"orientasi_baik","orientasi_orang","orientasi_tempat","orientasi_waktu","orientasi_situasi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"memori_baik","memori_sedang","memori_buruk")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"konsentrasi_baik","konsentrasi_sedang","konsentrasi_buruk")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"pupil_kanan_ukuran","pupil_kanan_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"pupil_kiri_ukuran","pupil_kiri_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"kekuatanotot_nilai")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"kekuatanotot_inkoordinasi","kekuatanotot_kejang")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"kekuatanotot_tremor_di","hemiplegi_di","parase_di")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"fraktur_tangan_kanan","fraktur_tangan_kiri","fraktur_kaki_kanan","fraktur_kaki_kiri")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"ekstremitas_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"warnakulit_normal","warnakulit_pucat","warnakulit_merah","warnakulit_ikterik","warnakulit_kemerahan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"warnakulit_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"integritaskulit_utuh","integritaskulit_ruam","integritaskulit_melepuh","integritaskulit_kemerahan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"integritaskulit_melepuh_di","integritaskulit_kemerahan_di")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"skala_branden")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"psiko_tak","psiko_marah","psiko_gelisah","psiko_sedih","psiko_cemas","psiko_takut","psiko_acuhtakacuh","psiko_bunuhdiri")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"status_pernikahan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"kerabat_nama","kerabat_hubungan","kerabat_telp")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"sosek_hubkeluarga_baik","sosek_hubkeluarga_tidakbaik","sosek_tinggal_rumah","sosek_tinggal_asrama","sosek_tinggal_panti","sosek_tinggal_lainnya","sosek_bersama_suamiistri","sosek_bersama_anak","sosek_bersama_orangtua","sosek_bersama_lainnya","sosek_kerja_bekerja","sosek_kerja_pns","sosek_kerja_swasta","sosek_kerja_tnipolri","sosek_kerja_tani_buruh","sosek_kebiasaan_merokok","sosek_kebiasaan_alkohol","sosek_kebiasaan_lainnya")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"sosek_tinggal_lainnya_ket","sosek_bersama_lainnya_ket","sosek_kebiasaan_jenis_jumlah")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"kepribadian_tidakadakeluhan","kepribadian_perlupendampingan","kepribadian_perludibantuibadah","kepribadian_berdoa","kepribadian_bacaliteratur")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"kepribadian_ganggu_praktik","kepribadian_nilai_budaya","kepribadian_lainlain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(imgRM19(rs,"nyeri_canvas_gambar")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"nyeri_p","nyeri_q","nyeri_r","nyeri_s","nyeri_t")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"keluhan_nyeri_kronik","keluhan_nyeri_akut","keluhan_tidak_ada_nyeri")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"nyerihilang_minum_obat","nyerihilang_istirahat","nyerihilang_berubah_posisi","nyerihilang_mendengar_musik","nyerihilang_lainlain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"nyerihilang_lainlain_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"fungsional_mandiri","fungsional_bantuan_minimal","fungsional_bantuan_sebagian","fungsional_ketergantungan","fungsional_berjalan_normal","fungsional_berjalan_perlu_bantuan","fungsional_berjalan_sering_jatuh","fungsional_berjalan_kelumpuhan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_bicara_tidak","edu_bicara_ya")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"edu_bicara_jelaskan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_bahasa_indonesia","edu_bahasa_daerah","edu_bahasa_asing","edu_bahasa_isyarat")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"edu_bahasa_daerah_ket","edu_bahasa_asing_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_penerjemah_tidak","edu_penerjemah_ya")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"edu_penerjemah_bahasa")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_cara_audiovisual","edu_cara_diskusi","edu_cara_membaca","edu_cara_menulis","edu_cara_mengerjakan","edu_cara_gambar","edu_cara_mendengar","edu_cara_demonstrasi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_hambatan_tidak","edu_hambatan_ya","edu_hambatan_bahasa","edu_hambatan_emosi","edu_hambatan_caregiver","edu_hambatan_fisiologis","edu_hambatan_pendengaran","edu_hambatan_penglihatan","edu_hambatan_memori","edu_hambatan_motivasi","edu_hambatan_bicara")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_pendidikan_tk","edu_pendidikan_sd","edu_pendidikan_smp","edu_pendidikan_sma","edu_pendidikan_d3d4","edu_pendidikan_s1","edu_pendidikan_s2","edu_pendidikan_s3")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_kebutuhan_proses_penyakit","edu_kebutuhan_diit_nutrisi","edu_kebutuhan_perawatan_luka","edu_kebutuhan_manajemen_nyeri","edu_kebutuhan_obat","edu_kebutuhan_rehabilitasi","edu_kebutuhan_lainlain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"edu_kebutuhan_lainlain_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_homecare")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_perawatanluka")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_alatbantu")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_pemesananalat")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_timterapis")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_gizi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_kelompok")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpmRM19(rs,"discharge_manual")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"data_penunjang1")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"data_penunjang2")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"data_penunjang3")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"data_penunjang4")).append("</td>");
+                                    htmlContent.append("</tr>");
                                 }
                                 f = new File("RMPenilaianAwalKeperawatanRanap.html");            
                                 bw = new BufferedWriter(new FileWriter(f));            
                                 bw.write("<html>"+
                                             "<head><link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" /></head>"+
                                             "<body>"+
-                                                "<table width='18500px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                                                "<table width='28000px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
                                                     htmlContent.toString()+
                                                 "</table>"+
                                             "</body>"+                   
@@ -6007,9 +6573,99 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                                         "<td valign='middle' bgcolor='#FFFAFA' align='center'>Keterangan Diagnosa Khusus</td>").append(
                                         "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sudah dibaca dan diketahui oleh Dietisen</td>").append(
                                         "<td valign='middle' bgcolor='#FFFAFA' align='center'>Jam Dibaca Dietisen</td>").append(
-                                        "<td valign='middle' bgcolor='#FFFAFA' align='center'>Rencana Keperawatan Lainnya</td>").append(
-                                    "</tr>"
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center'>Rencana Keperawatan Lainnya</td>"
                                 );
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Riwayat Alergi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Alergi Obat (sebutkan/reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Alergi Makanan (sebutkan/reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Alergi Lainnya (sebutkan/reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Alergi Tdk Diketahui (reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>RPD (checklist)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>RPD Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>RPK (checklist)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>RPK Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Alloanamnesis Nama/Hubungan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Keluhan Utama</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Tingkat Kesadaran</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>LLA</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>GCS E/M/V</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Airway</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Airway RTT Ukuran</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Breathing</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Breathing Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Bunyi Paru</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Bunyi Paru Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kesulitan Bernafas</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Otot Bantu Nafas</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Saturasi O2 (%)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Pemberian O2</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>O2 Liter/Menit</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Cardiovaskuler</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Cardiovaskuler Lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Gastrointestinal</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>GI Pembatasan Makanan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>GI Muntah/Diare/IVFD</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Fungsi Perkemihan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Perkemihan Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Status Reproduksi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Papsmear/Mamografi/Sadari</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Screening Prostat (Pria)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Pendengaran</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Penglihatan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Penglihatan Lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Wicara</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Orientasi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Memori</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Konsentrasi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Pupil Kanan (ukuran/reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Pupil Kiri (ukuran/reaksi)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kekuatan Otot</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kekuatan Otot (checklist)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Tremor/Hemiplegi/Parase di</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Fraktur di</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Ekstremitas Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Warna Kulit</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Warna Kulit Lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Integritas Kulit</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Melepuh/Kemerahan di</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Skala Branden</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Status Psikologi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Status Pernikahan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kerabat Terdekat</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Sosial-Ekonomi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Sosek Keterangan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Status Kepribadian</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kepribadian Keterangan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Skala Nyeri (coretan)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Nyeri P/Q/R/S/T</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Keluhan Nyeri</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Nyeri Hilang Bila</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Nyeri Hilang Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Status Fungsional</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Edukasi Bicara</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Edukasi Bicara Jelaskan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Bahasa Sehari-hari</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Bahasa Daerah/Asing</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Dibutuhkan Penerjemah</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Penerjemah Bahasa</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Cara Belajar Disukai</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Hambatan Pembelajaran</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Tingkat Pendidikan</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kebutuhan Pembelajaran</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Kebutuhan Lain-lain</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Home Care</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Perawatan Luka</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Alat Bantu</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Pemesanan Alat</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Tim Terapis</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Ahli Gizi</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Kelompok</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>DP: Manual (komponen)</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Data Penunjang 1</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Data Penunjang 2</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Data Penunjang 3</td>");
+                                htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center'>Data Penunjang 4</td>");
+                                htmlContent.append("</tr>");
                                 while(rs.next()){
                                     htmlContent.append(
                                         "<tr class='isi'>").append(
@@ -6187,16 +6843,106 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                                             "<td valign='top'>").append(rs.getString("skrining_gizi_ket_diagnosa_khusus")).append("</td>").append(
                                             "<td valign='top'>").append(rs.getString("skrining_gizi_diketahui_dietisen")).append("</td>").append(
                                             "<td valign='top'>").append(rs.getString("skrining_gizi_jam_diketahui_dietisen")).append("</td>").append(
-                                            "<td valign='top'>").append(rs.getString("rencana")).append("</td>").append(
-                                        "</tr>"
+                                            "<td valign='top'>").append(rs.getString("rencana")).append("</td>"
                                     );
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"alergi_tidak_ada","alergi_obat","alergi_makanan","alergi_lainnya","alergi_tidak_diketahui","alergi_tanda_dipasang")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"alergi_obat_sebutkan","alergi_obat_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"alergi_makanan_sebutkan","alergi_makanan_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"alergi_lainnya_sebutkan","alergi_lainnya_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"alergi_tidak_diketahui_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"rpd_hipertensi","rpd_dm","rpd_jantung","rpd_hepatitis","rpd_operasi","rpd_anemia","rpd_asthma","rpd_stroke","rpd_paru","rpd_lainlain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"rpd_lainlain_sebutkan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"rpk_hipertensi","rpk_dm","rpk_jantung","rpk_thalasemia","rpk_lainlain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"rpk_lainlain_sebutkan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"informasi_nama_keluarga","informasi_hubungan_keluarga")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"keluhan_utama")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"tingkat_kesadaran")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"lla")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"gcs_e","gcs_m","gcs_v")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"airway_normal","airway_oropharingeal","airway_sekret","airway_tumor","airway_trajeostomy","airway_rtt")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"airway_rtt_ukuran")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"breathing_normal","breathing_sesak_dyspnea","breathing_batuk","breathing_takipneu","breathing_batuk_darah","breathing_sleep_apnea","breathing_lain","breathing_orthopnea")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"breathing_lain_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"bunyiparu_ngorok","bunyiparu_normal","bunyiparu_stidor","bunyiparu_ronkhi_kanan","bunyiparu_ronkhi_kiri","bunyiparu_wheezing_kanan","bunyiparu_wheezing_kiri","bunyiparu_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"bunyiparu_lain_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"kesulitan_bernafas_tidak","kesulitan_bernafas_ya")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"otot_bantu_nafas_tidak","otot_bantu_nafas_ya")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"o2_saturasi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"o2_tidak","o2_ya","o2_nasal","o2_sungkup")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"o2_liter_menit")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"cardio_tidak_ada_kelainan","cardio_bradikardi","cardio_takikardi","cardio_murmur","cardio_gallop","cardio_pucat_sianosis","cardio_nyeri_dada")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"cardio_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"gi_tidak_ada_keluhan","gi_penurunan_bising_usus","gi_gigipalsu_atas_kanan","gi_gigipalsu_atas_kiri","gi_gigipalsu_bawah_kanan","gi_gigipalsu_bawah_kiri","gi_pembatasan_makanan","gi_tidak_nafsu_makan","gi_mual","gi_muntah","gi_konstipasi","gi_terpasang_ngt","gi_sulit_menelan","gi_diare","gi_kolostomi","gi_distensi_abdomen","gi_makan_habis","gi_ivfd")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"gi_pembatasan_makanan_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"gi_muntah_kali","gi_diare_x","gi_ivfd_tts")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"kemih_tidak_ada_keluhan","kemih_distensi_bladder","kemih_haematuria","kemih_retensi_urine","kemih_oliguri","kemih_poliuri","kemih_disuria","kemih_anuri","kemih_terpasang_kateter","kemih_inkontinensia_urine")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"kemih_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"reproduksi_menstruasi","reproduksi_hamil","reproduksi_hpht")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"reproduksi_papsmear","reproduksi_papsmear_tanggal","reproduksi_mamografi","reproduksi_mamografi_tanggal","reproduksi_sadari","reproduksi_sadari_tanggal")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"reproduksi_screening_prostat","reproduksi_screening_prostat_tanggal")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"pendengaran_tak","pendengaran_berdengung","pendengaran_tuli","pendengaran_keluar_cairan","pendengaran_nyeri")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"penglihatan_tak","penglihatan_anemis","penglihatan_icterik","penglihatan_tidak_ada_reaksi_cahaya","penglihatan_kacamata","penglihatan_lensakontak","penglihatan_merah","penglihatan_kabur")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"penglihatan_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"wicara_normal","wicara_cadelpelo","wicara_aphasia","wicara_kerusakan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"orientasi_baik","orientasi_orang","orientasi_tempat","orientasi_waktu","orientasi_situasi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"memori_baik","memori_sedang","memori_buruk")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"konsentrasi_baik","konsentrasi_sedang","konsentrasi_buruk")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"pupil_kanan_ukuran","pupil_kanan_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"pupil_kiri_ukuran","pupil_kiri_reaksi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"kekuatanotot_nilai")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"kekuatanotot_inkoordinasi","kekuatanotot_kejang")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"kekuatanotot_tremor_di","hemiplegi_di","parase_di")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"fraktur_tangan_kanan","fraktur_tangan_kiri","fraktur_kaki_kanan","fraktur_kaki_kiri")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"ekstremitas_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"warnakulit_normal","warnakulit_pucat","warnakulit_merah","warnakulit_ikterik","warnakulit_kemerahan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"warnakulit_lain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"integritaskulit_utuh","integritaskulit_ruam","integritaskulit_melepuh","integritaskulit_kemerahan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"integritaskulit_melepuh_di","integritaskulit_kemerahan_di")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"skala_branden")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"psiko_tak","psiko_marah","psiko_gelisah","psiko_sedih","psiko_cemas","psiko_takut","psiko_acuhtakacuh","psiko_bunuhdiri")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"status_pernikahan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"kerabat_nama","kerabat_hubungan","kerabat_telp")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"sosek_hubkeluarga_baik","sosek_hubkeluarga_tidakbaik","sosek_tinggal_rumah","sosek_tinggal_asrama","sosek_tinggal_panti","sosek_tinggal_lainnya","sosek_bersama_suamiistri","sosek_bersama_anak","sosek_bersama_orangtua","sosek_bersama_lainnya","sosek_kerja_bekerja","sosek_kerja_pns","sosek_kerja_swasta","sosek_kerja_tnipolri","sosek_kerja_tani_buruh","sosek_kebiasaan_merokok","sosek_kebiasaan_alkohol","sosek_kebiasaan_lainnya")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"sosek_tinggal_lainnya_ket","sosek_bersama_lainnya_ket","sosek_kebiasaan_jenis_jumlah")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"kepribadian_tidakadakeluhan","kepribadian_perlupendampingan","kepribadian_perludibantuibadah","kepribadian_berdoa","kepribadian_bacaliteratur")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"kepribadian_ganggu_praktik","kepribadian_nilai_budaya","kepribadian_lainlain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(imgRM19(rs,"nyeri_canvas_gambar")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"nyeri_p","nyeri_q","nyeri_r","nyeri_s","nyeri_t")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"keluhan_nyeri_kronik","keluhan_nyeri_akut","keluhan_tidak_ada_nyeri")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"nyerihilang_minum_obat","nyerihilang_istirahat","nyerihilang_berubah_posisi","nyerihilang_mendengar_musik","nyerihilang_lainlain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"nyerihilang_lainlain_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"fungsional_mandiri","fungsional_bantuan_minimal","fungsional_bantuan_sebagian","fungsional_ketergantungan","fungsional_berjalan_normal","fungsional_berjalan_perlu_bantuan","fungsional_berjalan_sering_jatuh","fungsional_berjalan_kelumpuhan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_bicara_tidak","edu_bicara_ya")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"edu_bicara_jelaskan")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_bahasa_indonesia","edu_bahasa_daerah","edu_bahasa_asing","edu_bahasa_isyarat")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(gabungRM19(rs,"edu_bahasa_daerah_ket","edu_bahasa_asing_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_penerjemah_tidak","edu_penerjemah_ya")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"edu_penerjemah_bahasa")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_cara_audiovisual","edu_cara_diskusi","edu_cara_membaca","edu_cara_menulis","edu_cara_mengerjakan","edu_cara_gambar","edu_cara_mendengar","edu_cara_demonstrasi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_hambatan_tidak","edu_hambatan_ya","edu_hambatan_bahasa","edu_hambatan_emosi","edu_hambatan_caregiver","edu_hambatan_fisiologis","edu_hambatan_pendengaran","edu_hambatan_penglihatan","edu_hambatan_memori","edu_hambatan_motivasi","edu_hambatan_bicara")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_pendidikan_tk","edu_pendidikan_sd","edu_pendidikan_smp","edu_pendidikan_sma","edu_pendidikan_d3d4","edu_pendidikan_s1","edu_pendidikan_s2","edu_pendidikan_s3")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(cekRM19(rs,"edu_kebutuhan_proses_penyakit","edu_kebutuhan_diit_nutrisi","edu_kebutuhan_perawatan_luka","edu_kebutuhan_manajemen_nyeri","edu_kebutuhan_obat","edu_kebutuhan_rehabilitasi","edu_kebutuhan_lainlain")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"edu_kebutuhan_lainlain_ket")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_homecare")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_perawatanluka")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_alatbantu")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_pemesananalat")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_timterapis")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_gizi")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpRM19(rs,"discharge_kelompok")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(dpmRM19(rs,"discharge_manual")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"data_penunjang1")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"data_penunjang2")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"data_penunjang3")).append("</td>");
+                                    htmlContent.append("<td valign='top'>").append(teksRM19(rs,"data_penunjang4")).append("</td>");
+                                    htmlContent.append("</tr>");
                                 }
                                 f = new File("RMPenilaianAwalKeperawatanRanap.wps");            
                                 bw = new BufferedWriter(new FileWriter(f));            
                                 bw.write("<html>"+
                                             "<head><link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" /></head>"+
                                             "<body>"+
-                                                "<table width='18500px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                                                "<table width='28000px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
                                                     htmlContent.toString()+
                                                 "</table>"+
                                             "</body>"+                   
@@ -6209,12 +6955,194 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                         case "Laporan 3 (CSV)":
                                 htmlContent = new StringBuilder();
                                 htmlContent.append(                             
-                                    "\"No.Rawat\";\"No.RM\";\"Nama Pasien\";\"Tgl.Lahir\";\"J.K.\";\"NIP Pengkaji 1\";\"Nama Pengkaji 1\";\"NIP Pengkaji 2\";\"Nama Pengkaji 2\";\"Kode DPJP\";\"Nama DPJP\";\"Tgl.Asuhan\";\"Macam Kasus\";\"Anamnesis\";\"Tiba Di Ruang Rawat\";\"Cara Masuk\";\"Riwayat Penyakit Saat Ini\";\"Riwayat Penyakit Dahulu\";\"Riwayat Penyakit Keluarga\";\"Riwayat Penggunaan Obat\";\"Riwayat Pembedahan\";\"Riwayat Dirawat Di RS\";\"Alat Bantu Yang Dipakai\";\"Dalam Keadaan Hamil/Sedang Menyusui\";\"Riwayat Transfusi Darah\";\"Riwayat Alergi\";\"Merokok\";\"Batang/Hari\";\"Alkohol\";\"Gelas/Hari\";\"Obat Tidur\";\"Olah Raga\";\"Kesadaran Mental\";\"Keadaan Umum\";\"GCS(E,V,M)\";\"TD(mmHg)\";\"Nadi(x/menit)\";\"RR(x/menit)\";\"Suhu(°C)\";\"SpO2(%)\";\"BB(Kg)\";\"TB(cm)\";\"Kepala\";\"Wajah\";\"Leher\";\"Kejang\";\"Sensorik\";\"Pulsasi\";\"Sirkulasi\";\"Denyut Nadi\";\"Retraksi\";\"Pola Nafas\";\"Suara Nafas\";\"Batuk & Sekresi\";\"Volume\";\"Jenis Pernafasaan\";\"Irama\";\"Mulut\";\"Lidah\";\"Gigi\";\"Tenggorokan\";\"Abdomen\";\"Peistatik Usus\";\"Anus\";\"Sensorik\";\"Penglihatan\";\"Alat Bantu Penglihatan\";\"Motorik\";\"Pendengaran\";\"Bicara\";\"Otot\";\"Kulit\";\"Warna Kulit\";\"Turgor\";\"Resiko Decubitas\";\"Oedema\";\"Pergerakan Sendi\";\"Kekuatan Otot\";\"Fraktur\";\"Nyeri Sendi\";\"Frekuensi BAB\";\"x/\";\"Konsistensi BAB\";\"Warna BAB\";\"Frekuensi BAK\";\"x/\";\"Warna BAK\";\"Lain-lain BAK\";\"Mandi\";\"Makan/Minum\";\"Berpakaian\";\"Eliminasi\";\"Berpindah\";\"Porsi Makan\";\"Frekuensi Makan\";\"Jenis Makanan\";\"Lama Tidur\";\"Gangguan Tidur\";\"a. Aktifitas Sehari-hari\";\"b. Berjalan\";\"c. Aktifitas\";\"d. Alat Ambulasi\";\"e. Ekstremitas Atas\";\"f. Ekstremitas Bawah\";\"g. Kemampuan Menggenggam\";\"h. Kemampuan Koordinasi\";\"i. Kesimpulan Gangguan Fungsi\";\"a. Kondisi Psikologis\";\"b. Adakah Perilaku\";\"c. Gangguan Jiwa di Masa Lalu\";\"d. Hubungan Pasien\";\"e. Agama\";\"f. Tinggal Dengan\";\"g. Pekerjaan\";\"h. Pembayaran\";\"i. Nilai-nilai Kepercayaan\";\"j. Bahasa Sehari-hari\";\"k. Pendidikan Pasien\";\"l. Pendidikan P.J.\";\"m. Edukasi Diberikan Kepada\";\"Nyeri\";\"Penyebab Nyeri\";\"Kualitas Nyeri\";\"Lokasi Nyeri\";\"Nyeri Menyebar\";\"Skala Nyeri\";\"Waktu / Durasi\";\"Nyeri Hilang Bila\";\"Diberitahukan Pada Dokter\";\"Skala Morse 1\";\"N.M. 1\";\"Skala Morse 2\";\"N.M. 2\";\"Skala Morse 3\";\"N.M. 3\";\"Skala Morse 4\";\"N.M. 4\";\"Skala Morse 5\";\"N.M. 5\";\"Skala Morse 6\";\"N.M. 6\";\"T.M.\";\"Skala Sydney 1\";\"N.S. 1\";\"Skala Sydney 2\";\"N.S. 2\";\"Skala Sydney 3\";\"N.S. 3\";\"Skala Sydney 4\";\"N.S. 4\";\"Skala Sydney 5\";\"N.S. 5\";\"Skala Sydney 6\";\"N.S. 6\";\"Skala Sydney 7\";\"N.S. 7\";\"Skala Sydney 8\";\"N.S. 8\";\"Skala Sydney 9\";\"N.S. 9\";\"Skala Sydney 10\";\"N.S. 10\";\"Skala Sydney 11\";\"N.S. 11\";\"T.S.\";\"1. Apakah ada penurunan BB yang tidak diinginkan selama 6 bulan terakhir ?\";\"Skor 1\";\"2. Apakah asupan makan berkurang karena tidak nafsu makan ?\";\"Skor 2\";\"Total Skor\";\"Pasien dengan diagnosis khusus\";\"Keterangan Diagnosa Khusus\";\"Sudah dibaca dan diketahui oleh Dietisen\";\"Jam Dibaca Dietisen\";\"Rencana Keperawatan Lainnya\"\n"
-                                ); 
+                                    "\"No.Rawat\";\"No.RM\";\"Nama Pasien\";\"Tgl.Lahir\";\"J.K.\";\"NIP Pengkaji 1\";\"Nama Pengkaji 1\";\"NIP Pengkaji 2\";\"Nama Pengkaji 2\";\"Kode DPJP\";\"Nama DPJP\";\"Tgl.Asuhan\";\"Macam Kasus\";\"Anamnesis\";\"Tiba Di Ruang Rawat\";\"Cara Masuk\";\"Riwayat Penyakit Saat Ini\";\"Riwayat Penyakit Dahulu\";\"Riwayat Penyakit Keluarga\";\"Riwayat Penggunaan Obat\";\"Riwayat Pembedahan\";\"Riwayat Dirawat Di RS\";\"Alat Bantu Yang Dipakai\";\"Dalam Keadaan Hamil/Sedang Menyusui\";\"Riwayat Transfusi Darah\";\"Riwayat Alergi\";\"Merokok\";\"Batang/Hari\";\"Alkohol\";\"Gelas/Hari\";\"Obat Tidur\";\"Olah Raga\";\"Kesadaran Mental\";\"Keadaan Umum\";\"GCS(E,V,M)\";\"TD(mmHg)\";\"Nadi(x/menit)\";\"RR(x/menit)\";\"Suhu(°C)\";\"SpO2(%)\";\"BB(Kg)\";\"TB(cm)\";\"Kepala\";\"Wajah\";\"Leher\";\"Kejang\";\"Sensorik\";\"Pulsasi\";\"Sirkulasi\";\"Denyut Nadi\";\"Retraksi\";\"Pola Nafas\";\"Suara Nafas\";\"Batuk & Sekresi\";\"Volume\";\"Jenis Pernafasaan\";\"Irama\";\"Mulut\";\"Lidah\";\"Gigi\";\"Tenggorokan\";\"Abdomen\";\"Peistatik Usus\";\"Anus\";\"Sensorik\";\"Penglihatan\";\"Alat Bantu Penglihatan\";\"Motorik\";\"Pendengaran\";\"Bicara\";\"Otot\";\"Kulit\";\"Warna Kulit\";\"Turgor\";\"Resiko Decubitas\";\"Oedema\";\"Pergerakan Sendi\";\"Kekuatan Otot\";\"Fraktur\";\"Nyeri Sendi\";\"Frekuensi BAB\";\"x/\";\"Konsistensi BAB\";\"Warna BAB\";\"Frekuensi BAK\";\"x/\";\"Warna BAK\";\"Lain-lain BAK\";\"Mandi\";\"Makan/Minum\";\"Berpakaian\";\"Eliminasi\";\"Berpindah\";\"Porsi Makan\";\"Frekuensi Makan\";\"Jenis Makanan\";\"Lama Tidur\";\"Gangguan Tidur\";\"a. Aktifitas Sehari-hari\";\"b. Berjalan\";\"c. Aktifitas\";\"d. Alat Ambulasi\";\"e. Ekstremitas Atas\";\"f. Ekstremitas Bawah\";\"g. Kemampuan Menggenggam\";\"h. Kemampuan Koordinasi\";\"i. Kesimpulan Gangguan Fungsi\";\"a. Kondisi Psikologis\";\"b. Adakah Perilaku\";\"c. Gangguan Jiwa di Masa Lalu\";\"d. Hubungan Pasien\";\"e. Agama\";\"f. Tinggal Dengan\";\"g. Pekerjaan\";\"h. Pembayaran\";\"i. Nilai-nilai Kepercayaan\";\"j. Bahasa Sehari-hari\";\"k. Pendidikan Pasien\";\"l. Pendidikan P.J.\";\"m. Edukasi Diberikan Kepada\";\"Nyeri\";\"Penyebab Nyeri\";\"Kualitas Nyeri\";\"Lokasi Nyeri\";\"Nyeri Menyebar\";\"Skala Nyeri\";\"Waktu / Durasi\";\"Nyeri Hilang Bila\";\"Diberitahukan Pada Dokter\";\"Skala Morse 1\";\"N.M. 1\";\"Skala Morse 2\";\"N.M. 2\";\"Skala Morse 3\";\"N.M. 3\";\"Skala Morse 4\";\"N.M. 4\";\"Skala Morse 5\";\"N.M. 5\";\"Skala Morse 6\";\"N.M. 6\";\"T.M.\";\"Skala Sydney 1\";\"N.S. 1\";\"Skala Sydney 2\";\"N.S. 2\";\"Skala Sydney 3\";\"N.S. 3\";\"Skala Sydney 4\";\"N.S. 4\";\"Skala Sydney 5\";\"N.S. 5\";\"Skala Sydney 6\";\"N.S. 6\";\"Skala Sydney 7\";\"N.S. 7\";\"Skala Sydney 8\";\"N.S. 8\";\"Skala Sydney 9\";\"N.S. 9\";\"Skala Sydney 10\";\"N.S. 10\";\"Skala Sydney 11\";\"N.S. 11\";\"T.S.\";\"1. Apakah ada penurunan BB yang tidak diinginkan selama 6 bulan terakhir ?\";\"Skor 1\";\"2. Apakah asupan makan berkurang karena tidak nafsu makan ?\";\"Skor 2\";\"Total Skor\";\"Pasien dengan diagnosis khusus\";\"Keterangan Diagnosa Khusus\";\"Sudah dibaca dan diketahui oleh Dietisen\";\"Jam Dibaca Dietisen\";\"Rencana Keperawatan Lainnya\""
+                                );
+                                htmlContent.append(";\"Riwayat Alergi\"");
+                                htmlContent.append(";\"Alergi Obat (sebutkan/reaksi)\"");
+                                htmlContent.append(";\"Alergi Makanan (sebutkan/reaksi)\"");
+                                htmlContent.append(";\"Alergi Lainnya (sebutkan/reaksi)\"");
+                                htmlContent.append(";\"Alergi Tdk Diketahui (reaksi)\"");
+                                htmlContent.append(";\"RPD (checklist)\"");
+                                htmlContent.append(";\"RPD Lain-lain\"");
+                                htmlContent.append(";\"RPK (checklist)\"");
+                                htmlContent.append(";\"RPK Lain-lain\"");
+                                htmlContent.append(";\"Alloanamnesis Nama/Hubungan\"");
+                                htmlContent.append(";\"Keluhan Utama\"");
+                                htmlContent.append(";\"Tingkat Kesadaran\"");
+                                htmlContent.append(";\"LLA\"");
+                                htmlContent.append(";\"GCS E/M/V\"");
+                                htmlContent.append(";\"Airway\"");
+                                htmlContent.append(";\"Airway RTT Ukuran\"");
+                                htmlContent.append(";\"Breathing\"");
+                                htmlContent.append(";\"Breathing Lain-lain\"");
+                                htmlContent.append(";\"Bunyi Paru\"");
+                                htmlContent.append(";\"Bunyi Paru Lain-lain\"");
+                                htmlContent.append(";\"Kesulitan Bernafas\"");
+                                htmlContent.append(";\"Otot Bantu Nafas\"");
+                                htmlContent.append(";\"Saturasi O2 (%)\"");
+                                htmlContent.append(";\"Pemberian O2\"");
+                                htmlContent.append(";\"O2 Liter/Menit\"");
+                                htmlContent.append(";\"Cardiovaskuler\"");
+                                htmlContent.append(";\"Cardiovaskuler Lain\"");
+                                htmlContent.append(";\"Gastrointestinal\"");
+                                htmlContent.append(";\"GI Pembatasan Makanan\"");
+                                htmlContent.append(";\"GI Muntah/Diare/IVFD\"");
+                                htmlContent.append(";\"Fungsi Perkemihan\"");
+                                htmlContent.append(";\"Perkemihan Lain-lain\"");
+                                htmlContent.append(";\"Status Reproduksi\"");
+                                htmlContent.append(";\"Papsmear/Mamografi/Sadari\"");
+                                htmlContent.append(";\"Screening Prostat (Pria)\"");
+                                htmlContent.append(";\"Pendengaran\"");
+                                htmlContent.append(";\"Penglihatan\"");
+                                htmlContent.append(";\"Penglihatan Lain\"");
+                                htmlContent.append(";\"Wicara\"");
+                                htmlContent.append(";\"Orientasi\"");
+                                htmlContent.append(";\"Memori\"");
+                                htmlContent.append(";\"Konsentrasi\"");
+                                htmlContent.append(";\"Pupil Kanan (ukuran/reaksi)\"");
+                                htmlContent.append(";\"Pupil Kiri (ukuran/reaksi)\"");
+                                htmlContent.append(";\"Kekuatan Otot\"");
+                                htmlContent.append(";\"Kekuatan Otot (checklist)\"");
+                                htmlContent.append(";\"Tremor/Hemiplegi/Parase di\"");
+                                htmlContent.append(";\"Fraktur di\"");
+                                htmlContent.append(";\"Ekstremitas Lain-lain\"");
+                                htmlContent.append(";\"Warna Kulit\"");
+                                htmlContent.append(";\"Warna Kulit Lain\"");
+                                htmlContent.append(";\"Integritas Kulit\"");
+                                htmlContent.append(";\"Melepuh/Kemerahan di\"");
+                                htmlContent.append(";\"Skala Branden\"");
+                                htmlContent.append(";\"Status Psikologi\"");
+                                htmlContent.append(";\"Status Pernikahan\"");
+                                htmlContent.append(";\"Kerabat Terdekat\"");
+                                htmlContent.append(";\"Sosial-Ekonomi\"");
+                                htmlContent.append(";\"Sosek Keterangan\"");
+                                htmlContent.append(";\"Status Kepribadian\"");
+                                htmlContent.append(";\"Kepribadian Keterangan\"");
+                                htmlContent.append(";\"Skala Nyeri (coretan)\"");
+                                htmlContent.append(";\"Nyeri P/Q/R/S/T\"");
+                                htmlContent.append(";\"Keluhan Nyeri\"");
+                                htmlContent.append(";\"Nyeri Hilang Bila\"");
+                                htmlContent.append(";\"Nyeri Hilang Lain-lain\"");
+                                htmlContent.append(";\"Status Fungsional\"");
+                                htmlContent.append(";\"Edukasi Bicara\"");
+                                htmlContent.append(";\"Edukasi Bicara Jelaskan\"");
+                                htmlContent.append(";\"Bahasa Sehari-hari\"");
+                                htmlContent.append(";\"Bahasa Daerah/Asing\"");
+                                htmlContent.append(";\"Dibutuhkan Penerjemah\"");
+                                htmlContent.append(";\"Penerjemah Bahasa\"");
+                                htmlContent.append(";\"Cara Belajar Disukai\"");
+                                htmlContent.append(";\"Hambatan Pembelajaran\"");
+                                htmlContent.append(";\"Tingkat Pendidikan\"");
+                                htmlContent.append(";\"Kebutuhan Pembelajaran\"");
+                                htmlContent.append(";\"Kebutuhan Lain-lain\"");
+                                htmlContent.append(";\"DP: Home Care\"");
+                                htmlContent.append(";\"DP: Perawatan Luka\"");
+                                htmlContent.append(";\"DP: Alat Bantu\"");
+                                htmlContent.append(";\"DP: Pemesanan Alat\"");
+                                htmlContent.append(";\"DP: Tim Terapis\"");
+                                htmlContent.append(";\"DP: Ahli Gizi\"");
+                                htmlContent.append(";\"DP: Kelompok\"");
+                                htmlContent.append(";\"DP: Manual (komponen)\"");
+                                htmlContent.append(";\"Data Penunjang 1\"");
+                                htmlContent.append(";\"Data Penunjang 2\"");
+                                htmlContent.append(";\"Data Penunjang 3\"");
+                                htmlContent.append(";\"Data Penunjang 4\"");
+                                htmlContent.append("\n"); 
                                 while(rs.next()){
                                     htmlContent.append(
-                                        "\"").append(rs.getString("no_rawat")).append("\";\"").append(rs.getString("no_rkm_medis")).append("\";\"").append(rs.getString("nm_pasien")).append("\";\"").append(rs.getString("tgl_lahir")).append("\";\"").append(rs.getString("jk")).append("\";\"").append(rs.getString("nip1")).append("\";\"").append(rs.getString("pengkaji1")).append("\";\"").append(rs.getString("nip2")).append("\";\"").append(rs.getString("pengkaji2")).append("\";\"").append(rs.getString("kd_dokter")).append("\";\"").append(rs.getString("nm_dokter")).append("\";\"").append(rs.getString("tanggal")).append("\";\"").append(rs.getString("kasus_trauma")).append("\";\"").append(rs.getString("informasi")).append(", ").append(rs.getString("ket_informasi")).append("\";\"").append(rs.getString("tiba_diruang_rawat")).append("\";\"").append(rs.getString("cara_masuk")).append("\";\"").append(rs.getString("rps")).append("\";\"").append(rs.getString("rpd")).append("\";\"").append(rs.getString("rpk")).append("\";\"").append(rs.getString("rpo")).append("\";\"").append(rs.getString("riwayat_pembedahan")).append("\";\"").append(rs.getString("riwayat_dirawat_dirs")).append("\";\"").append(rs.getString("alat_bantu_dipakai")).append("\";\"").append(rs.getString("riwayat_kehamilan")).append(", ").append(rs.getString("riwayat_kehamilan_perkiraan")).append("\";\"").append(rs.getString("riwayat_tranfusi")).append("\";\"").append(rs.getString("riwayat_alergi")).append("\";\"").append(rs.getString("riwayat_merokok")).append("\";\"").append(rs.getString("riwayat_merokok_jumlah")).append("\";\"").append(rs.getString("riwayat_alkohol")).append("\";\"").append(rs.getString("riwayat_alkohol_jumlah")).append("\";\"").append(rs.getString("riwayat_narkoba")).append("\";\"").append(rs.getString("riwayat_olahraga")).append("\";\"").append(rs.getString("pemeriksaan_mental")).append("\";\"").append(rs.getString("pemeriksaan_keadaan_umum")).append("\";\"").append(rs.getString("pemeriksaan_gcs")).append("\";\"").append(rs.getString("pemeriksaan_td")).append("\";\"").append(rs.getString("pemeriksaan_nadi")).append("\";\"").append(rs.getString("pemeriksaan_rr")).append("\";\"").append(rs.getString("pemeriksaan_suhu")).append("\";\"").append(rs.getString("pemeriksaan_spo2")).append("\";\"").append(rs.getString("pemeriksaan_bb")).append("\";\"").append(rs.getString("pemeriksaan_tb")).append("\";\"").append(rs.getString("pemeriksaan_susunan_kepala")).append(", ").append(rs.getString("pemeriksaan_susunan_kepala_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_susunan_wajah")).append(", ").append(rs.getString("pemeriksaan_susunan_wajah_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_susunan_leher")).append("\";\"").append(rs.getString("pemeriksaan_susunan_kejang")).append(", ").append(rs.getString("pemeriksaan_susunan_kejang_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_susunan_sensorik")).append("\";\"").append(rs.getString("pemeriksaan_kardiovaskuler_pulsasi")).append("\";\"").append(rs.getString("pemeriksaan_kardiovaskuler_sirkulasi")).append(", ").append(rs.getString("pemeriksaan_kardiovaskuler_sirkulasi_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_kardiovaskuler_denyut_nadi")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_retraksi")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_pola_nafas")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_suara_nafas")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_batuk")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_volume_pernafasan")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_jenis_pernafasan")).append(", ").append(rs.getString("pemeriksaan_respirasi_jenis_pernafasan_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_irama_nafas")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_mulut")).append(", ").append(rs.getString("pemeriksaan_gastrointestinal_mulut_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_lidah")).append(", ").append(rs.getString("pemeriksaan_gastrointestinal_lidah_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_gigi")).append(", ").append(rs.getString("pemeriksaan_gastrointestinal_gigi_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_tenggorokan")).append(", ").append(rs.getString("pemeriksaan_gastrointestinal_tenggorokan_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_abdomen")).append(", ").append(rs.getString("pemeriksaan_gastrointestinal_abdomen_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_peistatik_usus")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_anus")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_sensorik")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_pengelihatan")).append(", ").append(rs.getString("pemeriksaan_neurologi_pengelihatan_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_alat_bantu_penglihatan")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_motorik")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_pendengaran")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_bicara")).append(", ").append(rs.getString("pemeriksaan_neurologi_bicara_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_kekuatan_otot")).append("\";\"").append(rs.getString("pemeriksaan_integument_kulit")).append("\";\"").append(rs.getString("pemeriksaan_integument_warnakulit")).append("\";\"").append(rs.getString("pemeriksaan_integument_turgor")).append("\";\"").append(rs.getString("pemeriksaan_integument_dekubitas")).append("\";\"").append(rs.getString("pemeriksaan_muskuloskletal_oedema")).append(", ").append(rs.getString("pemeriksaan_muskuloskletal_oedema_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_muskuloskletal_pergerakan_sendi")).append("\";\"").append(rs.getString("pemeriksaan_muskuloskletal_kekauatan_otot")).append("\";\"").append(rs.getString("pemeriksaan_muskuloskletal_fraktur")).append(", ").append(rs.getString("pemeriksaan_muskuloskletal_fraktur_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_muskuloskletal_nyeri_sendi")).append(", ").append(rs.getString("pemeriksaan_muskuloskletal_nyeri_sendi_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bab_frekuensi_jumlah")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bab_frekuensi_durasi")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bab_konsistensi")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bab_warna")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bak_frekuensi_jumlah")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bak_frekuensi_durasi")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bak_warna")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bak_lainlain")).append("\";\"").append(rs.getString("pola_aktifitas_mandi")).append("\";\"").append(rs.getString("pola_aktifitas_makanminum")).append("\";\"").append(rs.getString("pola_aktifitas_berpakaian")).append("\";\"").append(rs.getString("pola_aktifitas_eliminasi")).append("\";\"").append(rs.getString("pola_aktifitas_berpindah")).append("\";\"").append(rs.getString("pola_nutrisi_porsi_makan")).append("\";\"").append(rs.getString("pola_nutrisi_frekuesi_makan")).append("\";\"").append(rs.getString("pola_nutrisi_jenis_makanan")).append("\";\"").append(rs.getString("pola_tidur_lama_tidur")).append("\";\"").append(rs.getString("pola_tidur_gangguan")).append("\";\"").append(rs.getString("pengkajian_fungsi_kemampuan_sehari")).append("\";\"").append(rs.getString("pengkajian_fungsi_berjalan")).append(", ").append(rs.getString("pengkajian_fungsi_berjalan_keterangan")).append("\";\"").append(rs.getString("pengkajian_fungsi_aktifitas")).append("\";\"").append(rs.getString("pengkajian_fungsi_ambulasi")).append("\";\"").append(rs.getString("pengkajian_fungsi_ekstrimitas_atas")).append(", ").append(rs.getString("pengkajian_fungsi_ekstrimitas_atas_keterangan")).append("\";\"").append(rs.getString("pengkajian_fungsi_ekstrimitas_bawah")).append(", ").append(rs.getString("pengkajian_fungsi_ekstrimitas_bawah_keterangan")).append("\";\"").append(rs.getString("pengkajian_fungsi_menggenggam")).append(", ").append(rs.getString("pengkajian_fungsi_menggenggam_keterangan")).append("\";\"").append(rs.getString("pengkajian_fungsi_koordinasi")).append(", ").append(rs.getString("pengkajian_fungsi_koordinasi_keterangan")).append("\";\"").append(rs.getString("pengkajian_fungsi_kesimpulan")).append("\";\"").append(rs.getString("riwayat_psiko_kondisi_psiko")).append("\";\"").append(rs.getString("riwayat_psiko_perilaku")).append(", ").append(rs.getString("riwayat_psiko_perilaku_keterangan")).append("\";\"").append(rs.getString("riwayat_psiko_gangguan_jiwa")).append("\";\"").append(rs.getString("riwayat_psiko_hubungan_keluarga")).append("\";\"").append(rs.getString("agama")).append("\";\"").append(rs.getString("riwayat_psiko_tinggal")).append(", ").append(rs.getString("riwayat_psiko_tinggal_keterangan")).append("\";\"").append(rs.getString("pekerjaan")).append("\";\"").append(rs.getString("png_jawab")).append("\";\"").append(rs.getString("riwayat_psiko_nilai_kepercayaan")).append(", ").append(rs.getString("riwayat_psiko_nilai_kepercayaan_keterangan")).append("\";\"").append(rs.getString("nama_bahasa")).append("\";\"").append(rs.getString("pnd")).append("\";\"").append(rs.getString("riwayat_psiko_pendidikan_pj")).append("\";\"").append(rs.getString("riwayat_psiko_edukasi_diberikan")).append(", ").append(rs.getString("riwayat_psiko_edukasi_diberikan_keterangan")).append("\";\"").append(rs.getString("penilaian_nyeri")).append("\";\"").append(rs.getString("penilaian_nyeri_penyebab")).append(", ").append(rs.getString("penilaian_nyeri_ket_penyebab")).append("\";\"").append(rs.getString("penilaian_nyeri_kualitas")).append(", ").append(rs.getString("penilaian_nyeri_ket_kualitas")).append("\";\"").append(rs.getString("penilaian_nyeri_lokasi")).append("\";\"").append(rs.getString("penilaian_nyeri_menyebar")).append("\";\"").append(rs.getString("penilaian_nyeri_skala")).append("\";\"").append(rs.getString("penilaian_nyeri_waktu")).append("\";\"").append(rs.getString("penilaian_nyeri_hilang")).append(", ").append(rs.getString("penilaian_nyeri_ket_hilang")).append("\";\"").append(rs.getString("penilaian_nyeri_diberitahukan_dokter")).append(", ").append(rs.getString("penilaian_nyeri_jam_diberitahukan_dokter")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala1")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai1")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala2")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai2")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala3")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai3")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala4")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai4")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala5")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai5")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala6")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai6")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_totalnilai")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala1")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai1")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala2")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai2")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala3")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai3")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala4")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai4")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala5")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai5")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala6")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai6")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala7")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai7")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala8")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai8")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala9")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai9")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala10")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai10")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala11")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai11")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_totalnilai")).append("\";\"").append(rs.getString("skrining_gizi1")).append("\";\"").append(rs.getString("nilai_gizi1")).append("\";\"").append(rs.getString("skrining_gizi2")).append("\";\"").append(rs.getString("nilai_gizi2")).append("\";\"").append(rs.getString("nilai_total_gizi")).append("\";\"").append(rs.getString("skrining_gizi_diagnosa_khusus")).append("\";\"").append(rs.getString("skrining_gizi_ket_diagnosa_khusus")).append("\";\"").append(rs.getString("skrining_gizi_diketahui_dietisen")).append("\";\"").append(rs.getString("skrining_gizi_jam_diketahui_dietisen")).append("\";\"").append(rs.getString("rencana")).append("\"\n"
+                                        "\"").append(rs.getString("no_rawat")).append("\";\"").append(rs.getString("no_rkm_medis")).append("\";\"").append(rs.getString("nm_pasien")).append("\";\"").append(rs.getString("tgl_lahir")).append("\";\"").append(rs.getString("jk")).append("\";\"").append(rs.getString("nip1")).append("\";\"").append(rs.getString("pengkaji1")).append("\";\"").append(rs.getString("nip2")).append("\";\"").append(rs.getString("pengkaji2")).append("\";\"").append(rs.getString("kd_dokter")).append("\";\"").append(rs.getString("nm_dokter")).append("\";\"").append(rs.getString("tanggal")).append("\";\"").append(rs.getString("kasus_trauma")).append("\";\"").append(rs.getString("informasi")).append(", ").append(rs.getString("ket_informasi")).append("\";\"").append(rs.getString("tiba_diruang_rawat")).append("\";\"").append(rs.getString("cara_masuk")).append("\";\"").append(rs.getString("rps")).append("\";\"").append(rs.getString("rpd")).append("\";\"").append(rs.getString("rpk")).append("\";\"").append(rs.getString("rpo")).append("\";\"").append(rs.getString("riwayat_pembedahan")).append("\";\"").append(rs.getString("riwayat_dirawat_dirs")).append("\";\"").append(rs.getString("alat_bantu_dipakai")).append("\";\"").append(rs.getString("riwayat_kehamilan")).append(", ").append(rs.getString("riwayat_kehamilan_perkiraan")).append("\";\"").append(rs.getString("riwayat_tranfusi")).append("\";\"").append(rs.getString("riwayat_alergi")).append("\";\"").append(rs.getString("riwayat_merokok")).append("\";\"").append(rs.getString("riwayat_merokok_jumlah")).append("\";\"").append(rs.getString("riwayat_alkohol")).append("\";\"").append(rs.getString("riwayat_alkohol_jumlah")).append("\";\"").append(rs.getString("riwayat_narkoba")).append("\";\"").append(rs.getString("riwayat_olahraga")).append("\";\"").append(rs.getString("pemeriksaan_mental")).append("\";\"").append(rs.getString("pemeriksaan_keadaan_umum")).append("\";\"").append(rs.getString("pemeriksaan_gcs")).append("\";\"").append(rs.getString("pemeriksaan_td")).append("\";\"").append(rs.getString("pemeriksaan_nadi")).append("\";\"").append(rs.getString("pemeriksaan_rr")).append("\";\"").append(rs.getString("pemeriksaan_suhu")).append("\";\"").append(rs.getString("pemeriksaan_spo2")).append("\";\"").append(rs.getString("pemeriksaan_bb")).append("\";\"").append(rs.getString("pemeriksaan_tb")).append("\";\"").append(rs.getString("pemeriksaan_susunan_kepala")).append(", ").append(rs.getString("pemeriksaan_susunan_kepala_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_susunan_wajah")).append(", ").append(rs.getString("pemeriksaan_susunan_wajah_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_susunan_leher")).append("\";\"").append(rs.getString("pemeriksaan_susunan_kejang")).append(", ").append(rs.getString("pemeriksaan_susunan_kejang_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_susunan_sensorik")).append("\";\"").append(rs.getString("pemeriksaan_kardiovaskuler_pulsasi")).append("\";\"").append(rs.getString("pemeriksaan_kardiovaskuler_sirkulasi")).append(", ").append(rs.getString("pemeriksaan_kardiovaskuler_sirkulasi_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_kardiovaskuler_denyut_nadi")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_retraksi")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_pola_nafas")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_suara_nafas")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_batuk")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_volume_pernafasan")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_jenis_pernafasan")).append(", ").append(rs.getString("pemeriksaan_respirasi_jenis_pernafasan_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_respirasi_irama_nafas")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_mulut")).append(", ").append(rs.getString("pemeriksaan_gastrointestinal_mulut_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_lidah")).append(", ").append(rs.getString("pemeriksaan_gastrointestinal_lidah_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_gigi")).append(", ").append(rs.getString("pemeriksaan_gastrointestinal_gigi_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_tenggorokan")).append(", ").append(rs.getString("pemeriksaan_gastrointestinal_tenggorokan_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_abdomen")).append(", ").append(rs.getString("pemeriksaan_gastrointestinal_abdomen_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_peistatik_usus")).append("\";\"").append(rs.getString("pemeriksaan_gastrointestinal_anus")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_sensorik")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_pengelihatan")).append(", ").append(rs.getString("pemeriksaan_neurologi_pengelihatan_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_alat_bantu_penglihatan")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_motorik")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_pendengaran")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_bicara")).append(", ").append(rs.getString("pemeriksaan_neurologi_bicara_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_neurologi_kekuatan_otot")).append("\";\"").append(rs.getString("pemeriksaan_integument_kulit")).append("\";\"").append(rs.getString("pemeriksaan_integument_warnakulit")).append("\";\"").append(rs.getString("pemeriksaan_integument_turgor")).append("\";\"").append(rs.getString("pemeriksaan_integument_dekubitas")).append("\";\"").append(rs.getString("pemeriksaan_muskuloskletal_oedema")).append(", ").append(rs.getString("pemeriksaan_muskuloskletal_oedema_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_muskuloskletal_pergerakan_sendi")).append("\";\"").append(rs.getString("pemeriksaan_muskuloskletal_kekauatan_otot")).append("\";\"").append(rs.getString("pemeriksaan_muskuloskletal_fraktur")).append(", ").append(rs.getString("pemeriksaan_muskuloskletal_fraktur_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_muskuloskletal_nyeri_sendi")).append(", ").append(rs.getString("pemeriksaan_muskuloskletal_nyeri_sendi_keterangan")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bab_frekuensi_jumlah")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bab_frekuensi_durasi")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bab_konsistensi")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bab_warna")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bak_frekuensi_jumlah")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bak_frekuensi_durasi")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bak_warna")).append("\";\"").append(rs.getString("pemeriksaan_eliminasi_bak_lainlain")).append("\";\"").append(rs.getString("pola_aktifitas_mandi")).append("\";\"").append(rs.getString("pola_aktifitas_makanminum")).append("\";\"").append(rs.getString("pola_aktifitas_berpakaian")).append("\";\"").append(rs.getString("pola_aktifitas_eliminasi")).append("\";\"").append(rs.getString("pola_aktifitas_berpindah")).append("\";\"").append(rs.getString("pola_nutrisi_porsi_makan")).append("\";\"").append(rs.getString("pola_nutrisi_frekuesi_makan")).append("\";\"").append(rs.getString("pola_nutrisi_jenis_makanan")).append("\";\"").append(rs.getString("pola_tidur_lama_tidur")).append("\";\"").append(rs.getString("pola_tidur_gangguan")).append("\";\"").append(rs.getString("pengkajian_fungsi_kemampuan_sehari")).append("\";\"").append(rs.getString("pengkajian_fungsi_berjalan")).append(", ").append(rs.getString("pengkajian_fungsi_berjalan_keterangan")).append("\";\"").append(rs.getString("pengkajian_fungsi_aktifitas")).append("\";\"").append(rs.getString("pengkajian_fungsi_ambulasi")).append("\";\"").append(rs.getString("pengkajian_fungsi_ekstrimitas_atas")).append(", ").append(rs.getString("pengkajian_fungsi_ekstrimitas_atas_keterangan")).append("\";\"").append(rs.getString("pengkajian_fungsi_ekstrimitas_bawah")).append(", ").append(rs.getString("pengkajian_fungsi_ekstrimitas_bawah_keterangan")).append("\";\"").append(rs.getString("pengkajian_fungsi_menggenggam")).append(", ").append(rs.getString("pengkajian_fungsi_menggenggam_keterangan")).append("\";\"").append(rs.getString("pengkajian_fungsi_koordinasi")).append(", ").append(rs.getString("pengkajian_fungsi_koordinasi_keterangan")).append("\";\"").append(rs.getString("pengkajian_fungsi_kesimpulan")).append("\";\"").append(rs.getString("riwayat_psiko_kondisi_psiko")).append("\";\"").append(rs.getString("riwayat_psiko_perilaku")).append(", ").append(rs.getString("riwayat_psiko_perilaku_keterangan")).append("\";\"").append(rs.getString("riwayat_psiko_gangguan_jiwa")).append("\";\"").append(rs.getString("riwayat_psiko_hubungan_keluarga")).append("\";\"").append(rs.getString("agama")).append("\";\"").append(rs.getString("riwayat_psiko_tinggal")).append(", ").append(rs.getString("riwayat_psiko_tinggal_keterangan")).append("\";\"").append(rs.getString("pekerjaan")).append("\";\"").append(rs.getString("png_jawab")).append("\";\"").append(rs.getString("riwayat_psiko_nilai_kepercayaan")).append(", ").append(rs.getString("riwayat_psiko_nilai_kepercayaan_keterangan")).append("\";\"").append(rs.getString("nama_bahasa")).append("\";\"").append(rs.getString("pnd")).append("\";\"").append(rs.getString("riwayat_psiko_pendidikan_pj")).append("\";\"").append(rs.getString("riwayat_psiko_edukasi_diberikan")).append(", ").append(rs.getString("riwayat_psiko_edukasi_diberikan_keterangan")).append("\";\"").append(rs.getString("penilaian_nyeri")).append("\";\"").append(rs.getString("penilaian_nyeri_penyebab")).append(", ").append(rs.getString("penilaian_nyeri_ket_penyebab")).append("\";\"").append(rs.getString("penilaian_nyeri_kualitas")).append(", ").append(rs.getString("penilaian_nyeri_ket_kualitas")).append("\";\"").append(rs.getString("penilaian_nyeri_lokasi")).append("\";\"").append(rs.getString("penilaian_nyeri_menyebar")).append("\";\"").append(rs.getString("penilaian_nyeri_skala")).append("\";\"").append(rs.getString("penilaian_nyeri_waktu")).append("\";\"").append(rs.getString("penilaian_nyeri_hilang")).append(", ").append(rs.getString("penilaian_nyeri_ket_hilang")).append("\";\"").append(rs.getString("penilaian_nyeri_diberitahukan_dokter")).append(", ").append(rs.getString("penilaian_nyeri_jam_diberitahukan_dokter")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala1")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai1")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala2")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai2")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala3")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai3")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala4")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai4")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala5")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai5")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_skala6")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_nilai6")).append("\";\"").append(rs.getString("penilaian_jatuhmorse_totalnilai")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala1")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai1")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala2")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai2")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala3")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai3")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala4")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai4")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala5")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai5")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala6")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai6")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala7")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai7")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala8")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai8")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala9")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai9")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala10")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai10")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_skala11")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_nilai11")).append("\";\"").append(rs.getString("penilaian_jatuhsydney_totalnilai")).append("\";\"").append(rs.getString("skrining_gizi1")).append("\";\"").append(rs.getString("nilai_gizi1")).append("\";\"").append(rs.getString("skrining_gizi2")).append("\";\"").append(rs.getString("nilai_gizi2")).append("\";\"").append(rs.getString("nilai_total_gizi")).append("\";\"").append(rs.getString("skrining_gizi_diagnosa_khusus")).append("\";\"").append(rs.getString("skrining_gizi_ket_diagnosa_khusus")).append("\";\"").append(rs.getString("skrining_gizi_diketahui_dietisen")).append("\";\"").append(rs.getString("skrining_gizi_jam_diketahui_dietisen")).append("\";\"").append(rs.getString("rencana")
                                     );
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"alergi_tidak_ada","alergi_obat","alergi_makanan","alergi_lainnya","alergi_tidak_diketahui","alergi_tanda_dipasang"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"alergi_obat_sebutkan","alergi_obat_reaksi"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"alergi_makanan_sebutkan","alergi_makanan_reaksi"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"alergi_lainnya_sebutkan","alergi_lainnya_reaksi"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"alergi_tidak_diketahui_reaksi"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"rpd_hipertensi","rpd_dm","rpd_jantung","rpd_hepatitis","rpd_operasi","rpd_anemia","rpd_asthma","rpd_stroke","rpd_paru","rpd_lainlain"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"rpd_lainlain_sebutkan"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"rpk_hipertensi","rpk_dm","rpk_jantung","rpk_thalasemia","rpk_lainlain"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"rpk_lainlain_sebutkan"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"informasi_nama_keluarga","informasi_hubungan_keluarga"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"keluhan_utama"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"tingkat_kesadaran"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"lla"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"gcs_e","gcs_m","gcs_v"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"airway_normal","airway_oropharingeal","airway_sekret","airway_tumor","airway_trajeostomy","airway_rtt"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"airway_rtt_ukuran"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"breathing_normal","breathing_sesak_dyspnea","breathing_batuk","breathing_takipneu","breathing_batuk_darah","breathing_sleep_apnea","breathing_lain","breathing_orthopnea"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"breathing_lain_ket"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"bunyiparu_ngorok","bunyiparu_normal","bunyiparu_stidor","bunyiparu_ronkhi_kanan","bunyiparu_ronkhi_kiri","bunyiparu_wheezing_kanan","bunyiparu_wheezing_kiri","bunyiparu_lain"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"bunyiparu_lain_ket"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"kesulitan_bernafas_tidak","kesulitan_bernafas_ya"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"otot_bantu_nafas_tidak","otot_bantu_nafas_ya"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"o2_saturasi"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"o2_tidak","o2_ya","o2_nasal","o2_sungkup"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"o2_liter_menit"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"cardio_tidak_ada_kelainan","cardio_bradikardi","cardio_takikardi","cardio_murmur","cardio_gallop","cardio_pucat_sianosis","cardio_nyeri_dada"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"cardio_lain"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"gi_tidak_ada_keluhan","gi_penurunan_bising_usus","gi_gigipalsu_atas_kanan","gi_gigipalsu_atas_kiri","gi_gigipalsu_bawah_kanan","gi_gigipalsu_bawah_kiri","gi_pembatasan_makanan","gi_tidak_nafsu_makan","gi_mual","gi_muntah","gi_konstipasi","gi_terpasang_ngt","gi_sulit_menelan","gi_diare","gi_kolostomi","gi_distensi_abdomen","gi_makan_habis","gi_ivfd"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"gi_pembatasan_makanan_ket"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"gi_muntah_kali","gi_diare_x","gi_ivfd_tts"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"kemih_tidak_ada_keluhan","kemih_distensi_bladder","kemih_haematuria","kemih_retensi_urine","kemih_oliguri","kemih_poliuri","kemih_disuria","kemih_anuri","kemih_terpasang_kateter","kemih_inkontinensia_urine"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"kemih_lain"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"reproduksi_menstruasi","reproduksi_hamil","reproduksi_hpht"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"reproduksi_papsmear","reproduksi_papsmear_tanggal","reproduksi_mamografi","reproduksi_mamografi_tanggal","reproduksi_sadari","reproduksi_sadari_tanggal"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"reproduksi_screening_prostat","reproduksi_screening_prostat_tanggal"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"pendengaran_tak","pendengaran_berdengung","pendengaran_tuli","pendengaran_keluar_cairan","pendengaran_nyeri"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"penglihatan_tak","penglihatan_anemis","penglihatan_icterik","penglihatan_tidak_ada_reaksi_cahaya","penglihatan_kacamata","penglihatan_lensakontak","penglihatan_merah","penglihatan_kabur"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"penglihatan_lain"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"wicara_normal","wicara_cadelpelo","wicara_aphasia","wicara_kerusakan"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"orientasi_baik","orientasi_orang","orientasi_tempat","orientasi_waktu","orientasi_situasi"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"memori_baik","memori_sedang","memori_buruk"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"konsentrasi_baik","konsentrasi_sedang","konsentrasi_buruk"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"pupil_kanan_ukuran","pupil_kanan_reaksi"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"pupil_kiri_ukuran","pupil_kiri_reaksi"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"kekuatanotot_nilai"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"kekuatanotot_inkoordinasi","kekuatanotot_kejang"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"kekuatanotot_tremor_di","hemiplegi_di","parase_di"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"fraktur_tangan_kanan","fraktur_tangan_kiri","fraktur_kaki_kanan","fraktur_kaki_kiri"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"ekstremitas_lain"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"warnakulit_normal","warnakulit_pucat","warnakulit_merah","warnakulit_ikterik","warnakulit_kemerahan"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"warnakulit_lain"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"integritaskulit_utuh","integritaskulit_ruam","integritaskulit_melepuh","integritaskulit_kemerahan"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"integritaskulit_melepuh_di","integritaskulit_kemerahan_di"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"skala_branden"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"psiko_tak","psiko_marah","psiko_gelisah","psiko_sedih","psiko_cemas","psiko_takut","psiko_acuhtakacuh","psiko_bunuhdiri"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"status_pernikahan"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"kerabat_nama","kerabat_hubungan","kerabat_telp"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"sosek_hubkeluarga_baik","sosek_hubkeluarga_tidakbaik","sosek_tinggal_rumah","sosek_tinggal_asrama","sosek_tinggal_panti","sosek_tinggal_lainnya","sosek_bersama_suamiistri","sosek_bersama_anak","sosek_bersama_orangtua","sosek_bersama_lainnya","sosek_kerja_bekerja","sosek_kerja_pns","sosek_kerja_swasta","sosek_kerja_tnipolri","sosek_kerja_tani_buruh","sosek_kebiasaan_merokok","sosek_kebiasaan_alkohol","sosek_kebiasaan_lainnya"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"sosek_tinggal_lainnya_ket","sosek_bersama_lainnya_ket","sosek_kebiasaan_jenis_jumlah"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"kepribadian_tidakadakeluhan","kepribadian_perlupendampingan","kepribadian_perludibantuibadah","kepribadian_berdoa","kepribadian_bacaliteratur"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"kepribadian_ganggu_praktik","kepribadian_nilai_budaya","kepribadian_lainlain"));
+                                    htmlContent.append("\";\"").append((teksRM19(rs,"nyeri_canvas_gambar").isEmpty()?"":"Ada tanda"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"nyeri_p","nyeri_q","nyeri_r","nyeri_s","nyeri_t"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"keluhan_nyeri_kronik","keluhan_nyeri_akut","keluhan_tidak_ada_nyeri"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"nyerihilang_minum_obat","nyerihilang_istirahat","nyerihilang_berubah_posisi","nyerihilang_mendengar_musik","nyerihilang_lainlain"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"nyerihilang_lainlain_ket"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"fungsional_mandiri","fungsional_bantuan_minimal","fungsional_bantuan_sebagian","fungsional_ketergantungan","fungsional_berjalan_normal","fungsional_berjalan_perlu_bantuan","fungsional_berjalan_sering_jatuh","fungsional_berjalan_kelumpuhan"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"edu_bicara_tidak","edu_bicara_ya"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"edu_bicara_jelaskan"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"edu_bahasa_indonesia","edu_bahasa_daerah","edu_bahasa_asing","edu_bahasa_isyarat"));
+                                    htmlContent.append("\";\"").append(gabungRM19(rs,"edu_bahasa_daerah_ket","edu_bahasa_asing_ket"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"edu_penerjemah_tidak","edu_penerjemah_ya"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"edu_penerjemah_bahasa"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"edu_cara_audiovisual","edu_cara_diskusi","edu_cara_membaca","edu_cara_menulis","edu_cara_mengerjakan","edu_cara_gambar","edu_cara_mendengar","edu_cara_demonstrasi"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"edu_hambatan_tidak","edu_hambatan_ya","edu_hambatan_bahasa","edu_hambatan_emosi","edu_hambatan_caregiver","edu_hambatan_fisiologis","edu_hambatan_pendengaran","edu_hambatan_penglihatan","edu_hambatan_memori","edu_hambatan_motivasi","edu_hambatan_bicara"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"edu_pendidikan_tk","edu_pendidikan_sd","edu_pendidikan_smp","edu_pendidikan_sma","edu_pendidikan_d3d4","edu_pendidikan_s1","edu_pendidikan_s2","edu_pendidikan_s3"));
+                                    htmlContent.append("\";\"").append(cekRM19(rs,"edu_kebutuhan_proses_penyakit","edu_kebutuhan_diit_nutrisi","edu_kebutuhan_perawatan_luka","edu_kebutuhan_manajemen_nyeri","edu_kebutuhan_obat","edu_kebutuhan_rehabilitasi","edu_kebutuhan_lainlain"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"edu_kebutuhan_lainlain_ket"));
+                                    htmlContent.append("\";\"").append(dpRM19(rs,"discharge_homecare"));
+                                    htmlContent.append("\";\"").append(dpRM19(rs,"discharge_perawatanluka"));
+                                    htmlContent.append("\";\"").append(dpRM19(rs,"discharge_alatbantu"));
+                                    htmlContent.append("\";\"").append(dpRM19(rs,"discharge_pemesananalat"));
+                                    htmlContent.append("\";\"").append(dpRM19(rs,"discharge_timterapis"));
+                                    htmlContent.append("\";\"").append(dpRM19(rs,"discharge_gizi"));
+                                    htmlContent.append("\";\"").append(dpRM19(rs,"discharge_kelompok"));
+                                    htmlContent.append("\";\"").append(dpmRM19(rs,"discharge_manual"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"data_penunjang1"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"data_penunjang2"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"data_penunjang3"));
+                                    htmlContent.append("\";\"").append(teksRM19(rs,"data_penunjang4"));
+                                    htmlContent.append("\"\n");
                                 }
                                 f = new File("RMPenilaianAwalKeperawatanRanap.csv");            
                                 bw = new BufferedWriter(new FileWriter(f));            
@@ -6312,6 +7240,7 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
             }else if(evt.getKeyCode()==KeyEvent.VK_SPACE){
                 try {
                     getData();
+                    getDataRiwayatRM19();
                     TabRawat.setSelectedIndex(0);
                 } catch (java.lang.NullPointerException e) {
                 }
@@ -6449,141 +7378,38 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                 System.out.println("Notif : "+e);
             }
             param.put("rencana",masalahkeperawatan); 
-            Valid.MyReportqry("rptCetakPenilaianAwalKeperawatanRanap.jasper","report","::[ Laporan Pengkajian Awal Keperawatan Rawat Inap ]::",
-                "select penilaian_awal_keperawatan_ranap.no_rawat,penilaian_awal_keperawatan_ranap.tanggal,penilaian_awal_keperawatan_ranap.informasi,penilaian_awal_keperawatan_ranap.ket_informasi,penilaian_awal_keperawatan_ranap.tiba_diruang_rawat,"+
-                "penilaian_awal_keperawatan_ranap.kasus_trauma,penilaian_awal_keperawatan_ranap.cara_masuk,penilaian_awal_keperawatan_ranap.rps,penilaian_awal_keperawatan_ranap.rpd,penilaian_awal_keperawatan_ranap.rpk,penilaian_awal_keperawatan_ranap.rpo,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_pembedahan,penilaian_awal_keperawatan_ranap.riwayat_dirawat_dirs,penilaian_awal_keperawatan_ranap.alat_bantu_dipakai,penilaian_awal_keperawatan_ranap.riwayat_kehamilan,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_kehamilan_perkiraan,penilaian_awal_keperawatan_ranap.riwayat_tranfusi,penilaian_awal_keperawatan_ranap.riwayat_alergi,penilaian_awal_keperawatan_ranap.riwayat_merokok,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_merokok_jumlah,penilaian_awal_keperawatan_ranap.riwayat_alkohol,penilaian_awal_keperawatan_ranap.riwayat_alkohol_jumlah,penilaian_awal_keperawatan_ranap.riwayat_narkoba,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_olahraga,penilaian_awal_keperawatan_ranap.pemeriksaan_mental,penilaian_awal_keperawatan_ranap.pemeriksaan_keadaan_umum,penilaian_awal_keperawatan_ranap.pemeriksaan_gcs,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_td,penilaian_awal_keperawatan_ranap.pemeriksaan_nadi,penilaian_awal_keperawatan_ranap.pemeriksaan_rr,penilaian_awal_keperawatan_ranap.pemeriksaan_suhu,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_spo2,penilaian_awal_keperawatan_ranap.pemeriksaan_bb,penilaian_awal_keperawatan_ranap.pemeriksaan_tb,penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_kepala,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_kepala_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_wajah,penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_wajah_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_leher,penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_kejang,penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_kejang_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_sensorik,penilaian_awal_keperawatan_ranap.pemeriksaan_kardiovaskuler_denyut_nadi,penilaian_awal_keperawatan_ranap.pemeriksaan_kardiovaskuler_sirkulasi,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_kardiovaskuler_sirkulasi_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_kardiovaskuler_pulsasi,penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_pola_nafas,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_retraksi,penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_suara_nafas,penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_volume_pernafasan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_jenis_pernafasan,penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_jenis_pernafasan_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_irama_nafas,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_batuk,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_mulut,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_mulut_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_gigi,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_gigi_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_lidah,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_lidah_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_tenggorokan,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_tenggorokan_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_abdomen,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_abdomen_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_peistatik_usus,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_anus,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_pengelihatan,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_pengelihatan_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_alat_bantu_penglihatan,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_pendengaran,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_bicara,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_bicara_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_sensorik,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_motorik,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_kekuatan_otot,penilaian_awal_keperawatan_ranap.pemeriksaan_integument_warnakulit,penilaian_awal_keperawatan_ranap.pemeriksaan_integument_turgor,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_integument_kulit,penilaian_awal_keperawatan_ranap.pemeriksaan_integument_dekubitas,penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_pergerakan_sendi,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_kekauatan_otot,penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_nyeri_sendi,penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_nyeri_sendi_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_oedema,penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_oedema_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_fraktur,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_fraktur_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bab_frekuensi_jumlah,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bab_frekuensi_durasi,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bab_konsistensi,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bab_warna,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bak_frekuensi_jumlah,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bak_frekuensi_durasi,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bak_warna,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bak_lainlain,"+
-                "penilaian_awal_keperawatan_ranap.pola_aktifitas_makanminum,penilaian_awal_keperawatan_ranap.pola_aktifitas_mandi,penilaian_awal_keperawatan_ranap.pola_aktifitas_eliminasi,penilaian_awal_keperawatan_ranap.pola_aktifitas_berpakaian,"+
-                "penilaian_awal_keperawatan_ranap.pola_aktifitas_berpindah,penilaian_awal_keperawatan_ranap.pola_nutrisi_frekuesi_makan,penilaian_awal_keperawatan_ranap.pola_nutrisi_jenis_makanan,penilaian_awal_keperawatan_ranap.pola_nutrisi_porsi_makan,"+
-                "penilaian_awal_keperawatan_ranap.pola_tidur_lama_tidur,penilaian_awal_keperawatan_ranap.pola_tidur_gangguan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_kemampuan_sehari,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_aktifitas,"+
-                "penilaian_awal_keperawatan_ranap.pengkajian_fungsi_berjalan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_berjalan_keterangan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_ambulasi,"+
-                "penilaian_awal_keperawatan_ranap.pengkajian_fungsi_ekstrimitas_atas,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_ekstrimitas_atas_keterangan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_ekstrimitas_bawah,"+
-                "penilaian_awal_keperawatan_ranap.pengkajian_fungsi_ekstrimitas_bawah_keterangan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_menggenggam,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_menggenggam_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pengkajian_fungsi_koordinasi,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_koordinasi_keterangan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_kesimpulan,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_psiko_kondisi_psiko,penilaian_awal_keperawatan_ranap.riwayat_psiko_gangguan_jiwa,penilaian_awal_keperawatan_ranap.riwayat_psiko_perilaku,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_psiko_perilaku_keterangan,penilaian_awal_keperawatan_ranap.riwayat_psiko_hubungan_keluarga,penilaian_awal_keperawatan_ranap.riwayat_psiko_tinggal,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_psiko_tinggal_keterangan,penilaian_awal_keperawatan_ranap.riwayat_psiko_nilai_kepercayaan,penilaian_awal_keperawatan_ranap.riwayat_psiko_nilai_kepercayaan_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_psiko_pendidikan_pj,penilaian_awal_keperawatan_ranap.riwayat_psiko_edukasi_diberikan,penilaian_awal_keperawatan_ranap.riwayat_psiko_edukasi_diberikan_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_nyeri,penilaian_awal_keperawatan_ranap.penilaian_nyeri_penyebab,penilaian_awal_keperawatan_ranap.penilaian_nyeri_ket_penyebab,penilaian_awal_keperawatan_ranap.penilaian_nyeri_kualitas,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_nyeri_ket_kualitas,penilaian_awal_keperawatan_ranap.penilaian_nyeri_lokasi,penilaian_awal_keperawatan_ranap.penilaian_nyeri_menyebar,penilaian_awal_keperawatan_ranap.penilaian_nyeri_skala,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_nyeri_waktu,penilaian_awal_keperawatan_ranap.penilaian_nyeri_hilang,penilaian_awal_keperawatan_ranap.penilaian_nyeri_ket_hilang,penilaian_awal_keperawatan_ranap.penilaian_nyeri_diberitahukan_dokter,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_nyeri_jam_diberitahukan_dokter,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala1,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai1,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala2,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai2,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala3,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai3,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala4,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai4,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala5,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai5,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala6,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai6,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_totalnilai,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala1,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai1,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala2,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai2,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala3,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai3,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala4,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai4,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala5,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai5,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala6,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai6,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala7,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai7,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala8,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai8,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala9,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai9,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala10,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai10,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala11,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai11,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_totalnilai,penilaian_awal_keperawatan_ranap.skrining_gizi1,penilaian_awal_keperawatan_ranap.nilai_gizi1,penilaian_awal_keperawatan_ranap.skrining_gizi2,"+
-                "penilaian_awal_keperawatan_ranap.nilai_gizi2,penilaian_awal_keperawatan_ranap.nilai_total_gizi,penilaian_awal_keperawatan_ranap.skrining_gizi_diagnosa_khusus,penilaian_awal_keperawatan_ranap.skrining_gizi_ket_diagnosa_khusus,"+
-                "penilaian_awal_keperawatan_ranap.skrining_gizi_diketahui_dietisen,penilaian_awal_keperawatan_ranap.skrining_gizi_jam_diketahui_dietisen,penilaian_awal_keperawatan_ranap.rencana,penilaian_awal_keperawatan_ranap.nip1,"+
-                "penilaian_awal_keperawatan_ranap.nip2,penilaian_awal_keperawatan_ranap.kd_dokter,pasien.tgl_lahir,pasien.jk,pengkaji1.nama as pengkaji1,pengkaji2.nama as pengkaji2,dokter.nm_dokter,"+
-                "reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.agama,pasien.pekerjaan,pasien.pnd,penjab.png_jawab,bahasa_pasien.nama_bahasa "+
+            // --- Cetak RM19 versi baru: 4 halaman F4 mengikuti formulir fisik ---
+            // Laporan lama (rptCetakPenilaianAwalKeperawatanRanap[2].jasper) berbentuk
+            // NARASI dan hanya memuat field lama, jadi ratusan field RM19 baru tidak
+            // pernah muncul di cetakan. Diganti 4 jrxml baru yg tata letaknya kotak-centang
+            // persis formulir fisik RM 19-1 s/d 19-4. File lama TIDAK dihapus.
+            String sqlRM19 =
+                "select penilaian_awal_keperawatan_ranap.*,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.tgl_lahir,pasien.jk,"+
+                "pengkaji1.nama as pengkaji1,pengkaji2.nama as pengkaji2 "+
                 "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                 "inner join penilaian_awal_keperawatan_ranap on reg_periksa.no_rawat=penilaian_awal_keperawatan_ranap.no_rawat "+
-                "inner join petugas as pengkaji1 on penilaian_awal_keperawatan_ranap.nip1=pengkaji1.nip "+
-                "inner join petugas as pengkaji2 on penilaian_awal_keperawatan_ranap.nip2=pengkaji2.nip "+
-                "inner join dokter on penilaian_awal_keperawatan_ranap.kd_dokter=dokter.kd_dokter "+
-                "inner join bahasa_pasien on bahasa_pasien.id=pasien.bahasa_pasien "+
-                "inner join penjab on penjab.kd_pj=reg_periksa.kd_pj where reg_periksa.no_rawat='"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"'",param);
-            
-            Valid.MyReportqry("rptCetakPenilaianAwalKeperawatanRanap2.jasper","report","::[ Laporan Pengkajian Awal Keperawatan Rawat Inap ]::",
-                "select penilaian_awal_keperawatan_ranap.no_rawat,penilaian_awal_keperawatan_ranap.tanggal,penilaian_awal_keperawatan_ranap.informasi,penilaian_awal_keperawatan_ranap.ket_informasi,penilaian_awal_keperawatan_ranap.tiba_diruang_rawat,"+
-                "penilaian_awal_keperawatan_ranap.kasus_trauma,penilaian_awal_keperawatan_ranap.cara_masuk,penilaian_awal_keperawatan_ranap.rps,penilaian_awal_keperawatan_ranap.rpd,penilaian_awal_keperawatan_ranap.rpk,penilaian_awal_keperawatan_ranap.rpo,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_pembedahan,penilaian_awal_keperawatan_ranap.riwayat_dirawat_dirs,penilaian_awal_keperawatan_ranap.alat_bantu_dipakai,penilaian_awal_keperawatan_ranap.riwayat_kehamilan,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_kehamilan_perkiraan,penilaian_awal_keperawatan_ranap.riwayat_tranfusi,penilaian_awal_keperawatan_ranap.riwayat_alergi,penilaian_awal_keperawatan_ranap.riwayat_merokok,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_merokok_jumlah,penilaian_awal_keperawatan_ranap.riwayat_alkohol,penilaian_awal_keperawatan_ranap.riwayat_alkohol_jumlah,penilaian_awal_keperawatan_ranap.riwayat_narkoba,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_olahraga,penilaian_awal_keperawatan_ranap.pemeriksaan_mental,penilaian_awal_keperawatan_ranap.pemeriksaan_keadaan_umum,penilaian_awal_keperawatan_ranap.pemeriksaan_gcs,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_td,penilaian_awal_keperawatan_ranap.pemeriksaan_nadi,penilaian_awal_keperawatan_ranap.pemeriksaan_rr,penilaian_awal_keperawatan_ranap.pemeriksaan_suhu,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_spo2,penilaian_awal_keperawatan_ranap.pemeriksaan_bb,penilaian_awal_keperawatan_ranap.pemeriksaan_tb,penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_kepala,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_kepala_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_wajah,penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_wajah_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_leher,penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_kejang,penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_kejang_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_susunan_sensorik,penilaian_awal_keperawatan_ranap.pemeriksaan_kardiovaskuler_denyut_nadi,penilaian_awal_keperawatan_ranap.pemeriksaan_kardiovaskuler_sirkulasi,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_kardiovaskuler_sirkulasi_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_kardiovaskuler_pulsasi,penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_pola_nafas,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_retraksi,penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_suara_nafas,penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_volume_pernafasan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_jenis_pernafasan,penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_jenis_pernafasan_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_irama_nafas,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_respirasi_batuk,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_mulut,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_mulut_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_gigi,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_gigi_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_lidah,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_lidah_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_tenggorokan,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_tenggorokan_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_abdomen,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_abdomen_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_peistatik_usus,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_gastrointestinal_anus,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_pengelihatan,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_pengelihatan_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_alat_bantu_penglihatan,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_pendengaran,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_bicara,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_bicara_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_sensorik,penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_motorik,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_neurologi_kekuatan_otot,penilaian_awal_keperawatan_ranap.pemeriksaan_integument_warnakulit,penilaian_awal_keperawatan_ranap.pemeriksaan_integument_turgor,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_integument_kulit,penilaian_awal_keperawatan_ranap.pemeriksaan_integument_dekubitas,penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_pergerakan_sendi,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_kekauatan_otot,penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_nyeri_sendi,penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_nyeri_sendi_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_oedema,penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_oedema_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_fraktur,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_muskuloskletal_fraktur_keterangan,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bab_frekuensi_jumlah,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bab_frekuensi_durasi,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bab_konsistensi,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bab_warna,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bak_frekuensi_jumlah,"+
-                "penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bak_frekuensi_durasi,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bak_warna,penilaian_awal_keperawatan_ranap.pemeriksaan_eliminasi_bak_lainlain,"+
-                "penilaian_awal_keperawatan_ranap.pola_aktifitas_makanminum,penilaian_awal_keperawatan_ranap.pola_aktifitas_mandi,penilaian_awal_keperawatan_ranap.pola_aktifitas_eliminasi,penilaian_awal_keperawatan_ranap.pola_aktifitas_berpakaian,"+
-                "penilaian_awal_keperawatan_ranap.pola_aktifitas_berpindah,penilaian_awal_keperawatan_ranap.pola_nutrisi_frekuesi_makan,penilaian_awal_keperawatan_ranap.pola_nutrisi_jenis_makanan,penilaian_awal_keperawatan_ranap.pola_nutrisi_porsi_makan,"+
-                "penilaian_awal_keperawatan_ranap.pola_tidur_lama_tidur,penilaian_awal_keperawatan_ranap.pola_tidur_gangguan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_kemampuan_sehari,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_aktifitas,"+
-                "penilaian_awal_keperawatan_ranap.pengkajian_fungsi_berjalan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_berjalan_keterangan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_ambulasi,"+
-                "penilaian_awal_keperawatan_ranap.pengkajian_fungsi_ekstrimitas_atas,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_ekstrimitas_atas_keterangan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_ekstrimitas_bawah,"+
-                "penilaian_awal_keperawatan_ranap.pengkajian_fungsi_ekstrimitas_bawah_keterangan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_menggenggam,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_menggenggam_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.pengkajian_fungsi_koordinasi,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_koordinasi_keterangan,penilaian_awal_keperawatan_ranap.pengkajian_fungsi_kesimpulan,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_psiko_kondisi_psiko,penilaian_awal_keperawatan_ranap.riwayat_psiko_gangguan_jiwa,penilaian_awal_keperawatan_ranap.riwayat_psiko_perilaku,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_psiko_perilaku_keterangan,penilaian_awal_keperawatan_ranap.riwayat_psiko_hubungan_keluarga,penilaian_awal_keperawatan_ranap.riwayat_psiko_tinggal,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_psiko_tinggal_keterangan,penilaian_awal_keperawatan_ranap.riwayat_psiko_nilai_kepercayaan,penilaian_awal_keperawatan_ranap.riwayat_psiko_nilai_kepercayaan_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.riwayat_psiko_pendidikan_pj,penilaian_awal_keperawatan_ranap.riwayat_psiko_edukasi_diberikan,penilaian_awal_keperawatan_ranap.riwayat_psiko_edukasi_diberikan_keterangan,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_nyeri,penilaian_awal_keperawatan_ranap.penilaian_nyeri_penyebab,penilaian_awal_keperawatan_ranap.penilaian_nyeri_ket_penyebab,penilaian_awal_keperawatan_ranap.penilaian_nyeri_kualitas,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_nyeri_ket_kualitas,penilaian_awal_keperawatan_ranap.penilaian_nyeri_lokasi,penilaian_awal_keperawatan_ranap.penilaian_nyeri_menyebar,penilaian_awal_keperawatan_ranap.penilaian_nyeri_skala,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_nyeri_waktu,penilaian_awal_keperawatan_ranap.penilaian_nyeri_hilang,penilaian_awal_keperawatan_ranap.penilaian_nyeri_ket_hilang,penilaian_awal_keperawatan_ranap.penilaian_nyeri_diberitahukan_dokter,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_nyeri_jam_diberitahukan_dokter,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala1,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai1,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala2,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai2,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala3,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai3,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala4,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai4,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala5,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai5,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_skala6,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_nilai6,penilaian_awal_keperawatan_ranap.penilaian_jatuhmorse_totalnilai,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala1,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai1,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala2,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai2,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala3,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai3,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala4,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai4,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala5,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai5,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala6,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai6,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala7,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai7,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala8,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai8,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala9,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai9,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala10,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai10,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_skala11,penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_nilai11,"+
-                "penilaian_awal_keperawatan_ranap.penilaian_jatuhsydney_totalnilai,penilaian_awal_keperawatan_ranap.skrining_gizi1,penilaian_awal_keperawatan_ranap.nilai_gizi1,penilaian_awal_keperawatan_ranap.skrining_gizi2,"+
-                "penilaian_awal_keperawatan_ranap.nilai_gizi2,penilaian_awal_keperawatan_ranap.nilai_total_gizi,penilaian_awal_keperawatan_ranap.skrining_gizi_diagnosa_khusus,penilaian_awal_keperawatan_ranap.skrining_gizi_ket_diagnosa_khusus,"+
-                "penilaian_awal_keperawatan_ranap.skrining_gizi_diketahui_dietisen,penilaian_awal_keperawatan_ranap.skrining_gizi_jam_diketahui_dietisen,penilaian_awal_keperawatan_ranap.rencana,penilaian_awal_keperawatan_ranap.nip1,"+
-                "penilaian_awal_keperawatan_ranap.nip2,penilaian_awal_keperawatan_ranap.kd_dokter,pasien.tgl_lahir,pasien.jk,pengkaji1.nama as pengkaji1,pengkaji2.nama as pengkaji2,dokter.nm_dokter,"+
-                "reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.agama,pasien.pekerjaan,pasien.pnd,penjab.png_jawab,bahasa_pasien.nama_bahasa "+
-                "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                "inner join penilaian_awal_keperawatan_ranap on reg_periksa.no_rawat=penilaian_awal_keperawatan_ranap.no_rawat "+
-                "inner join petugas as pengkaji1 on penilaian_awal_keperawatan_ranap.nip1=pengkaji1.nip "+
-                "inner join petugas as pengkaji2 on penilaian_awal_keperawatan_ranap.nip2=pengkaji2.nip "+
-                "inner join dokter on penilaian_awal_keperawatan_ranap.kd_dokter=dokter.kd_dokter "+
-                "inner join bahasa_pasien on bahasa_pasien.id=pasien.bahasa_pasien "+
-                "inner join penjab on penjab.kd_pj=reg_periksa.kd_pj where reg_periksa.no_rawat='"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"'",param);
+                "left join petugas as pengkaji1 on penilaian_awal_keperawatan_ranap.nip1=pengkaji1.nip "+
+                "left join petugas as pengkaji2 on penilaian_awal_keperawatan_ranap.nip2=pengkaji2.nip "+
+                "where reg_periksa.no_rawat='"+TNoRw.getText()+"'";
+            // Pilihan keluaran: pratinjau/cetak lewat viewer Jasper, atau langsung
+            // disimpan sbg PDF di folder report/ (Valid.MyReportqrypdf sudah tersedia).
+            // CATATAN: keempat halaman RM19 ada di SATU file rptRM19.jasper (4 <band>
+            // di dalam <detail>, tiap band setinggi persis 1 halaman F4). Sebelumnya
+            // dipakai 4 file .jasper terpisah -> tiap halaman membuka viewer sendiri &
+            // PDF-nya jadi 4 berkas 1-lembar. Dgn 1 file, viewer bisa di-scroll antar
+            // halaman dan PDF jadi 1 berkas 4 halaman.
+            String pilihanRM19 = (String) JOptionPane.showInputDialog(
+                    null, "Silahkan pilih keluaran cetakan..!", "Cetak Pengkajian Awal Keperawatan Rawat Inap",
+                    JOptionPane.QUESTION_MESSAGE, null,
+                    new Object[]{"Cetak (Pratinjau)", "Simpan PDF"}, "Cetak (Pratinjau)");
+            if(pilihanRM19!=null){
+                String judulRM19 = "::[ Pengkajian Awal Keperawatan Rawat Inap (RM 19) ]::";
+                if("Simpan PDF".equals(pilihanRM19)){
+                    Valid.MyReportqrypdf("rptRM19.jasper","report",judulRM19,sqlRM19,param);
+                }else{
+                    Valid.MyReportqry("rptRM19.jasper","report",judulRM19,sqlRM19,param);
+                }
+            }
         }else{
             JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data terlebih dahulu..!!!!");
         }  
@@ -8230,6 +9056,1945 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
     private widget.Table tbRencanaKeperawatan;
     // End of variables declaration//GEN-END:variables
 
+    private widget.CekBox tambahCekRiwayat(java.awt.Container induk, String teks, int x, int y, int w){
+        widget.CekBox c = new widget.CekBox();
+        c.setText(teks);
+        induk.add(c);
+        c.setBounds(x, y, w, 23);
+        return c;
+    }
+    private widget.TextBox tambahTeksRiwayat(java.awt.Container induk, int x, int y, int w){
+        widget.TextBox t = new widget.TextBox();
+        induk.add(t);
+        t.setBounds(x, y, w, 23);
+        return t;
+    }
+    private widget.Label tambahLabelRiwayat(java.awt.Container induk, String teks, int x, int y, int w){
+        widget.Label l = new widget.Label();
+        l.setText(teks);
+        induk.add(l);
+        l.setBounds(x, y, w, 23);
+        return l;
+    }
+
+    /**
+     * Kanvas skala nyeri (poin 41) - gambar wajah skala 0-10 (/picture/nyeri.png)
+     * dipakai sbg LATAR, perawat menandai/mencoret di atasnya pakai mouse persis
+     * spt di formulir kertas. Coretan disimpan di layer TRANSPARAN terpisah
+     * (bukan menimpa gambar latar), supaya:
+     *   - yg diserialisasi ke DB cuma coretannya saja (PNG transparan, kecil -
+     *     ratusan byte s/d bbrp KB), bukan gambar latar yg selalu sama & sudah
+     *     ada sbg resource aplikasi;
+     *   - latar bisa diganti/di-resize kapan saja tanpa merusak data lama.
+     * Disimpan sbg base64 (keputusan user) di kolom TEXT - dipilih drpd koordinat
+     * garis krn lebih gampang kalau nanti mau dimasukkan ke cetakan Jasper sbg
+     * gambar. Nilai kosong = "" (bukan base64 gambar blank), dicek via
+     * adaCoretan() spy tidak menyimpan ribuan byte percuma utk pasien yg memang
+     * tidak ditandai.
+     */
+    private class KanvasNyeri extends javax.swing.JPanel {
+        private java.awt.image.BufferedImage latar, coretan;
+        private java.awt.Point titikSebelumnya;
+
+        KanvasNyeri(int lebar, int tinggi){
+            setLayout(null);
+            setBackground(java.awt.Color.WHITE);
+            setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180,180,180)));
+            setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.CROSSHAIR_CURSOR));
+            setToolTipText("Tandai skala nyeri dgn cara mencoret pakai mouse (klik-tahan-geser)");
+            try{
+                latar = javax.imageio.ImageIO.read(getClass().getResource("/picture/nyeri.png"));
+            }catch(Exception e){
+                latar = null; // resource hilang - kanvas tetap bisa dicoret di atas latar putih
+            }
+            coretan = new java.awt.image.BufferedImage(lebar, tinggi, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            addMouseListener(new java.awt.event.MouseAdapter(){
+                @Override public void mousePressed(java.awt.event.MouseEvent e){
+                    titikSebelumnya = e.getPoint();
+                    gambarGaris(titikSebelumnya, e.getPoint()); // klik tunggal = titik/dot
+                }
+                @Override public void mouseReleased(java.awt.event.MouseEvent e){ titikSebelumnya = null; }
+            });
+            addMouseMotionListener(new java.awt.event.MouseMotionAdapter(){
+                @Override public void mouseDragged(java.awt.event.MouseEvent e){
+                    if(titikSebelumnya!=null){
+                        gambarGaris(titikSebelumnya, e.getPoint());
+                        titikSebelumnya = e.getPoint();
+                    }
+                }
+            });
+        }
+
+        private void gambarGaris(java.awt.Point dari, java.awt.Point ke){
+            java.awt.Graphics2D g = coretan.createGraphics();
+            g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setColor(java.awt.Color.RED);
+            g.setStroke(new java.awt.BasicStroke(2.5f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
+            g.drawLine(dari.x, dari.y, ke.x, ke.y);
+            g.dispose();
+            repaint();
+        }
+
+        @Override protected void paintComponent(java.awt.Graphics g){
+            super.paintComponent(g);
+            if(latar!=null){ g.drawImage(latar, 0, 0, getWidth(), getHeight(), this); }
+            g.drawImage(coretan, 0, 0, this);
+        }
+
+        void hapusCoretan(){
+            java.awt.Graphics2D g = coretan.createGraphics();
+            g.setComposite(java.awt.AlphaComposite.Clear);
+            g.fillRect(0, 0, coretan.getWidth(), coretan.getHeight());
+            g.dispose();
+            repaint();
+        }
+
+        /** true kalau ada minimal 1 piksel coretan (alpha != 0). */
+        private boolean adaCoretan(){
+            for(int y=0; y<coretan.getHeight(); y++){
+                for(int x=0; x<coretan.getWidth(); x++){
+                    if((coretan.getRGB(x,y) >>> 24) != 0){ return true; }
+                }
+            }
+            return false;
+        }
+
+        /** PNG layer coretan sbg base64; "" kalau memang belum dicoret sama sekali. */
+        String getCoretanBase64(){
+            try{
+                if(!adaCoretan()){ return ""; }
+                java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+                javax.imageio.ImageIO.write(coretan, "png", bos);
+                return java.util.Base64.getEncoder().encodeToString(bos.toByteArray());
+            }catch(Exception e){
+                System.out.println("Notif getCoretanBase64 : "+e);
+                return "";
+            }
+        }
+
+        void setCoretanBase64(String b64){
+            hapusCoretan();
+            if(b64==null || b64.trim().isEmpty()){ return; }
+            try{
+                byte[] data = java.util.Base64.getDecoder().decode(b64.trim());
+                java.awt.image.BufferedImage img = javax.imageio.ImageIO.read(new java.io.ByteArrayInputStream(data));
+                if(img!=null){
+                    java.awt.Graphics2D g = coretan.createGraphics();
+                    g.drawImage(img, 0, 0, coretan.getWidth(), coretan.getHeight(), null);
+                    g.dispose();
+                    repaint();
+                }
+            }catch(Exception e){
+                System.out.println("Notif setCoretanBase64 (data coretan lama rusak/format beda?) : "+e);
+            }
+        }
+    }
+
+    /**
+     * Penyesuaian `RMPenilaianAwalKeperawatanRanap` dgn formulir fisik RM 19
+     * "Pengkajian Awal Keperawatan Rawat Inap" - dikerjakan bertahap, method ini
+     * dipanggil sekali setelah initComponents() & menampung tiap tahap yg sudah
+     * dikerjakan (Tahap 1: Riwayat Alergi+Kesehatan; Tahap 2: Alasan Masuk RS).
+     * Field lama yg direpurpose disembunyikan (BUKAN dihapus, data lama tetap ada
+     * di DB, wiring simpan/ganti/getData kolom lama TIDAK disentuh spy roundtrip
+     * data lama tetap aman). Layout dipecah 2 kolom meniru pola tab "PACS" di
+     * RMTriaseIGD, supaya tidak menambah panjang scroll form.
+     */
+    private void initRiwayatRM19(){
+        // --- sembunyikan field lama (data lama TIDAK dihapus/diubah) ---
+        Alergi.setVisible(false); jLabel39.setVisible(false);
+        RPD.setVisible(false); scrollPane3.setVisible(false); jLabel32.setVisible(false);
+        RPK.setVisible(false); scrollPane2.setVisible(false); jLabel31.setVisible(false);
+        // jLabel64/jLabel65: label dekoratif GEN lama isinya cuma ":" tanpa field
+        // terkait apapun - dulu ketutup visual oleh jLabel31/jLabel30 (skrng
+        // disembunyikan/dipindah), jadi kelihatan mengambang kosong. Ditemukan
+        // user dari screenshot app sungguhan, dicek di GEN block bounds-nya PERSIS
+        // sama dgn posisi RPK(y=200)/RPS(y=150) lama - bukan komponen fungsional,
+        // aman disembunyikan total.
+        jLabel64.setVisible(false); jLabel65.setVisible(false);
+
+        // "I. RIWAYAT KESEHATAN" (judul jLabel94, y=130) - section GEN lama yg
+        // TERLEWAT dari hide di atas (beda dari Alergi/RPD/RPK yg sudah
+        // disembunyikan) - ditemukan user via screenshot app sungguhan, masih
+        // tampil lengkap di antara panel "3. Riwayat Kesehatan" (baru) & "II.
+        // PEMERIKSAAN FISIK". Kolom DB lama-nya TIDAK disentuh (additive-only,
+        // sama pola dgn Alergi/RPD/RPK) - wiring simpan()/ganti()/getData()
+        // sengaja tidak diubah, cuma disembunyikan dari layar.
+        jLabel94.setVisible(false);
+        jLabel9.setVisible(false); RPO.setVisible(false); scrollPane4.setVisible(false); // Riwayat Penggunaan Obat
+        jLabel42.setVisible(false); RPembedahan.setVisible(false); // Riwayat Pembedahan
+        jLabel40.setVisible(false); RDirawatRS.setVisible(false); // Riwayat Dirawat Di RS
+        jLabel43.setVisible(false); AlatBantuDipakai.setVisible(false); // Alat Bantu Yang Dipakai
+        jLabel44.setVisible(false); SedangMenyusui.setVisible(false); KetSedangMenyusui.setVisible(false); // Hamil/Sedang Menyusui
+        jLabel45.setVisible(false); RTranfusi.setVisible(false); // Riwayat Transfusi Darah
+        jLabel46.setVisible(false); // "Kebiasaan :" (judul)
+        jLabel125.setVisible(false); KebiasaanMerokok.setVisible(false); KebiasaanJumlahRokok.setVisible(false); jLabel124.setVisible(false); // Merokok
+        jLabel127.setVisible(false); KebiasaanAlkohol.setVisible(false); KebiasaanJumlahAlkohol.setVisible(false); jLabel126.setVisible(false); // Alkohol
+        jLabel128.setVisible(false); KebiasaanNarkoba.setVisible(false); // Obat Tidur
+        jLabel129.setVisible(false); OlahRaga.setVisible(false); // Olah Raga
+
+        // 5 label dekoratif GEN lama LAGI (jLabel59-63, isinya cuma ":" tanpa field
+        // terkait apapun) - pola PERSIS sama dgn jLabel64/jLabel65 (poin sebelumnya):
+        // posisinya (y=250/280/310/410/440, x=0) PERSIS sama dgn baris2 "I. RIWAYAT
+        // KESEHATAN"/"a. Tanda-tanda vital" lama - ketauan dari verifikasi overlap
+        // terprogram (bukan screenshot user kali ini) krn skrng bertabrakan langsung
+        // dgn "b. Fungsi Pernafasan" (kolom kiri "4. Pemeriksaan Fisik") setelah
+        // section itu ikut naik. Aman disembunyikan total (bukan komponen fungsional).
+        jLabel59.setVisible(false); jLabel60.setVisible(false); jLabel61.setVisible(false);
+        jLabel62.setVisible(false); jLabel63.setVisible(false);
+
+        // --- Poin 41: blok GEN lama "VI. PENGKAJIAN TINGKAT NYERI" (y asli 1550-1733)
+        // disembunyikan TOTAL (termasuk judul+separator-nya), digantikan section baru
+        // "6. PENAPISAN / SKRINING NYERI" yg dibangun di alur 1-kolom di bawah (kanvas
+        // skala nyeri yg bisa dicoret + P/Q/R/S/T + Keluhan + Nyeri hilang bila).
+        // Judul GEN ikut disembunyikan (BUKAN direlabel spt jLabel95 dulu) krn posisi
+        // tier-nya (y asli 1550) sekarang mendarat DI TENGAH konten baru - direlabel
+        // pun tetap salah tempat. Wiring simpan()/ganti()/getData() kolom lama
+        // (penilaian_nyeri* dst) SENGAJA TIDAK disentuh - data lama tetap aman.
+        jSeparator8.setVisible(false); jLabel203.setVisible(false); jSeparator9.setVisible(false);
+        PanelWall.setVisible(false); Nyeri.setVisible(false);
+        jLabel204.setVisible(false); Provokes.setVisible(false); KetProvokes.setVisible(false);
+        jLabel205.setVisible(false); Quality.setVisible(false); KetQuality.setVisible(false);
+        jLabel206.setVisible(false); jLabel207.setVisible(false); Lokasi.setVisible(false);
+        jLabel208.setVisible(false); Menyebar.setVisible(false);
+        jLabel209.setVisible(false); jLabel210.setVisible(false); SkalaNyeri.setVisible(false);
+        jLabel211.setVisible(false); Durasi.setVisible(false); jLabel212.setVisible(false);
+        jLabel289.setVisible(false); // label dekoratif ":" (pola sama jLabel59-65)
+        jLabel213.setVisible(false); NyeriHilang.setVisible(false); KetNyeri.setVisible(false);
+        jLabel214.setVisible(false); PadaDokter.setVisible(false); jLabel215.setVisible(false);
+        KetPadaDokter.setVisible(false);
+
+        // --- Poin 41: blok GEN lama "VII. PENGKAJIAN RESIKO JATUH" (Skala Morse 6 item
+        // + Skala Sydney 11 item, y asli 1740-2389) disembunyikan TOTAL sesuai permintaan
+        // user, digantikan "7. STATUS FUNGSIONAL" (Aktifitas total + Berjalan) sesuai foto
+        // RM19-3. Kolom DB penilaian_jatuhmorse_*/penilaian_jatuhsydney_* (+total-nya)
+        // TIDAK dihapus & wiring-nya TIDAK disentuh - data lama tetap utuh, dan kalau
+        // suatu saat form Barthel/asesmen risiko jatuh terpisah dibutuhkan, tinggal
+        // ditampilkan lagi. ---
+        jSeparator10.setVisible(false); jLabel216.setVisible(false);
+        jLabel57.setVisible(false); jLabel58.setVisible(false);
+        jLabel217.setVisible(false); jLabel218.setVisible(false); jLabel219.setVisible(false);
+        SkalaResiko1.setVisible(false); NilaiResiko1.setVisible(false);
+        jLabel220.setVisible(false); jLabel221.setVisible(false); jLabel222.setVisible(false);
+        SkalaResiko2.setVisible(false); NilaiResiko2.setVisible(false);
+        jLabel223.setVisible(false); jLabel224.setVisible(false); jLabel225.setVisible(false);
+        SkalaResiko3.setVisible(false); NilaiResiko3.setVisible(false);
+        jLabel226.setVisible(false); jLabel227.setVisible(false); jLabel228.setVisible(false);
+        SkalaResiko4.setVisible(false); NilaiResiko4.setVisible(false);
+        jLabel229.setVisible(false); jLabel230.setVisible(false); jLabel231.setVisible(false);
+        SkalaResiko5.setVisible(false); NilaiResiko5.setVisible(false);
+        jLabel232.setVisible(false); jLabel233.setVisible(false); jLabel234.setVisible(false);
+        SkalaResiko6.setVisible(false); NilaiResiko6.setVisible(false);
+        TingkatResiko.setVisible(false); jLabel235.setVisible(false); NilaiResikoTotal.setVisible(false);
+        jLabel236.setVisible(false); jLabel237.setVisible(false); jLabel238.setVisible(false);
+        SkalaSydney1.setVisible(false); NilaiSydney1.setVisible(false);
+        jLabel239.setVisible(false); jLabel240.setVisible(false); jLabel241.setVisible(false);
+        SkalaSydney2.setVisible(false); NilaiSydney2.setVisible(false);
+        jLabel242.setVisible(false); jLabel243.setVisible(false); jLabel244.setVisible(false);
+        SkalaSydney3.setVisible(false); NilaiSydney3.setVisible(false);
+        jLabel245.setVisible(false); jLabel246.setVisible(false); jLabel247.setVisible(false);
+        SkalaSydney4.setVisible(false); NilaiSydney4.setVisible(false);
+        jLabel248.setVisible(false); jLabel249.setVisible(false); jLabel250.setVisible(false);
+        SkalaSydney5.setVisible(false); NilaiSydney5.setVisible(false);
+        jLabel251.setVisible(false); jLabel252.setVisible(false); jLabel253.setVisible(false);
+        SkalaSydney6.setVisible(false); NilaiSydney6.setVisible(false);
+        jLabel254.setVisible(false); jLabel255.setVisible(false); jLabel256.setVisible(false);
+        jLabel257.setVisible(false); SkalaSydney7.setVisible(false); NilaiSydney7.setVisible(false);
+        jLabel258.setVisible(false); jLabel259.setVisible(false); jLabel260.setVisible(false);
+        SkalaSydney8.setVisible(false); NilaiSydney8.setVisible(false);
+        jLabel261.setVisible(false); jLabel262.setVisible(false); jLabel263.setVisible(false);
+        SkalaSydney9.setVisible(false); NilaiSydney9.setVisible(false);
+        jLabel264.setVisible(false); jLabel265.setVisible(false); jLabel266.setVisible(false);
+        SkalaSydney10.setVisible(false); NilaiSydney10.setVisible(false);
+        jLabel267.setVisible(false); jLabel268.setVisible(false); jLabel269.setVisible(false);
+        SkalaSydney11.setVisible(false); NilaiSydney11.setVisible(false);
+        TingkatSydney.setVisible(false); jLabel270.setVisible(false); NilaiSydneyTotal.setVisible(false);
+
+        // --- Poin 42: "Rencana Keperawatan" & "Rencana Keperawatan Lainnya" disembunyikan
+        // (permintaan user). Keduanya adalah 2 TAB di dalam `TabRencanaKeperawatan` -
+        // menyembunyikan TabPane-nya sekaligus menutup keduanya, berikut baris pencarian
+        // rencana di bawahnya (label13/TCari/BtnCari/BtnAll/BtnTambah Rencana).
+        // Tabel "Masalah Keperawatan" (Scroll6 + baris pencarian masalah) SENGAJA TETAP
+        // TAMPIL - user cuma menyebut 2 tab rencana, bukan masalah keperawatan.
+        // Wiring simpan()/ganti()/getData() kolom `rencana` & tabel detail rencana TIDAK
+        // disentuh - data lama tetap aman, tinggal ditampilkan lagi kalau dibutuhkan. ---
+        TabRencanaKeperawatan.setVisible(false);
+        label13.setVisible(false); TCariRencana.setVisible(false);
+        BtnCariRencana.setVisible(false); BtnAllRencana.setVisible(false); BtnTambahRencana.setVisible(false);
+        // Tabel Masalah Keperawatan dilebarkan mengisi ruang bekas TabRencanaKeperawatan
+        // (dulu x=10..410, sekarang 10..853) supaya tidak menyisakan separuh baris kosong -
+        // setSize saja, posisi Y tidak disentuh spy tidak mengganggu sistem tier di atas.
+        Scroll6.setSize(843, Scroll6.getHeight());
+
+        // --- geser semua komponen FormInput ke bawah bertingkat, berdasar posisi Y
+        // ASLI (dibaca sekali di awal, sblm komponen manapun digeser, dari GEN block
+        // yg tidak pernah berubah) - tiap baris {ambang,delta} bikin slot baru utk 1
+        // tahap; komponen kena SEMUA delta yg ambang-nya <= posisi Y asli komponen -
+        // TANPA menyentuh baris GEN manapun. Tambah baris baru di sini kalau tahap
+        // berikutnya butuh sisip baris/panel baru. ---
+        // --- Tinggi tiap sisipan didefinisikan sbg konstanta bernama (BUKAN angka
+        // ajaib berulang) - dipakai baik utk array pergeseran maupun formula titik
+        // sisip di bawah, spy kalau salah satu berubah, SEMUA turunannya otomatis
+        // ikut benar (akar penyebab bug tumpang tindih sebelumnya: base tahap
+        // dihitung manual & lupa diupdate saat delta1 berubah). ---
+        final int delta1 = 500; // Tahap 9: kolom kiri atas ditumpuk "1. Riwayat Alergi" + "3. Riwayat Kesehatan" (RPD/RPK, dinaikkan dari slot lama)
+        final int delta2 = -260; // Tahap 11: blok GEN lama "II. PEMERIKSAAN FISIK" (jLabel95, y asli 390, direlabel "4. PEMERIKSAAN FISIK/BIOLOGIS") + "a. Tanda-tanda vital" (KesadaranMental/TD y asli 410, Nadi/RR/Suhu/SpO2/BB/TB y asli 440) - widget GEN INI TIDAK PERNAH disembunyikan sejak awal (baru ketauan sesi ini), dulu delta1(500) kebetulan menempatkannya pas menempel di atas pemeriksaanFisikBase LAMA - skrng didorong naik lagi (delta1+delta2=240, bukan 500) supaya nempel PERSIS di bawah panel "3. Riwayat Kesehatan" (permintaan user "pemeriksaan fisik naik keatas"), TANPA override widget satu-satu (pola tier yg sudah ada dipakai sesuai desainnya)
+        final int delta3 = 839; // Tahap 3+10+11+37+38+39+41: baris "Tingkat Kesadaran/LLA/GCS E-M-V" + SELURUH alur 1-kolom sesuai foto RM19: "4. Pemeriksaan Fisik" (b.Pernafasan/c.Cardio/d.Gastrointestinal/e.Perkemihan/Status Reproduksi/f.Neurosensori/g.Ekstremitas/h.Kulit-Kelamin) + "5. Status Psiko-Sosial-Ekonomi dan Spiritual" (poin 39) + "6. Penapisan/Skrining Nyeri" & "7. Status Fungsional" (poin 41). Konten berakhir di 3437 abs. Nilai ini DIPILIH TEPAT (bukan asal besar) supaya GEN "VIII. SKRINING GIZI" (y asli 2390, tier <=1550, TIDAK disembunyikan) mendarat cuma 16px setelah konten berakhir - user 2x lapor screenshot ruang kosong & minta "rapatkan". JANGAN diperbesar tanpa hitung ulang margin via verify_full_overlap.py: tiap kali konten alur 1-kolom bertambah/berkurang, delta3 WAJIB dihitung ulang = (contentEnd + 16) - 2390 - delta1 - delta2 - delta4 - delta5.
+        final int delta4 = 0;   // (kosong) - "Status Reproduksi" sudah disisipkan DI DALAM alur 1-kolom "4. Pemeriksaan Fisik" di atas (delta3), bukan lagi tier terpisah setelahnya
+        final int delta5 = 0;   // (kosong) - poin 41: dulu 60 (sisa slot Tahap 5 "Status Pernikahan"+"Kerabat Terdekat" yg sudah lama pindah ke alur delta3, lalu sempat dibiarkan sbg buffer sblm GEN "VI. PENGKAJIAN TINGKAT NYERI"). Blok VI & VII sekarang disembunyikan TOTAL & digantikan section 6/7 di alur delta3, jadi buffer ini murni ruang kosong - dinolkan.
+        final int delta6 = 846; // Tahap 6+42: blok "9. Kebutuhan Edukasi"+"10. Perencanaan Pulang"+"11. Data Penunjang". Naik dari 830 krn poin 42 nambah 1 baris manual di Perencanaan Pulang (dpgBase ikut turun 260->288). Konten blok ini berakhir di keBase+830, jadi GEN jSeparator12 (y asli 2530) mendarat tepat 16px sesudahnya - sama pola margin yg dipakai delta3.
+        final int[][] tingkatanGeser = {
+            {130, delta1}, {390, delta2}, {470, delta3}, {1080, delta4}, {1550, delta5}, {2530, delta6},
+        };
+        for(java.awt.Component c : FormInput.getComponents()){
+            int yAsli = c.getY();
+            int totalDelta = 0;
+            for(int[] t : tingkatanGeser){ if(yAsli >= t[0]){ totalDelta += t[1]; } }
+            if(totalDelta > 0){ c.setLocation(c.getX(), yAsli + totalDelta); }
+        }
+        int totalDeltaSemua = delta1+delta2+delta3+delta4+delta5+delta6;
+        FormInput.setPreferredSize(new java.awt.Dimension(870, 2723 + totalDeltaSemua));
+
+        // --- Posisi absolut (setelah digeser) titik sisip tiap tahap - HARUS pakai
+        // ini (ambang asli + akumulasi delta tahap2 SEBELUMNYA, dari konstanta di
+        // atas), BUKAN angka ambang mentah, krn konten yg ditaruh di titik sisip jg
+        // ikut kena delta tahap2 sebelumnya yg sudah diterapkan ke komponen GEN di
+        // atasnya. (Bug ditemukan user dari screenshot app sungguhan: field baru
+        // Tahap 4/5/6 sempat numpuk dgn field GEN lama krn posisi mentah dipakai
+        // langsung tanpa akumulasi ini - skrng SEMUA turunan dihitung dari delta1-6
+        // di atas, jadi kalau salah satu delta berubah lagi di tahap depan, tinggal
+        // ubah konstantanya, formula di bawah otomatis ikut benar.)
+        final int topPanelY = 130;                                    // tepat setelah baris "Tiba Di Ruang Rawat/Cara Masuk" (y=100-123) yg TETAP di atas, tidak ikut digeser
+        final int riwayatKesehatanPanelY = topPanelY + 240 + 10;      // = 380, TEPAT DI BAWAH panel Riwayat Alergi (bukan lagi di slot tier lama)
+
+        // "II. PEMERIKSAAN FISIK" (jLabel95, y asli 390) direlabel "4. PEMERIKSAAN
+        // FISIK / BIOLOGIS" (penomoran foto RM19-1/2, sama pola dgn relabel jLabel30
+        // -> "b. Riwayat Kesehatan Sekarang"). Posisinya (bareng "a. Tanda-tanda
+        // vital" - lihat komentar delta2 di atas) SEKARANG diatur via delta2, BUKAN
+        // .setLocation() manual - permintaan user "pemeriksaan fisik naik keatas
+        // dibawah riwayat kesehatan".
+        jLabel95.setText("4. PEMERIKSAAN FISIK / BIOLOGIS");
+        final int pemeriksaanFisikTitleY = riwayatKesehatanPanelY + 240 + 10; // = 630, tepat di bawah panel "3. Riwayat Kesehatan" (jLabel95 mendarat persis di sini via delta2)
+        final int tahap3RowY = pemeriksaanFisikTitleY + 50 + 23 + 13; // = 716, tepat di bawah baris ke-2 "a. Tanda-tanda vital" (Nadi/RR/Suhu/SpO2/BB/TB, y asli 440 = 390+50, ikut mendarat di titleY+50 via delta2 yg sama)
+        final int pemeriksaanFisikBase = tahap3RowY + 23 + 10;        // tepat setelah baris Tingkat Kesadaran/LLA/GCS
+        // Konstanta anchor lama utk "Status Reproduksi" (tier delta4) sudah dihapus - sekarang
+        // Reproduksi disisipkan LANGSUNG di alur 1-kolom "4. Pemeriksaan Fisik" (lihat pfReproduksiBase
+        // di bawah, dihitung dari pfEBase, bukan dari ambang tier terpisah lagi). Konstanta
+        // "tahap5Base" (dulu utk Status Pernikahan+Kerabat Terdekat, tier delta5) jg sudah
+        // dihapus - kedua field itu sekarang disisipkan LANGSUNG di alur 1-kolom yg sama, di
+        // dalam "5. STATUS PSIKO-SOSIAL-EKONOMI DAN SPIRITUAL" (pfSosekBase, lihat di bawah).
+        // delta5=60 TETAP DIPERTAHANKAN apa adanya (dipakai skrng cuma sbg buffer kosong kecil
+        // sblm GEN "VI. PENGKAJIAN TINGKAT NYERI" - mengutak-atik delta5 beresiko tumpang
+        // tindih ulang dgn tahap6Base/delta6 di bawah yg sudah teruji, di luar cakupan sesi ini).
+        final int tahap6Base = 2530 + delta1 + delta2 + delta3 + delta4 + delta5;  // = 3310
+
+        // === Tahap 8: "1. Riwayat Alergi" dipindah ke PALING ATAS + Anamnesis
+        // digabung ke dalam kelompok "2. Alasan Masuk RS" (Nama Keluarga/Hubungan
+        // dari Tahap 2 skrng pindah ke sini jg) + Keluhan Utama (baru) + Riwayat
+        // Kesehatan Sekarang (reuse RPS, direlabel) - sesuai urutan formulir fisik
+        // yg sebenarnya (bukan asumsi awal). txtNamaKeluargaAnamnesis/
+        // txtHubunganAnamnesis dibangun DI DALAM panelAlasanMasuk di bawah (bukan
+        // langsung di FormInput lagi kaya Tahap 2 dulu).
+
+        // === Tahap 3: "4a. Tanda Vital (LLA) + Tingkat Kesadaran" ===
+        // KeadaanMentalUmum lama (Baik/Sedang/Buruk) disembunyikan - kolom DB-nya
+        // ENUM ketat (tidak bisa diisi nilai skala klinis baru), diganti combo baru
+        // TingkatKesadaran dgn skala klinis penuh sesuai formulir fisik. LLA (Lingkar
+        // Lengan Atas) field baru, blm ada sama sekali sebelumnya.
+        KeadaanMentalUmum.setVisible(false); jLabel130.setVisible(false);
+        tambahLabelRiwayat(FormInput, "Tingkat Kesadaran :", 44, tahap3RowY, 120);
+        TingkatKesadaran = new widget.ComboBox();
+        TingkatKesadaran.setModel(new javax.swing.DefaultComboBoxModel(new String[]{
+            "Compos Mentis","Apatis","Somnolen/Letargi","Delirium","Stupor","Semikomatosa","Coma"
+        }));
+        FormInput.add(TingkatKesadaran);
+        TingkatKesadaran.setBounds(166, tahap3RowY, 170, 23);
+        tambahLabelRiwayat(FormInput, "LLA :", 350, tahap3RowY, 40);
+        LLA = tambahTeksRiwayat(FormInput, 392, tahap3RowY, 50);
+        tambahLabelRiwayat(FormInput, "cm", 445, tahap3RowY, 30);
+
+        // GCS lama (1 TextBox bebas "E,V,M") disembunyikan, diganti 3 field angka
+        // terpisah E/M/V sesuai formulir fisik - masih di baris yg sama (ruang
+        // kosong di sisa lebar baris Tingkat Kesadaran/LLA, tidak perlu tier baru).
+        GCS.setVisible(false); jLabel28.setVisible(false);
+        tambahLabelRiwayat(FormInput, "GCS E :", 485, tahap3RowY, 55);
+        GCSE = tambahTeksRiwayat(FormInput, 540, tahap3RowY, 35);
+        tambahLabelRiwayat(FormInput, "M :", 580, tahap3RowY, 25);
+        GCSM = tambahTeksRiwayat(FormInput, 605, tahap3RowY, 35);
+        tambahLabelRiwayat(FormInput, "V :", 645, tahap3RowY, 25);
+        GCSV = tambahTeksRiwayat(FormInput, 670, tahap3RowY, 35);
+
+        // === Tahap 10: restrukturisasi "4. PEMERIKSAAN FISIK" sesuai foto formulir
+        // fisik RM19 (2 foto dikirim user) - field lama yg TIDAK ADA di foto
+        // disembunyikan (data lama TETAP di DB, wiring lama TIDAK disentuh), diganti
+        // checklist baru sesuai foto persis. Muskuloskletal (Oedema/Pergerakan
+        // Sendi/Kekuatan Otot/Nyeri Sendi, KECUALI Fraktur) & Eliminasi (BAB/BAK)
+        // TETAP DIPERTAHANKAN krn di luar cakupan foto yg dikirim (bukan diminta
+        // dihapus). Layout 2 kolom (kiri: Pernafasan/Cardio/GI, kanan: Perkemihan/
+        // Neurosensori/Ekstremitas/Kulit) sesuai pola yg sudah ada.
+        jLabel27.setVisible(false); jLabel131.setVisible(false); SistemSarafKepala.setVisible(false); KetSistemSarafKepala.setVisible(false);
+        jLabel132.setVisible(false); SistemSarafWajah.setVisible(false); KetSistemSarafWajah.setVisible(false);
+        jLabel133.setVisible(false); SistemSarafLeher.setVisible(false);
+        jLabel135.setVisible(false); SistemSarafKejang.setVisible(false); KetSistemSarafKejang.setVisible(false);
+        jLabel134.setVisible(false); SistemSarafSensorik.setVisible(false);
+        jLabel33.setVisible(false); jLabel136.setVisible(false); KardiovaskularPulsasi.setVisible(false);
+        jLabel137.setVisible(false); KardiovaskularSirkulasi.setVisible(false); KetKardiovaskularSirkulasi.setVisible(false);
+        jLabel138.setVisible(false); KardiovaskularDenyutNadi.setVisible(false);
+        jLabel35.setVisible(false); jLabel139.setVisible(false); RespirasiRetraksi.setVisible(false);
+        jLabel140.setVisible(false); RespirasiPolaNafas.setVisible(false); jLabel141.setVisible(false); RespirasiSuaraNafas.setVisible(false);
+        jLabel145.setVisible(false); RespirasiBatuk.setVisible(false); jLabel143.setVisible(false); RespirasiVolume.setVisible(false);
+        jLabel144.setVisible(false); RespirasiJenisPernafasan.setVisible(false); KetRespirasiJenisPernafasan.setVisible(false);
+        jLabel142.setVisible(false); RespirasiIrama.setVisible(false);
+        jLabel49.setVisible(false); jLabel146.setVisible(false); GastrointestinalMulut.setVisible(false); KetGastrointestinalMulut.setVisible(false);
+        jLabel150.setVisible(false); GastrointestinalTenggorakan.setVisible(false); KetGastrointestinalTenggorakan.setVisible(false);
+        jLabel147.setVisible(false); GastrointestinalLidah.setVisible(false); KetGastrointestinalLidah.setVisible(false);
+        jLabel151.setVisible(false); GastrointestinalAbdomen.setVisible(false); KetGastrointestinalAbdomen.setVisible(false);
+        jLabel148.setVisible(false); GastrointestinalGigi.setVisible(false); KetGastrointestinalGigi.setVisible(false);
+        jLabel152.setVisible(false); GastrointestinalUsus.setVisible(false); jLabel149.setVisible(false); GastrointestinalAnus.setVisible(false);
+        jLabel50.setVisible(false); jLabel153.setVisible(false); NeurologiSensorik.setVisible(false);
+        jLabel156.setVisible(false); NeurologiPenglihatan.setVisible(false); KetNeurologiPenglihatan.setVisible(false);
+        jLabel157.setVisible(false); NeurologiAlatBantuPenglihatan.setVisible(false);
+        jLabel154.setVisible(false); NeurologiMotorik.setVisible(false); jLabel158.setVisible(false); NeurologiPendengaran.setVisible(false);
+        jLabel159.setVisible(false); NeurologiBicara.setVisible(false); KetNeurologiBicara.setVisible(false);
+        jLabel155.setVisible(false); NeurologiOtot.setVisible(false);
+        jLabel51.setVisible(false); jLabel160.setVisible(false); IntegumentKulit.setVisible(false);
+        jLabel161.setVisible(false); IntegumentWarnaKulit.setVisible(false); jLabel162.setVisible(false); IntegumentTurgor.setVisible(false);
+        jLabel163.setVisible(false); IntegumentDecubitus.setVisible(false);
+        jLabel165.setVisible(false); MuskuloskletalFraktur.setVisible(false); KetMuskuloskletalFraktur.setVisible(false);
+
+        // Sisa "Muskuloskletal" s/d "IV. PENGKAJIAN FUNGSI" (GEN lama, y asli 920-1350) -
+        // sebelumnya SENGAJA DIPERTAHANKAN (poin 33, "di luar cakupan foto" saat itu), TAPI
+        // user sekarang eksplisit minta "muskuloskletal sampai pengkajian fungsi disembunyikan
+        // saja" - keputusan direvisi, semuanya disembunyikan (data lama TETAP ada di DB).
+        jLabel52.setVisible(false); // "Muskuloskletal :"
+        jLabel164.setVisible(false); MuskuloskletalOedema.setVisible(false); KetMuskuloskletalOedema.setVisible(false);
+        jLabel167.setVisible(false); MuskuloskletalPegerakanSendi.setVisible(false);
+        jLabel168.setVisible(false); MuskuloskletalKekuatanOtot.setVisible(false);
+        jLabel166.setVisible(false); MuskuloskletalNyeriSendi.setVisible(false); KetMuskuloskletalNyeriSendi.setVisible(false);
+        jLabel53.setVisible(false); // "Eliminasi :"
+        jLabel115.setVisible(false); BAB.setVisible(false); jLabel113.setVisible(false); XBAB.setVisible(false); jLabel114.setVisible(false); KBAB.setVisible(false); jLabel116.setVisible(false); WBAB.setVisible(false);
+        jLabel117.setVisible(false); BAK.setVisible(false); jLabel118.setVisible(false); XBAK.setVisible(false); jLabel119.setVisible(false); WBAK.setVisible(false); jLabel120.setVisible(false); LBAK.setVisible(false);
+        jSeparator5.setVisible(false); jLabel169.setVisible(false); // "III. POLA KEHIDUPAN SEHARI-HARI"
+        jLabel55.setVisible(false); // "a. Pola Aktifitas :"
+        jLabel170.setVisible(false); PolaAktifitasMandi.setVisible(false); jLabel171.setVisible(false); PolaAktifitasMakan.setVisible(false); jLabel172.setVisible(false); PolaAktifitasBerpakaian.setVisible(false);
+        jLabel173.setVisible(false); PolaAktifitasEliminasi.setVisible(false); jLabel174.setVisible(false); PolaAktifitasBerpindah.setVisible(false);
+        jLabel54.setVisible(false); jLabel121.setVisible(false); PolaNutrisiPorsi.setVisible(false); jLabel122.setVisible(false); jLabel123.setVisible(false); PolaNutrisiFrekuensi.setVisible(false); jLabel175.setVisible(false); jLabel177.setVisible(false); PolaNutrisiJenis.setVisible(false);
+        jLabel56.setVisible(false); jLabel176.setVisible(false); PolaTidurLama.setVisible(false); jLabel178.setVisible(false); PolaTidurGangguan.setVisible(false);
+        jSeparator4.setVisible(false); jLabel180.setVisible(false); // "IV. PENGKAJIAN FUNGSI"
+        jLabel179.setVisible(false); jLabel283.setVisible(false); AktifitasSehari2.setVisible(false);
+        jLabel181.setVisible(false); Berjalan.setVisible(false); KeteranganBerjalan.setVisible(false);
+        jLabel182.setVisible(false); jLabel282.setVisible(false); Aktifitas.setVisible(false);
+        jLabel183.setVisible(false); AlatAmbulasi.setVisible(false);
+        jLabel184.setVisible(false); EkstrimitasAtas.setVisible(false); KeteranganEkstrimitasAtas.setVisible(false);
+        jLabel185.setVisible(false); jLabel281.setVisible(false); EkstrimitasBawah.setVisible(false); KeteranganEkstrimitasBawah.setVisible(false);
+        jLabel186.setVisible(false); KemampuanMenggenggam.setVisible(false); KeteranganKemampuanMenggenggam.setVisible(false);
+        jLabel187.setVisible(false); jLabel280.setVisible(false); KemampuanKoordinasi.setVisible(false); KeteranganKemampuanKoordinasi.setVisible(false);
+        jLabel188.setVisible(false); KesimpulanGangguanFungsi.setVisible(false);
+
+        // "V. RIWAYAT PSIKOLOGIS - SOSIAL - EKONOMI - BUDAYA - SPIRITUAL" (GEN lama, y asli
+        // 1380-1520) - direstrukturisasi total jadi "5. STATUS PSIKO-SOSIAL-EKONOMI DAN
+        // SPIRITUAL" sesuai foto RM19 (lihat blok baru di bawah) - SEMUA field lama
+        // disembunyikan (data lama TETAP ada di DB, kolom lama TIDAK disentuh):
+        // StatusPernikahan(poin29 Tahap5)/NamaKerabatTerdekat/HubunganKerabatTerdekat/
+        // TelpKerabatTerdekat DIKECUALIKAN dari hide ini krn bukan GEN lama, dipakai ULANG
+        // (direposisi) di blok baru, bukan diganti.
+        jSeparator6.setVisible(false); jLabel189.setVisible(false); // "V. RIWAYAT PSIKOLOGIS..."
+        jLabel284.setVisible(false); jLabel190.setVisible(false); KondisiPsikologis.setVisible(false); // a. Kondisi Psikologis
+        jLabel191.setVisible(false); AdakahPerilaku.setVisible(false); KeteranganAdakahPerilaku.setVisible(false); // b. Adakah Perilaku
+        jLabel285.setVisible(false); jLabel192.setVisible(false); GangguanJiwa.setVisible(false); // c. Gangguan Jiwa
+        jLabel193.setVisible(false); HubunganAnggotaKeluarga.setVisible(false); // d. Hubungan Pasien dgn Anggota Keluarga
+        jLabel194.setVisible(false); Agama.setVisible(false); // e. Agama
+        jLabel286.setVisible(false); jLabel195.setVisible(false); TinggalDengan.setVisible(false); KeteranganTinggalDengan.setVisible(false); // f. Tinggal Dengan
+        jLabel196.setVisible(false); PekerjaanPasien.setVisible(false); // g. Pekerjaan
+        jLabel197.setVisible(false); CaraBayar.setVisible(false); // h. Pembayaran
+        jLabel287.setVisible(false); jLabel198.setVisible(false); NilaiKepercayaan.setVisible(false); KeteranganNilaiKepercayaan.setVisible(false); // i. Nilai Kepercayaan/Budaya
+        jLabel199.setVisible(false); Bahasa.setVisible(false); // j. Bahasa Sehari-hari
+        jLabel288.setVisible(false); jLabel200.setVisible(false); PendidikanPasien.setVisible(false); // k. Pendidikan Pasien
+        jLabel201.setVisible(false); PendidikanPJ.setVisible(false); // l. Pendidikan P.J.
+        jLabel202.setVisible(false); EdukasiPsikolgis.setVisible(false); KeteranganEdukasiPsikologis.setVisible(false); // m. Edukasi Diberikan Kepada
+
+        // === KOLOM KIRI (x=10): b. Fungsi Pernafasan, c. Status Cardiovaskuler, d. Fungsi Gastrointestinal ===
+        final int pfL = 10;
+        widget.Label lblPernafasan = tambahLabelRiwayat(FormInput, "b. Fungsi Pernafasan :", pfL, pemeriksaanFisikBase, 250);
+        lblPernafasan.setFont(lblPernafasan.getFont().deriveFont(java.awt.Font.BOLD));
+        tambahLabelRiwayat(FormInput, "1) Airway :", pfL, pemeriksaanFisikBase+26, 70);
+        chkAirwayNormal = tambahCekRiwayat(FormInput, "Normal", pfL+85, pemeriksaanFisikBase+26, 70);
+        chkAirwayOropharingeal = tambahCekRiwayat(FormInput, "Oropharingeal", pfL+160, pemeriksaanFisikBase+26, 105);
+        chkAirwaySekret = tambahCekRiwayat(FormInput, "Sekret", pfL+270, pemeriksaanFisikBase+26, 65);
+        chkAirwayTumor = tambahCekRiwayat(FormInput, "Tumor", pfL+340, pemeriksaanFisikBase+26, 65);
+        chkAirwayTrajeostomy = tambahCekRiwayat(FormInput, "Trajeostomy", pfL, pemeriksaanFisikBase+52, 100);
+        chkAirwayRTT = tambahCekRiwayat(FormInput, "RTT, ukuran :", pfL+105, pemeriksaanFisikBase+52, 95);
+        txtAirwayRTTUkuran = tambahTeksRiwayat(FormInput, pfL+205, pemeriksaanFisikBase+52, 110);
+
+        // 2) Breathing - "Ngorok" DIPINDAH KE SINI dari "3) Bunyi Paru" (semula
+        // salah kelompok, dikoreksi user) menggantikan slot "Orthopnea" yg SEKARANG
+        // dipindah ke "3) Bunyi Paru" (kebalikannya). Baris baru "Lain-lain" +
+        // teks bebas ditambahkan (permintaan user "seperti pada Airway", pola sama
+        // checkbox+textbox spt "RTT, ukuran" - field+kolom DB BARU, lihat migrasi).
+        tambahLabelRiwayat(FormInput, "2) Breathing :", pfL, pemeriksaanFisikBase+78, 85);
+        chkBreathingNormal = tambahCekRiwayat(FormInput, "Normal", pfL+90, pemeriksaanFisikBase+78, 70);
+        chkBreathingSesakDyspnea = tambahCekRiwayat(FormInput, "Sesak/Dyspnea", pfL+165, pemeriksaanFisikBase+78, 115);
+        chkBreathingBatuk = tambahCekRiwayat(FormInput, "Batuk", pfL+285, pemeriksaanFisikBase+78, 60);
+        chkBreathingTakipneu = tambahCekRiwayat(FormInput, "Takipneu", pfL, pemeriksaanFisikBase+104, 85);
+        chkBreathingBatukDarah = tambahCekRiwayat(FormInput, "Batuk Darah", pfL+90, pemeriksaanFisikBase+104, 100);
+        chkBreathingSleepApnea = tambahCekRiwayat(FormInput, "Sleep Apnea", pfL+195, pemeriksaanFisikBase+104, 100);
+        chkBreathingNgorok = tambahCekRiwayat(FormInput, "Ngorok", pfL+300, pemeriksaanFisikBase+104, 70);
+        chkBreathingLain = tambahCekRiwayat(FormInput, "Lain-lain :", pfL, pemeriksaanFisikBase+130, 80);
+        txtBreathingLain = tambahTeksRiwayat(FormInput, pfL+85, pemeriksaanFisikBase+130, 250);
+
+        // 3) Bunyi Paru - "Orthopnea" DIPINDAH KE SINI dari "2) Breathing" (koreksi
+        // user, kebalikan dari perubahan Ngorok di atas). Baris baru "Lain-lain" +
+        // teks bebas ditambahkan (sama pola dgn Breathing di atas).
+        tambahLabelRiwayat(FormInput, "3) Bunyi Paru :", pfL, pemeriksaanFisikBase+156, 90);
+        chkBunyiParuNormal = tambahCekRiwayat(FormInput, "Normal", pfL+95, pemeriksaanFisikBase+156, 70);
+        chkBunyiParuOrthopnea = tambahCekRiwayat(FormInput, "Orthopnea", pfL+170, pemeriksaanFisikBase+156, 95);
+        chkBunyiParuStidor = tambahCekRiwayat(FormInput, "Stidor", pfL+270, pemeriksaanFisikBase+156, 65);
+        chkBunyiParuRonkhiKanan = tambahCekRiwayat(FormInput, "Ronkhi Kanan", pfL, pemeriksaanFisikBase+182, 100);
+        chkBunyiParuRonkhiKiri = tambahCekRiwayat(FormInput, "Ronkhi Kiri", pfL+105, pemeriksaanFisikBase+182, 90);
+        chkBunyiParuWheezingKanan = tambahCekRiwayat(FormInput, "Wheezing Kanan", pfL+200, pemeriksaanFisikBase+182, 130);
+        chkBunyiParuWheezingKiri = tambahCekRiwayat(FormInput, "Wheezing Kiri", pfL+335, pemeriksaanFisikBase+182, 100);
+        chkBunyiParuLain = tambahCekRiwayat(FormInput, "Lain-lain :", pfL, pemeriksaanFisikBase+208, 80);
+        txtBunyiParuLain = tambahTeksRiwayat(FormInput, pfL+85, pemeriksaanFisikBase+208, 250);
+
+        tambahLabelRiwayat(FormInput, "4) Kesulitan bernafas :", pfL, pemeriksaanFisikBase+234, 145);
+        chkKesulitanBernafasTidak = tambahCekRiwayat(FormInput, "Tidak", pfL+150, pemeriksaanFisikBase+234, 60);
+        chkKesulitanBernafasYa = tambahCekRiwayat(FormInput, "Ya", pfL+210, pemeriksaanFisikBase+234, 45);
+
+        // "Saturasi O2" DIPINDAH KE SINI (baris "5) Otot bantu nafas", satu baris
+        // dgn Tidak/Ya - permintaan user), sebelumnya baris sendiri di bawah
+        // "6) Penggunaan O2".
+        tambahLabelRiwayat(FormInput, "5) Otot bantu nafas :", pfL, pemeriksaanFisikBase+260, 135);
+        chkOtotBantuNafasTidak = tambahCekRiwayat(FormInput, "Tidak", pfL+140, pemeriksaanFisikBase+260, 60);
+        chkOtotBantuNafasYa = tambahCekRiwayat(FormInput, "Ya", pfL+200, pemeriksaanFisikBase+260, 45);
+        tambahLabelRiwayat(FormInput, "Saturasi O2 :", pfL+260, pemeriksaanFisikBase+260, 90);
+        txtSaturasiO2 = tambahTeksRiwayat(FormInput, pfL+355, pemeriksaanFisikBase+260, 55);
+        tambahLabelRiwayat(FormInput, "%", pfL+413, pemeriksaanFisikBase+260, 20);
+
+        tambahLabelRiwayat(FormInput, "6) Penggunaan O2 :", pfL, pemeriksaanFisikBase+286, 115);
+        chkO2Tidak = tambahCekRiwayat(FormInput, "Tidak", pfL+120, pemeriksaanFisikBase+286, 55);
+        chkO2Ya = tambahCekRiwayat(FormInput, "Ya", pfL+175, pemeriksaanFisikBase+286, 40);
+        txtO2LiterMenit = tambahTeksRiwayat(FormInput, pfL+215, pemeriksaanFisikBase+286, 40);
+        tambahLabelRiwayat(FormInput, "l/m", pfL+257, pemeriksaanFisikBase+286, 30);
+        chkO2Nasal = tambahCekRiwayat(FormInput, "Nasal", pfL+290, pemeriksaanFisikBase+286, 60);
+        chkO2Sungkup = tambahCekRiwayat(FormInput, "Sungkup", pfL+352, pemeriksaanFisikBase+286, 75);
+
+        widget.Label lblCardio = tambahLabelRiwayat(FormInput, "c. Status Cardiovaskuler :", pfL, pemeriksaanFisikBase+322, 250);
+        lblCardio.setFont(lblCardio.getFont().deriveFont(java.awt.Font.BOLD));
+        chkCardioTidakAdaKelainan = tambahCekRiwayat(FormInput, "Tidak Ada Kelainan", pfL, pemeriksaanFisikBase+348, 145);
+        chkCardioBradikardi = tambahCekRiwayat(FormInput, "Bradikardi", pfL+150, pemeriksaanFisikBase+348, 90);
+        chkCardioTakikardi = tambahCekRiwayat(FormInput, "Takikardi", pfL+245, pemeriksaanFisikBase+348, 85);
+        chkCardioMurMur = tambahCekRiwayat(FormInput, "Mur-mur", pfL+335, pemeriksaanFisikBase+348, 80);
+        chkCardioGallop = tambahCekRiwayat(FormInput, "Gallop", pfL, pemeriksaanFisikBase+374, 65);
+        chkCardioPucatSianosis = tambahCekRiwayat(FormInput, "Pucat/Sianosis", pfL+75, pemeriksaanFisikBase+374, 115);
+        chkCardioNyeriDada = tambahCekRiwayat(FormInput, "Nyeri Dada", pfL+195, pemeriksaanFisikBase+374, 95);
+        txtCardioLain = tambahTeksRiwayat(FormInput, pfL+295, pemeriksaanFisikBase+374, 130);
+
+        widget.Label lblGi = tambahLabelRiwayat(FormInput, "d. Fungsi Gastrointestinal :", pfL, pemeriksaanFisikBase+413, 250);
+        lblGi.setFont(lblGi.getFont().deriveFont(java.awt.Font.BOLD));
+        chkGiTidakAdaKeluhan = tambahCekRiwayat(FormInput, "Tidak Ada Keluhan", pfL, pemeriksaanFisikBase+439, 140);
+        chkGiPenurunanBisingUsus = tambahCekRiwayat(FormInput, "Penurunan Bising Usus", pfL+145, pemeriksaanFisikBase+439, 165);
+        tambahLabelRiwayat(FormInput, "Gigi palsu :", pfL, pemeriksaanFisikBase+465, 75);
+        chkGiGigiPalsuAtasKanan = tambahCekRiwayat(FormInput, "Atas Kanan", pfL+80, pemeriksaanFisikBase+465, 95);
+        chkGiGigiPalsuAtasKiri = tambahCekRiwayat(FormInput, "Atas Kiri", pfL+180, pemeriksaanFisikBase+465, 85);
+        chkGiGigiPalsuBawahKanan = tambahCekRiwayat(FormInput, "Bawah Kanan", pfL+90, pemeriksaanFisikBase+491, 100);
+        chkGiGigiPalsuBawahKiri = tambahCekRiwayat(FormInput, "Bawah Kiri", pfL, pemeriksaanFisikBase+491, 80);
+        chkGiPembatasanMakanan = tambahCekRiwayat(FormInput, "Pembatasan makanan, sebutkan :", pfL, pemeriksaanFisikBase+517, 210);
+        chkGiTidakNafsuMakan = tambahCekRiwayat(FormInput, "Tidak Nafsu Makan", pfL+230, pemeriksaanFisikBase+517, 140);
+        txtGiPembatasanMakanan = tambahTeksRiwayat(FormInput, pfL, pemeriksaanFisikBase+543, 200);
+        chkGiMual = tambahCekRiwayat(FormInput, "Mual", pfL+210, pemeriksaanFisikBase+543, 55);
+        chkGiKonstipasi = tambahCekRiwayat(FormInput, "Konstipasi", pfL+275, pemeriksaanFisikBase+543, 85);
+        chkGiMuntah = tambahCekRiwayat(FormInput, "Muntah", pfL, pemeriksaanFisikBase+569, 78);
+        txtGiMuntahKali = tambahTeksRiwayat(FormInput, pfL+80, pemeriksaanFisikBase+569, 35);
+        tambahLabelRiwayat(FormInput, "kali", pfL+118, pemeriksaanFisikBase+569, 35);
+        chkGiTerpasangNGT = tambahCekRiwayat(FormInput, "Terpasang NGT", pfL+160, pemeriksaanFisikBase+569, 120);
+        chkGiSulitMenelan = tambahCekRiwayat(FormInput, "Sulit Menelan", pfL+285, pemeriksaanFisikBase+569, 110);
+        chkGiDiare = tambahCekRiwayat(FormInput, "Diare", pfL, pemeriksaanFisikBase+595, 55);
+        txtGiDiareX = tambahTeksRiwayat(FormInput, pfL+58, pemeriksaanFisikBase+595, 35);
+        tambahLabelRiwayat(FormInput, "x", pfL+98, pemeriksaanFisikBase+595, 15);
+        chkGiKolostomi = tambahCekRiwayat(FormInput, "Kolostomi", pfL+120, pemeriksaanFisikBase+595, 85);
+        chkGiDistensiAbdomen = tambahCekRiwayat(FormInput, "Distensi Abdomen", pfL+210, pemeriksaanFisikBase+595, 140);
+        chkGiMakanHabis = tambahCekRiwayat(FormInput, "Makan Habis", pfL, pemeriksaanFisikBase+621, 105);
+        chkGiIVFD = tambahCekRiwayat(FormInput, "IVFD", pfL+115, pemeriksaanFisikBase+621, 50);
+        txtGiIVFDTts = tambahTeksRiwayat(FormInput, pfL+165, pemeriksaanFisikBase+621, 45);
+        tambahLabelRiwayat(FormInput, "tts/mnt", pfL+213, pemeriksaanFisikBase+621, 55);
+
+        // === LANJUTAN 1 KOLOM (x=pfL=10): e. Fungsi Perkemihan -> Status Reproduksi (disisipkan di sini,
+        // sesuai urutan foto RM19-1/2) -> f. Status Neurosensori -> g. Fungsi Ekstremitas -> h. Kulit dan
+        // Kelamin. Base tiap sub-section dihitung berurutan dari tinggi sub-section SEBELUMNYA (bukan
+        // kolom paralel lagi) - konstanta bernama, bukan angka ajaib, spy tahap depan aman diubah. ===
+        final int pfEBase = pemeriksaanFisikBase + 660;             // tepat setelah "d. Gastrointestinal" berakhir (offset+644, naik 26 dari perubahan "b. Fungsi Pernafasan" di atas) + margin 16
+        final int pfReproduksiBase = pfEBase + 143;                 // tepat setelah "e. Fungsi Perkemihan" berakhir (offset+127) + margin 16
+        final int pfFBase = pfReproduksiBase + 123;                 // tepat setelah "Status Reproduksi" berakhir (tinggi blok 107 - Skala Branden & Pupil Kanan/Kiri sudah dipindah keluar blok ini) + margin 16
+        final int pfGBase = pfFBase + 455;                          // tepat setelah "f. Status Neurosensori" berakhir (tinggi blok 439, +52 utk 2 baris Pupil Kanan/Kiri disisipkan di bawah Konsentrasi) + margin 16
+        final int pfHBase = pfGBase + 91;                           // tepat setelah "g. Fungsi Ekstremitas" berakhir (tinggi blok 75, +26 utk baris field "Lain-lain" baru) + margin 16 (blok "h" tinggi 179, total blok 1-kolom berakhir di pfHBase+179 = pemeriksaanFisikBase+1651)
+        final int pfPsikoBase = pfHBase + 195;                      // "5. STATUS PSIKO-SOSIAL-EKONOMI DAN SPIRITUAL" - tepat setelah "h. Kulit dan Kelamin" berakhir (tinggi blok 179) + margin 16. Masih di dalam ruang kosong delta3 yg sama (headroom besar sampai GEN "VI. PENGKAJIAN TINGKAT NYERI" yg tak tersentuh, tidak perlu naikkan delta3).
+        widget.Label lblKemih = tambahLabelRiwayat(FormInput, "e. Fungsi Perkemihan :", pfL, pfEBase, 250);
+        lblKemih.setFont(lblKemih.getFont().deriveFont(java.awt.Font.BOLD));
+        chkKemihTidakAdaKeluhan = tambahCekRiwayat(FormInput, "Tidak Ada Keluhan", pfL, pfEBase+26, 140);
+        chkKemihDistensiBladder = tambahCekRiwayat(FormInput, "Distensi Bladder", pfL+145, pfEBase+26, 125);
+        chkKemihHaematuria = tambahCekRiwayat(FormInput, "Haematuria", pfL+275, pfEBase+26, 100);
+        chkKemihRetensiUrine = tambahCekRiwayat(FormInput, "Retensi Urine", pfL, pfEBase+52, 110);
+        chkKemihOliguri = tambahCekRiwayat(FormInput, "Oliguri", pfL+115, pfEBase+52, 65);
+        chkKemihPoliuri = tambahCekRiwayat(FormInput, "Poliuri", pfL+185, pfEBase+52, 65);
+        chkKemihDisuria = tambahCekRiwayat(FormInput, "Disuria", pfL+255, pfEBase+52, 65);
+        chkKemihAnuri = tambahCekRiwayat(FormInput, "Anuri", pfL+325, pfEBase+52, 60);
+        chkKemihTerpasangKateter = tambahCekRiwayat(FormInput, "Terpasang Kateter", pfL, pfEBase+78, 135);
+        chkKemihInkontinensiaUrine = tambahCekRiwayat(FormInput, "Inkontinensia Urine", pfL+140, pfEBase+78, 150);
+        tambahLabelRiwayat(FormInput, "Lain-lain :", pfL, pfEBase+104, 75);
+        txtKemihLain = tambahTeksRiwayat(FormInput, pfL+85, pfEBase+104, 300);
+
+        widget.Label lblNeurosensori = tambahLabelRiwayat(FormInput, "f. Status Neurosensori :", pfL, pfFBase, 250);
+        lblNeurosensori.setFont(lblNeurosensori.getFont().deriveFont(java.awt.Font.BOLD));
+        tambahLabelRiwayat(FormInput, "1) Pendengaran :", pfL, pfFBase+26, 100);
+        chkPendengaranTAK = tambahCekRiwayat(FormInput, "t.a.k", pfL+105, pfFBase+26, 55);
+        chkPendengaranBerdengung = tambahCekRiwayat(FormInput, "Berdengung", pfL+165, pfFBase+26, 100);
+        chkPendengaranTuli = tambahCekRiwayat(FormInput, "Tuli", pfL+270, pfFBase+26, 50);
+        chkPendengaranKeluarCairan = tambahCekRiwayat(FormInput, "Keluar Cairan", pfL, pfFBase+52, 110);
+        chkPendengaranNyeri = tambahCekRiwayat(FormInput, "Nyeri", pfL+115, pfFBase+52, 60);
+
+        tambahLabelRiwayat(FormInput, "2) Penglihatan :", pfL, pfFBase+78, 100);
+        chkPenglihatanTAK = tambahCekRiwayat(FormInput, "t.a.k", pfL+105, pfFBase+78, 55);
+        chkPenglihatanAnemis = tambahCekRiwayat(FormInput, "Anemis", pfL+165, pfFBase+78, 70);
+        chkPenglihatanIcterik = tambahCekRiwayat(FormInput, "Icterik", pfL+240, pfFBase+78, 65);
+        chkPenglihatanTidakAdaReaksiCahaya = tambahCekRiwayat(FormInput, "Tidak Ada Reaksi Cahaya", pfL, pfFBase+104, 175);
+        chkPenglihatanKacaMata = tambahCekRiwayat(FormInput, "Kaca Mata", pfL+180, pfFBase+104, 90);
+        chkPenglihatanLensaKontak = tambahCekRiwayat(FormInput, "Lensa Kontak", pfL, pfFBase+130, 105);
+        chkPenglihatanMerah = tambahCekRiwayat(FormInput, "Merah", pfL+110, pfFBase+130, 65);
+        chkPenglihatanKabur = tambahCekRiwayat(FormInput, "Penglihatan Kabur", pfL+180, pfFBase+130, 140);
+        txtPenglihatanLain = tambahTeksRiwayat(FormInput, pfL, pfFBase+156, 200);
+
+        tambahLabelRiwayat(FormInput, "3) Wicara :", pfL, pfFBase+182, 70);
+        chkWicaraNormal = tambahCekRiwayat(FormInput, "Normal", pfL+80, pfFBase+182, 70);
+        chkWicaraCadelPelo = tambahCekRiwayat(FormInput, "Cadel/Pelo", pfL+155, pfFBase+182, 90);
+        chkWicaraAphasia = tambahCekRiwayat(FormInput, "Aphasia", pfL+250, pfFBase+182, 75);
+        chkWicaraKerusakanWicara = tambahCekRiwayat(FormInput, "Kerusakan Wicara", pfL, pfFBase+208, 140);
+
+        tambahLabelRiwayat(FormInput, "4) Orientasi :", pfL, pfFBase+234, 85);
+        chkOrientasiBaik = tambahCekRiwayat(FormInput, "Baik", pfL+90, pfFBase+234, 55);
+        chkOrientasiOrang = tambahCekRiwayat(FormInput, "Orang", pfL+150, pfFBase+234, 65);
+        chkOrientasiTempat = tambahCekRiwayat(FormInput, "Tempat", pfL+220, pfFBase+234, 70);
+        chkOrientasiWaktu = tambahCekRiwayat(FormInput, "Waktu", pfL, pfFBase+260, 65);
+        chkOrientasiSituasi = tambahCekRiwayat(FormInput, "Situasi", pfL+70, pfFBase+260, 65);
+
+        tambahLabelRiwayat(FormInput, "5) Memori :", pfL, pfFBase+286, 70);
+        chkMemoriBaik = tambahCekRiwayat(FormInput, "Baik", pfL+80, pfFBase+286, 55);
+        chkMemoriSedang = tambahCekRiwayat(FormInput, "Sedang", pfL+140, pfFBase+286, 70);
+        chkMemoriBuruk = tambahCekRiwayat(FormInput, "Buruk", pfL+215, pfFBase+286, 60);
+        tambahLabelRiwayat(FormInput, "Konsentrasi :", pfL, pfFBase+312, 85);
+        chkKonsentrasiBaik = tambahCekRiwayat(FormInput, "Baik", pfL+90, pfFBase+312, 55);
+        chkKonsentrasiSedang = tambahCekRiwayat(FormInput, "Sedang", pfL+150, pfFBase+312, 70);
+        chkKonsentrasiBuruk = tambahCekRiwayat(FormInput, "Buruk", pfL+225, pfFBase+312, 60);
+
+        // Pupil Kanan/Kiri (ukuran mm + reaksi cahaya) dipindah kesini (di bawah
+        // Konsentrasi, di dalam "f. Status Neurosensori") dari blok "Status
+        // Reproduksi" sebelumnya - sesuai permintaan user, lebih sesuai kelompoknya.
+        tambahLabelRiwayat(FormInput, "Pupil Kanan :", pfL, pfFBase+338, 100);
+        tambahLabelRiwayat(FormInput, "Ukuran", pfL+106, pfFBase+338, 55);
+        PupilKananUkuran = tambahTeksRiwayat(FormInput, pfL+163, pfFBase+338, 50);
+        tambahLabelRiwayat(FormInput, "mm", pfL+216, pfFBase+338, 30);
+        tambahLabelRiwayat(FormInput, "Reaksi Cahaya :", pfL+256, pfFBase+338, 110);
+        PupilKananReaksi = tambahTeksRiwayat(FormInput, pfL+368, pfFBase+338, 200);
+
+        tambahLabelRiwayat(FormInput, "Pupil Kiri :", pfL, pfFBase+364, 100);
+        tambahLabelRiwayat(FormInput, "Ukuran", pfL+106, pfFBase+364, 55);
+        PupilKiriUkuran = tambahTeksRiwayat(FormInput, pfL+163, pfFBase+364, 50);
+        tambahLabelRiwayat(FormInput, "mm", pfL+216, pfFBase+364, 30);
+        tambahLabelRiwayat(FormInput, "Reaksi Cahaya :", pfL+256, pfFBase+364, 110);
+        PupilKiriReaksi = tambahTeksRiwayat(FormInput, pfL+368, pfFBase+364, 200);
+
+        tambahLabelRiwayat(FormInput, "Kekuatan Otot :", pfL, pfFBase+390, 100);
+        txtKekuatanOtot = tambahTeksRiwayat(FormInput, pfL+105, pfFBase+390, 70);
+        tambahLabelRiwayat(FormInput, "Tremor di", pfL+195, pfFBase+390, 65);
+        txtKekuatanOtotTremorDi = tambahTeksRiwayat(FormInput, pfL+265, pfFBase+390, 80);
+        chkKekuatanOtotInkoordinasi = tambahCekRiwayat(FormInput, "Inkoordinasi", pfL+350, pfFBase+390, 95);
+        chkKekuatanOtotKejang = tambahCekRiwayat(FormInput, "Kejang", pfL+447, pfFBase+390, 63);
+        tambahLabelRiwayat(FormInput, "Hemiplegi di :", pfL, pfFBase+416, 85);
+        txtHemiplegiDi = tambahTeksRiwayat(FormInput, pfL+90, pfFBase+416, 130);
+        tambahLabelRiwayat(FormInput, "Parase di :", pfL+225, pfFBase+416, 70);
+        txtParaseDi = tambahTeksRiwayat(FormInput, pfL+300, pfFBase+416, 120);
+
+        widget.Label lblEkstremitas = tambahLabelRiwayat(FormInput, "g. Fungsi Ekstremitas - Fraktur di :", pfL, pfGBase, 260);
+        lblEkstremitas.setFont(lblEkstremitas.getFont().deriveFont(java.awt.Font.BOLD));
+        chkFrakturTanganKanan = tambahCekRiwayat(FormInput, "Tangan Kanan", pfL, pfGBase+26, 115);
+        chkFrakturTanganKiri = tambahCekRiwayat(FormInput, "Tangan Kiri", pfL+120, pfGBase+26, 105);
+        chkFrakturKakiKanan = tambahCekRiwayat(FormInput, "Kaki Kanan", pfL+230, pfGBase+26, 100);
+        chkFrakturKakiKiri = tambahCekRiwayat(FormInput, "Kaki Kiri", pfL+335, pfGBase+26, 90);
+        tambahLabelRiwayat(FormInput, "Lain-lain :", pfL, pfGBase+52, 75);
+        txtEkstremitasLain = tambahTeksRiwayat(FormInput, pfL+85, pfGBase+52, 300);
+
+        widget.Label lblKulit = tambahLabelRiwayat(FormInput, "h. Kulit dan Kelamin :", pfL, pfHBase, 250);
+        lblKulit.setFont(lblKulit.getFont().deriveFont(java.awt.Font.BOLD));
+        tambahLabelRiwayat(FormInput, "Warna Kulit :", pfL, pfHBase+26, 90);
+        chkWarnaKulitNormal = tambahCekRiwayat(FormInput, "Normal", pfL+95, pfHBase+26, 70);
+        chkWarnaKulitPucat = tambahCekRiwayat(FormInput, "Pucat", pfL+170, pfHBase+26, 65);
+        chkWarnaKulitMerah = tambahCekRiwayat(FormInput, "Merah", pfL+240, pfHBase+26, 60);
+        chkWarnaKulitIkterik = tambahCekRiwayat(FormInput, "Ikterik", pfL, pfHBase+52, 65);
+        chkWarnaKulitKemerahan = tambahCekRiwayat(FormInput, "Kemerahan", pfL+70, pfHBase+52, 95);
+        txtWarnaKulitLain = tambahTeksRiwayat(FormInput, pfL+170, pfHBase+52, 180);
+        tambahLabelRiwayat(FormInput, "Integritas Kulit :", pfL, pfHBase+78, 110);
+        chkIntegritasKulitUtuh = tambahCekRiwayat(FormInput, "Utuh", pfL+115, pfHBase+78, 60);
+        chkIntegritasKulitRuam = tambahCekRiwayat(FormInput, "Ruam", pfL+180, pfHBase+78, 60);
+        chkIntegritasKulitMelepuh = tambahCekRiwayat(FormInput, "Melepuh di :", pfL, pfHBase+104, 90);
+        txtIntegritasKulitMelepuhDi = tambahTeksRiwayat(FormInput, pfL+95, pfHBase+104, 200);
+        chkIntegritasKulitKemerahan = tambahCekRiwayat(FormInput, "Kemerahan di :", pfL, pfHBase+130, 105);
+        txtIntegritasKulitKemerahanDi = tambahTeksRiwayat(FormInput, pfL+110, pfHBase+130, 200);
+        widget.Label lblSkalaBranden = tambahLabelRiwayat(FormInput, "Skala Branden (risiko dekubitus) :", pfL, pfHBase+156, 220);
+        SkalaBranden = tambahTeksRiwayat(FormInput, pfL+224, pfHBase+156, 50);
+        tambahLabelRiwayat(FormInput, "/ 23", pfL+278, pfHBase+156, 40);
+
+        // === "5. STATUS PSIKO-SOSIAL-EKONOMI DAN SPIRITUAL" - restrukturisasi total dari
+        // GEN lama "V. RIWAYAT PSIKOLOGIS-SOSIAL-EKONOMI-BUDAYA-SPIRITUAL" (disembunyikan di
+        // blok hide atas, data lama TETAP di DB) sesuai foto RM19 - masih di alur 1-kolom yg
+        // sama (pfPsikoBase, dihitung di atas), langsung setelah "h. Kulit dan Kelamin". ===
+        widget.Label lblPsikoSosial = tambahLabelRiwayat(FormInput, "5. STATUS PSIKO-SOSIAL-EKONOMI DAN SPIRITUAL", pfL, pfPsikoBase, 500);
+        lblPsikoSosial.setFont(lblPsikoSosial.getFont().deriveFont(java.awt.Font.BOLD));
+
+        tambahLabelRiwayat(FormInput, "a. Status Psikologi :", pfL, pfPsikoBase+26, 250);
+        chkPsikoTAK = tambahCekRiwayat(FormInput, "T.A.K", pfL, pfPsikoBase+52, 55);
+        chkPsikoMarah = tambahCekRiwayat(FormInput, "Marah", pfL+65, pfPsikoBase+52, 60);
+        chkPsikoGelisah = tambahCekRiwayat(FormInput, "Gelisah", pfL+140, pfPsikoBase+52, 70);
+        chkPsikoSedih = tambahCekRiwayat(FormInput, "Sedih", pfL+225, pfPsikoBase+52, 60);
+        chkPsikoCemas = tambahCekRiwayat(FormInput, "Cemas", pfL+300, pfPsikoBase+52, 65);
+        chkPsikoTakut = tambahCekRiwayat(FormInput, "Takut", pfL+380, pfPsikoBase+52, 60);
+        chkPsikoAcuhTakAcuh = tambahCekRiwayat(FormInput, "Acuh Tak Acuh", pfL+455, pfPsikoBase+52, 115);
+        chkPsikoBunuhDiri = tambahCekRiwayat(FormInput, "Kecenderungan Bunuh Diri", pfL+585, pfPsikoBase+52, 190);
+
+        final int pfSosekBase = pfPsikoBase + 91;
+        widget.Label lblSosek = tambahLabelRiwayat(FormInput, "b. Status Sosial - Ekonomi :", pfL, pfSosekBase, 250);
+        lblSosek.setFont(lblSosek.getFont().deriveFont(java.awt.Font.BOLD));
+
+        tambahLabelRiwayat(FormInput, "1) Status Pernikahan :", pfL+20, pfSosekBase+26, 150);
+        StatusPernikahan = new widget.ComboBox();
+        StatusPernikahan.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Single","Menikah","Janda","Duda"}));
+        FormInput.add(StatusPernikahan); StatusPernikahan.setBounds(pfL+175, pfSosekBase+26, 120, 23);
+
+        tambahLabelRiwayat(FormInput, "2) Hubungan dgn Anggota Keluarga :", pfL+20, pfSosekBase+52, 235);
+        chkHubKeluargaBaik = tambahCekRiwayat(FormInput, "Baik", pfL+260, pfSosekBase+52, 55);
+        chkHubKeluargaTidakBaik = tambahCekRiwayat(FormInput, "Tidak Baik", pfL+320, pfSosekBase+52, 90);
+
+        tambahLabelRiwayat(FormInput, "3) Tempat Tinggal :", pfL+20, pfSosekBase+78, 150);
+        chkTempatTinggalRumah = tambahCekRiwayat(FormInput, "Rumah", pfL+175, pfSosekBase+78, 65);
+        chkTempatTinggalAsrama = tambahCekRiwayat(FormInput, "Asrama", pfL+245, pfSosekBase+78, 70);
+        chkTempatTinggalPanti = tambahCekRiwayat(FormInput, "Panti", pfL+320, pfSosekBase+78, 60);
+        chkTempatTinggalLainnya = tambahCekRiwayat(FormInput, "Lainnya", pfL+385, pfSosekBase+78, 70);
+        txtTempatTinggalLainnya = tambahTeksRiwayat(FormInput, pfL+458, pfSosekBase+78, 200);
+
+        tambahLabelRiwayat(FormInput, "4) Tinggal Bersama :", pfL+20, pfSosekBase+104, 150);
+        chkTinggalSuamiIstri = tambahCekRiwayat(FormInput, "Suami/Istri", pfL+175, pfSosekBase+104, 90);
+        chkTinggalAnak = tambahCekRiwayat(FormInput, "Anak", pfL+270, pfSosekBase+104, 60);
+        chkTinggalOrangTua = tambahCekRiwayat(FormInput, "Orang Tua", pfL+335, pfSosekBase+104, 85);
+        chkTinggalLainnya = tambahCekRiwayat(FormInput, "Lainnya", pfL+425, pfSosekBase+104, 70);
+        txtTinggalLainnya = tambahTeksRiwayat(FormInput, pfL+498, pfSosekBase+104, 200);
+
+        tambahLabelRiwayat(FormInput, "5) Pekerjaan :", pfL+20, pfSosekBase+130, 150);
+        chkPekerjaanBekerja = tambahCekRiwayat(FormInput, "Bekerja", pfL+175, pfSosekBase+130, 75);
+        chkPekerjaanPNS = tambahCekRiwayat(FormInput, "PNS", pfL+45, pfSosekBase+156, 55);
+        chkPekerjaanSwasta = tambahCekRiwayat(FormInput, "Swasta", pfL+105, pfSosekBase+156, 70);
+        chkPekerjaanTNIPolri = tambahCekRiwayat(FormInput, "TNI/Polri", pfL+180, pfSosekBase+156, 85);
+        chkPekerjaanTaniBuruh = tambahCekRiwayat(FormInput, "Tani/Buruh", pfL+270, pfSosekBase+156, 90);
+
+        tambahLabelRiwayat(FormInput, "6) Kebiasaan :", pfL+20, pfSosekBase+182, 150);
+        chkKebiasaanMerokok = tambahCekRiwayat(FormInput, "Merokok", pfL+175, pfSosekBase+182, 80);
+        chkKebiasaanAlkohol = tambahCekRiwayat(FormInput, "Alkohol", pfL+260, pfSosekBase+182, 75);
+        chkKebiasaanLainnya = tambahCekRiwayat(FormInput, "Lainnya", pfL+340, pfSosekBase+182, 70);
+        tambahLabelRiwayat(FormInput, "Jenis/Jumlahnya :", pfL+415, pfSosekBase+182, 115);
+        txtKebiasaanJenisJumlah = tambahTeksRiwayat(FormInput, pfL+533, pfSosekBase+182, 190);
+
+        tambahLabelRiwayat(FormInput, "7) Kerabat Terdekat - Nama :", pfL+20, pfSosekBase+208, 190);
+        NamaKerabatTerdekat = tambahTeksRiwayat(FormInput, pfL+214, pfSosekBase+208, 140);
+        tambahLabelRiwayat(FormInput, "Hubungan :", pfL+364, pfSosekBase+208, 80);
+        HubunganKerabatTerdekat = tambahTeksRiwayat(FormInput, pfL+448, pfSosekBase+208, 120);
+        tambahLabelRiwayat(FormInput, "Telp/HP :", pfL+578, pfSosekBase+208, 70);
+        TelpKerabatTerdekat = tambahTeksRiwayat(FormInput, pfL+652, pfSosekBase+208, 140);
+
+        final int pfKepribadianBase = pfSosekBase + 247;
+        widget.Label lblKepribadian = tambahLabelRiwayat(FormInput, "c. Status Kepribadian :", pfL, pfKepribadianBase, 250);
+        lblKepribadian.setFont(lblKepribadian.getFont().deriveFont(java.awt.Font.BOLD));
+        chkKepribadianTidakAdaKeluhan = tambahCekRiwayat(FormInput, "Tidak Ada Keluhan", pfL+20, pfKepribadianBase+26, 150);
+        chkKepribadianPerluPendampingan = tambahCekRiwayat(FormInput, "Perlu Pendampingan / Bimbingan Rohaniwan", pfL+180, pfKepribadianBase+26, 320);
+        chkKepribadianPerluDibantuIbadah = tambahCekRiwayat(FormInput, "Perlu Dibantu Ibadah", pfL+20, pfKepribadianBase+52, 160);
+        chkKepribadianBerdoa = tambahCekRiwayat(FormInput, "Tampak Berdoa Sebelum / Sesudah Makan / Waktu Lainnya", pfL+190, pfKepribadianBase+52, 420);
+        chkKepribadianBacaLiteratur = tambahCekRiwayat(FormInput, "Tampak Membaca Literatur Keagamaan", pfL+20, pfKepribadianBase+78, 290);
+        tambahLabelRiwayat(FormInput, "Yang Mengganggu Praktik Keagamaan Saat Ini :", pfL+20, pfKepribadianBase+104, 290);
+        txtKepribadianGangguPraktik = tambahTeksRiwayat(FormInput, pfL+315, pfKepribadianBase+104, 400);
+        tambahLabelRiwayat(FormInput, "Nilai Kepercayaan/Budaya Yg Mempengaruhi Penyakit :", pfL+20, pfKepribadianBase+130, 335);
+        txtKepribadianNilaiBudaya = tambahTeksRiwayat(FormInput, pfL+360, pfKepribadianBase+130, 400);
+        tambahLabelRiwayat(FormInput, "Lain-lain :", pfL+20, pfKepribadianBase+156, 75);
+        txtKepribadianLainLain = tambahTeksRiwayat(FormInput, pfL+100, pfKepribadianBase+156, 400);
+
+        // === Poin 41 - "6. PENAPISAN / SKRINING NYERI" (foto RM19-3), menggantikan blok
+        // GEN lama "VI. PENGKAJIAN TINGKAT NYERI" yg sudah disembunyikan di atas.
+        // Bedanya dgn blok lama: skala nyeri jadi KANVAS yg bisa dicoret pakai mouse
+        // (permintaan user - meniru cara perawat menandai di formulir kertas), dan
+        // Penyebab/Kualitas/Lokasi/Menyebar/Skala/Durasi (combo terstruktur lama)
+        // diganti 5 isian bebas P/Q/R/S/T persis spt foto. ===
+        final int pfNyeriBase = pfKepribadianBase + 195;             // tepat setelah "c. Status Kepribadian" berakhir (offset+156, tinggi 179) + margin 16
+        widget.Label lblNyeri = tambahLabelRiwayat(FormInput, "6. PENAPISAN / SKRINING NYERI", pfL, pfNyeriBase, 400);
+        lblNyeri.setFont(lblNyeri.getFont().deriveFont(java.awt.Font.BOLD));
+
+        kanvasNyeri = new KanvasNyeri(380, 150);
+        FormInput.add(kanvasNyeri);
+        kanvasNyeri.setBounds(pfL+20, pfNyeriBase+26, 380, 150);
+
+        // P/Q/R/S/T - 5 isian bebas di sebelah kanan kanvas, persis tata letak foto
+        tambahLabelRiwayat(FormInput, "P :", pfL+420, pfNyeriBase+26, 25);
+        txtNyeriP = tambahTeksRiwayat(FormInput, pfL+448, pfNyeriBase+26, 400);
+        tambahLabelRiwayat(FormInput, "Q :", pfL+420, pfNyeriBase+52, 25);
+        txtNyeriQ = tambahTeksRiwayat(FormInput, pfL+448, pfNyeriBase+52, 400);
+        tambahLabelRiwayat(FormInput, "R :", pfL+420, pfNyeriBase+78, 25);
+        txtNyeriR = tambahTeksRiwayat(FormInput, pfL+448, pfNyeriBase+78, 400);
+        tambahLabelRiwayat(FormInput, "S :", pfL+420, pfNyeriBase+104, 25);
+        txtNyeriS = tambahTeksRiwayat(FormInput, pfL+448, pfNyeriBase+104, 400);
+        tambahLabelRiwayat(FormInput, "T :", pfL+420, pfNyeriBase+130, 25);
+        txtNyeriT = tambahTeksRiwayat(FormInput, pfL+448, pfNyeriBase+130, 400);
+
+        btnHapusCoretanNyeri = new widget.Button();
+        btnHapusCoretanNyeri.setText("Hapus Coretan");
+        btnHapusCoretanNyeri.setToolTipText("Bersihkan tanda/coretan pada gambar skala nyeri");
+        btnHapusCoretanNyeri.addActionListener(new java.awt.event.ActionListener(){
+            @Override public void actionPerformed(java.awt.event.ActionEvent evt){ kanvasNyeri.hapusCoretan(); }
+        });
+        FormInput.add(btnHapusCoretanNyeri);
+        btnHapusCoretanNyeri.setBounds(pfL+420, pfNyeriBase+156, 130, 23);
+
+        // Keterangan P/Q/R/S/T (teks penjelas di foto, label statis - tidak disimpan)
+        // Baris keterangan pakai pitch 26 (sama dgn baris widget lain di file ini) - BUKAN
+        // 22 spt percobaan awal: tinggi tiap widget.Label 23px, jadi pitch 22 bikin tiap
+        // baris bertindih 1px (ketahuan dari cek self-overlap verify_full_overlap.py).
+        tambahLabelRiwayat(FormInput, "• Profokatif  :  Penyebab timbulnya rasa nyeri ( aktifitas, spontan, stres, dll )", pfL+20, pfNyeriBase+182, 700);
+        tambahLabelRiwayat(FormInput, "• Quality  :  Seberapa berat keluhan nyeri ( tumpul, tajam, tertekan, dalam, permukaan, dll )", pfL+20, pfNyeriBase+208, 700);
+        tambahLabelRiwayat(FormInput, "• Radiation  :  Apakah menyebar ( rahang, punggung, tangan, dll )", pfL+20, pfNyeriBase+234, 700);
+        tambahLabelRiwayat(FormInput, "• Severity  :  Skala nyeri, apakah disertai dengan gejala ( mual, muntah, pusing, diaphoresis, pucat, nafas pendek, sesak, tanda vital yang abnormal, dll )", pfL+20, pfNyeriBase+260, 830);
+        tambahLabelRiwayat(FormInput, "• Time / waktu  :  Kapan mulai nyeri, konstan / kadang-kadang, lamanya, tiba-tiba / bertahap, frekuensi nyeri", pfL+20, pfNyeriBase+286, 830);
+
+        tambahLabelRiwayat(FormInput, "a. Keluhan :", pfL, pfNyeriBase+312, 90);
+        chkKeluhanNyeriKronik = tambahCekRiwayat(FormInput, "Nyeri Kronik", pfL+95, pfNyeriBase+312, 110);
+        chkKeluhanNyeriAkut = tambahCekRiwayat(FormInput, "Nyeri Akut", pfL+210, pfNyeriBase+312, 100);
+        chkKeluhanTidakAdaNyeri = tambahCekRiwayat(FormInput, "Tidak Ada Nyeri", pfL+315, pfNyeriBase+312, 130);
+
+        tambahLabelRiwayat(FormInput, "b. Nyeri hilang, bila :", pfL, pfNyeriBase+338, 140);
+        chkNyeriHilangMinumObat = tambahCekRiwayat(FormInput, "Minum Obat", pfL+145, pfNyeriBase+338, 105);
+        chkNyeriHilangIstirahat = tambahCekRiwayat(FormInput, "Istirahat", pfL+255, pfNyeriBase+338, 80);
+        chkNyeriHilangBerubahPosisi = tambahCekRiwayat(FormInput, "Berubah Posisi Tidur", pfL+340, pfNyeriBase+338, 160);
+        chkNyeriHilangMendengarMusik = tambahCekRiwayat(FormInput, "Mendengarkan Musik", pfL+505, pfNyeriBase+338, 165);
+        chkNyeriHilangLainLain = tambahCekRiwayat(FormInput, "Lain-lain", pfL+145, pfNyeriBase+364, 85);
+        txtNyeriHilangLainLain = tambahTeksRiwayat(FormInput, pfL+235, pfNyeriBase+364, 400);
+
+        // === Poin 41 - "7. STATUS FUNGSIONAL" (foto RM19-3), menggantikan blok GEN lama
+        // "VII. PENGKAJIAN RESIKO JATUH" (Skala Morse + Sydney) yg sudah disembunyikan. ===
+        final int pfFungsionalBase = pfNyeriBase + 403;              // tepat setelah section 6 berakhir (offset+364, tinggi 387) + margin 16
+        widget.Label lblFungsional = tambahLabelRiwayat(FormInput, "7. STATUS FUNGSIONAL", pfL, pfFungsionalBase, 400);
+        lblFungsional.setFont(lblFungsional.getFont().deriveFont(java.awt.Font.BOLD));
+
+        tambahLabelRiwayat(FormInput, "a. Aktifitas total :", pfL, pfFungsionalBase+26, 120);
+        chkFungsionalMandiri = tambahCekRiwayat(FormInput, "Mandiri", pfL+125, pfFungsionalBase+26, 80);
+        chkFungsionalBantuanMinimal = tambahCekRiwayat(FormInput, "Bantuan Minimal", pfL+210, pfFungsionalBase+26, 135);
+        chkFungsionalBantuanSebagian = tambahCekRiwayat(FormInput, "Bantuan Sebagian", pfL+350, pfFungsionalBase+26, 140);
+        chkFungsionalKetergantungan = tambahCekRiwayat(FormInput, "Ketergantungan", pfL+495, pfFungsionalBase+26, 130);
+
+        tambahLabelRiwayat(FormInput, "b. Berjalan :", pfL, pfFungsionalBase+52, 120);
+        chkBerjalanNormal = tambahCekRiwayat(FormInput, "Normal", pfL+125, pfFungsionalBase+52, 80);
+        chkBerjalanPerluBantuan = tambahCekRiwayat(FormInput, "Perlu Bantuan", pfL+210, pfFungsionalBase+52, 135);
+        chkBerjalanSeringJatuh = tambahCekRiwayat(FormInput, "Sering Jatuh", pfL+350, pfFungsionalBase+52, 140);
+        chkBerjalanKelumpuhan = tambahCekRiwayat(FormInput, "Kelumpuhan", pfL+495, pfFungsionalBase+52, 130);
+
+        tambahLabelRiwayat(FormInput, "Gunakan formulir Pengkajian Status Fungsional Barthel Indek jika perlu bantuan / ketergantungan penuh.", pfL, pfFungsionalBase+78, 830);
+
+        // === "Status Reproduksi" - disisipkan LANGSUNG di alur 1-kolom "4. Pemeriksaan
+        // Fisik" (pfReproduksiBase, dihitung di atas), TEPAT antara "e. Fungsi
+        // Perkemihan" & "f. Status Neurosensori", sesuai urutan foto RM19-1/2 -
+        // sebelumnya tier terpisah setelah seluruh blok Pemeriksaan Fisik (delta4),
+        // sekarang delta4=0. Skala Branden & Pupil Kanan/Kiri SUDAH DIPINDAH keluar
+        // dari blok ini (ke "h. Kulit dan Kelamin" & "f. Status Neurosensori" di
+        // atas) sesuai permintaan user.
+        widget.Label lblStatusReproduksi = tambahLabelRiwayat(FormInput, "Status Reproduksi :", 10, pfReproduksiBase, 200);
+        lblStatusReproduksi.setFont(lblStatusReproduksi.getFont().deriveFont(java.awt.Font.BOLD));
+
+        tambahLabelRiwayat(FormInput, "Menstruasi :", 44, pfReproduksiBase+28, 90);
+        Menstruasi = new widget.ComboBox();
+        Menstruasi.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Teratur","Tidak Teratur","Belum Menstruasi","Menopause"}));
+        FormInput.add(Menstruasi); Menstruasi.setBounds(138, pfReproduksiBase+28, 130, 23);
+        tambahLabelRiwayat(FormInput, "Hamil :", 280, pfReproduksiBase+28, 50);
+        StatusHamil = new widget.ComboBox();
+        StatusHamil.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Tidak","Ya"}));
+        FormInput.add(StatusHamil); StatusHamil.setBounds(334, pfReproduksiBase+28, 70, 23);
+        tambahLabelRiwayat(FormInput, "HPHT :", 414, pfReproduksiBase+28, 50);
+        HPHT = tambahTeksRiwayat(FormInput, 468, pfReproduksiBase+28, 100);
+
+        tambahLabelRiwayat(FormInput, "Papsmear :", 44, pfReproduksiBase+56, 80);
+        Papsmear = new widget.ComboBox();
+        Papsmear.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Tidak Teratur","Pernah"}));
+        FormInput.add(Papsmear); Papsmear.setBounds(128, pfReproduksiBase+56, 130, 23);
+        tambahLabelRiwayat(FormInput, "Tgl :", 262, pfReproduksiBase+56, 30);
+        TglPapsmear = tambahTeksRiwayat(FormInput, 294, pfReproduksiBase+56, 90);
+        tambahLabelRiwayat(FormInput, "Mamografi :", 400, pfReproduksiBase+56, 80);
+        Mamografi = new widget.ComboBox();
+        Mamografi.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Tidak Teratur","Pernah"}));
+        FormInput.add(Mamografi); Mamografi.setBounds(484, pfReproduksiBase+56, 130, 23);
+        tambahLabelRiwayat(FormInput, "Tgl :", 618, pfReproduksiBase+56, 30);
+        TglMamografi = tambahTeksRiwayat(FormInput, 650, pfReproduksiBase+56, 90);
+
+        tambahLabelRiwayat(FormInput, "Sadari :", 44, pfReproduksiBase+84, 60);
+        Sadari = new widget.ComboBox();
+        Sadari.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Tidak Teratur","Pernah"}));
+        FormInput.add(Sadari); Sadari.setBounds(108, pfReproduksiBase+84, 130, 23);
+        tambahLabelRiwayat(FormInput, "Tgl :", 242, pfReproduksiBase+84, 30);
+        TglSadari = tambahTeksRiwayat(FormInput, 274, pfReproduksiBase+84, 90);
+        widget.Label lblPria = tambahLabelRiwayat(FormInput, "Pria :", 400, pfReproduksiBase+84, 45);
+        lblPria.setFont(lblPria.getFont().deriveFont(java.awt.Font.BOLD));
+        tambahLabelRiwayat(FormInput, "Screening Prostat :", 448, pfReproduksiBase+84, 110);
+        ScreeningProstat = new widget.ComboBox();
+        ScreeningProstat.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Tidak Teratur","Pernah"}));
+        FormInput.add(ScreeningProstat); ScreeningProstat.setBounds(562, pfReproduksiBase+84, 130, 23);
+        tambahLabelRiwayat(FormInput, "Tgl :", 696, pfReproduksiBase+84, 30);
+        TglScreeningProstat = tambahTeksRiwayat(FormInput, 728, pfReproduksiBase+84, 90);
+
+        // Status Pernikahan/Kerabat Terdekat (dulu Tahap 5, tier delta5 terpisah) & pelebaran
+        // opsi KondisiPsikologis SUDAH DIPINDAH/DIGANTI - lihat "5. STATUS PSIKO-SOSIAL-EKONOMI
+        // DAN SPIRITUAL" di atas (pfSosekBase: StatusPernikahan+Kerabat Terdekat DIPAKAI ULANG
+        // di sana; KondisiPsikologis sendiri sekarang disembunyikan, diganti checklist "a. Status
+        // Psikologi" 8 item sesuai foto - kolom lama `riwayat_psiko_kondisi_psiko` TIDAK disentuh).
+
+        // === Tahap 6: "9. Kebutuhan Edukasi" + "10. Discharge Planning" +
+        // "11. Data Penunjang" - ketiga section ini blm ada sama sekali sebelumnya,
+        // disisipkan di ujung Section II-VIII (sblm tab "Rencana Keperawatan"). ===
+        final int keBase = tahap6Base;
+        widget.Label ukurEdu = new widget.Label();
+        java.awt.FontMetrics fmEdu = ukurEdu.getFontMetrics(ukurEdu.getFont());
+        int labelWEdu = 0;
+        for(String t : new String[]{"a. Kebutuhan Berbicara :","b. Bahasa Sehari-hari :","c. Dibutuhkan Penerjemah :","e. Hambatan Pembelajaran :"}){
+            labelWEdu = Math.max(labelWEdu, fmEdu.stringWidth(t));
+        }
+        final int answerXEdu = 44 + labelWEdu + 15;
+
+        widget.Label lblKE = tambahLabelRiwayat(FormInput, "9. KEBUTUHAN EDUKASI", 10, keBase, 300);
+        lblKE.setFont(lblKE.getFont().deriveFont(java.awt.Font.BOLD));
+
+        tambahLabelRiwayat(FormInput, "a. Kebutuhan Berbicara :", 44, keBase+28, labelWEdu);
+        chkEduBicaraTidak = tambahCekRiwayat(FormInput, "Tidak", answerXEdu, keBase+28, 60);
+        chkEduBicaraYa = tambahCekRiwayat(FormInput, "Ya", answerXEdu+65, keBase+28, 45);
+        txtEduBicaraJelaskan = tambahTeksRiwayat(FormInput, answerXEdu+115, keBase+28, 250);
+
+        tambahLabelRiwayat(FormInput, "b. Bahasa Sehari-hari :", 44, keBase+56, labelWEdu);
+        chkEduBahasaIndonesia = tambahCekRiwayat(FormInput, "Indonesia", answerXEdu, keBase+56, 90);
+        chkEduBahasaDaerah = tambahCekRiwayat(FormInput, "Daerah", answerXEdu+95, keBase+56, 75);
+        txtEduBahasaDaerah = tambahTeksRiwayat(FormInput, answerXEdu+175, keBase+56, 100);
+        chkEduBahasaAsing = tambahCekRiwayat(FormInput, "Asing", answerXEdu+285, keBase+56, 65);
+        txtEduBahasaAsing = tambahTeksRiwayat(FormInput, answerXEdu+355, keBase+56, 100);
+
+        // Poin 42: "Bahasa Isyarat" DIPINDAH dari baris "b. Bahasa Sehari-hari" ke baris
+        // "c. Dibutuhkan Penerjemah" (permintaan user) - kolom DB `edu_bahasa_isyarat`
+        // TIDAK di-rename, cuma posisi widget-nya yg pindah kelompok.
+        tambahLabelRiwayat(FormInput, "c. Dibutuhkan Penerjemah :", 44, keBase+84, labelWEdu);
+        chkEduPenerjemahTidak = tambahCekRiwayat(FormInput, "Tidak", answerXEdu, keBase+84, 60);
+        chkEduPenerjemahYa = tambahCekRiwayat(FormInput, "Ya, bahasa :", answerXEdu+65, keBase+84, 90);
+        txtEduPenerjemahBahasa = tambahTeksRiwayat(FormInput, answerXEdu+160, keBase+84, 200);
+        chkEduBahasaIsyarat = tambahCekRiwayat(FormInput, "Bahasa Isyarat", answerXEdu+370, keBase+84, 120);
+
+        tambahLabelRiwayat(FormInput, "d. Cara Belajar Yang Disukai :", 44, keBase+112, 250);
+        chkCaraAudioVisual = tambahCekRiwayat(FormInput, "Audio Visual", 44, keBase+138, 110);
+        chkCaraDiskusi = tambahCekRiwayat(FormInput, "Diskusi", 160, keBase+138, 85);
+        chkCaraMembaca = tambahCekRiwayat(FormInput, "Membaca", 250, keBase+138, 90);
+        chkCaraMenulis = tambahCekRiwayat(FormInput, "Menulis", 345, keBase+138, 85);
+        chkCaraMengerjakan = tambahCekRiwayat(FormInput, "Mengerjakan", 44, keBase+164, 110);
+        chkCaraGambar = tambahCekRiwayat(FormInput, "Gambar", 160, keBase+164, 80);
+        chkCaraMendengar = tambahCekRiwayat(FormInput, "Mendengar", 246, keBase+164, 100);
+        chkCaraDemonstrasi = tambahCekRiwayat(FormInput, "Demonstrasi", 352, keBase+164, 110);
+
+        tambahLabelRiwayat(FormInput, "e. Hambatan Pembelajaran :", 44, keBase+192, labelWEdu);
+        chkHambatanEduTidak = tambahCekRiwayat(FormInput, "Tidak", answerXEdu, keBase+192, 60);
+        chkHambatanEduYa = tambahCekRiwayat(FormInput, "Ya", answerXEdu+65, keBase+192, 45);
+        chkHambatanBahasa = tambahCekRiwayat(FormInput, "Bahasa", 44, keBase+218, 75);
+        chkHambatanEmosi = tambahCekRiwayat(FormInput, "Emosi", 122, keBase+218, 75);
+        chkHambatanCaregiver = tambahCekRiwayat(FormInput, "Tidak Ada Partisipasi Care Giver", 200, keBase+218, 260);
+        chkHambatanFisiologisBelajar = tambahCekRiwayat(FormInput, "Fisiologis Tidak Mampu Belajar", 464, keBase+218, 250);
+        chkHambatanPendengaran = tambahCekRiwayat(FormInput, "Pendengaran", 44, keBase+244, 105);
+        chkHambatanPenglihatan = tambahCekRiwayat(FormInput, "Penglihatan", 152, keBase+244, 105);
+        chkHambatanMemori = tambahCekRiwayat(FormInput, "Hilang Memori", 260, keBase+244, 115);
+        chkHambatanMotivasi = tambahCekRiwayat(FormInput, "Motivasi Buruk", 378, keBase+244, 120);
+        chkHambatanBicara = tambahCekRiwayat(FormInput, "Kesulitan Bicara", 501, keBase+244, 130);
+
+        tambahLabelRiwayat(FormInput, "f. Tingkat Pendidikan :", 44, keBase+272, 250);
+        chkPendidikanTK = tambahCekRiwayat(FormInput, "TK/Tidak Sekolah", 44, keBase+298, 140);
+        chkPendidikanSD = tambahCekRiwayat(FormInput, "SD", 187, keBase+298, 55);
+        chkPendidikanSMP = tambahCekRiwayat(FormInput, "SMP", 245, keBase+298, 65);
+        chkPendidikanSMA = tambahCekRiwayat(FormInput, "SMA", 313, keBase+298, 65);
+        chkPendidikanD3D4 = tambahCekRiwayat(FormInput, "D3/D4", 381, keBase+298, 75);
+        chkPendidikanS1 = tambahCekRiwayat(FormInput, "S1", 459, keBase+298, 55);
+        chkPendidikanS2 = tambahCekRiwayat(FormInput, "S2", 517, keBase+298, 55);
+        chkPendidikanS3 = tambahCekRiwayat(FormInput, "S3", 575, keBase+298, 55);
+
+        tambahLabelRiwayat(FormInput, "g. Kebutuhan Pembelajaran Pasien :", 44, keBase+326, 280);
+        chkKebutuhanProsesPenyakit = tambahCekRiwayat(FormInput, "Proses Penyakit", 44, keBase+352, 140);
+        chkKebutuhanDiitNutrisi = tambahCekRiwayat(FormInput, "Diit/Nutrisi", 190, keBase+352, 110);
+        chkKebutuhanPerawatanLuka = tambahCekRiwayat(FormInput, "Perawatan Luka", 306, keBase+352, 130);
+        chkKebutuhanManajemenNyeri = tambahCekRiwayat(FormInput, "Manajemen Nyeri", 442, keBase+352, 145);
+        chkKebutuhanObatObatan = tambahCekRiwayat(FormInput, "Obat-obatan", 44, keBase+378, 110);
+        chkKebutuhanRehabilitasi = tambahCekRiwayat(FormInput, "Rehabilitasi", 160, keBase+378, 110);
+        chkKebutuhanLainLain = tambahCekRiwayat(FormInput, "Lain-lain :", 276, keBase+378, 85);
+        txtKebutuhanLainLain = tambahTeksRiwayat(FormInput, 366, keBase+378, 200);
+
+        // === 10. PERENCANAAN PULANG / DISCHARGE PLANNING ===
+        final int dpBase = keBase + 415;
+        widget.Label lblDP = tambahLabelRiwayat(FormInput, "10. PERENCANAAN PULANG / DISCHARGE PLANNING (dilengkapi dlm 48 jam pertama)", 10, dpBase, 620);
+        lblDP.setFont(lblDP.getFont().deriveFont(java.awt.Font.BOLD));
+        tambahLabelRiwayat(FormInput, "Komponen", 44, dpBase+26, 260);
+        tambahLabelRiwayat(FormInput, "Ya", 310, dpBase+26, 40);
+        tambahLabelRiwayat(FormInput, "Tidak", 365, dpBase+26, 50);
+        tambahLabelRiwayat(FormInput, "Keterangan", 430, dpBase+26, 150);
+        String[] komponenDischarge = {
+            "Perlu adanya home care","Perlu perawatan luka","Penggunaan alat bantu (kursi roda, cruther, dll)",
+            "Telah dilakukan pemesanan alat","Dirujuk ke Tim Terapis","Dirujuk ke ahli Gizi/Pemantauan Diet","Dirujuk ke kelompok"
+        };
+        for(int i=0;i<komponenDischarge.length;i++){
+            int y = dpBase + 52 + (i*28);
+            tambahLabelRiwayat(FormInput, komponenDischarge[i], 44, y, 260);
+            chkDischargeYa[i] = tambahCekRiwayat(FormInput, "", 310, y, 30);
+            chkDischargeTidak[i] = tambahCekRiwayat(FormInput, "", 365, y, 30);
+            txtDischargeKet[i] = tambahTeksRiwayat(FormInput, 430, y, 400);
+        }
+        // Poin 42: 1 baris tambahan yg NAMA KOMPONENnya diketik manual (permintaan user) -
+        // utk komponen discharge planning di luar 7 baris baku di atas. Kolomnya sejajar
+        // persis dgn baris baku (310/365/430) supaya tetap terbaca sbg 1 tabel.
+        final int dpManualY = dpBase + 52 + (komponenDischarge.length*28);
+        txtDischargeManualKomponen = tambahTeksRiwayat(FormInput, 44, dpManualY, 260);
+        chkDischargeManualYa = tambahCekRiwayat(FormInput, "", 310, dpManualY, 30);
+        chkDischargeManualTidak = tambahCekRiwayat(FormInput, "", 365, dpManualY, 30);
+        txtDischargeManualKet = tambahTeksRiwayat(FormInput, 430, dpManualY, 400);
+
+        // === 11. DATA PENUNJANG ===
+        final int dpgBase = dpBase + 288;   // naik dari +260: nampung 1 baris manual baru di atas (dpManualY berakhir di dpBase+271) + margin 17
+        widget.Label lblDPG = tambahLabelRiwayat(FormInput, "11. DATA PENUNJANG (Hasil EKG/EEG/Laboratorium/Radiologi/CT Scan, dll)", 10, dpgBase, 600);
+        lblDPG.setFont(lblDPG.getFont().deriveFont(java.awt.Font.BOLD));
+        for(int i=0;i<4;i++){
+            int y = dpgBase + 26 + (i*26);
+            tambahLabelRiwayat(FormInput, (i+1)+")", 44, y, 30);
+            txtDataPenunjang[i] = tambahTeksRiwayat(FormInput, 80, y, 750);
+        }
+
+        // === Panel kiri: 1. Riwayat Alergi/Reaksi ===
+        panelAlergi = new widget.PanelBiasa();
+        panelAlergi.setLayout(null);
+        panelAlergi.setBorder(javax.swing.BorderFactory.createTitledBorder("1. Riwayat Alergi / Reaksi"));
+        FormInput.add(panelAlergi);
+        panelAlergi.setBounds(10, topPanelY, 425, 240);
+
+        chkAlergiTidakAda = tambahCekRiwayat(panelAlergi, "Tidak ada alergi", 10, 22, 160);
+
+        widget.Label ukurAlergi = new widget.Label();
+        java.awt.FontMetrics fmAlergi = ukurAlergi.getFontMetrics(ukurAlergi.getFont());
+        int lebarChkAlergi = 0;
+        for(String t : new String[]{"Alergi Obat, sebutkan :","Alergi Makanan, sebutkan :","Alergi lainnya, sebutkan :"}){
+            lebarChkAlergi = Math.max(lebarChkAlergi, fmAlergi.stringWidth(t));
+        }
+        lebarChkAlergi += 25; // ruang kotak checkbox
+        final int xSebutkan = 10 + lebarChkAlergi + 8;
+        final int lebarSebutkan = 80;
+        final int xReaksiLabel = xSebutkan + lebarSebutkan + 6;
+        final int lebarReaksiLabel = 45;
+        final int xReaksiBox = xReaksiLabel + lebarReaksiLabel + 3;
+        final int lebarReaksiBox = 75;
+
+        chkAlergiObat = tambahCekRiwayat(panelAlergi, "Alergi Obat, sebutkan :", 10, 50, lebarChkAlergi);
+        txtAlergiObatSebutkan = tambahTeksRiwayat(panelAlergi, xSebutkan, 50, lebarSebutkan);
+        tambahLabelRiwayat(panelAlergi, "Reaksi :", xReaksiLabel, 50, lebarReaksiLabel);
+        txtAlergiObatReaksi = tambahTeksRiwayat(panelAlergi, xReaksiBox, 50, lebarReaksiBox);
+
+        chkAlergiMakanan = tambahCekRiwayat(panelAlergi, "Alergi Makanan, sebutkan :", 10, 78, lebarChkAlergi);
+        txtAlergiMakananSebutkan = tambahTeksRiwayat(panelAlergi, xSebutkan, 78, lebarSebutkan);
+        tambahLabelRiwayat(panelAlergi, "Reaksi :", xReaksiLabel, 78, lebarReaksiLabel);
+        txtAlergiMakananReaksi = tambahTeksRiwayat(panelAlergi, xReaksiBox, 78, lebarReaksiBox);
+
+        chkAlergiLainnya = tambahCekRiwayat(panelAlergi, "Alergi lainnya, sebutkan :", 10, 106, lebarChkAlergi);
+        txtAlergiLainnyaSebutkan = tambahTeksRiwayat(panelAlergi, xSebutkan, 106, lebarSebutkan);
+        tambahLabelRiwayat(panelAlergi, "Reaksi :", xReaksiLabel, 106, lebarReaksiLabel);
+        txtAlergiLainnyaReaksi = tambahTeksRiwayat(panelAlergi, xReaksiBox, 106, lebarReaksiBox);
+
+        chkAlergiTidakDiketahui = tambahCekRiwayat(panelAlergi, "Tidak diketahui", 10, 134, 120);
+        tambahLabelRiwayat(panelAlergi, "Reaksi :", xReaksiLabel, 134, lebarReaksiLabel);
+        txtAlergiTidakDiketahuiReaksi = tambahTeksRiwayat(panelAlergi, xReaksiBox, 134, lebarReaksiBox);
+
+        chkAlergiTandaDipasang = tambahCekRiwayat(panelAlergi, "Tanda Alergi dipasang (stiker warna merah)", 10, 162, 390);
+        widget.Label lblCatatanStiker = tambahLabelRiwayat(panelAlergi, "Catatan : Stiker dipasang di gelang identitas pasien", 10, 188, 400);
+        lblCatatanStiker.setFont(lblCatatanStiker.getFont().deriveFont(java.awt.Font.ITALIC, 10f));
+
+        // === Panel kanan: 3. Riwayat Kesehatan ===
+        panelRiwayatKesehatan = new widget.PanelBiasa();
+        panelRiwayatKesehatan.setLayout(null);
+        panelRiwayatKesehatan.setBorder(javax.swing.BorderFactory.createTitledBorder("3. Riwayat Kesehatan"));
+        FormInput.add(panelRiwayatKesehatan);
+        panelRiwayatKesehatan.setBounds(10, riwayatKesehatanPanelY, 425, 240);
+
+        tambahLabelRiwayat(panelRiwayatKesehatan, "a. Riwayat Kesehatan yang Lalu :", 10, 22, 280);
+        chkRpdHipertensi = tambahCekRiwayat(panelRiwayatKesehatan, "Hipertensi", 10, 48, 78);
+        chkRpdDm = tambahCekRiwayat(panelRiwayatKesehatan, "DM", 88, 48, 50);
+        chkRpdJantung = tambahCekRiwayat(panelRiwayatKesehatan, "Jantung", 138, 48, 72);
+        chkRpdHepatitis = tambahCekRiwayat(panelRiwayatKesehatan, "Hepatitis", 210, 48, 82);
+        chkRpdOperasi = tambahCekRiwayat(panelRiwayatKesehatan, "Operasi", 292, 48, 75);
+        chkRpdAnemia = tambahCekRiwayat(panelRiwayatKesehatan, "Anemia", 10, 74, 65);
+        chkRpdAsthma = tambahCekRiwayat(panelRiwayatKesehatan, "Asthma", 78, 74, 65);
+        chkRpdStroke = tambahCekRiwayat(panelRiwayatKesehatan, "Stroke", 146, 74, 60);
+        chkRpdParu = tambahCekRiwayat(panelRiwayatKesehatan, "Paru", 209, 74, 50);
+        chkRpdLainlain = tambahCekRiwayat(panelRiwayatKesehatan, "Lain-lain", 262, 74, 75);
+        txtRpdLainlainSebutkan = tambahTeksRiwayat(panelRiwayatKesehatan, 337, 74, 75);
+
+        tambahLabelRiwayat(panelRiwayatKesehatan, "b. Riwayat Kesehatan Keluarga :", 10, 104, 280);
+        chkRpkHipertensi = tambahCekRiwayat(panelRiwayatKesehatan, "Hipertensi", 10, 130, 78);
+        chkRpkDm = tambahCekRiwayat(panelRiwayatKesehatan, "DM", 88, 130, 50);
+        chkRpkJantung = tambahCekRiwayat(panelRiwayatKesehatan, "Jantung", 138, 130, 72);
+        chkRpkThalasemia = tambahCekRiwayat(panelRiwayatKesehatan, "Thalasemia", 210, 130, 95);
+        chkRpkLainlain = tambahCekRiwayat(panelRiwayatKesehatan, "Lain-lain", 305, 130, 75);
+        tambahLabelRiwayat(panelRiwayatKesehatan, "sebutkan :", 10, 156, 70);
+        txtRpkLainlainSebutkan = tambahTeksRiwayat(panelRiwayatKesehatan, 82, 156, 320);
+
+        // === Panel kanan-atas: 2. Alasan Masuk RS (Tahap 8) - Anamnesis/KetAnamnesis
+        // (widget GEN asli, DIPINDAH kesini dari posisi lama y=100 di FormInput) +
+        // Nama Keluarga/Hubungan (Tahap 2, skrng dibangun di sini bukan di FormInput
+        // langsung) + Keluhan Utama (baru) + Riwayat Kesehatan Sekarang (reuse RPS
+        // + scrollPane1 GEN asli, DIPINDAH dari posisi lama y=150, label direlabel).
+        panelAlasanMasuk = new widget.PanelBiasa();
+        panelAlasanMasuk.setLayout(null);
+        panelAlasanMasuk.setBorder(javax.swing.BorderFactory.createTitledBorder("2. Alasan Masuk RS"));
+        FormInput.add(panelAlasanMasuk);
+        panelAlasanMasuk.setBounds(445, topPanelY, 425, 240);
+
+        panelAlasanMasuk.add(jLabel36);
+        jLabel36.setBounds(10, 20, 75, 23);
+        panelAlasanMasuk.add(Anamnesis);
+        Anamnesis.setBounds(90, 20, 140, 23);
+        panelAlasanMasuk.add(KetAnamnesis);
+        KetAnamnesis.setBounds(240, 20, 175, 23);
+
+        tambahLabelRiwayat(panelAlasanMasuk, "Nama Keluarga :", 10, 50, 100);
+        txtNamaKeluargaAnamnesis = tambahTeksRiwayat(panelAlasanMasuk, 115, 50, 140);
+        tambahLabelRiwayat(panelAlasanMasuk, "Hubungan :", 265, 50, 70);
+        txtHubunganAnamnesis = tambahTeksRiwayat(panelAlasanMasuk, 338, 50, 67);
+
+        tambahLabelRiwayat(panelAlasanMasuk, "a. Keluhan Utama :", 10, 80, 200);
+        KeluhanUtama = tambahTeksRiwayat(panelAlasanMasuk, 10, 104, 405);
+
+        jLabel30.setText("b. Riwayat Kesehatan Sekarang :");
+        panelAlasanMasuk.add(jLabel30);
+        jLabel30.setBounds(10, 134, 250, 23);
+        panelAlasanMasuk.add(scrollPane1);
+        scrollPane1.setBounds(10, 158, 405, 60);
+    }
+
+    /** "Ya"/"Tidak" dari status centang - item Riwayat Alergi/RPD/RPK independen, boleh dicentang lebih dari satu. */
+    private String yt(widget.CekBox c){ return c.isSelected()?"Ya":"Tidak"; }
+
+    /** Reset checklist Riwayat Alergi/RPD/RPK RM 19 ke kosong - dipanggil emptTeks() & sebelum getDataRiwayatRM19() mengisi ulang. */
+    private void resetChecklistRiwayatRM19(){
+        chkAlergiTidakAda.setSelected(false);
+        chkAlergiObat.setSelected(false); txtAlergiObatSebutkan.setText(""); txtAlergiObatReaksi.setText("");
+        chkAlergiMakanan.setSelected(false); txtAlergiMakananSebutkan.setText(""); txtAlergiMakananReaksi.setText("");
+        chkAlergiLainnya.setSelected(false); txtAlergiLainnyaSebutkan.setText(""); txtAlergiLainnyaReaksi.setText("");
+        chkAlergiTidakDiketahui.setSelected(false); txtAlergiTidakDiketahuiReaksi.setText("");
+        chkAlergiTandaDipasang.setSelected(false);
+        chkRpdHipertensi.setSelected(false); chkRpdDm.setSelected(false); chkRpdJantung.setSelected(false);
+        chkRpdHepatitis.setSelected(false); chkRpdOperasi.setSelected(false); chkRpdAnemia.setSelected(false);
+        chkRpdAsthma.setSelected(false); chkRpdStroke.setSelected(false); chkRpdParu.setSelected(false);
+        chkRpdLainlain.setSelected(false); txtRpdLainlainSebutkan.setText("");
+        chkRpkHipertensi.setSelected(false); chkRpkDm.setSelected(false); chkRpkJantung.setSelected(false);
+        chkRpkThalasemia.setSelected(false); chkRpkLainlain.setSelected(false); txtRpkLainlainSebutkan.setText("");
+        txtNamaKeluargaAnamnesis.setText(""); txtHubunganAnamnesis.setText("");
+        TingkatKesadaran.setSelectedIndex(0); LLA.setText("");
+        Menstruasi.setSelectedIndex(0); StatusHamil.setSelectedIndex(0); HPHT.setText("");
+        Papsmear.setSelectedIndex(0); TglPapsmear.setText("");
+        Mamografi.setSelectedIndex(0); TglMamografi.setText("");
+        Sadari.setSelectedIndex(0); TglSadari.setText("");
+        ScreeningProstat.setSelectedIndex(0); TglScreeningProstat.setText("");
+        SkalaBranden.setText("");
+        PupilKananUkuran.setText(""); PupilKananReaksi.setText("");
+        PupilKiriUkuran.setText(""); PupilKiriReaksi.setText("");
+        GCSE.setText(""); GCSM.setText(""); GCSV.setText("");
+        KeluhanUtama.setText("");
+        chkAirwayNormal.setSelected(false); chkAirwayOropharingeal.setSelected(false); chkAirwaySekret.setSelected(false);
+        chkAirwayTumor.setSelected(false); chkAirwayTrajeostomy.setSelected(false); chkAirwayRTT.setSelected(false); txtAirwayRTTUkuran.setText("");
+        chkBreathingNormal.setSelected(false); chkBreathingSesakDyspnea.setSelected(false); chkBreathingBatuk.setSelected(false);
+        chkBreathingTakipneu.setSelected(false); chkBreathingBatukDarah.setSelected(false); chkBreathingSleepApnea.setSelected(false); chkBreathingNgorok.setSelected(false);
+        chkBreathingLain.setSelected(false); txtBreathingLain.setText("");
+        chkBunyiParuNormal.setSelected(false); chkBunyiParuOrthopnea.setSelected(false); chkBunyiParuStidor.setSelected(false);
+        chkBunyiParuRonkhiKanan.setSelected(false); chkBunyiParuRonkhiKiri.setSelected(false); chkBunyiParuWheezingKanan.setSelected(false); chkBunyiParuWheezingKiri.setSelected(false);
+        chkBunyiParuLain.setSelected(false); txtBunyiParuLain.setText("");
+        chkKesulitanBernafasTidak.setSelected(false); chkKesulitanBernafasYa.setSelected(false);
+        chkOtotBantuNafasTidak.setSelected(false); chkOtotBantuNafasYa.setSelected(false);
+        chkO2Tidak.setSelected(false); chkO2Ya.setSelected(false); chkO2Nasal.setSelected(false); chkO2Sungkup.setSelected(false);
+        txtO2LiterMenit.setText(""); txtSaturasiO2.setText("");
+        chkCardioTidakAdaKelainan.setSelected(false); chkCardioBradikardi.setSelected(false); chkCardioTakikardi.setSelected(false);
+        chkCardioMurMur.setSelected(false); chkCardioGallop.setSelected(false); chkCardioPucatSianosis.setSelected(false); chkCardioNyeriDada.setSelected(false);
+        txtCardioLain.setText("");
+        chkGiTidakAdaKeluhan.setSelected(false); chkGiPenurunanBisingUsus.setSelected(false);
+        chkGiGigiPalsuAtasKanan.setSelected(false); chkGiGigiPalsuAtasKiri.setSelected(false); chkGiGigiPalsuBawahKanan.setSelected(false); chkGiGigiPalsuBawahKiri.setSelected(false);
+        chkGiPembatasanMakanan.setSelected(false); txtGiPembatasanMakanan.setText("");
+        chkGiTidakNafsuMakan.setSelected(false); chkGiMual.setSelected(false);
+        chkGiMuntah.setSelected(false); txtGiMuntahKali.setText(""); chkGiKonstipasi.setSelected(false);
+        chkGiTerpasangNGT.setSelected(false); chkGiSulitMenelan.setSelected(false);
+        chkGiDiare.setSelected(false); txtGiDiareX.setText(""); chkGiKolostomi.setSelected(false); chkGiDistensiAbdomen.setSelected(false);
+        chkGiMakanHabis.setSelected(false); chkGiIVFD.setSelected(false); txtGiIVFDTts.setText("");
+        chkKemihTidakAdaKeluhan.setSelected(false); chkKemihDistensiBladder.setSelected(false); chkKemihHaematuria.setSelected(false);
+        chkKemihRetensiUrine.setSelected(false); chkKemihOliguri.setSelected(false); chkKemihPoliuri.setSelected(false); chkKemihDisuria.setSelected(false); chkKemihAnuri.setSelected(false);
+        chkKemihTerpasangKateter.setSelected(false); chkKemihInkontinensiaUrine.setSelected(false); txtKemihLain.setText("");
+        chkPendengaranTAK.setSelected(false); chkPendengaranBerdengung.setSelected(false); chkPendengaranTuli.setSelected(false);
+        chkPendengaranKeluarCairan.setSelected(false); chkPendengaranNyeri.setSelected(false);
+        chkPenglihatanTAK.setSelected(false); chkPenglihatanAnemis.setSelected(false); chkPenglihatanIcterik.setSelected(false);
+        chkPenglihatanTidakAdaReaksiCahaya.setSelected(false); chkPenglihatanKacaMata.setSelected(false); chkPenglihatanLensaKontak.setSelected(false);
+        chkPenglihatanMerah.setSelected(false); chkPenglihatanKabur.setSelected(false); txtPenglihatanLain.setText("");
+        chkWicaraNormal.setSelected(false); chkWicaraCadelPelo.setSelected(false); chkWicaraAphasia.setSelected(false); chkWicaraKerusakanWicara.setSelected(false);
+        chkOrientasiBaik.setSelected(false); chkOrientasiOrang.setSelected(false); chkOrientasiTempat.setSelected(false); chkOrientasiWaktu.setSelected(false); chkOrientasiSituasi.setSelected(false);
+        chkMemoriBaik.setSelected(false); chkMemoriSedang.setSelected(false); chkMemoriBuruk.setSelected(false);
+        chkKonsentrasiBaik.setSelected(false); chkKonsentrasiSedang.setSelected(false); chkKonsentrasiBuruk.setSelected(false);
+        txtKekuatanOtot.setText(""); txtKekuatanOtotTremorDi.setText(""); chkKekuatanOtotInkoordinasi.setSelected(false); chkKekuatanOtotKejang.setSelected(false);
+        txtHemiplegiDi.setText(""); txtParaseDi.setText("");
+        chkFrakturTanganKanan.setSelected(false); chkFrakturTanganKiri.setSelected(false); chkFrakturKakiKanan.setSelected(false); chkFrakturKakiKiri.setSelected(false);
+        txtEkstremitasLain.setText("");
+        chkWarnaKulitNormal.setSelected(false); chkWarnaKulitPucat.setSelected(false); chkWarnaKulitMerah.setSelected(false);
+        chkWarnaKulitIkterik.setSelected(false); chkWarnaKulitKemerahan.setSelected(false); txtWarnaKulitLain.setText("");
+        chkIntegritasKulitUtuh.setSelected(false); chkIntegritasKulitRuam.setSelected(false); chkIntegritasKulitMelepuh.setSelected(false); txtIntegritasKulitMelepuhDi.setText("");
+        chkIntegritasKulitKemerahan.setSelected(false); txtIntegritasKulitKemerahanDi.setText("");
+        StatusPernikahan.setSelectedIndex(0);
+        NamaKerabatTerdekat.setText(""); HubunganKerabatTerdekat.setText(""); TelpKerabatTerdekat.setText("");
+        chkPsikoTAK.setSelected(false); chkPsikoMarah.setSelected(false); chkPsikoGelisah.setSelected(false); chkPsikoSedih.setSelected(false);
+        chkPsikoCemas.setSelected(false); chkPsikoTakut.setSelected(false); chkPsikoAcuhTakAcuh.setSelected(false); chkPsikoBunuhDiri.setSelected(false);
+        chkHubKeluargaBaik.setSelected(false); chkHubKeluargaTidakBaik.setSelected(false);
+        chkTempatTinggalRumah.setSelected(false); chkTempatTinggalAsrama.setSelected(false); chkTempatTinggalPanti.setSelected(false); chkTempatTinggalLainnya.setSelected(false); txtTempatTinggalLainnya.setText("");
+        chkTinggalSuamiIstri.setSelected(false); chkTinggalAnak.setSelected(false); chkTinggalOrangTua.setSelected(false); chkTinggalLainnya.setSelected(false); txtTinggalLainnya.setText("");
+        chkPekerjaanBekerja.setSelected(false); chkPekerjaanPNS.setSelected(false); chkPekerjaanSwasta.setSelected(false); chkPekerjaanTNIPolri.setSelected(false); chkPekerjaanTaniBuruh.setSelected(false);
+        chkKebiasaanMerokok.setSelected(false); chkKebiasaanAlkohol.setSelected(false); chkKebiasaanLainnya.setSelected(false); txtKebiasaanJenisJumlah.setText("");
+        chkKepribadianTidakAdaKeluhan.setSelected(false); chkKepribadianPerluPendampingan.setSelected(false); chkKepribadianPerluDibantuIbadah.setSelected(false); chkKepribadianBerdoa.setSelected(false); chkKepribadianBacaLiteratur.setSelected(false);
+        txtKepribadianGangguPraktik.setText(""); txtKepribadianNilaiBudaya.setText(""); txtKepribadianLainLain.setText("");
+        kanvasNyeri.hapusCoretan();
+        txtNyeriP.setText(""); txtNyeriQ.setText(""); txtNyeriR.setText(""); txtNyeriS.setText(""); txtNyeriT.setText("");
+        chkKeluhanNyeriKronik.setSelected(false); chkKeluhanNyeriAkut.setSelected(false); chkKeluhanTidakAdaNyeri.setSelected(false);
+        chkNyeriHilangMinumObat.setSelected(false); chkNyeriHilangIstirahat.setSelected(false); chkNyeriHilangBerubahPosisi.setSelected(false);
+        chkNyeriHilangMendengarMusik.setSelected(false); chkNyeriHilangLainLain.setSelected(false); txtNyeriHilangLainLain.setText("");
+        chkFungsionalMandiri.setSelected(false); chkFungsionalBantuanMinimal.setSelected(false); chkFungsionalBantuanSebagian.setSelected(false); chkFungsionalKetergantungan.setSelected(false);
+        chkBerjalanNormal.setSelected(false); chkBerjalanPerluBantuan.setSelected(false); chkBerjalanSeringJatuh.setSelected(false); chkBerjalanKelumpuhan.setSelected(false);
+        chkEduBicaraTidak.setSelected(false); chkEduBicaraYa.setSelected(false); txtEduBicaraJelaskan.setText("");
+        chkEduBahasaIndonesia.setSelected(false); chkEduBahasaDaerah.setSelected(false); txtEduBahasaDaerah.setText("");
+        chkEduBahasaAsing.setSelected(false); txtEduBahasaAsing.setText(""); chkEduBahasaIsyarat.setSelected(false);
+        chkEduPenerjemahTidak.setSelected(false); chkEduPenerjemahYa.setSelected(false); txtEduPenerjemahBahasa.setText("");
+        chkCaraAudioVisual.setSelected(false); chkCaraDiskusi.setSelected(false); chkCaraMembaca.setSelected(false); chkCaraMenulis.setSelected(false);
+        chkCaraMengerjakan.setSelected(false); chkCaraGambar.setSelected(false); chkCaraMendengar.setSelected(false); chkCaraDemonstrasi.setSelected(false);
+        chkHambatanEduTidak.setSelected(false); chkHambatanEduYa.setSelected(false);
+        chkHambatanBahasa.setSelected(false); chkHambatanEmosi.setSelected(false); chkHambatanCaregiver.setSelected(false); chkHambatanFisiologisBelajar.setSelected(false);
+        chkHambatanPendengaran.setSelected(false); chkHambatanPenglihatan.setSelected(false); chkHambatanMemori.setSelected(false); chkHambatanMotivasi.setSelected(false); chkHambatanBicara.setSelected(false);
+        chkPendidikanTK.setSelected(false); chkPendidikanSD.setSelected(false); chkPendidikanSMP.setSelected(false); chkPendidikanSMA.setSelected(false);
+        chkPendidikanD3D4.setSelected(false); chkPendidikanS1.setSelected(false); chkPendidikanS2.setSelected(false); chkPendidikanS3.setSelected(false);
+        chkKebutuhanProsesPenyakit.setSelected(false); chkKebutuhanDiitNutrisi.setSelected(false); chkKebutuhanPerawatanLuka.setSelected(false);
+        chkKebutuhanManajemenNyeri.setSelected(false); chkKebutuhanObatObatan.setSelected(false); chkKebutuhanRehabilitasi.setSelected(false);
+        chkKebutuhanLainLain.setSelected(false); txtKebutuhanLainLain.setText("");
+        for(int i=0;i<7;i++){ chkDischargeYa[i].setSelected(false); chkDischargeTidak[i].setSelected(false); txtDischargeKet[i].setText(""); }
+        txtDischargeManualKomponen.setText(""); chkDischargeManualYa.setSelected(false);
+        chkDischargeManualTidak.setSelected(false); txtDischargeManualKet.setText("");
+        for(int i=0;i<4;i++){ txtDataPenunjang[i].setText(""); }
+    }
+
+    /**
+     * Isi ulang checklist Riwayat Alergi/RPD/RPK RM 19 dari DB berdasar no_rawat
+     * baris yg diklik - DIPANGGIL TERPISAH dari getData() (bukan lewat tabMode/
+     * tbObat, spy tabel daftar tetap sejumlah kolom semula/tidak melebar). Query
+     * dibungkus try/catch - kalau migrasi sik_pengkajian_ranap_riwayat_rm19.sql
+     * belum diimport (kolom blm ada), checklist cuma tetap kosong (bukan error).
+     */
+    private void getDataRiwayatRM19(){
+        resetChecklistRiwayatRM19();
+        if(tbObat.getSelectedRow()==-1){ return; }
+        java.sql.PreparedStatement psR=null; java.sql.ResultSet rsR=null;
+        try {
+            psR = koneksi.prepareStatement(
+                "select alergi_tidak_ada,alergi_obat,alergi_obat_sebutkan,alergi_obat_reaksi,"+
+                "alergi_makanan,alergi_makanan_sebutkan,alergi_makanan_reaksi,"+
+                "alergi_lainnya,alergi_lainnya_sebutkan,alergi_lainnya_reaksi,"+
+                "alergi_tidak_diketahui,alergi_tidak_diketahui_reaksi,alergi_tanda_dipasang,"+
+                "rpd_hipertensi,rpd_dm,rpd_jantung,rpd_hepatitis,rpd_operasi,rpd_anemia,rpd_asthma,rpd_stroke,rpd_paru,rpd_lainlain,rpd_lainlain_sebutkan,"+
+                "rpk_hipertensi,rpk_dm,rpk_jantung,rpk_thalasemia,rpk_lainlain,rpk_lainlain_sebutkan,"+
+                "informasi_nama_keluarga,informasi_hubungan_keluarga,"+
+                "tingkat_kesadaran,lla,"+
+                "reproduksi_menstruasi,reproduksi_hamil,reproduksi_hpht,reproduksi_papsmear,reproduksi_papsmear_tanggal,"+
+                "reproduksi_mamografi,reproduksi_mamografi_tanggal,reproduksi_sadari,reproduksi_sadari_tanggal,"+
+                "reproduksi_screening_prostat,reproduksi_screening_prostat_tanggal,skala_branden,"+
+                "status_pernikahan,kerabat_nama,kerabat_hubungan,kerabat_telp,"+
+                "psiko_tak,psiko_marah,psiko_gelisah,psiko_sedih,psiko_cemas,psiko_takut,psiko_acuhtakacuh,psiko_bunuhdiri,"+
+                "sosek_hubkeluarga_baik,sosek_hubkeluarga_tidakbaik,"+
+                "sosek_tinggal_rumah,sosek_tinggal_asrama,sosek_tinggal_panti,sosek_tinggal_lainnya,sosek_tinggal_lainnya_ket,"+
+                "sosek_bersama_suamiistri,sosek_bersama_anak,sosek_bersama_orangtua,sosek_bersama_lainnya,sosek_bersama_lainnya_ket,"+
+                "sosek_kerja_bekerja,sosek_kerja_pns,sosek_kerja_swasta,sosek_kerja_tnipolri,sosek_kerja_tani_buruh,"+
+                "sosek_kebiasaan_merokok,sosek_kebiasaan_alkohol,sosek_kebiasaan_lainnya,sosek_kebiasaan_jenis_jumlah,"+
+                "kepribadian_tidakadakeluhan,kepribadian_perlupendampingan,kepribadian_perludibantuibadah,kepribadian_berdoa,kepribadian_bacaliteratur,"+
+                "kepribadian_ganggu_praktik,kepribadian_nilai_budaya,kepribadian_lainlain,"+
+                "nyeri_canvas_gambar,nyeri_p,nyeri_q,nyeri_r,nyeri_s,nyeri_t,"+
+                "keluhan_nyeri_kronik,keluhan_nyeri_akut,keluhan_tidak_ada_nyeri,"+
+                "nyerihilang_minum_obat,nyerihilang_istirahat,nyerihilang_berubah_posisi,nyerihilang_mendengar_musik,nyerihilang_lainlain,nyerihilang_lainlain_ket,"+
+                "fungsional_mandiri,fungsional_bantuan_minimal,fungsional_bantuan_sebagian,fungsional_ketergantungan,"+
+                "fungsional_berjalan_normal,fungsional_berjalan_perlu_bantuan,fungsional_berjalan_sering_jatuh,fungsional_berjalan_kelumpuhan,"+
+                "discharge_manual_komponen,discharge_manual_ya,discharge_manual_tidak,discharge_manual_ket,"+
+                "edu_bicara_tidak,edu_bicara_ya,edu_bicara_jelaskan,"+
+                "edu_bahasa_indonesia,edu_bahasa_daerah,edu_bahasa_daerah_ket,edu_bahasa_asing,edu_bahasa_asing_ket,edu_bahasa_isyarat,"+
+                "edu_penerjemah_tidak,edu_penerjemah_ya,edu_penerjemah_bahasa,"+
+                "edu_cara_audiovisual,edu_cara_diskusi,edu_cara_membaca,edu_cara_menulis,edu_cara_mengerjakan,edu_cara_gambar,edu_cara_mendengar,edu_cara_demonstrasi,"+
+                "edu_hambatan_tidak,edu_hambatan_ya,"+
+                "edu_hambatan_bahasa,edu_hambatan_emosi,edu_hambatan_caregiver,edu_hambatan_fisiologis,edu_hambatan_pendengaran,edu_hambatan_penglihatan,edu_hambatan_memori,edu_hambatan_motivasi,edu_hambatan_bicara,"+
+                "edu_pendidikan_tk,edu_pendidikan_sd,edu_pendidikan_smp,edu_pendidikan_sma,edu_pendidikan_d3d4,edu_pendidikan_s1,edu_pendidikan_s2,edu_pendidikan_s3,"+
+                "edu_kebutuhan_proses_penyakit,edu_kebutuhan_diit_nutrisi,edu_kebutuhan_perawatan_luka,edu_kebutuhan_manajemen_nyeri,edu_kebutuhan_obat,edu_kebutuhan_rehabilitasi,edu_kebutuhan_lainlain,edu_kebutuhan_lainlain_ket,"+
+                "discharge_homecare_ya,discharge_homecare_tidak,discharge_homecare_ket,"+
+                "discharge_perawatanluka_ya,discharge_perawatanluka_tidak,discharge_perawatanluka_ket,"+
+                "discharge_alatbantu_ya,discharge_alatbantu_tidak,discharge_alatbantu_ket,"+
+                "discharge_pemesananalat_ya,discharge_pemesananalat_tidak,discharge_pemesananalat_ket,"+
+                "discharge_timterapis_ya,discharge_timterapis_tidak,discharge_timterapis_ket,"+
+                "discharge_gizi_ya,discharge_gizi_tidak,discharge_gizi_ket,"+
+                "discharge_kelompok_ya,discharge_kelompok_tidak,discharge_kelompok_ket,"+
+                "data_penunjang1,data_penunjang2,data_penunjang3,data_penunjang4,"+
+                "gcs_e,gcs_m,gcs_v,pupil_kanan_ukuran,pupil_kanan_reaksi,pupil_kiri_ukuran,pupil_kiri_reaksi,"+
+                "keluhan_utama,"+
+                "airway_normal,airway_oropharingeal,airway_sekret,airway_tumor,airway_trajeostomy,airway_rtt,breathing_normal,breathing_sesak_dyspnea,breathing_batuk,breathing_takipneu,breathing_batuk_darah,breathing_sleep_apnea,breathing_orthopnea,bunyiparu_normal,bunyiparu_ngorok,bunyiparu_stidor,bunyiparu_ronkhi_kanan,bunyiparu_ronkhi_kiri,bunyiparu_wheezing_kanan,bunyiparu_wheezing_kiri,kesulitan_bernafas_tidak,kesulitan_bernafas_ya,otot_bantu_nafas_tidak,otot_bantu_nafas_ya,o2_tidak,o2_ya,o2_nasal,o2_sungkup,cardio_tidak_ada_kelainan,cardio_bradikardi,cardio_takikardi,cardio_murmur,cardio_gallop,cardio_pucat_sianosis,cardio_nyeri_dada,gi_tidak_ada_keluhan,gi_penurunan_bising_usus,gi_gigipalsu_atas_kanan,gi_gigipalsu_atas_kiri,gi_gigipalsu_bawah_kanan,gi_gigipalsu_bawah_kiri,gi_pembatasan_makanan,gi_tidak_nafsu_makan,gi_mual,gi_muntah,gi_konstipasi,gi_terpasang_ngt,gi_sulit_menelan,gi_diare,gi_kolostomi,gi_distensi_abdomen,gi_makan_habis,gi_ivfd,kemih_tidak_ada_keluhan,kemih_distensi_bladder,kemih_haematuria,kemih_retensi_urine,kemih_oliguri,kemih_disuria,kemih_anuri,kemih_terpasang_kateter,kemih_inkontinensia_urine,pendengaran_tak,pendengaran_berdengung,pendengaran_tuli,pendengaran_keluar_cairan,pendengaran_nyeri,penglihatan_tak,penglihatan_anemis,penglihatan_icterik,penglihatan_tidak_ada_reaksi_cahaya,penglihatan_kacamata,penglihatan_lensakontak,penglihatan_merah,penglihatan_kabur,wicara_normal,wicara_cadelpelo,wicara_aphasia,wicara_kerusakan,orientasi_baik,orientasi_orang,orientasi_tempat,orientasi_waktu,orientasi_situasi,memori_baik,memori_sedang,memori_buruk,konsentrasi_baik,konsentrasi_sedang,konsentrasi_buruk,kekuatanotot_inkoordinasi,kekuatanotot_kejang,fraktur_tangan_kanan,fraktur_tangan_kiri,fraktur_kaki_kanan,fraktur_kaki_kiri,warnakulit_normal,warnakulit_pucat,warnakulit_merah,warnakulit_ikterik,warnakulit_kemerahan,integritaskulit_utuh,integritaskulit_ruam,integritaskulit_melepuh,airway_rtt_ukuran,o2_liter_menit,o2_saturasi,cardio_lain,gi_pembatasan_makanan_ket,gi_muntah_kali,gi_diare_x,gi_ivfd_tts,kemih_lain,penglihatan_lain,kekuatanotot_tremor_di,hemiplegi_di,parase_di,warnakulit_lain,integritaskulit_melepuh_di,"+
+                "breathing_lain,breathing_lain_ket,bunyiparu_lain,bunyiparu_lain_ket,kemih_poliuri,"+
+                "kekuatanotot_nilai,ekstremitas_lain,integritaskulit_kemerahan,integritaskulit_kemerahan_di "+
+                "from penilaian_awal_keperawatan_ranap where no_rawat=?");
+            psR.setString(1, tbObat.getValueAt(tbObat.getSelectedRow(),0).toString());
+            rsR = psR.executeQuery();
+            if(rsR.next()){
+                chkAlergiTidakAda.setSelected("Ya".equals(rsR.getString("alergi_tidak_ada")));
+                chkAlergiObat.setSelected("Ya".equals(rsR.getString("alergi_obat")));
+                txtAlergiObatSebutkan.setText(kosongkeStripRiwayatRM19(rsR.getString("alergi_obat_sebutkan")));
+                txtAlergiObatReaksi.setText(kosongkeStripRiwayatRM19(rsR.getString("alergi_obat_reaksi")));
+                chkAlergiMakanan.setSelected("Ya".equals(rsR.getString("alergi_makanan")));
+                txtAlergiMakananSebutkan.setText(kosongkeStripRiwayatRM19(rsR.getString("alergi_makanan_sebutkan")));
+                txtAlergiMakananReaksi.setText(kosongkeStripRiwayatRM19(rsR.getString("alergi_makanan_reaksi")));
+                chkAlergiLainnya.setSelected("Ya".equals(rsR.getString("alergi_lainnya")));
+                txtAlergiLainnyaSebutkan.setText(kosongkeStripRiwayatRM19(rsR.getString("alergi_lainnya_sebutkan")));
+                txtAlergiLainnyaReaksi.setText(kosongkeStripRiwayatRM19(rsR.getString("alergi_lainnya_reaksi")));
+                chkAlergiTidakDiketahui.setSelected("Ya".equals(rsR.getString("alergi_tidak_diketahui")));
+                txtAlergiTidakDiketahuiReaksi.setText(kosongkeStripRiwayatRM19(rsR.getString("alergi_tidak_diketahui_reaksi")));
+                chkAlergiTandaDipasang.setSelected("Ya".equals(rsR.getString("alergi_tanda_dipasang")));
+                chkRpdHipertensi.setSelected("Ya".equals(rsR.getString("rpd_hipertensi")));
+                chkRpdDm.setSelected("Ya".equals(rsR.getString("rpd_dm")));
+                chkRpdJantung.setSelected("Ya".equals(rsR.getString("rpd_jantung")));
+                chkRpdHepatitis.setSelected("Ya".equals(rsR.getString("rpd_hepatitis")));
+                chkRpdOperasi.setSelected("Ya".equals(rsR.getString("rpd_operasi")));
+                chkRpdAnemia.setSelected("Ya".equals(rsR.getString("rpd_anemia")));
+                chkRpdAsthma.setSelected("Ya".equals(rsR.getString("rpd_asthma")));
+                chkRpdStroke.setSelected("Ya".equals(rsR.getString("rpd_stroke")));
+                chkRpdParu.setSelected("Ya".equals(rsR.getString("rpd_paru")));
+                chkRpdLainlain.setSelected("Ya".equals(rsR.getString("rpd_lainlain")));
+                txtRpdLainlainSebutkan.setText(kosongkeStripRiwayatRM19(rsR.getString("rpd_lainlain_sebutkan")));
+                chkRpkHipertensi.setSelected("Ya".equals(rsR.getString("rpk_hipertensi")));
+                chkRpkDm.setSelected("Ya".equals(rsR.getString("rpk_dm")));
+                chkRpkJantung.setSelected("Ya".equals(rsR.getString("rpk_jantung")));
+                chkRpkThalasemia.setSelected("Ya".equals(rsR.getString("rpk_thalasemia")));
+                chkRpkLainlain.setSelected("Ya".equals(rsR.getString("rpk_lainlain")));
+                txtRpkLainlainSebutkan.setText(kosongkeStripRiwayatRM19(rsR.getString("rpk_lainlain_sebutkan")));
+                txtNamaKeluargaAnamnesis.setText(kosongkeStripRiwayatRM19(rsR.getString("informasi_nama_keluarga")));
+                txtHubunganAnamnesis.setText(kosongkeStripRiwayatRM19(rsR.getString("informasi_hubungan_keluarga")));
+                if(rsR.getString("tingkat_kesadaran")!=null){ TingkatKesadaran.setSelectedItem(rsR.getString("tingkat_kesadaran")); }
+                LLA.setText(kosongkeStripRiwayatRM19(rsR.getString("lla")));
+                if(rsR.getString("reproduksi_menstruasi")!=null){ Menstruasi.setSelectedItem(rsR.getString("reproduksi_menstruasi")); }
+                if(rsR.getString("reproduksi_hamil")!=null){ StatusHamil.setSelectedItem(rsR.getString("reproduksi_hamil")); }
+                HPHT.setText(kosongkeStripRiwayatRM19(rsR.getString("reproduksi_hpht")));
+                if(rsR.getString("reproduksi_papsmear")!=null){ Papsmear.setSelectedItem(rsR.getString("reproduksi_papsmear")); }
+                TglPapsmear.setText(kosongkeStripRiwayatRM19(rsR.getString("reproduksi_papsmear_tanggal")));
+                if(rsR.getString("reproduksi_mamografi")!=null){ Mamografi.setSelectedItem(rsR.getString("reproduksi_mamografi")); }
+                TglMamografi.setText(kosongkeStripRiwayatRM19(rsR.getString("reproduksi_mamografi_tanggal")));
+                if(rsR.getString("reproduksi_sadari")!=null){ Sadari.setSelectedItem(rsR.getString("reproduksi_sadari")); }
+                TglSadari.setText(kosongkeStripRiwayatRM19(rsR.getString("reproduksi_sadari_tanggal")));
+                if(rsR.getString("reproduksi_screening_prostat")!=null){ ScreeningProstat.setSelectedItem(rsR.getString("reproduksi_screening_prostat")); }
+                TglScreeningProstat.setText(kosongkeStripRiwayatRM19(rsR.getString("reproduksi_screening_prostat_tanggal")));
+                SkalaBranden.setText(kosongkeStripRiwayatRM19(rsR.getString("skala_branden")));
+                if(rsR.getString("status_pernikahan")!=null){ StatusPernikahan.setSelectedItem(rsR.getString("status_pernikahan")); }
+                NamaKerabatTerdekat.setText(kosongkeStripRiwayatRM19(rsR.getString("kerabat_nama")));
+                HubunganKerabatTerdekat.setText(kosongkeStripRiwayatRM19(rsR.getString("kerabat_hubungan")));
+                TelpKerabatTerdekat.setText(kosongkeStripRiwayatRM19(rsR.getString("kerabat_telp")));
+                chkPsikoTAK.setSelected("Ya".equals(rsR.getString("psiko_tak")));
+                chkPsikoMarah.setSelected("Ya".equals(rsR.getString("psiko_marah")));
+                chkPsikoGelisah.setSelected("Ya".equals(rsR.getString("psiko_gelisah")));
+                chkPsikoSedih.setSelected("Ya".equals(rsR.getString("psiko_sedih")));
+                chkPsikoCemas.setSelected("Ya".equals(rsR.getString("psiko_cemas")));
+                chkPsikoTakut.setSelected("Ya".equals(rsR.getString("psiko_takut")));
+                chkPsikoAcuhTakAcuh.setSelected("Ya".equals(rsR.getString("psiko_acuhtakacuh")));
+                chkPsikoBunuhDiri.setSelected("Ya".equals(rsR.getString("psiko_bunuhdiri")));
+                chkHubKeluargaBaik.setSelected("Ya".equals(rsR.getString("sosek_hubkeluarga_baik")));
+                chkHubKeluargaTidakBaik.setSelected("Ya".equals(rsR.getString("sosek_hubkeluarga_tidakbaik")));
+                chkTempatTinggalRumah.setSelected("Ya".equals(rsR.getString("sosek_tinggal_rumah")));
+                chkTempatTinggalAsrama.setSelected("Ya".equals(rsR.getString("sosek_tinggal_asrama")));
+                chkTempatTinggalPanti.setSelected("Ya".equals(rsR.getString("sosek_tinggal_panti")));
+                chkTempatTinggalLainnya.setSelected("Ya".equals(rsR.getString("sosek_tinggal_lainnya")));
+                txtTempatTinggalLainnya.setText(kosongkeStripRiwayatRM19(rsR.getString("sosek_tinggal_lainnya_ket")));
+                chkTinggalSuamiIstri.setSelected("Ya".equals(rsR.getString("sosek_bersama_suamiistri")));
+                chkTinggalAnak.setSelected("Ya".equals(rsR.getString("sosek_bersama_anak")));
+                chkTinggalOrangTua.setSelected("Ya".equals(rsR.getString("sosek_bersama_orangtua")));
+                chkTinggalLainnya.setSelected("Ya".equals(rsR.getString("sosek_bersama_lainnya")));
+                txtTinggalLainnya.setText(kosongkeStripRiwayatRM19(rsR.getString("sosek_bersama_lainnya_ket")));
+                chkPekerjaanBekerja.setSelected("Ya".equals(rsR.getString("sosek_kerja_bekerja")));
+                chkPekerjaanPNS.setSelected("Ya".equals(rsR.getString("sosek_kerja_pns")));
+                chkPekerjaanSwasta.setSelected("Ya".equals(rsR.getString("sosek_kerja_swasta")));
+                chkPekerjaanTNIPolri.setSelected("Ya".equals(rsR.getString("sosek_kerja_tnipolri")));
+                chkPekerjaanTaniBuruh.setSelected("Ya".equals(rsR.getString("sosek_kerja_tani_buruh")));
+                chkKebiasaanMerokok.setSelected("Ya".equals(rsR.getString("sosek_kebiasaan_merokok")));
+                chkKebiasaanAlkohol.setSelected("Ya".equals(rsR.getString("sosek_kebiasaan_alkohol")));
+                chkKebiasaanLainnya.setSelected("Ya".equals(rsR.getString("sosek_kebiasaan_lainnya")));
+                txtKebiasaanJenisJumlah.setText(kosongkeStripRiwayatRM19(rsR.getString("sosek_kebiasaan_jenis_jumlah")));
+                chkKepribadianTidakAdaKeluhan.setSelected("Ya".equals(rsR.getString("kepribadian_tidakadakeluhan")));
+                chkKepribadianPerluPendampingan.setSelected("Ya".equals(rsR.getString("kepribadian_perlupendampingan")));
+                chkKepribadianPerluDibantuIbadah.setSelected("Ya".equals(rsR.getString("kepribadian_perludibantuibadah")));
+                chkKepribadianBerdoa.setSelected("Ya".equals(rsR.getString("kepribadian_berdoa")));
+                chkKepribadianBacaLiteratur.setSelected("Ya".equals(rsR.getString("kepribadian_bacaliteratur")));
+                txtKepribadianGangguPraktik.setText(kosongkeStripRiwayatRM19(rsR.getString("kepribadian_ganggu_praktik")));
+                txtKepribadianNilaiBudaya.setText(kosongkeStripRiwayatRM19(rsR.getString("kepribadian_nilai_budaya")));
+                txtKepribadianLainLain.setText(kosongkeStripRiwayatRM19(rsR.getString("kepribadian_lainlain")));
+                kanvasNyeri.setCoretanBase64(rsR.getString("nyeri_canvas_gambar"));
+                txtNyeriP.setText(kosongkeStripRiwayatRM19(rsR.getString("nyeri_p")));
+                txtNyeriQ.setText(kosongkeStripRiwayatRM19(rsR.getString("nyeri_q")));
+                txtNyeriR.setText(kosongkeStripRiwayatRM19(rsR.getString("nyeri_r")));
+                txtNyeriS.setText(kosongkeStripRiwayatRM19(rsR.getString("nyeri_s")));
+                txtNyeriT.setText(kosongkeStripRiwayatRM19(rsR.getString("nyeri_t")));
+                chkKeluhanNyeriKronik.setSelected("Ya".equals(rsR.getString("keluhan_nyeri_kronik")));
+                chkKeluhanNyeriAkut.setSelected("Ya".equals(rsR.getString("keluhan_nyeri_akut")));
+                chkKeluhanTidakAdaNyeri.setSelected("Ya".equals(rsR.getString("keluhan_tidak_ada_nyeri")));
+                chkNyeriHilangMinumObat.setSelected("Ya".equals(rsR.getString("nyerihilang_minum_obat")));
+                chkNyeriHilangIstirahat.setSelected("Ya".equals(rsR.getString("nyerihilang_istirahat")));
+                chkNyeriHilangBerubahPosisi.setSelected("Ya".equals(rsR.getString("nyerihilang_berubah_posisi")));
+                chkNyeriHilangMendengarMusik.setSelected("Ya".equals(rsR.getString("nyerihilang_mendengar_musik")));
+                chkNyeriHilangLainLain.setSelected("Ya".equals(rsR.getString("nyerihilang_lainlain")));
+                txtNyeriHilangLainLain.setText(kosongkeStripRiwayatRM19(rsR.getString("nyerihilang_lainlain_ket")));
+                chkFungsionalMandiri.setSelected("Ya".equals(rsR.getString("fungsional_mandiri")));
+                chkFungsionalBantuanMinimal.setSelected("Ya".equals(rsR.getString("fungsional_bantuan_minimal")));
+                chkFungsionalBantuanSebagian.setSelected("Ya".equals(rsR.getString("fungsional_bantuan_sebagian")));
+                chkFungsionalKetergantungan.setSelected("Ya".equals(rsR.getString("fungsional_ketergantungan")));
+                chkBerjalanNormal.setSelected("Ya".equals(rsR.getString("fungsional_berjalan_normal")));
+                chkBerjalanPerluBantuan.setSelected("Ya".equals(rsR.getString("fungsional_berjalan_perlu_bantuan")));
+                chkBerjalanSeringJatuh.setSelected("Ya".equals(rsR.getString("fungsional_berjalan_sering_jatuh")));
+                chkBerjalanKelumpuhan.setSelected("Ya".equals(rsR.getString("fungsional_berjalan_kelumpuhan")));
+                chkEduBicaraTidak.setSelected("Ya".equals(rsR.getString("edu_bicara_tidak")));
+                chkEduBicaraYa.setSelected("Ya".equals(rsR.getString("edu_bicara_ya")));
+                txtEduBicaraJelaskan.setText(kosongkeStripRiwayatRM19(rsR.getString("edu_bicara_jelaskan")));
+                chkEduBahasaIndonesia.setSelected("Ya".equals(rsR.getString("edu_bahasa_indonesia")));
+                chkEduBahasaDaerah.setSelected("Ya".equals(rsR.getString("edu_bahasa_daerah")));
+                txtEduBahasaDaerah.setText(kosongkeStripRiwayatRM19(rsR.getString("edu_bahasa_daerah_ket")));
+                chkEduBahasaAsing.setSelected("Ya".equals(rsR.getString("edu_bahasa_asing")));
+                txtEduBahasaAsing.setText(kosongkeStripRiwayatRM19(rsR.getString("edu_bahasa_asing_ket")));
+                chkEduBahasaIsyarat.setSelected("Ya".equals(rsR.getString("edu_bahasa_isyarat")));
+                chkEduPenerjemahTidak.setSelected("Ya".equals(rsR.getString("edu_penerjemah_tidak")));
+                chkEduPenerjemahYa.setSelected("Ya".equals(rsR.getString("edu_penerjemah_ya")));
+                txtEduPenerjemahBahasa.setText(kosongkeStripRiwayatRM19(rsR.getString("edu_penerjemah_bahasa")));
+                chkCaraAudioVisual.setSelected("Ya".equals(rsR.getString("edu_cara_audiovisual")));
+                chkCaraDiskusi.setSelected("Ya".equals(rsR.getString("edu_cara_diskusi")));
+                chkCaraMembaca.setSelected("Ya".equals(rsR.getString("edu_cara_membaca")));
+                chkCaraMenulis.setSelected("Ya".equals(rsR.getString("edu_cara_menulis")));
+                chkCaraMengerjakan.setSelected("Ya".equals(rsR.getString("edu_cara_mengerjakan")));
+                chkCaraGambar.setSelected("Ya".equals(rsR.getString("edu_cara_gambar")));
+                chkCaraMendengar.setSelected("Ya".equals(rsR.getString("edu_cara_mendengar")));
+                chkCaraDemonstrasi.setSelected("Ya".equals(rsR.getString("edu_cara_demonstrasi")));
+                chkHambatanEduTidak.setSelected("Ya".equals(rsR.getString("edu_hambatan_tidak")));
+                chkHambatanEduYa.setSelected("Ya".equals(rsR.getString("edu_hambatan_ya")));
+                chkHambatanBahasa.setSelected("Ya".equals(rsR.getString("edu_hambatan_bahasa")));
+                chkHambatanEmosi.setSelected("Ya".equals(rsR.getString("edu_hambatan_emosi")));
+                chkHambatanCaregiver.setSelected("Ya".equals(rsR.getString("edu_hambatan_caregiver")));
+                chkHambatanFisiologisBelajar.setSelected("Ya".equals(rsR.getString("edu_hambatan_fisiologis")));
+                chkHambatanPendengaran.setSelected("Ya".equals(rsR.getString("edu_hambatan_pendengaran")));
+                chkHambatanPenglihatan.setSelected("Ya".equals(rsR.getString("edu_hambatan_penglihatan")));
+                chkHambatanMemori.setSelected("Ya".equals(rsR.getString("edu_hambatan_memori")));
+                chkHambatanMotivasi.setSelected("Ya".equals(rsR.getString("edu_hambatan_motivasi")));
+                chkHambatanBicara.setSelected("Ya".equals(rsR.getString("edu_hambatan_bicara")));
+                chkPendidikanTK.setSelected("Ya".equals(rsR.getString("edu_pendidikan_tk")));
+                chkPendidikanSD.setSelected("Ya".equals(rsR.getString("edu_pendidikan_sd")));
+                chkPendidikanSMP.setSelected("Ya".equals(rsR.getString("edu_pendidikan_smp")));
+                chkPendidikanSMA.setSelected("Ya".equals(rsR.getString("edu_pendidikan_sma")));
+                chkPendidikanD3D4.setSelected("Ya".equals(rsR.getString("edu_pendidikan_d3d4")));
+                chkPendidikanS1.setSelected("Ya".equals(rsR.getString("edu_pendidikan_s1")));
+                chkPendidikanS2.setSelected("Ya".equals(rsR.getString("edu_pendidikan_s2")));
+                chkPendidikanS3.setSelected("Ya".equals(rsR.getString("edu_pendidikan_s3")));
+                chkKebutuhanProsesPenyakit.setSelected("Ya".equals(rsR.getString("edu_kebutuhan_proses_penyakit")));
+                chkKebutuhanDiitNutrisi.setSelected("Ya".equals(rsR.getString("edu_kebutuhan_diit_nutrisi")));
+                chkKebutuhanPerawatanLuka.setSelected("Ya".equals(rsR.getString("edu_kebutuhan_perawatan_luka")));
+                chkKebutuhanManajemenNyeri.setSelected("Ya".equals(rsR.getString("edu_kebutuhan_manajemen_nyeri")));
+                chkKebutuhanObatObatan.setSelected("Ya".equals(rsR.getString("edu_kebutuhan_obat")));
+                chkKebutuhanRehabilitasi.setSelected("Ya".equals(rsR.getString("edu_kebutuhan_rehabilitasi")));
+                chkKebutuhanLainLain.setSelected("Ya".equals(rsR.getString("edu_kebutuhan_lainlain")));
+                txtKebutuhanLainLain.setText(kosongkeStripRiwayatRM19(rsR.getString("edu_kebutuhan_lainlain_ket")));
+                String[] prefixDischarge = {"discharge_homecare","discharge_perawatanluka","discharge_alatbantu","discharge_pemesananalat","discharge_timterapis","discharge_gizi","discharge_kelompok"};
+                for(int i=0;i<7;i++){
+                    chkDischargeYa[i].setSelected("Ya".equals(rsR.getString(prefixDischarge[i]+"_ya")));
+                    chkDischargeTidak[i].setSelected("Ya".equals(rsR.getString(prefixDischarge[i]+"_tidak")));
+                    txtDischargeKet[i].setText(kosongkeStripRiwayatRM19(rsR.getString(prefixDischarge[i]+"_ket")));
+                }
+                txtDischargeManualKomponen.setText(kosongkeStripRiwayatRM19(rsR.getString("discharge_manual_komponen")));
+                chkDischargeManualYa.setSelected("Ya".equals(rsR.getString("discharge_manual_ya")));
+                chkDischargeManualTidak.setSelected("Ya".equals(rsR.getString("discharge_manual_tidak")));
+                txtDischargeManualKet.setText(kosongkeStripRiwayatRM19(rsR.getString("discharge_manual_ket")));
+                for(int i=0;i<4;i++){
+                    txtDataPenunjang[i].setText(kosongkeStripRiwayatRM19(rsR.getString("data_penunjang"+(i+1))));
+                }
+                GCSE.setText(kosongkeStripRiwayatRM19(rsR.getString("gcs_e")));
+                GCSM.setText(kosongkeStripRiwayatRM19(rsR.getString("gcs_m")));
+                GCSV.setText(kosongkeStripRiwayatRM19(rsR.getString("gcs_v")));
+                PupilKananUkuran.setText(kosongkeStripRiwayatRM19(rsR.getString("pupil_kanan_ukuran")));
+                PupilKananReaksi.setText(kosongkeStripRiwayatRM19(rsR.getString("pupil_kanan_reaksi")));
+                PupilKiriUkuran.setText(kosongkeStripRiwayatRM19(rsR.getString("pupil_kiri_ukuran")));
+                PupilKiriReaksi.setText(kosongkeStripRiwayatRM19(rsR.getString("pupil_kiri_reaksi")));
+                KeluhanUtama.setText(kosongkeStripRiwayatRM19(rsR.getString("keluhan_utama")));
+                chkAirwayNormal.setSelected("Ya".equals(rsR.getString("airway_normal")));
+                chkAirwayOropharingeal.setSelected("Ya".equals(rsR.getString("airway_oropharingeal")));
+                chkAirwaySekret.setSelected("Ya".equals(rsR.getString("airway_sekret")));
+                chkAirwayTumor.setSelected("Ya".equals(rsR.getString("airway_tumor")));
+                chkAirwayTrajeostomy.setSelected("Ya".equals(rsR.getString("airway_trajeostomy")));
+                chkAirwayRTT.setSelected("Ya".equals(rsR.getString("airway_rtt")));
+                chkBreathingNormal.setSelected("Ya".equals(rsR.getString("breathing_normal")));
+                chkBreathingSesakDyspnea.setSelected("Ya".equals(rsR.getString("breathing_sesak_dyspnea")));
+                chkBreathingBatuk.setSelected("Ya".equals(rsR.getString("breathing_batuk")));
+                chkBreathingTakipneu.setSelected("Ya".equals(rsR.getString("breathing_takipneu")));
+                chkBreathingBatukDarah.setSelected("Ya".equals(rsR.getString("breathing_batuk_darah")));
+                chkBreathingSleepApnea.setSelected("Ya".equals(rsR.getString("breathing_sleep_apnea")));
+                chkBreathingNgorok.setSelected("Ya".equals(rsR.getString("bunyiparu_ngorok")));
+                chkBreathingLain.setSelected("Ya".equals(rsR.getString("breathing_lain")));
+                chkBunyiParuNormal.setSelected("Ya".equals(rsR.getString("bunyiparu_normal")));
+                chkBunyiParuOrthopnea.setSelected("Ya".equals(rsR.getString("breathing_orthopnea")));
+                chkBunyiParuStidor.setSelected("Ya".equals(rsR.getString("bunyiparu_stidor")));
+                chkBunyiParuRonkhiKanan.setSelected("Ya".equals(rsR.getString("bunyiparu_ronkhi_kanan")));
+                chkBunyiParuRonkhiKiri.setSelected("Ya".equals(rsR.getString("bunyiparu_ronkhi_kiri")));
+                chkBunyiParuWheezingKanan.setSelected("Ya".equals(rsR.getString("bunyiparu_wheezing_kanan")));
+                chkBunyiParuWheezingKiri.setSelected("Ya".equals(rsR.getString("bunyiparu_wheezing_kiri")));
+                chkBunyiParuLain.setSelected("Ya".equals(rsR.getString("bunyiparu_lain")));
+                chkKesulitanBernafasTidak.setSelected("Ya".equals(rsR.getString("kesulitan_bernafas_tidak")));
+                chkKesulitanBernafasYa.setSelected("Ya".equals(rsR.getString("kesulitan_bernafas_ya")));
+                chkOtotBantuNafasTidak.setSelected("Ya".equals(rsR.getString("otot_bantu_nafas_tidak")));
+                chkOtotBantuNafasYa.setSelected("Ya".equals(rsR.getString("otot_bantu_nafas_ya")));
+                chkO2Tidak.setSelected("Ya".equals(rsR.getString("o2_tidak")));
+                chkO2Ya.setSelected("Ya".equals(rsR.getString("o2_ya")));
+                chkO2Nasal.setSelected("Ya".equals(rsR.getString("o2_nasal")));
+                chkO2Sungkup.setSelected("Ya".equals(rsR.getString("o2_sungkup")));
+                chkCardioTidakAdaKelainan.setSelected("Ya".equals(rsR.getString("cardio_tidak_ada_kelainan")));
+                chkCardioBradikardi.setSelected("Ya".equals(rsR.getString("cardio_bradikardi")));
+                chkCardioTakikardi.setSelected("Ya".equals(rsR.getString("cardio_takikardi")));
+                chkCardioMurMur.setSelected("Ya".equals(rsR.getString("cardio_murmur")));
+                chkCardioGallop.setSelected("Ya".equals(rsR.getString("cardio_gallop")));
+                chkCardioPucatSianosis.setSelected("Ya".equals(rsR.getString("cardio_pucat_sianosis")));
+                chkCardioNyeriDada.setSelected("Ya".equals(rsR.getString("cardio_nyeri_dada")));
+                chkGiTidakAdaKeluhan.setSelected("Ya".equals(rsR.getString("gi_tidak_ada_keluhan")));
+                chkGiPenurunanBisingUsus.setSelected("Ya".equals(rsR.getString("gi_penurunan_bising_usus")));
+                chkGiGigiPalsuAtasKanan.setSelected("Ya".equals(rsR.getString("gi_gigipalsu_atas_kanan")));
+                chkGiGigiPalsuAtasKiri.setSelected("Ya".equals(rsR.getString("gi_gigipalsu_atas_kiri")));
+                chkGiGigiPalsuBawahKanan.setSelected("Ya".equals(rsR.getString("gi_gigipalsu_bawah_kanan")));
+                chkGiGigiPalsuBawahKiri.setSelected("Ya".equals(rsR.getString("gi_gigipalsu_bawah_kiri")));
+                chkGiPembatasanMakanan.setSelected("Ya".equals(rsR.getString("gi_pembatasan_makanan")));
+                chkGiTidakNafsuMakan.setSelected("Ya".equals(rsR.getString("gi_tidak_nafsu_makan")));
+                chkGiMual.setSelected("Ya".equals(rsR.getString("gi_mual")));
+                chkGiMuntah.setSelected("Ya".equals(rsR.getString("gi_muntah")));
+                chkGiKonstipasi.setSelected("Ya".equals(rsR.getString("gi_konstipasi")));
+                chkGiTerpasangNGT.setSelected("Ya".equals(rsR.getString("gi_terpasang_ngt")));
+                chkGiSulitMenelan.setSelected("Ya".equals(rsR.getString("gi_sulit_menelan")));
+                chkGiDiare.setSelected("Ya".equals(rsR.getString("gi_diare")));
+                chkGiKolostomi.setSelected("Ya".equals(rsR.getString("gi_kolostomi")));
+                chkGiDistensiAbdomen.setSelected("Ya".equals(rsR.getString("gi_distensi_abdomen")));
+                chkGiMakanHabis.setSelected("Ya".equals(rsR.getString("gi_makan_habis")));
+                chkGiIVFD.setSelected("Ya".equals(rsR.getString("gi_ivfd")));
+                chkKemihTidakAdaKeluhan.setSelected("Ya".equals(rsR.getString("kemih_tidak_ada_keluhan")));
+                chkKemihDistensiBladder.setSelected("Ya".equals(rsR.getString("kemih_distensi_bladder")));
+                chkKemihHaematuria.setSelected("Ya".equals(rsR.getString("kemih_haematuria")));
+                chkKemihRetensiUrine.setSelected("Ya".equals(rsR.getString("kemih_retensi_urine")));
+                chkKemihOliguri.setSelected("Ya".equals(rsR.getString("kemih_oliguri")));
+                chkKemihPoliuri.setSelected("Ya".equals(rsR.getString("kemih_poliuri")));
+                chkKemihDisuria.setSelected("Ya".equals(rsR.getString("kemih_disuria")));
+                chkKemihAnuri.setSelected("Ya".equals(rsR.getString("kemih_anuri")));
+                chkKemihTerpasangKateter.setSelected("Ya".equals(rsR.getString("kemih_terpasang_kateter")));
+                chkKemihInkontinensiaUrine.setSelected("Ya".equals(rsR.getString("kemih_inkontinensia_urine")));
+                chkPendengaranTAK.setSelected("Ya".equals(rsR.getString("pendengaran_tak")));
+                chkPendengaranBerdengung.setSelected("Ya".equals(rsR.getString("pendengaran_berdengung")));
+                chkPendengaranTuli.setSelected("Ya".equals(rsR.getString("pendengaran_tuli")));
+                chkPendengaranKeluarCairan.setSelected("Ya".equals(rsR.getString("pendengaran_keluar_cairan")));
+                chkPendengaranNyeri.setSelected("Ya".equals(rsR.getString("pendengaran_nyeri")));
+                chkPenglihatanTAK.setSelected("Ya".equals(rsR.getString("penglihatan_tak")));
+                chkPenglihatanAnemis.setSelected("Ya".equals(rsR.getString("penglihatan_anemis")));
+                chkPenglihatanIcterik.setSelected("Ya".equals(rsR.getString("penglihatan_icterik")));
+                chkPenglihatanTidakAdaReaksiCahaya.setSelected("Ya".equals(rsR.getString("penglihatan_tidak_ada_reaksi_cahaya")));
+                chkPenglihatanKacaMata.setSelected("Ya".equals(rsR.getString("penglihatan_kacamata")));
+                chkPenglihatanLensaKontak.setSelected("Ya".equals(rsR.getString("penglihatan_lensakontak")));
+                chkPenglihatanMerah.setSelected("Ya".equals(rsR.getString("penglihatan_merah")));
+                chkPenglihatanKabur.setSelected("Ya".equals(rsR.getString("penglihatan_kabur")));
+                chkWicaraNormal.setSelected("Ya".equals(rsR.getString("wicara_normal")));
+                chkWicaraCadelPelo.setSelected("Ya".equals(rsR.getString("wicara_cadelpelo")));
+                chkWicaraAphasia.setSelected("Ya".equals(rsR.getString("wicara_aphasia")));
+                chkWicaraKerusakanWicara.setSelected("Ya".equals(rsR.getString("wicara_kerusakan")));
+                chkOrientasiBaik.setSelected("Ya".equals(rsR.getString("orientasi_baik")));
+                chkOrientasiOrang.setSelected("Ya".equals(rsR.getString("orientasi_orang")));
+                chkOrientasiTempat.setSelected("Ya".equals(rsR.getString("orientasi_tempat")));
+                chkOrientasiWaktu.setSelected("Ya".equals(rsR.getString("orientasi_waktu")));
+                chkOrientasiSituasi.setSelected("Ya".equals(rsR.getString("orientasi_situasi")));
+                chkMemoriBaik.setSelected("Ya".equals(rsR.getString("memori_baik")));
+                chkMemoriSedang.setSelected("Ya".equals(rsR.getString("memori_sedang")));
+                chkMemoriBuruk.setSelected("Ya".equals(rsR.getString("memori_buruk")));
+                chkKonsentrasiBaik.setSelected("Ya".equals(rsR.getString("konsentrasi_baik")));
+                chkKonsentrasiSedang.setSelected("Ya".equals(rsR.getString("konsentrasi_sedang")));
+                chkKonsentrasiBuruk.setSelected("Ya".equals(rsR.getString("konsentrasi_buruk")));
+                chkKekuatanOtotInkoordinasi.setSelected("Ya".equals(rsR.getString("kekuatanotot_inkoordinasi")));
+                chkKekuatanOtotKejang.setSelected("Ya".equals(rsR.getString("kekuatanotot_kejang")));
+                chkFrakturTanganKanan.setSelected("Ya".equals(rsR.getString("fraktur_tangan_kanan")));
+                chkFrakturTanganKiri.setSelected("Ya".equals(rsR.getString("fraktur_tangan_kiri")));
+                chkFrakturKakiKanan.setSelected("Ya".equals(rsR.getString("fraktur_kaki_kanan")));
+                chkFrakturKakiKiri.setSelected("Ya".equals(rsR.getString("fraktur_kaki_kiri")));
+                chkWarnaKulitNormal.setSelected("Ya".equals(rsR.getString("warnakulit_normal")));
+                chkWarnaKulitPucat.setSelected("Ya".equals(rsR.getString("warnakulit_pucat")));
+                chkWarnaKulitMerah.setSelected("Ya".equals(rsR.getString("warnakulit_merah")));
+                chkWarnaKulitIkterik.setSelected("Ya".equals(rsR.getString("warnakulit_ikterik")));
+                chkWarnaKulitKemerahan.setSelected("Ya".equals(rsR.getString("warnakulit_kemerahan")));
+                chkIntegritasKulitUtuh.setSelected("Ya".equals(rsR.getString("integritaskulit_utuh")));
+                chkIntegritasKulitRuam.setSelected("Ya".equals(rsR.getString("integritaskulit_ruam")));
+                chkIntegritasKulitMelepuh.setSelected("Ya".equals(rsR.getString("integritaskulit_melepuh")));
+                chkIntegritasKulitKemerahan.setSelected("Ya".equals(rsR.getString("integritaskulit_kemerahan")));
+                txtAirwayRTTUkuran.setText(kosongkeStripRiwayatRM19(rsR.getString("airway_rtt_ukuran")));
+                txtBreathingLain.setText(kosongkeStripRiwayatRM19(rsR.getString("breathing_lain_ket")));
+                txtBunyiParuLain.setText(kosongkeStripRiwayatRM19(rsR.getString("bunyiparu_lain_ket")));
+                txtO2LiterMenit.setText(kosongkeStripRiwayatRM19(rsR.getString("o2_liter_menit")));
+                txtSaturasiO2.setText(kosongkeStripRiwayatRM19(rsR.getString("o2_saturasi")));
+                txtCardioLain.setText(kosongkeStripRiwayatRM19(rsR.getString("cardio_lain")));
+                txtGiPembatasanMakanan.setText(kosongkeStripRiwayatRM19(rsR.getString("gi_pembatasan_makanan_ket")));
+                txtGiMuntahKali.setText(kosongkeStripRiwayatRM19(rsR.getString("gi_muntah_kali")));
+                txtGiDiareX.setText(kosongkeStripRiwayatRM19(rsR.getString("gi_diare_x")));
+                txtGiIVFDTts.setText(kosongkeStripRiwayatRM19(rsR.getString("gi_ivfd_tts")));
+                txtKemihLain.setText(kosongkeStripRiwayatRM19(rsR.getString("kemih_lain")));
+                txtPenglihatanLain.setText(kosongkeStripRiwayatRM19(rsR.getString("penglihatan_lain")));
+                txtKekuatanOtot.setText(kosongkeStripRiwayatRM19(rsR.getString("kekuatanotot_nilai")));
+                txtKekuatanOtotTremorDi.setText(kosongkeStripRiwayatRM19(rsR.getString("kekuatanotot_tremor_di")));
+                txtHemiplegiDi.setText(kosongkeStripRiwayatRM19(rsR.getString("hemiplegi_di")));
+                txtParaseDi.setText(kosongkeStripRiwayatRM19(rsR.getString("parase_di")));
+                txtEkstremitasLain.setText(kosongkeStripRiwayatRM19(rsR.getString("ekstremitas_lain")));
+                txtWarnaKulitLain.setText(kosongkeStripRiwayatRM19(rsR.getString("warnakulit_lain")));
+                txtIntegritasKulitMelepuhDi.setText(kosongkeStripRiwayatRM19(rsR.getString("integritaskulit_melepuh_di")));
+                txtIntegritasKulitKemerahanDi.setText(kosongkeStripRiwayatRM19(rsR.getString("integritaskulit_kemerahan_di")));
+            }
+        } catch (Exception e) {
+            System.out.println("Notif getDataRiwayatRM19 (migrasi RM19 riwayat blm diimport?) : "+e);
+        } finally {
+            try{ if(rsR!=null){ rsR.close(); } if(psR!=null){ psR.close(); } }catch(Exception e){}
+        }
+    }
+
+    private String kosongkeStripRiwayatRM19(String s){ return s==null?"":s; }
+
+    // ================= Laporan RM19: tampilkan SEMUA field yg terinput =================
+    // Checkbox segrup digabung jadi SATU kolom berisi label yg tercentang saja
+    // (mis. "Normal, Sekret") - meniru pola kode laporan lama yg sudah menggabung
+    // `nilai + ", " + keterangan` jadi satu sel. Kalau dibuat 1 kolom per checkbox,
+    // tabelnya jadi ~500 kolom (puluhan ribu px) dan praktis tidak terbaca.
+    // Peta label di bawah di-GENERATE dari teks label di initRiwayatRM19(), bukan
+    // diketik ulang - jadi label laporan dijamin sama persis dgn yg tampil di form.
+    //
+    // CATATAN: pemanggilnya sengaja ditulis sbg STATEMENT TERPISAH per kolom, BUKAN
+    // disambung jadi satu rantai .append() panjang - javac kehabisan stack
+    // (StackOverflowError di TreeInfo.getStartPos) begitu satu ekspresi berisi
+    // ratusan mata rantai, dan build gagal tanpa pesan error baris yg jelas.
+    private static final java.util.LinkedHashMap<String,String> LABEL_RM19 = new java.util.LinkedHashMap<>();
+    static {
+        java.util.LinkedHashMap<String,String> L = LABEL_RM19;
+        L.put("alergi_tidak_ada","Tidak ada alergi");
+        L.put("alergi_obat","Alergi Obat, sebutkan :");
+        L.put("alergi_makanan","Alergi Makanan, sebutkan :");
+        L.put("alergi_lainnya","Alergi lainnya, sebutkan :");
+        L.put("alergi_tidak_diketahui","Tidak diketahui");
+        L.put("alergi_tanda_dipasang","Tanda Alergi dipasang (stiker warna merah)");
+        L.put("rpd_hipertensi","Hipertensi");
+        L.put("rpd_dm","DM");
+        L.put("rpd_jantung","Jantung");
+        L.put("rpd_hepatitis","Hepatitis");
+        L.put("rpd_operasi","Operasi");
+        L.put("rpd_anemia","Anemia");
+        L.put("rpd_asthma","Asthma");
+        L.put("rpd_stroke","Stroke");
+        L.put("rpd_paru","Paru");
+        L.put("rpd_lainlain","Lain-lain");
+        L.put("rpk_hipertensi","Hipertensi");
+        L.put("rpk_dm","DM");
+        L.put("rpk_jantung","Jantung");
+        L.put("rpk_thalasemia","Thalasemia");
+        L.put("rpk_lainlain","Lain-lain");
+        L.put("psiko_tak","T.A.K");
+        L.put("psiko_marah","Marah");
+        L.put("psiko_gelisah","Gelisah");
+        L.put("psiko_sedih","Sedih");
+        L.put("psiko_cemas","Cemas");
+        L.put("psiko_takut","Takut");
+        L.put("psiko_acuhtakacuh","Acuh Tak Acuh");
+        L.put("psiko_bunuhdiri","Kecenderungan Bunuh Diri");
+        L.put("sosek_hubkeluarga_baik","Baik");
+        L.put("sosek_hubkeluarga_tidakbaik","Tidak Baik");
+        L.put("sosek_tinggal_rumah","Rumah");
+        L.put("sosek_tinggal_asrama","Asrama");
+        L.put("sosek_tinggal_panti","Panti");
+        L.put("sosek_tinggal_lainnya","Lainnya");
+        L.put("sosek_bersama_suamiistri","Suami/Istri");
+        L.put("sosek_bersama_anak","Anak");
+        L.put("sosek_bersama_orangtua","Orang Tua");
+        L.put("sosek_bersama_lainnya","Lainnya");
+        L.put("sosek_kerja_bekerja","Bekerja");
+        L.put("sosek_kerja_pns","PNS");
+        L.put("sosek_kerja_swasta","Swasta");
+        L.put("sosek_kerja_tnipolri","TNI/Polri");
+        L.put("sosek_kerja_tani_buruh","Tani/Buruh");
+        L.put("sosek_kebiasaan_merokok","Merokok");
+        L.put("sosek_kebiasaan_alkohol","Alkohol");
+        L.put("sosek_kebiasaan_lainnya","Lainnya");
+        L.put("kepribadian_tidakadakeluhan","Tidak Ada Keluhan");
+        L.put("kepribadian_perlupendampingan","Perlu Pendampingan / Bimbingan Rohaniwan");
+        L.put("kepribadian_perludibantuibadah","Perlu Dibantu Ibadah");
+        L.put("kepribadian_berdoa","Tampak Berdoa Sebelum / Sesudah Makan / Waktu Lainnya");
+        L.put("kepribadian_bacaliteratur","Tampak Membaca Literatur Keagamaan");
+        L.put("keluhan_nyeri_kronik","Nyeri Kronik");
+        L.put("keluhan_nyeri_akut","Nyeri Akut");
+        L.put("keluhan_tidak_ada_nyeri","Tidak Ada Nyeri");
+        L.put("nyerihilang_minum_obat","Minum Obat");
+        L.put("nyerihilang_istirahat","Istirahat");
+        L.put("nyerihilang_berubah_posisi","Berubah Posisi Tidur");
+        L.put("nyerihilang_mendengar_musik","Mendengarkan Musik");
+        L.put("nyerihilang_lainlain","Lain-lain");
+        L.put("fungsional_mandiri","Mandiri");
+        L.put("fungsional_bantuan_minimal","Bantuan Minimal");
+        L.put("fungsional_bantuan_sebagian","Bantuan Sebagian");
+        L.put("fungsional_ketergantungan","Ketergantungan");
+        L.put("fungsional_berjalan_normal","Normal");
+        L.put("fungsional_berjalan_perlu_bantuan","Perlu Bantuan");
+        L.put("fungsional_berjalan_sering_jatuh","Sering Jatuh");
+        L.put("fungsional_berjalan_kelumpuhan","Kelumpuhan");
+        L.put("edu_bicara_tidak","Tidak");
+        L.put("edu_bicara_ya","Ya");
+        L.put("edu_bahasa_indonesia","Indonesia");
+        L.put("edu_bahasa_daerah","Daerah");
+        L.put("edu_bahasa_asing","Asing");
+        L.put("edu_bahasa_isyarat","Bahasa Isyarat");
+        L.put("edu_penerjemah_tidak","Tidak");
+        L.put("edu_penerjemah_ya","Ya, bahasa :");
+        L.put("edu_cara_audiovisual","Audio Visual");
+        L.put("edu_cara_diskusi","Diskusi");
+        L.put("edu_cara_membaca","Membaca");
+        L.put("edu_cara_menulis","Menulis");
+        L.put("edu_cara_mengerjakan","Mengerjakan");
+        L.put("edu_cara_gambar","Gambar");
+        L.put("edu_cara_mendengar","Mendengar");
+        L.put("edu_cara_demonstrasi","Demonstrasi");
+        L.put("edu_hambatan_tidak","Tidak");
+        L.put("edu_hambatan_ya","Ya");
+        L.put("edu_hambatan_bahasa","Bahasa");
+        L.put("edu_hambatan_emosi","Emosi");
+        L.put("edu_hambatan_caregiver","Tidak Ada Partisipasi Care Giver");
+        L.put("edu_hambatan_fisiologis","Fisiologis Tidak Mampu Belajar");
+        L.put("edu_hambatan_pendengaran","Pendengaran");
+        L.put("edu_hambatan_penglihatan","Penglihatan");
+        L.put("edu_hambatan_memori","Hilang Memori");
+        L.put("edu_hambatan_motivasi","Motivasi Buruk");
+        L.put("edu_hambatan_bicara","Kesulitan Bicara");
+        L.put("edu_pendidikan_tk","TK/Tidak Sekolah");
+        L.put("edu_pendidikan_sd","SD");
+        L.put("edu_pendidikan_smp","SMP");
+        L.put("edu_pendidikan_sma","SMA");
+        L.put("edu_pendidikan_d3d4","D3/D4");
+        L.put("edu_pendidikan_s1","S1");
+        L.put("edu_pendidikan_s2","S2");
+        L.put("edu_pendidikan_s3","S3");
+        L.put("edu_kebutuhan_proses_penyakit","Proses Penyakit");
+        L.put("edu_kebutuhan_diit_nutrisi","Diit/Nutrisi");
+        L.put("edu_kebutuhan_perawatan_luka","Perawatan Luka");
+        L.put("edu_kebutuhan_manajemen_nyeri","Manajemen Nyeri");
+        L.put("edu_kebutuhan_obat","Obat-obatan");
+        L.put("edu_kebutuhan_rehabilitasi","Rehabilitasi");
+        L.put("edu_kebutuhan_lainlain","Lain-lain :");
+        L.put("airway_normal","Normal");
+        L.put("airway_oropharingeal","Oropharingeal");
+        L.put("airway_sekret","Sekret");
+        L.put("airway_tumor","Tumor");
+        L.put("airway_trajeostomy","Trajeostomy");
+        L.put("airway_rtt","RTT, ukuran :");
+        L.put("breathing_normal","Normal");
+        L.put("breathing_sesak_dyspnea","Sesak/Dyspnea");
+        L.put("breathing_batuk","Batuk");
+        L.put("breathing_takipneu","Takipneu");
+        L.put("breathing_batuk_darah","Batuk Darah");
+        L.put("breathing_sleep_apnea","Sleep Apnea");
+        L.put("bunyiparu_ngorok","Ngorok");
+        L.put("breathing_lain","Lain-lain :");
+        L.put("bunyiparu_normal","Normal");
+        L.put("breathing_orthopnea","Orthopnea");
+        L.put("bunyiparu_stidor","Stidor");
+        L.put("bunyiparu_ronkhi_kanan","Ronkhi Kanan");
+        L.put("bunyiparu_ronkhi_kiri","Ronkhi Kiri");
+        L.put("bunyiparu_wheezing_kanan","Wheezing Kanan");
+        L.put("bunyiparu_wheezing_kiri","Wheezing Kiri");
+        L.put("bunyiparu_lain","Lain-lain :");
+        L.put("kesulitan_bernafas_tidak","Tidak");
+        L.put("kesulitan_bernafas_ya","Ya");
+        L.put("otot_bantu_nafas_tidak","Tidak");
+        L.put("otot_bantu_nafas_ya","Ya");
+        L.put("o2_tidak","Tidak");
+        L.put("o2_ya","Ya");
+        L.put("o2_nasal","Nasal");
+        L.put("o2_sungkup","Sungkup");
+        L.put("cardio_tidak_ada_kelainan","Tidak Ada Kelainan");
+        L.put("cardio_bradikardi","Bradikardi");
+        L.put("cardio_takikardi","Takikardi");
+        L.put("cardio_murmur","Mur-mur");
+        L.put("cardio_gallop","Gallop");
+        L.put("cardio_pucat_sianosis","Pucat/Sianosis");
+        L.put("cardio_nyeri_dada","Nyeri Dada");
+        L.put("gi_tidak_ada_keluhan","Tidak Ada Keluhan");
+        L.put("gi_penurunan_bising_usus","Penurunan Bising Usus");
+        L.put("gi_gigipalsu_atas_kanan","Atas Kanan");
+        L.put("gi_gigipalsu_atas_kiri","Atas Kiri");
+        L.put("gi_gigipalsu_bawah_kanan","Bawah Kanan");
+        L.put("gi_gigipalsu_bawah_kiri","Bawah Kiri");
+        L.put("gi_pembatasan_makanan","Pembatasan makanan, sebutkan :");
+        L.put("gi_tidak_nafsu_makan","Tidak Nafsu Makan");
+        L.put("gi_mual","Mual");
+        L.put("gi_muntah","Muntah");
+        L.put("gi_konstipasi","Konstipasi");
+        L.put("gi_terpasang_ngt","Terpasang NGT");
+        L.put("gi_sulit_menelan","Sulit Menelan");
+        L.put("gi_diare","Diare");
+        L.put("gi_kolostomi","Kolostomi");
+        L.put("gi_distensi_abdomen","Distensi Abdomen");
+        L.put("gi_makan_habis","Makan Habis");
+        L.put("gi_ivfd","IVFD");
+        L.put("kemih_tidak_ada_keluhan","Tidak Ada Keluhan");
+        L.put("kemih_distensi_bladder","Distensi Bladder");
+        L.put("kemih_haematuria","Haematuria");
+        L.put("kemih_retensi_urine","Retensi Urine");
+        L.put("kemih_oliguri","Oliguri");
+        L.put("kemih_poliuri","Poliuri");
+        L.put("kemih_disuria","Disuria");
+        L.put("kemih_anuri","Anuri");
+        L.put("kemih_terpasang_kateter","Terpasang Kateter");
+        L.put("kemih_inkontinensia_urine","Inkontinensia Urine");
+        L.put("pendengaran_tak","t.a.k");
+        L.put("pendengaran_berdengung","Berdengung");
+        L.put("pendengaran_tuli","Tuli");
+        L.put("pendengaran_keluar_cairan","Keluar Cairan");
+        L.put("pendengaran_nyeri","Nyeri");
+        L.put("penglihatan_tak","t.a.k");
+        L.put("penglihatan_anemis","Anemis");
+        L.put("penglihatan_icterik","Icterik");
+        L.put("penglihatan_tidak_ada_reaksi_cahaya","Tidak Ada Reaksi Cahaya");
+        L.put("penglihatan_kacamata","Kaca Mata");
+        L.put("penglihatan_lensakontak","Lensa Kontak");
+        L.put("penglihatan_merah","Merah");
+        L.put("penglihatan_kabur","Penglihatan Kabur");
+        L.put("wicara_normal","Normal");
+        L.put("wicara_cadelpelo","Cadel/Pelo");
+        L.put("wicara_aphasia","Aphasia");
+        L.put("wicara_kerusakan","Kerusakan Wicara");
+        L.put("orientasi_baik","Baik");
+        L.put("orientasi_orang","Orang");
+        L.put("orientasi_tempat","Tempat");
+        L.put("orientasi_waktu","Waktu");
+        L.put("orientasi_situasi","Situasi");
+        L.put("memori_baik","Baik");
+        L.put("memori_sedang","Sedang");
+        L.put("memori_buruk","Buruk");
+        L.put("konsentrasi_baik","Baik");
+        L.put("konsentrasi_sedang","Sedang");
+        L.put("konsentrasi_buruk","Buruk");
+        L.put("kekuatanotot_inkoordinasi","Inkoordinasi");
+        L.put("kekuatanotot_kejang","Kejang");
+        L.put("fraktur_tangan_kanan","Tangan Kanan");
+        L.put("fraktur_tangan_kiri","Tangan Kiri");
+        L.put("fraktur_kaki_kanan","Kaki Kanan");
+        L.put("fraktur_kaki_kiri","Kaki Kiri");
+        L.put("warnakulit_normal","Normal");
+        L.put("warnakulit_pucat","Pucat");
+        L.put("warnakulit_merah","Merah");
+        L.put("warnakulit_ikterik","Ikterik");
+        L.put("warnakulit_kemerahan","Kemerahan");
+        L.put("integritaskulit_utuh","Utuh");
+        L.put("integritaskulit_ruam","Ruam");
+        L.put("integritaskulit_melepuh","Melepuh di :");
+        L.put("integritaskulit_kemerahan","Kemerahan di :");
+    }
+
+
+    // --- versi widget dari helper laporan: dipakai saat menambah baris ke tabel
+    //     SESUDAH Simpan, di mana datanya diambil dari form (bukan dari ResultSet). ---
+    /** Gabung teks checkbox yg tercentang jadi 1 sel, dipisah ", ". */
+    private String cekBoxRM19(widget.CekBox... c){
+        StringBuilder sb = new StringBuilder();
+        for(widget.CekBox b : c){
+            if(b.isSelected()){ if(sb.length()>0){ sb.append(", "); } sb.append(b.getText()); }
+        }
+        return sb.toString();
+    }
+
+    /** Gabung nilai teks yg tidak kosong, dipisah " / ". */
+    private String gabungTeksRM19(String... v){
+        StringBuilder sb = new StringBuilder();
+        for(String s : v){
+            if(s!=null && !s.trim().isEmpty()){ if(sb.length()>0){ sb.append(" / "); } sb.append(s); }
+        }
+        return sb.toString();
+    }
+
+    /** 1 baris Discharge Planning baku (versi widget). */
+    private String dpBoxRM19(widget.CekBox ya, widget.CekBox tidak, widget.TextBox ket){
+        String v = ya.isSelected() ? "Ya" : (tidak.isSelected() ? "Tidak" : "");
+        String k = ket.getText();
+        if(v.isEmpty() && k.trim().isEmpty()){ return ""; }
+        return k.trim().isEmpty() ? v : (v+" - "+k);
+    }
+
+    /** Baris Discharge Planning manual (versi widget). */
+    private String dpmBoxRM19(widget.TextBox kom, widget.CekBox ya, widget.CekBox tidak, widget.TextBox ket){
+        String s = dpBoxRM19(ya, tidak, ket);
+        String k = kom.getText();
+        if(k.trim().isEmpty() && s.isEmpty()){ return ""; }
+        return k.trim().isEmpty() ? s : (k+" : "+s);
+    }
+
+    /** Nilai kolom apa adanya, null -> "" (aman utk sel laporan). */
+    private String teksRM19(java.sql.ResultSet rs, String kolom){
+        try{ String v = rs.getString(kolom); return v==null?"":v; }catch(Exception e){ return ""; }
+    }
+
+    /** Gabung beberapa kolom teks jadi 1 sel, dipisah " / ", yg kosong dilewati. */
+    private String gabungRM19(java.sql.ResultSet rs, String... kolom){
+        StringBuilder sb = new StringBuilder();
+        for(String k : kolom){
+            String v = teksRM19(rs, k);
+            if(!v.trim().isEmpty()){ if(sb.length()>0){ sb.append(" / "); } sb.append(v); }
+        }
+        return sb.toString();
+    }
+
+    /** Gabung label checkbox yg bernilai 'Ya' jadi 1 sel, dipisah ", ". */
+    private String cekRM19(java.sql.ResultSet rs, String... kolom){
+        StringBuilder sb = new StringBuilder();
+        for(String k : kolom){
+            if("Ya".equals(teksRM19(rs, k))){
+                String lab = LABEL_RM19.get(k);
+                if(lab==null){ lab = k; }
+                if(sb.length()>0){ sb.append(", "); }
+                sb.append(lab);
+            }
+        }
+        return sb.toString();
+    }
+
+    /** 1 baris Discharge Planning baku: "Ya/Tidak - keterangan". */
+    private String dpRM19(java.sql.ResultSet rs, String prefix){
+        String ya = "Ya".equals(teksRM19(rs, prefix+"_ya")) ? "Ya" : ("Ya".equals(teksRM19(rs, prefix+"_tidak")) ? "Tidak" : "");
+        String ket = teksRM19(rs, prefix+"_ket");
+        if(ya.isEmpty() && ket.trim().isEmpty()){ return ""; }
+        return ket.trim().isEmpty() ? ya : (ya+" - "+ket);
+    }
+
+    /** Baris Discharge Planning manual: "komponen : Ya/Tidak - keterangan". */
+    private String dpmRM19(java.sql.ResultSet rs, String prefix){
+        String kom = teksRM19(rs, prefix+"_komponen");
+        String sisa = dpRM19(rs, prefix);
+        if(kom.trim().isEmpty() && sisa.isEmpty()){ return ""; }
+        return kom.trim().isEmpty() ? sisa : (kom+" : "+sisa);
+    }
+
+    /** Coretan kanvas skala nyeri (PNG base64) -> <img> supaya tandanya terlihat di laporan. */
+    private String imgRM19(java.sql.ResultSet rs, String kolom){
+        String b64 = teksRM19(rs, kolom);
+        if(b64.trim().isEmpty()){ return ""; }
+        return "<img src='data:image/png;base64,"+b64.trim()+"' width='190' style='background:#ffffff;border:1px solid #cccccc;'>";
+    }
+
+
     private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
@@ -8292,7 +11057,8 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                 "penilaian_awal_keperawatan_ranap.nilai_gizi2,penilaian_awal_keperawatan_ranap.nilai_total_gizi,penilaian_awal_keperawatan_ranap.skrining_gizi_diagnosa_khusus,penilaian_awal_keperawatan_ranap.skrining_gizi_ket_diagnosa_khusus,"+
                 "penilaian_awal_keperawatan_ranap.skrining_gizi_diketahui_dietisen,penilaian_awal_keperawatan_ranap.skrining_gizi_jam_diketahui_dietisen,penilaian_awal_keperawatan_ranap.rencana,penilaian_awal_keperawatan_ranap.nip1,"+
                 "penilaian_awal_keperawatan_ranap.nip2,penilaian_awal_keperawatan_ranap.kd_dokter,pasien.tgl_lahir,pasien.jk,pengkaji1.nama as pengkaji1,pengkaji2.nama as pengkaji2,dokter.nm_dokter,"+
-                "reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.agama,pasien.pekerjaan,pasien.pnd,penjab.png_jawab,bahasa_pasien.nama_bahasa "+
+                "reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.agama,pasien.pekerjaan,pasien.pnd,penjab.png_jawab,bahasa_pasien.nama_bahasa,"+
+                "penilaian_awal_keperawatan_ranap.alergi_tidak_ada,penilaian_awal_keperawatan_ranap.alergi_obat,penilaian_awal_keperawatan_ranap.alergi_obat_sebutkan,penilaian_awal_keperawatan_ranap.alergi_obat_reaksi,penilaian_awal_keperawatan_ranap.alergi_makanan,penilaian_awal_keperawatan_ranap.alergi_makanan_sebutkan,penilaian_awal_keperawatan_ranap.alergi_makanan_reaksi,penilaian_awal_keperawatan_ranap.alergi_lainnya,penilaian_awal_keperawatan_ranap.alergi_lainnya_sebutkan,penilaian_awal_keperawatan_ranap.alergi_lainnya_reaksi,penilaian_awal_keperawatan_ranap.alergi_tidak_diketahui,penilaian_awal_keperawatan_ranap.alergi_tidak_diketahui_reaksi,penilaian_awal_keperawatan_ranap.alergi_tanda_dipasang,penilaian_awal_keperawatan_ranap.rpd_hipertensi,penilaian_awal_keperawatan_ranap.rpd_dm,penilaian_awal_keperawatan_ranap.rpd_jantung,penilaian_awal_keperawatan_ranap.rpd_hepatitis,penilaian_awal_keperawatan_ranap.rpd_operasi,penilaian_awal_keperawatan_ranap.rpd_anemia,penilaian_awal_keperawatan_ranap.rpd_asthma,penilaian_awal_keperawatan_ranap.rpd_stroke,penilaian_awal_keperawatan_ranap.rpd_paru,penilaian_awal_keperawatan_ranap.rpd_lainlain,penilaian_awal_keperawatan_ranap.rpd_lainlain_sebutkan,penilaian_awal_keperawatan_ranap.rpk_hipertensi,penilaian_awal_keperawatan_ranap.rpk_dm,penilaian_awal_keperawatan_ranap.rpk_jantung,penilaian_awal_keperawatan_ranap.rpk_thalasemia,penilaian_awal_keperawatan_ranap.rpk_lainlain,penilaian_awal_keperawatan_ranap.rpk_lainlain_sebutkan,penilaian_awal_keperawatan_ranap.informasi_nama_keluarga,penilaian_awal_keperawatan_ranap.informasi_hubungan_keluarga,penilaian_awal_keperawatan_ranap.tingkat_kesadaran,penilaian_awal_keperawatan_ranap.lla,penilaian_awal_keperawatan_ranap.reproduksi_menstruasi,penilaian_awal_keperawatan_ranap.reproduksi_hamil,penilaian_awal_keperawatan_ranap.reproduksi_hpht,penilaian_awal_keperawatan_ranap.reproduksi_papsmear,penilaian_awal_keperawatan_ranap.reproduksi_papsmear_tanggal,penilaian_awal_keperawatan_ranap.reproduksi_mamografi,penilaian_awal_keperawatan_ranap.reproduksi_mamografi_tanggal,penilaian_awal_keperawatan_ranap.reproduksi_sadari,penilaian_awal_keperawatan_ranap.reproduksi_sadari_tanggal,penilaian_awal_keperawatan_ranap.reproduksi_screening_prostat,penilaian_awal_keperawatan_ranap.reproduksi_screening_prostat_tanggal,penilaian_awal_keperawatan_ranap.skala_branden,penilaian_awal_keperawatan_ranap.status_pernikahan,penilaian_awal_keperawatan_ranap.kerabat_nama,penilaian_awal_keperawatan_ranap.kerabat_hubungan,penilaian_awal_keperawatan_ranap.kerabat_telp,penilaian_awal_keperawatan_ranap.edu_bicara_tidak,penilaian_awal_keperawatan_ranap.edu_bicara_ya,penilaian_awal_keperawatan_ranap.edu_bicara_jelaskan,penilaian_awal_keperawatan_ranap.edu_bahasa_indonesia,penilaian_awal_keperawatan_ranap.edu_bahasa_daerah,penilaian_awal_keperawatan_ranap.edu_bahasa_daerah_ket,penilaian_awal_keperawatan_ranap.edu_bahasa_asing,penilaian_awal_keperawatan_ranap.edu_bahasa_asing_ket,penilaian_awal_keperawatan_ranap.edu_bahasa_isyarat,penilaian_awal_keperawatan_ranap.edu_penerjemah_tidak,penilaian_awal_keperawatan_ranap.edu_penerjemah_ya,penilaian_awal_keperawatan_ranap.edu_penerjemah_bahasa,penilaian_awal_keperawatan_ranap.edu_cara_audiovisual,penilaian_awal_keperawatan_ranap.edu_cara_diskusi,penilaian_awal_keperawatan_ranap.edu_cara_membaca,penilaian_awal_keperawatan_ranap.edu_cara_menulis,penilaian_awal_keperawatan_ranap.edu_cara_mengerjakan,penilaian_awal_keperawatan_ranap.edu_cara_gambar,penilaian_awal_keperawatan_ranap.edu_cara_mendengar,penilaian_awal_keperawatan_ranap.edu_cara_demonstrasi,penilaian_awal_keperawatan_ranap.edu_hambatan_tidak,penilaian_awal_keperawatan_ranap.edu_hambatan_ya,penilaian_awal_keperawatan_ranap.edu_hambatan_bahasa,penilaian_awal_keperawatan_ranap.edu_hambatan_emosi,penilaian_awal_keperawatan_ranap.edu_hambatan_caregiver,penilaian_awal_keperawatan_ranap.edu_hambatan_fisiologis,penilaian_awal_keperawatan_ranap.edu_hambatan_pendengaran,penilaian_awal_keperawatan_ranap.edu_hambatan_penglihatan,penilaian_awal_keperawatan_ranap.edu_hambatan_memori,penilaian_awal_keperawatan_ranap.edu_hambatan_motivasi,penilaian_awal_keperawatan_ranap.edu_hambatan_bicara,penilaian_awal_keperawatan_ranap.edu_pendidikan_tk,penilaian_awal_keperawatan_ranap.edu_pendidikan_sd,penilaian_awal_keperawatan_ranap.edu_pendidikan_smp,penilaian_awal_keperawatan_ranap.edu_pendidikan_sma,penilaian_awal_keperawatan_ranap.edu_pendidikan_d3d4,penilaian_awal_keperawatan_ranap.edu_pendidikan_s1,penilaian_awal_keperawatan_ranap.edu_pendidikan_s2,penilaian_awal_keperawatan_ranap.edu_pendidikan_s3,penilaian_awal_keperawatan_ranap.edu_kebutuhan_proses_penyakit,penilaian_awal_keperawatan_ranap.edu_kebutuhan_diit_nutrisi,penilaian_awal_keperawatan_ranap.edu_kebutuhan_perawatan_luka,penilaian_awal_keperawatan_ranap.edu_kebutuhan_manajemen_nyeri,penilaian_awal_keperawatan_ranap.edu_kebutuhan_obat,penilaian_awal_keperawatan_ranap.edu_kebutuhan_rehabilitasi,penilaian_awal_keperawatan_ranap.edu_kebutuhan_lainlain,penilaian_awal_keperawatan_ranap.edu_kebutuhan_lainlain_ket,penilaian_awal_keperawatan_ranap.discharge_homecare_ya,penilaian_awal_keperawatan_ranap.discharge_homecare_tidak,penilaian_awal_keperawatan_ranap.discharge_homecare_ket,penilaian_awal_keperawatan_ranap.discharge_perawatanluka_ya,penilaian_awal_keperawatan_ranap.discharge_perawatanluka_tidak,penilaian_awal_keperawatan_ranap.discharge_perawatanluka_ket,penilaian_awal_keperawatan_ranap.discharge_alatbantu_ya,penilaian_awal_keperawatan_ranap.discharge_alatbantu_tidak,penilaian_awal_keperawatan_ranap.discharge_alatbantu_ket,penilaian_awal_keperawatan_ranap.discharge_pemesananalat_ya,penilaian_awal_keperawatan_ranap.discharge_pemesananalat_tidak,penilaian_awal_keperawatan_ranap.discharge_pemesananalat_ket,penilaian_awal_keperawatan_ranap.discharge_timterapis_ya,penilaian_awal_keperawatan_ranap.discharge_timterapis_tidak,penilaian_awal_keperawatan_ranap.discharge_timterapis_ket,penilaian_awal_keperawatan_ranap.discharge_gizi_ya,penilaian_awal_keperawatan_ranap.discharge_gizi_tidak,penilaian_awal_keperawatan_ranap.discharge_gizi_ket,penilaian_awal_keperawatan_ranap.discharge_kelompok_ya,penilaian_awal_keperawatan_ranap.discharge_kelompok_tidak,penilaian_awal_keperawatan_ranap.discharge_kelompok_ket,penilaian_awal_keperawatan_ranap.data_penunjang1,penilaian_awal_keperawatan_ranap.data_penunjang2,penilaian_awal_keperawatan_ranap.data_penunjang3,penilaian_awal_keperawatan_ranap.data_penunjang4,penilaian_awal_keperawatan_ranap.gcs_e,penilaian_awal_keperawatan_ranap.gcs_m,penilaian_awal_keperawatan_ranap.gcs_v,penilaian_awal_keperawatan_ranap.pupil_kanan_ukuran,penilaian_awal_keperawatan_ranap.pupil_kanan_reaksi,penilaian_awal_keperawatan_ranap.pupil_kiri_ukuran,penilaian_awal_keperawatan_ranap.pupil_kiri_reaksi,penilaian_awal_keperawatan_ranap.keluhan_utama,penilaian_awal_keperawatan_ranap.airway_normal,penilaian_awal_keperawatan_ranap.airway_oropharingeal,penilaian_awal_keperawatan_ranap.airway_sekret,penilaian_awal_keperawatan_ranap.airway_tumor,penilaian_awal_keperawatan_ranap.airway_trajeostomy,penilaian_awal_keperawatan_ranap.airway_rtt,penilaian_awal_keperawatan_ranap.breathing_normal,penilaian_awal_keperawatan_ranap.breathing_sesak_dyspnea,penilaian_awal_keperawatan_ranap.breathing_batuk,penilaian_awal_keperawatan_ranap.breathing_takipneu,penilaian_awal_keperawatan_ranap.breathing_batuk_darah,penilaian_awal_keperawatan_ranap.breathing_sleep_apnea,penilaian_awal_keperawatan_ranap.breathing_orthopnea,penilaian_awal_keperawatan_ranap.bunyiparu_normal,penilaian_awal_keperawatan_ranap.bunyiparu_ngorok,penilaian_awal_keperawatan_ranap.bunyiparu_stidor,penilaian_awal_keperawatan_ranap.bunyiparu_ronkhi_kanan,penilaian_awal_keperawatan_ranap.bunyiparu_ronkhi_kiri,penilaian_awal_keperawatan_ranap.bunyiparu_wheezing_kanan,penilaian_awal_keperawatan_ranap.bunyiparu_wheezing_kiri,penilaian_awal_keperawatan_ranap.kesulitan_bernafas_tidak,penilaian_awal_keperawatan_ranap.kesulitan_bernafas_ya,penilaian_awal_keperawatan_ranap.otot_bantu_nafas_tidak,penilaian_awal_keperawatan_ranap.otot_bantu_nafas_ya,penilaian_awal_keperawatan_ranap.o2_tidak,penilaian_awal_keperawatan_ranap.o2_ya,penilaian_awal_keperawatan_ranap.o2_nasal,penilaian_awal_keperawatan_ranap.o2_sungkup,penilaian_awal_keperawatan_ranap.cardio_tidak_ada_kelainan,penilaian_awal_keperawatan_ranap.cardio_bradikardi,penilaian_awal_keperawatan_ranap.cardio_takikardi,penilaian_awal_keperawatan_ranap.cardio_murmur,penilaian_awal_keperawatan_ranap.cardio_gallop,penilaian_awal_keperawatan_ranap.cardio_pucat_sianosis,penilaian_awal_keperawatan_ranap.cardio_nyeri_dada,penilaian_awal_keperawatan_ranap.gi_tidak_ada_keluhan,penilaian_awal_keperawatan_ranap.gi_penurunan_bising_usus,penilaian_awal_keperawatan_ranap.gi_gigipalsu_atas_kanan,penilaian_awal_keperawatan_ranap.gi_gigipalsu_atas_kiri,penilaian_awal_keperawatan_ranap.gi_gigipalsu_bawah_kanan,penilaian_awal_keperawatan_ranap.gi_gigipalsu_bawah_kiri,penilaian_awal_keperawatan_ranap.gi_pembatasan_makanan,penilaian_awal_keperawatan_ranap.gi_tidak_nafsu_makan,penilaian_awal_keperawatan_ranap.gi_mual,penilaian_awal_keperawatan_ranap.gi_muntah,penilaian_awal_keperawatan_ranap.gi_konstipasi,penilaian_awal_keperawatan_ranap.gi_terpasang_ngt,penilaian_awal_keperawatan_ranap.gi_sulit_menelan,penilaian_awal_keperawatan_ranap.gi_diare,penilaian_awal_keperawatan_ranap.gi_kolostomi,penilaian_awal_keperawatan_ranap.gi_distensi_abdomen,penilaian_awal_keperawatan_ranap.gi_makan_habis,penilaian_awal_keperawatan_ranap.gi_ivfd,penilaian_awal_keperawatan_ranap.kemih_tidak_ada_keluhan,penilaian_awal_keperawatan_ranap.kemih_distensi_bladder,penilaian_awal_keperawatan_ranap.kemih_haematuria,penilaian_awal_keperawatan_ranap.kemih_retensi_urine,penilaian_awal_keperawatan_ranap.kemih_oliguri,penilaian_awal_keperawatan_ranap.kemih_disuria,penilaian_awal_keperawatan_ranap.kemih_anuri,penilaian_awal_keperawatan_ranap.kemih_terpasang_kateter,penilaian_awal_keperawatan_ranap.kemih_inkontinensia_urine,penilaian_awal_keperawatan_ranap.pendengaran_tak,penilaian_awal_keperawatan_ranap.pendengaran_berdengung,penilaian_awal_keperawatan_ranap.pendengaran_tuli,penilaian_awal_keperawatan_ranap.pendengaran_keluar_cairan,penilaian_awal_keperawatan_ranap.pendengaran_nyeri,penilaian_awal_keperawatan_ranap.penglihatan_tak,penilaian_awal_keperawatan_ranap.penglihatan_anemis,penilaian_awal_keperawatan_ranap.penglihatan_icterik,penilaian_awal_keperawatan_ranap.penglihatan_tidak_ada_reaksi_cahaya,penilaian_awal_keperawatan_ranap.penglihatan_kacamata,penilaian_awal_keperawatan_ranap.penglihatan_lensakontak,penilaian_awal_keperawatan_ranap.penglihatan_merah,penilaian_awal_keperawatan_ranap.penglihatan_kabur,penilaian_awal_keperawatan_ranap.wicara_normal,penilaian_awal_keperawatan_ranap.wicara_cadelpelo,penilaian_awal_keperawatan_ranap.wicara_aphasia,penilaian_awal_keperawatan_ranap.wicara_kerusakan,penilaian_awal_keperawatan_ranap.orientasi_baik,penilaian_awal_keperawatan_ranap.orientasi_orang,penilaian_awal_keperawatan_ranap.orientasi_tempat,penilaian_awal_keperawatan_ranap.orientasi_waktu,penilaian_awal_keperawatan_ranap.orientasi_situasi,penilaian_awal_keperawatan_ranap.memori_baik,penilaian_awal_keperawatan_ranap.memori_sedang,penilaian_awal_keperawatan_ranap.memori_buruk,penilaian_awal_keperawatan_ranap.konsentrasi_baik,penilaian_awal_keperawatan_ranap.konsentrasi_sedang,penilaian_awal_keperawatan_ranap.konsentrasi_buruk,penilaian_awal_keperawatan_ranap.kekuatanotot_inkoordinasi,penilaian_awal_keperawatan_ranap.kekuatanotot_kejang,penilaian_awal_keperawatan_ranap.fraktur_tangan_kanan,penilaian_awal_keperawatan_ranap.fraktur_tangan_kiri,penilaian_awal_keperawatan_ranap.fraktur_kaki_kanan,penilaian_awal_keperawatan_ranap.fraktur_kaki_kiri,penilaian_awal_keperawatan_ranap.warnakulit_normal,penilaian_awal_keperawatan_ranap.warnakulit_pucat,penilaian_awal_keperawatan_ranap.warnakulit_merah,penilaian_awal_keperawatan_ranap.warnakulit_ikterik,penilaian_awal_keperawatan_ranap.warnakulit_kemerahan,penilaian_awal_keperawatan_ranap.integritaskulit_utuh,penilaian_awal_keperawatan_ranap.integritaskulit_ruam,penilaian_awal_keperawatan_ranap.integritaskulit_melepuh,penilaian_awal_keperawatan_ranap.airway_rtt_ukuran,penilaian_awal_keperawatan_ranap.o2_liter_menit,penilaian_awal_keperawatan_ranap.o2_saturasi,penilaian_awal_keperawatan_ranap.cardio_lain,penilaian_awal_keperawatan_ranap.gi_pembatasan_makanan_ket,penilaian_awal_keperawatan_ranap.gi_muntah_kali,penilaian_awal_keperawatan_ranap.gi_diare_x,penilaian_awal_keperawatan_ranap.gi_ivfd_tts,penilaian_awal_keperawatan_ranap.kemih_lain,penilaian_awal_keperawatan_ranap.penglihatan_lain,penilaian_awal_keperawatan_ranap.kekuatanotot_tremor_di,penilaian_awal_keperawatan_ranap.hemiplegi_di,penilaian_awal_keperawatan_ranap.parase_di,penilaian_awal_keperawatan_ranap.warnakulit_lain,penilaian_awal_keperawatan_ranap.integritaskulit_melepuh_di,penilaian_awal_keperawatan_ranap.breathing_lain,penilaian_awal_keperawatan_ranap.breathing_lain_ket,penilaian_awal_keperawatan_ranap.bunyiparu_lain,penilaian_awal_keperawatan_ranap.bunyiparu_lain_ket,penilaian_awal_keperawatan_ranap.kemih_poliuri,penilaian_awal_keperawatan_ranap.kekuatanotot_nilai,penilaian_awal_keperawatan_ranap.ekstremitas_lain,penilaian_awal_keperawatan_ranap.integritaskulit_kemerahan,penilaian_awal_keperawatan_ranap.integritaskulit_kemerahan_di,penilaian_awal_keperawatan_ranap.psiko_tak,penilaian_awal_keperawatan_ranap.psiko_marah,penilaian_awal_keperawatan_ranap.psiko_gelisah,penilaian_awal_keperawatan_ranap.psiko_sedih,penilaian_awal_keperawatan_ranap.psiko_cemas,penilaian_awal_keperawatan_ranap.psiko_takut,penilaian_awal_keperawatan_ranap.psiko_acuhtakacuh,penilaian_awal_keperawatan_ranap.psiko_bunuhdiri,penilaian_awal_keperawatan_ranap.sosek_hubkeluarga_baik,penilaian_awal_keperawatan_ranap.sosek_hubkeluarga_tidakbaik,penilaian_awal_keperawatan_ranap.sosek_tinggal_rumah,penilaian_awal_keperawatan_ranap.sosek_tinggal_asrama,penilaian_awal_keperawatan_ranap.sosek_tinggal_panti,penilaian_awal_keperawatan_ranap.sosek_tinggal_lainnya,penilaian_awal_keperawatan_ranap.sosek_tinggal_lainnya_ket,penilaian_awal_keperawatan_ranap.sosek_bersama_suamiistri,penilaian_awal_keperawatan_ranap.sosek_bersama_anak,penilaian_awal_keperawatan_ranap.sosek_bersama_orangtua,penilaian_awal_keperawatan_ranap.sosek_bersama_lainnya,penilaian_awal_keperawatan_ranap.sosek_bersama_lainnya_ket,penilaian_awal_keperawatan_ranap.sosek_kerja_bekerja,penilaian_awal_keperawatan_ranap.sosek_kerja_pns,penilaian_awal_keperawatan_ranap.sosek_kerja_swasta,penilaian_awal_keperawatan_ranap.sosek_kerja_tnipolri,penilaian_awal_keperawatan_ranap.sosek_kerja_tani_buruh,penilaian_awal_keperawatan_ranap.sosek_kebiasaan_merokok,penilaian_awal_keperawatan_ranap.sosek_kebiasaan_alkohol,penilaian_awal_keperawatan_ranap.sosek_kebiasaan_lainnya,penilaian_awal_keperawatan_ranap.sosek_kebiasaan_jenis_jumlah,penilaian_awal_keperawatan_ranap.kepribadian_tidakadakeluhan,penilaian_awal_keperawatan_ranap.kepribadian_perlupendampingan,penilaian_awal_keperawatan_ranap.kepribadian_perludibantuibadah,penilaian_awal_keperawatan_ranap.kepribadian_berdoa,penilaian_awal_keperawatan_ranap.kepribadian_bacaliteratur,penilaian_awal_keperawatan_ranap.kepribadian_ganggu_praktik,penilaian_awal_keperawatan_ranap.kepribadian_nilai_budaya,penilaian_awal_keperawatan_ranap.kepribadian_lainlain,penilaian_awal_keperawatan_ranap.nyeri_canvas_gambar,penilaian_awal_keperawatan_ranap.nyeri_p,penilaian_awal_keperawatan_ranap.nyeri_q,penilaian_awal_keperawatan_ranap.nyeri_r,penilaian_awal_keperawatan_ranap.nyeri_s,penilaian_awal_keperawatan_ranap.nyeri_t,penilaian_awal_keperawatan_ranap.keluhan_nyeri_kronik,penilaian_awal_keperawatan_ranap.keluhan_nyeri_akut,penilaian_awal_keperawatan_ranap.keluhan_tidak_ada_nyeri,penilaian_awal_keperawatan_ranap.nyerihilang_minum_obat,penilaian_awal_keperawatan_ranap.nyerihilang_istirahat,penilaian_awal_keperawatan_ranap.nyerihilang_berubah_posisi,penilaian_awal_keperawatan_ranap.nyerihilang_mendengar_musik,penilaian_awal_keperawatan_ranap.nyerihilang_lainlain,penilaian_awal_keperawatan_ranap.nyerihilang_lainlain_ket,penilaian_awal_keperawatan_ranap.fungsional_mandiri,penilaian_awal_keperawatan_ranap.fungsional_bantuan_minimal,penilaian_awal_keperawatan_ranap.fungsional_bantuan_sebagian,penilaian_awal_keperawatan_ranap.fungsional_ketergantungan,penilaian_awal_keperawatan_ranap.fungsional_berjalan_normal,penilaian_awal_keperawatan_ranap.fungsional_berjalan_perlu_bantuan,penilaian_awal_keperawatan_ranap.fungsional_berjalan_sering_jatuh,penilaian_awal_keperawatan_ranap.fungsional_berjalan_kelumpuhan,penilaian_awal_keperawatan_ranap.discharge_manual_komponen,penilaian_awal_keperawatan_ranap.discharge_manual_ya,penilaian_awal_keperawatan_ranap.discharge_manual_tidak,penilaian_awal_keperawatan_ranap.discharge_manual_ket "+
                 "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                 "inner join penilaian_awal_keperawatan_ranap on reg_periksa.no_rawat=penilaian_awal_keperawatan_ranap.no_rawat "+
                 "inner join petugas as pengkaji1 on penilaian_awal_keperawatan_ranap.nip1=pengkaji1.nip "+
@@ -8363,7 +11129,97 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                         rs.getString("penilaian_jatuhsydney_skala10"),rs.getString("penilaian_jatuhsydney_nilai10"),rs.getString("penilaian_jatuhsydney_skala11"),rs.getString("penilaian_jatuhsydney_nilai11"),
                         rs.getString("penilaian_jatuhsydney_totalnilai"),rs.getString("skrining_gizi1"),rs.getString("nilai_gizi1"),rs.getString("skrining_gizi2"),rs.getString("nilai_gizi2"),rs.getString("nilai_total_gizi"),
                         rs.getString("skrining_gizi_diagnosa_khusus"),rs.getString("skrining_gizi_ket_diagnosa_khusus"),rs.getString("skrining_gizi_diketahui_dietisen"),rs.getString("skrining_gizi_jam_diketahui_dietisen"),
-                        rs.getString("rencana")
+                        rs.getString("rencana"),
+                        cekRM19(rs,"alergi_tidak_ada","alergi_obat","alergi_makanan","alergi_lainnya","alergi_tidak_diketahui","alergi_tanda_dipasang"),
+                        gabungRM19(rs,"alergi_obat_sebutkan","alergi_obat_reaksi"),
+                        gabungRM19(rs,"alergi_makanan_sebutkan","alergi_makanan_reaksi"),
+                        gabungRM19(rs,"alergi_lainnya_sebutkan","alergi_lainnya_reaksi"),
+                        teksRM19(rs,"alergi_tidak_diketahui_reaksi"),
+                        cekRM19(rs,"rpd_hipertensi","rpd_dm","rpd_jantung","rpd_hepatitis","rpd_operasi","rpd_anemia","rpd_asthma","rpd_stroke","rpd_paru","rpd_lainlain"),
+                        teksRM19(rs,"rpd_lainlain_sebutkan"),
+                        cekRM19(rs,"rpk_hipertensi","rpk_dm","rpk_jantung","rpk_thalasemia","rpk_lainlain"),
+                        teksRM19(rs,"rpk_lainlain_sebutkan"),
+                        gabungRM19(rs,"informasi_nama_keluarga","informasi_hubungan_keluarga"),
+                        teksRM19(rs,"keluhan_utama"),
+                        teksRM19(rs,"tingkat_kesadaran"),
+                        teksRM19(rs,"lla"),
+                        gabungRM19(rs,"gcs_e","gcs_m","gcs_v"),
+                        cekRM19(rs,"airway_normal","airway_oropharingeal","airway_sekret","airway_tumor","airway_trajeostomy","airway_rtt"),
+                        teksRM19(rs,"airway_rtt_ukuran"),
+                        cekRM19(rs,"breathing_normal","breathing_sesak_dyspnea","breathing_batuk","breathing_takipneu","breathing_batuk_darah","breathing_sleep_apnea","breathing_lain","breathing_orthopnea"),
+                        teksRM19(rs,"breathing_lain_ket"),
+                        cekRM19(rs,"bunyiparu_ngorok","bunyiparu_normal","bunyiparu_stidor","bunyiparu_ronkhi_kanan","bunyiparu_ronkhi_kiri","bunyiparu_wheezing_kanan","bunyiparu_wheezing_kiri","bunyiparu_lain"),
+                        teksRM19(rs,"bunyiparu_lain_ket"),
+                        cekRM19(rs,"kesulitan_bernafas_tidak","kesulitan_bernafas_ya"),
+                        cekRM19(rs,"otot_bantu_nafas_tidak","otot_bantu_nafas_ya"),
+                        teksRM19(rs,"o2_saturasi"),
+                        cekRM19(rs,"o2_tidak","o2_ya","o2_nasal","o2_sungkup"),
+                        teksRM19(rs,"o2_liter_menit"),
+                        cekRM19(rs,"cardio_tidak_ada_kelainan","cardio_bradikardi","cardio_takikardi","cardio_murmur","cardio_gallop","cardio_pucat_sianosis","cardio_nyeri_dada"),
+                        teksRM19(rs,"cardio_lain"),
+                        cekRM19(rs,"gi_tidak_ada_keluhan","gi_penurunan_bising_usus","gi_gigipalsu_atas_kanan","gi_gigipalsu_atas_kiri","gi_gigipalsu_bawah_kanan","gi_gigipalsu_bawah_kiri","gi_pembatasan_makanan","gi_tidak_nafsu_makan","gi_mual","gi_muntah","gi_konstipasi","gi_terpasang_ngt","gi_sulit_menelan","gi_diare","gi_kolostomi","gi_distensi_abdomen","gi_makan_habis","gi_ivfd"),
+                        teksRM19(rs,"gi_pembatasan_makanan_ket"),
+                        gabungRM19(rs,"gi_muntah_kali","gi_diare_x","gi_ivfd_tts"),
+                        cekRM19(rs,"kemih_tidak_ada_keluhan","kemih_distensi_bladder","kemih_haematuria","kemih_retensi_urine","kemih_oliguri","kemih_poliuri","kemih_disuria","kemih_anuri","kemih_terpasang_kateter","kemih_inkontinensia_urine"),
+                        teksRM19(rs,"kemih_lain"),
+                        gabungRM19(rs,"reproduksi_menstruasi","reproduksi_hamil","reproduksi_hpht"),
+                        gabungRM19(rs,"reproduksi_papsmear","reproduksi_papsmear_tanggal","reproduksi_mamografi","reproduksi_mamografi_tanggal","reproduksi_sadari","reproduksi_sadari_tanggal"),
+                        gabungRM19(rs,"reproduksi_screening_prostat","reproduksi_screening_prostat_tanggal"),
+                        cekRM19(rs,"pendengaran_tak","pendengaran_berdengung","pendengaran_tuli","pendengaran_keluar_cairan","pendengaran_nyeri"),
+                        cekRM19(rs,"penglihatan_tak","penglihatan_anemis","penglihatan_icterik","penglihatan_tidak_ada_reaksi_cahaya","penglihatan_kacamata","penglihatan_lensakontak","penglihatan_merah","penglihatan_kabur"),
+                        teksRM19(rs,"penglihatan_lain"),
+                        cekRM19(rs,"wicara_normal","wicara_cadelpelo","wicara_aphasia","wicara_kerusakan"),
+                        cekRM19(rs,"orientasi_baik","orientasi_orang","orientasi_tempat","orientasi_waktu","orientasi_situasi"),
+                        cekRM19(rs,"memori_baik","memori_sedang","memori_buruk"),
+                        cekRM19(rs,"konsentrasi_baik","konsentrasi_sedang","konsentrasi_buruk"),
+                        gabungRM19(rs,"pupil_kanan_ukuran","pupil_kanan_reaksi"),
+                        gabungRM19(rs,"pupil_kiri_ukuran","pupil_kiri_reaksi"),
+                        teksRM19(rs,"kekuatanotot_nilai"),
+                        cekRM19(rs,"kekuatanotot_inkoordinasi","kekuatanotot_kejang"),
+                        gabungRM19(rs,"kekuatanotot_tremor_di","hemiplegi_di","parase_di"),
+                        cekRM19(rs,"fraktur_tangan_kanan","fraktur_tangan_kiri","fraktur_kaki_kanan","fraktur_kaki_kiri"),
+                        teksRM19(rs,"ekstremitas_lain"),
+                        cekRM19(rs,"warnakulit_normal","warnakulit_pucat","warnakulit_merah","warnakulit_ikterik","warnakulit_kemerahan"),
+                        teksRM19(rs,"warnakulit_lain"),
+                        cekRM19(rs,"integritaskulit_utuh","integritaskulit_ruam","integritaskulit_melepuh","integritaskulit_kemerahan"),
+                        gabungRM19(rs,"integritaskulit_melepuh_di","integritaskulit_kemerahan_di"),
+                        teksRM19(rs,"skala_branden"),
+                        cekRM19(rs,"psiko_tak","psiko_marah","psiko_gelisah","psiko_sedih","psiko_cemas","psiko_takut","psiko_acuhtakacuh","psiko_bunuhdiri"),
+                        teksRM19(rs,"status_pernikahan"),
+                        gabungRM19(rs,"kerabat_nama","kerabat_hubungan","kerabat_telp"),
+                        cekRM19(rs,"sosek_hubkeluarga_baik","sosek_hubkeluarga_tidakbaik","sosek_tinggal_rumah","sosek_tinggal_asrama","sosek_tinggal_panti","sosek_tinggal_lainnya","sosek_bersama_suamiistri","sosek_bersama_anak","sosek_bersama_orangtua","sosek_bersama_lainnya","sosek_kerja_bekerja","sosek_kerja_pns","sosek_kerja_swasta","sosek_kerja_tnipolri","sosek_kerja_tani_buruh","sosek_kebiasaan_merokok","sosek_kebiasaan_alkohol","sosek_kebiasaan_lainnya"),
+                        gabungRM19(rs,"sosek_tinggal_lainnya_ket","sosek_bersama_lainnya_ket","sosek_kebiasaan_jenis_jumlah"),
+                        cekRM19(rs,"kepribadian_tidakadakeluhan","kepribadian_perlupendampingan","kepribadian_perludibantuibadah","kepribadian_berdoa","kepribadian_bacaliteratur"),
+                        gabungRM19(rs,"kepribadian_ganggu_praktik","kepribadian_nilai_budaya","kepribadian_lainlain"),
+                        (teksRM19(rs,"nyeri_canvas_gambar").isEmpty()?"":"Ada tanda"),
+                        gabungRM19(rs,"nyeri_p","nyeri_q","nyeri_r","nyeri_s","nyeri_t"),
+                        cekRM19(rs,"keluhan_nyeri_kronik","keluhan_nyeri_akut","keluhan_tidak_ada_nyeri"),
+                        cekRM19(rs,"nyerihilang_minum_obat","nyerihilang_istirahat","nyerihilang_berubah_posisi","nyerihilang_mendengar_musik","nyerihilang_lainlain"),
+                        teksRM19(rs,"nyerihilang_lainlain_ket"),
+                        cekRM19(rs,"fungsional_mandiri","fungsional_bantuan_minimal","fungsional_bantuan_sebagian","fungsional_ketergantungan","fungsional_berjalan_normal","fungsional_berjalan_perlu_bantuan","fungsional_berjalan_sering_jatuh","fungsional_berjalan_kelumpuhan"),
+                        cekRM19(rs,"edu_bicara_tidak","edu_bicara_ya"),
+                        teksRM19(rs,"edu_bicara_jelaskan"),
+                        cekRM19(rs,"edu_bahasa_indonesia","edu_bahasa_daerah","edu_bahasa_asing","edu_bahasa_isyarat"),
+                        gabungRM19(rs,"edu_bahasa_daerah_ket","edu_bahasa_asing_ket"),
+                        cekRM19(rs,"edu_penerjemah_tidak","edu_penerjemah_ya"),
+                        teksRM19(rs,"edu_penerjemah_bahasa"),
+                        cekRM19(rs,"edu_cara_audiovisual","edu_cara_diskusi","edu_cara_membaca","edu_cara_menulis","edu_cara_mengerjakan","edu_cara_gambar","edu_cara_mendengar","edu_cara_demonstrasi"),
+                        cekRM19(rs,"edu_hambatan_tidak","edu_hambatan_ya","edu_hambatan_bahasa","edu_hambatan_emosi","edu_hambatan_caregiver","edu_hambatan_fisiologis","edu_hambatan_pendengaran","edu_hambatan_penglihatan","edu_hambatan_memori","edu_hambatan_motivasi","edu_hambatan_bicara"),
+                        cekRM19(rs,"edu_pendidikan_tk","edu_pendidikan_sd","edu_pendidikan_smp","edu_pendidikan_sma","edu_pendidikan_d3d4","edu_pendidikan_s1","edu_pendidikan_s2","edu_pendidikan_s3"),
+                        cekRM19(rs,"edu_kebutuhan_proses_penyakit","edu_kebutuhan_diit_nutrisi","edu_kebutuhan_perawatan_luka","edu_kebutuhan_manajemen_nyeri","edu_kebutuhan_obat","edu_kebutuhan_rehabilitasi","edu_kebutuhan_lainlain"),
+                        teksRM19(rs,"edu_kebutuhan_lainlain_ket"),
+                        dpRM19(rs,"discharge_homecare"),
+                        dpRM19(rs,"discharge_perawatanluka"),
+                        dpRM19(rs,"discharge_alatbantu"),
+                        dpRM19(rs,"discharge_pemesananalat"),
+                        dpRM19(rs,"discharge_timterapis"),
+                        dpRM19(rs,"discharge_gizi"),
+                        dpRM19(rs,"discharge_kelompok"),
+                        dpmRM19(rs,"discharge_manual"),
+                        teksRM19(rs,"data_penunjang1"),
+                        teksRM19(rs,"data_penunjang2"),
+                        teksRM19(rs,"data_penunjang3"),
+                        teksRM19(rs,"data_penunjang4")
                     });
                 }
             } catch (Exception e) {
@@ -8575,6 +11431,7 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
         DiketahuiDietisen.setSelectedIndex(0);
         KeteranganDiketahuiDietisen.setText("");
         Rencana.setText("");
+        resetChecklistRiwayatRM19();
         for (i = 0; i < tabModeMasalah.getRowCount(); i++) {
             tabModeMasalah.setValueAt(false,i,0);
         }
@@ -9185,7 +12042,47 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
     }
 
     private void ganti() {
-        if(Sequel.mengedittf("penilaian_awal_keperawatan_ranap","no_rawat=?","no_rawat=?,tanggal=?,informasi=?,ket_informasi=?,tiba_diruang_rawat=?,kasus_trauma=?,cara_masuk=?,rps=?,rpd=?,rpk=?,rpo=?,riwayat_pembedahan=?,riwayat_dirawat_dirs=?,alat_bantu_dipakai=?,riwayat_kehamilan=?,riwayat_kehamilan_perkiraan=?,riwayat_tranfusi=?,riwayat_alergi=?,riwayat_merokok=?,riwayat_merokok_jumlah=?,riwayat_alkohol=?,riwayat_alkohol_jumlah=?,riwayat_narkoba=?,riwayat_olahraga=?,pemeriksaan_mental=?,pemeriksaan_keadaan_umum=?,pemeriksaan_gcs=?,pemeriksaan_td=?,pemeriksaan_nadi=?,pemeriksaan_rr=?,pemeriksaan_suhu=?,pemeriksaan_spo2=?,pemeriksaan_bb=?,pemeriksaan_tb=?,pemeriksaan_susunan_kepala=?,pemeriksaan_susunan_kepala_keterangan=?,pemeriksaan_susunan_wajah=?,pemeriksaan_susunan_wajah_keterangan=?,pemeriksaan_susunan_leher=?,pemeriksaan_susunan_kejang=?,pemeriksaan_susunan_kejang_keterangan=?,pemeriksaan_susunan_sensorik=?,pemeriksaan_kardiovaskuler_denyut_nadi=?,pemeriksaan_kardiovaskuler_sirkulasi=?,pemeriksaan_kardiovaskuler_sirkulasi_keterangan=?,pemeriksaan_kardiovaskuler_pulsasi=?,pemeriksaan_respirasi_pola_nafas=?,pemeriksaan_respirasi_retraksi=?,pemeriksaan_respirasi_suara_nafas=?,pemeriksaan_respirasi_volume_pernafasan=?,pemeriksaan_respirasi_jenis_pernafasan=?,pemeriksaan_respirasi_jenis_pernafasan_keterangan=?,pemeriksaan_respirasi_irama_nafas=?,pemeriksaan_respirasi_batuk=?,pemeriksaan_gastrointestinal_mulut=?,pemeriksaan_gastrointestinal_mulut_keterangan=?,pemeriksaan_gastrointestinal_gigi=?,pemeriksaan_gastrointestinal_gigi_keterangan=?,pemeriksaan_gastrointestinal_lidah=?,pemeriksaan_gastrointestinal_lidah_keterangan=?,pemeriksaan_gastrointestinal_tenggorokan=?,pemeriksaan_gastrointestinal_tenggorokan_keterangan=?,pemeriksaan_gastrointestinal_abdomen=?,pemeriksaan_gastrointestinal_abdomen_keterangan=?,pemeriksaan_gastrointestinal_peistatik_usus=?,pemeriksaan_gastrointestinal_anus=?,pemeriksaan_neurologi_pengelihatan=?,pemeriksaan_neurologi_pengelihatan_keterangan=?,pemeriksaan_neurologi_alat_bantu_penglihatan=?,pemeriksaan_neurologi_pendengaran=?,pemeriksaan_neurologi_bicara=?,pemeriksaan_neurologi_bicara_keterangan=?,pemeriksaan_neurologi_sensorik=?,pemeriksaan_neurologi_motorik=?,pemeriksaan_neurologi_kekuatan_otot=?,pemeriksaan_integument_warnakulit=?,pemeriksaan_integument_turgor=?,pemeriksaan_integument_kulit=?,pemeriksaan_integument_dekubitas=?,pemeriksaan_muskuloskletal_pergerakan_sendi=?,pemeriksaan_muskuloskletal_kekauatan_otot=?,pemeriksaan_muskuloskletal_nyeri_sendi=?,pemeriksaan_muskuloskletal_nyeri_sendi_keterangan=?,pemeriksaan_muskuloskletal_oedema=?,pemeriksaan_muskuloskletal_oedema_keterangan=?,pemeriksaan_muskuloskletal_fraktur=?,pemeriksaan_muskuloskletal_fraktur_keterangan=?,pemeriksaan_eliminasi_bab_frekuensi_jumlah=?,pemeriksaan_eliminasi_bab_frekuensi_durasi=?,pemeriksaan_eliminasi_bab_konsistensi=?,pemeriksaan_eliminasi_bab_warna=?,pemeriksaan_eliminasi_bak_frekuensi_jumlah=?,pemeriksaan_eliminasi_bak_frekuensi_durasi=?,pemeriksaan_eliminasi_bak_warna=?,pemeriksaan_eliminasi_bak_lainlain=?,pola_aktifitas_makanminum=?,pola_aktifitas_mandi=?,pola_aktifitas_eliminasi=?,pola_aktifitas_berpakaian=?,pola_aktifitas_berpindah=?,pola_nutrisi_frekuesi_makan=?,pola_nutrisi_jenis_makanan=?,pola_nutrisi_porsi_makan=?,pola_tidur_lama_tidur=?,pola_tidur_gangguan=?,pengkajian_fungsi_kemampuan_sehari=?,pengkajian_fungsi_aktifitas=?,pengkajian_fungsi_berjalan=?,pengkajian_fungsi_berjalan_keterangan=?,pengkajian_fungsi_ambulasi=?,pengkajian_fungsi_ekstrimitas_atas=?,pengkajian_fungsi_ekstrimitas_atas_keterangan=?,pengkajian_fungsi_ekstrimitas_bawah=?,pengkajian_fungsi_ekstrimitas_bawah_keterangan=?,pengkajian_fungsi_menggenggam=?,pengkajian_fungsi_menggenggam_keterangan=?,pengkajian_fungsi_koordinasi=?,pengkajian_fungsi_koordinasi_keterangan=?,pengkajian_fungsi_kesimpulan=?,riwayat_psiko_kondisi_psiko=?,riwayat_psiko_gangguan_jiwa=?,riwayat_psiko_perilaku=?,riwayat_psiko_perilaku_keterangan=?,riwayat_psiko_hubungan_keluarga=?,riwayat_psiko_tinggal=?,riwayat_psiko_tinggal_keterangan=?,riwayat_psiko_nilai_kepercayaan=?,riwayat_psiko_nilai_kepercayaan_keterangan=?,riwayat_psiko_pendidikan_pj=?,riwayat_psiko_edukasi_diberikan=?,riwayat_psiko_edukasi_diberikan_keterangan=?,penilaian_nyeri=?,penilaian_nyeri_penyebab=?,penilaian_nyeri_ket_penyebab=?,penilaian_nyeri_kualitas=?,penilaian_nyeri_ket_kualitas=?,penilaian_nyeri_lokasi=?,penilaian_nyeri_menyebar=?,penilaian_nyeri_skala=?,penilaian_nyeri_waktu=?,penilaian_nyeri_hilang=?,penilaian_nyeri_ket_hilang=?,penilaian_nyeri_diberitahukan_dokter=?,penilaian_nyeri_jam_diberitahukan_dokter=?,penilaian_jatuhmorse_skala1=?,penilaian_jatuhmorse_nilai1=?,penilaian_jatuhmorse_skala2=?,penilaian_jatuhmorse_nilai2=?,penilaian_jatuhmorse_skala3=?,penilaian_jatuhmorse_nilai3=?,penilaian_jatuhmorse_skala4=?,penilaian_jatuhmorse_nilai4=?,penilaian_jatuhmorse_skala5=?,penilaian_jatuhmorse_nilai5=?,penilaian_jatuhmorse_skala6=?,penilaian_jatuhmorse_nilai6=?,penilaian_jatuhmorse_totalnilai=?,penilaian_jatuhsydney_skala1=?,penilaian_jatuhsydney_nilai1=?,penilaian_jatuhsydney_skala2=?,penilaian_jatuhsydney_nilai2=?,penilaian_jatuhsydney_skala3=?,penilaian_jatuhsydney_nilai3=?,penilaian_jatuhsydney_skala4=?,penilaian_jatuhsydney_nilai4=?,penilaian_jatuhsydney_skala5=?,penilaian_jatuhsydney_nilai5=?,penilaian_jatuhsydney_skala6=?,penilaian_jatuhsydney_nilai6=?,penilaian_jatuhsydney_skala7=?,penilaian_jatuhsydney_nilai7=?,penilaian_jatuhsydney_skala8=?,penilaian_jatuhsydney_nilai8=?,penilaian_jatuhsydney_skala9=?,penilaian_jatuhsydney_nilai9=?,penilaian_jatuhsydney_skala10=?,penilaian_jatuhsydney_nilai10=?,penilaian_jatuhsydney_skala11=?,penilaian_jatuhsydney_nilai11=?,penilaian_jatuhsydney_totalnilai=?,skrining_gizi1=?,nilai_gizi1=?,skrining_gizi2=?,nilai_gizi2=?,nilai_total_gizi=?,skrining_gizi_diagnosa_khusus=?,skrining_gizi_ket_diagnosa_khusus=?,skrining_gizi_diketahui_dietisen=?,skrining_gizi_jam_diketahui_dietisen=?,rencana=?,nip1=?,nip2=?,kd_dokter=?",194,new String[]{
+        if(Sequel.mengedittf("penilaian_awal_keperawatan_ranap","no_rawat=?","no_rawat=?,tanggal=?,informasi=?,ket_informasi=?,tiba_diruang_rawat=?,kasus_trauma=?,cara_masuk=?,rps=?,rpd=?,rpk=?,rpo=?,riwayat_pembedahan=?,riwayat_dirawat_dirs=?,alat_bantu_dipakai=?,riwayat_kehamilan=?,riwayat_kehamilan_perkiraan=?,riwayat_tranfusi=?,riwayat_alergi=?,riwayat_merokok=?,riwayat_merokok_jumlah=?,riwayat_alkohol=?,riwayat_alkohol_jumlah=?,riwayat_narkoba=?,riwayat_olahraga=?,pemeriksaan_mental=?,pemeriksaan_keadaan_umum=?,pemeriksaan_gcs=?,pemeriksaan_td=?,pemeriksaan_nadi=?,pemeriksaan_rr=?,pemeriksaan_suhu=?,pemeriksaan_spo2=?,pemeriksaan_bb=?,pemeriksaan_tb=?,pemeriksaan_susunan_kepala=?,pemeriksaan_susunan_kepala_keterangan=?,pemeriksaan_susunan_wajah=?,pemeriksaan_susunan_wajah_keterangan=?,pemeriksaan_susunan_leher=?,pemeriksaan_susunan_kejang=?,pemeriksaan_susunan_kejang_keterangan=?,pemeriksaan_susunan_sensorik=?,pemeriksaan_kardiovaskuler_denyut_nadi=?,pemeriksaan_kardiovaskuler_sirkulasi=?,pemeriksaan_kardiovaskuler_sirkulasi_keterangan=?,pemeriksaan_kardiovaskuler_pulsasi=?,pemeriksaan_respirasi_pola_nafas=?,pemeriksaan_respirasi_retraksi=?,pemeriksaan_respirasi_suara_nafas=?,pemeriksaan_respirasi_volume_pernafasan=?,pemeriksaan_respirasi_jenis_pernafasan=?,pemeriksaan_respirasi_jenis_pernafasan_keterangan=?,pemeriksaan_respirasi_irama_nafas=?,pemeriksaan_respirasi_batuk=?,pemeriksaan_gastrointestinal_mulut=?,pemeriksaan_gastrointestinal_mulut_keterangan=?,pemeriksaan_gastrointestinal_gigi=?,pemeriksaan_gastrointestinal_gigi_keterangan=?,pemeriksaan_gastrointestinal_lidah=?,pemeriksaan_gastrointestinal_lidah_keterangan=?,pemeriksaan_gastrointestinal_tenggorokan=?,pemeriksaan_gastrointestinal_tenggorokan_keterangan=?,pemeriksaan_gastrointestinal_abdomen=?,pemeriksaan_gastrointestinal_abdomen_keterangan=?,pemeriksaan_gastrointestinal_peistatik_usus=?,pemeriksaan_gastrointestinal_anus=?,pemeriksaan_neurologi_pengelihatan=?,pemeriksaan_neurologi_pengelihatan_keterangan=?,pemeriksaan_neurologi_alat_bantu_penglihatan=?,pemeriksaan_neurologi_pendengaran=?,pemeriksaan_neurologi_bicara=?,pemeriksaan_neurologi_bicara_keterangan=?,pemeriksaan_neurologi_sensorik=?,pemeriksaan_neurologi_motorik=?,pemeriksaan_neurologi_kekuatan_otot=?,pemeriksaan_integument_warnakulit=?,pemeriksaan_integument_turgor=?,pemeriksaan_integument_kulit=?,pemeriksaan_integument_dekubitas=?,pemeriksaan_muskuloskletal_pergerakan_sendi=?,pemeriksaan_muskuloskletal_kekauatan_otot=?,pemeriksaan_muskuloskletal_nyeri_sendi=?,pemeriksaan_muskuloskletal_nyeri_sendi_keterangan=?,pemeriksaan_muskuloskletal_oedema=?,pemeriksaan_muskuloskletal_oedema_keterangan=?,pemeriksaan_muskuloskletal_fraktur=?,pemeriksaan_muskuloskletal_fraktur_keterangan=?,pemeriksaan_eliminasi_bab_frekuensi_jumlah=?,pemeriksaan_eliminasi_bab_frekuensi_durasi=?,pemeriksaan_eliminasi_bab_konsistensi=?,pemeriksaan_eliminasi_bab_warna=?,pemeriksaan_eliminasi_bak_frekuensi_jumlah=?,pemeriksaan_eliminasi_bak_frekuensi_durasi=?,pemeriksaan_eliminasi_bak_warna=?,pemeriksaan_eliminasi_bak_lainlain=?,pola_aktifitas_makanminum=?,pola_aktifitas_mandi=?,pola_aktifitas_eliminasi=?,pola_aktifitas_berpakaian=?,pola_aktifitas_berpindah=?,pola_nutrisi_frekuesi_makan=?,pola_nutrisi_jenis_makanan=?,pola_nutrisi_porsi_makan=?,pola_tidur_lama_tidur=?,pola_tidur_gangguan=?,pengkajian_fungsi_kemampuan_sehari=?,pengkajian_fungsi_aktifitas=?,pengkajian_fungsi_berjalan=?,pengkajian_fungsi_berjalan_keterangan=?,pengkajian_fungsi_ambulasi=?,pengkajian_fungsi_ekstrimitas_atas=?,pengkajian_fungsi_ekstrimitas_atas_keterangan=?,pengkajian_fungsi_ekstrimitas_bawah=?,pengkajian_fungsi_ekstrimitas_bawah_keterangan=?,pengkajian_fungsi_menggenggam=?,pengkajian_fungsi_menggenggam_keterangan=?,pengkajian_fungsi_koordinasi=?,pengkajian_fungsi_koordinasi_keterangan=?,pengkajian_fungsi_kesimpulan=?,riwayat_psiko_kondisi_psiko=?,riwayat_psiko_gangguan_jiwa=?,riwayat_psiko_perilaku=?,riwayat_psiko_perilaku_keterangan=?,riwayat_psiko_hubungan_keluarga=?,riwayat_psiko_tinggal=?,riwayat_psiko_tinggal_keterangan=?,riwayat_psiko_nilai_kepercayaan=?,riwayat_psiko_nilai_kepercayaan_keterangan=?,riwayat_psiko_pendidikan_pj=?,riwayat_psiko_edukasi_diberikan=?,riwayat_psiko_edukasi_diberikan_keterangan=?,penilaian_nyeri=?,penilaian_nyeri_penyebab=?,penilaian_nyeri_ket_penyebab=?,penilaian_nyeri_kualitas=?,penilaian_nyeri_ket_kualitas=?,penilaian_nyeri_lokasi=?,penilaian_nyeri_menyebar=?,penilaian_nyeri_skala=?,penilaian_nyeri_waktu=?,penilaian_nyeri_hilang=?,penilaian_nyeri_ket_hilang=?,penilaian_nyeri_diberitahukan_dokter=?,penilaian_nyeri_jam_diberitahukan_dokter=?,penilaian_jatuhmorse_skala1=?,penilaian_jatuhmorse_nilai1=?,penilaian_jatuhmorse_skala2=?,penilaian_jatuhmorse_nilai2=?,penilaian_jatuhmorse_skala3=?,penilaian_jatuhmorse_nilai3=?,penilaian_jatuhmorse_skala4=?,penilaian_jatuhmorse_nilai4=?,penilaian_jatuhmorse_skala5=?,penilaian_jatuhmorse_nilai5=?,penilaian_jatuhmorse_skala6=?,penilaian_jatuhmorse_nilai6=?,penilaian_jatuhmorse_totalnilai=?,penilaian_jatuhsydney_skala1=?,penilaian_jatuhsydney_nilai1=?,penilaian_jatuhsydney_skala2=?,penilaian_jatuhsydney_nilai2=?,penilaian_jatuhsydney_skala3=?,penilaian_jatuhsydney_nilai3=?,penilaian_jatuhsydney_skala4=?,penilaian_jatuhsydney_nilai4=?,penilaian_jatuhsydney_skala5=?,penilaian_jatuhsydney_nilai5=?,penilaian_jatuhsydney_skala6=?,penilaian_jatuhsydney_nilai6=?,penilaian_jatuhsydney_skala7=?,penilaian_jatuhsydney_nilai7=?,penilaian_jatuhsydney_skala8=?,penilaian_jatuhsydney_nilai8=?,penilaian_jatuhsydney_skala9=?,penilaian_jatuhsydney_nilai9=?,penilaian_jatuhsydney_skala10=?,penilaian_jatuhsydney_nilai10=?,penilaian_jatuhsydney_skala11=?,penilaian_jatuhsydney_nilai11=?,penilaian_jatuhsydney_totalnilai=?,skrining_gizi1=?,nilai_gizi1=?,skrining_gizi2=?,nilai_gizi2=?,nilai_total_gizi=?,skrining_gizi_diagnosa_khusus=?,skrining_gizi_ket_diagnosa_khusus=?,skrining_gizi_diketahui_dietisen=?,skrining_gizi_jam_diketahui_dietisen=?,rencana=?,nip1=?,nip2=?,kd_dokter=?,alergi_tidak_ada=?,alergi_obat=?,alergi_obat_sebutkan=?,alergi_obat_reaksi=?,alergi_makanan=?,alergi_makanan_sebutkan=?,alergi_makanan_reaksi=?,alergi_lainnya=?,alergi_lainnya_sebutkan=?,alergi_lainnya_reaksi=?,alergi_tidak_diketahui=?,alergi_tidak_diketahui_reaksi=?,alergi_tanda_dipasang=?,rpd_hipertensi=?,rpd_dm=?,rpd_jantung=?,rpd_hepatitis=?,rpd_operasi=?,rpd_anemia=?,rpd_asthma=?,rpd_stroke=?,rpd_paru=?,rpd_lainlain=?,rpd_lainlain_sebutkan=?,rpk_hipertensi=?,rpk_dm=?,rpk_jantung=?,rpk_thalasemia=?,rpk_lainlain=?,rpk_lainlain_sebutkan=?,informasi_nama_keluarga=?,informasi_hubungan_keluarga=?,tingkat_kesadaran=?,lla=?,reproduksi_menstruasi=?,reproduksi_hamil=?,reproduksi_hpht=?,reproduksi_papsmear=?,reproduksi_papsmear_tanggal=?,reproduksi_mamografi=?,reproduksi_mamografi_tanggal=?,reproduksi_sadari=?,reproduksi_sadari_tanggal=?,reproduksi_screening_prostat=?,reproduksi_screening_prostat_tanggal=?,skala_branden=?,status_pernikahan=?,kerabat_nama=?,kerabat_hubungan=?,kerabat_telp=?,"+
+                "edu_bicara_tidak=?,edu_bicara_ya=?,edu_bicara_jelaskan=?,"+
+                "edu_bahasa_indonesia=?,edu_bahasa_daerah=?,edu_bahasa_daerah_ket=?,edu_bahasa_asing=?,edu_bahasa_asing_ket=?,edu_bahasa_isyarat=?,"+
+                "edu_penerjemah_tidak=?,edu_penerjemah_ya=?,edu_penerjemah_bahasa=?,"+
+                "edu_cara_audiovisual=?,edu_cara_diskusi=?,edu_cara_membaca=?,edu_cara_menulis=?,edu_cara_mengerjakan=?,edu_cara_gambar=?,edu_cara_mendengar=?,edu_cara_demonstrasi=?,"+
+                "edu_hambatan_tidak=?,edu_hambatan_ya=?,"+
+                "edu_hambatan_bahasa=?,edu_hambatan_emosi=?,edu_hambatan_caregiver=?,edu_hambatan_fisiologis=?,edu_hambatan_pendengaran=?,edu_hambatan_penglihatan=?,edu_hambatan_memori=?,edu_hambatan_motivasi=?,edu_hambatan_bicara=?,"+
+                "edu_pendidikan_tk=?,edu_pendidikan_sd=?,edu_pendidikan_smp=?,edu_pendidikan_sma=?,edu_pendidikan_d3d4=?,edu_pendidikan_s1=?,edu_pendidikan_s2=?,edu_pendidikan_s3=?,"+
+                "edu_kebutuhan_proses_penyakit=?,edu_kebutuhan_diit_nutrisi=?,edu_kebutuhan_perawatan_luka=?,edu_kebutuhan_manajemen_nyeri=?,edu_kebutuhan_obat=?,edu_kebutuhan_rehabilitasi=?,edu_kebutuhan_lainlain=?,edu_kebutuhan_lainlain_ket=?,"+
+                "discharge_homecare_ya=?,discharge_homecare_tidak=?,discharge_homecare_ket=?,"+
+                "discharge_perawatanluka_ya=?,discharge_perawatanluka_tidak=?,discharge_perawatanluka_ket=?,"+
+                "discharge_alatbantu_ya=?,discharge_alatbantu_tidak=?,discharge_alatbantu_ket=?,"+
+                "discharge_pemesananalat_ya=?,discharge_pemesananalat_tidak=?,discharge_pemesananalat_ket=?,"+
+                "discharge_timterapis_ya=?,discharge_timterapis_tidak=?,discharge_timterapis_ket=?,"+
+                "discharge_gizi_ya=?,discharge_gizi_tidak=?,discharge_gizi_ket=?,"+
+                "discharge_kelompok_ya=?,discharge_kelompok_tidak=?,discharge_kelompok_ket=?,"+
+                "data_penunjang1=?,data_penunjang2=?,data_penunjang3=?,data_penunjang4=?,"+
+                "gcs_e=?,gcs_m=?,gcs_v=?,pupil_kanan_ukuran=?,pupil_kanan_reaksi=?,pupil_kiri_ukuran=?,pupil_kiri_reaksi=?,keluhan_utama=?,airway_normal=?,airway_oropharingeal=?,airway_sekret=?,airway_tumor=?,airway_trajeostomy=?,airway_rtt=?,breathing_normal=?,breathing_sesak_dyspnea=?,breathing_batuk=?,breathing_takipneu=?,breathing_batuk_darah=?,breathing_sleep_apnea=?,breathing_orthopnea=?,bunyiparu_normal=?,bunyiparu_ngorok=?,bunyiparu_stidor=?,bunyiparu_ronkhi_kanan=?,bunyiparu_ronkhi_kiri=?,bunyiparu_wheezing_kanan=?,bunyiparu_wheezing_kiri=?,kesulitan_bernafas_tidak=?,kesulitan_bernafas_ya=?,otot_bantu_nafas_tidak=?,otot_bantu_nafas_ya=?,o2_tidak=?,o2_ya=?,o2_nasal=?,o2_sungkup=?,cardio_tidak_ada_kelainan=?,cardio_bradikardi=?,cardio_takikardi=?,cardio_murmur=?,cardio_gallop=?,cardio_pucat_sianosis=?,cardio_nyeri_dada=?,gi_tidak_ada_keluhan=?,gi_penurunan_bising_usus=?,gi_gigipalsu_atas_kanan=?,gi_gigipalsu_atas_kiri=?,gi_gigipalsu_bawah_kanan=?,gi_gigipalsu_bawah_kiri=?,gi_pembatasan_makanan=?,gi_tidak_nafsu_makan=?,gi_mual=?,gi_muntah=?,gi_konstipasi=?,gi_terpasang_ngt=?,gi_sulit_menelan=?,gi_diare=?,gi_kolostomi=?,gi_distensi_abdomen=?,gi_makan_habis=?,gi_ivfd=?,kemih_tidak_ada_keluhan=?,kemih_distensi_bladder=?,kemih_haematuria=?,kemih_retensi_urine=?,kemih_oliguri=?,kemih_disuria=?,kemih_anuri=?,kemih_terpasang_kateter=?,kemih_inkontinensia_urine=?,pendengaran_tak=?,pendengaran_berdengung=?,pendengaran_tuli=?,pendengaran_keluar_cairan=?,pendengaran_nyeri=?,penglihatan_tak=?,penglihatan_anemis=?,penglihatan_icterik=?,penglihatan_tidak_ada_reaksi_cahaya=?,penglihatan_kacamata=?,penglihatan_lensakontak=?,penglihatan_merah=?,penglihatan_kabur=?,wicara_normal=?,wicara_cadelpelo=?,wicara_aphasia=?,wicara_kerusakan=?,orientasi_baik=?,orientasi_orang=?,orientasi_tempat=?,orientasi_waktu=?,orientasi_situasi=?,memori_baik=?,memori_sedang=?,memori_buruk=?,konsentrasi_baik=?,konsentrasi_sedang=?,konsentrasi_buruk=?,kekuatanotot_inkoordinasi=?,kekuatanotot_kejang=?,fraktur_tangan_kanan=?,fraktur_tangan_kiri=?,fraktur_kaki_kanan=?,fraktur_kaki_kiri=?,warnakulit_normal=?,warnakulit_pucat=?,warnakulit_merah=?,warnakulit_ikterik=?,warnakulit_kemerahan=?,integritaskulit_utuh=?,integritaskulit_ruam=?,integritaskulit_melepuh=?,airway_rtt_ukuran=?,o2_liter_menit=?,o2_saturasi=?,cardio_lain=?,gi_pembatasan_makanan_ket=?,gi_muntah_kali=?,gi_diare_x=?,gi_ivfd_tts=?,kemih_lain=?,penglihatan_lain=?,kekuatanotot_tremor_di=?,hemiplegi_di=?,parase_di=?,warnakulit_lain=?,integritaskulit_melepuh_di=?,breathing_lain=?,breathing_lain_ket=?,bunyiparu_lain=?,bunyiparu_lain_ket=?,kemih_poliuri=?,kekuatanotot_nilai=?,ekstremitas_lain=?,integritaskulit_kemerahan=?,integritaskulit_kemerahan_di=?,"+
+                // --- poin 39 (psiko-sosial-ekonomi-spiritual): DIPINDAH KE SINI dari posisi
+                // tengah (dulu ditulis sesudah kolom kerabat_telp, urutan ke-244..280). Kolomnya
+                // scr FISIK menempel di UJUNG tabel (migrasi additive tanpa AFTER), jadi utk
+                // simpan() yg INSERT-nya POSISIONAL murni, urutan value HARUS ikut urutan
+                // fisik - kalau tidak, nilainya masuk ke kolom yg salah begitu migrasi
+                // psikososial diimport. ganti() sendiri aman (SET pakai nama kolom), makanya
+                // bug ini tidak kelihatan sblm migrasi diimport. ---
+                "psiko_tak=?,psiko_marah=?,psiko_gelisah=?,psiko_sedih=?,psiko_cemas=?,psiko_takut=?,psiko_acuhtakacuh=?,psiko_bunuhdiri=?,"+
+                "sosek_hubkeluarga_baik=?,sosek_hubkeluarga_tidakbaik=?,"+
+                "sosek_tinggal_rumah=?,sosek_tinggal_asrama=?,sosek_tinggal_panti=?,sosek_tinggal_lainnya=?,sosek_tinggal_lainnya_ket=?,"+
+                "sosek_bersama_suamiistri=?,sosek_bersama_anak=?,sosek_bersama_orangtua=?,sosek_bersama_lainnya=?,sosek_bersama_lainnya_ket=?,"+
+                "sosek_kerja_bekerja=?,sosek_kerja_pns=?,sosek_kerja_swasta=?,sosek_kerja_tnipolri=?,sosek_kerja_tani_buruh=?,"+
+                "sosek_kebiasaan_merokok=?,sosek_kebiasaan_alkohol=?,sosek_kebiasaan_lainnya=?,sosek_kebiasaan_jenis_jumlah=?,"+
+                "kepribadian_tidakadakeluhan=?,kepribadian_perlupendampingan=?,kepribadian_perludibantuibadah=?,kepribadian_berdoa=?,kepribadian_bacaliteratur=?,"+
+                "kepribadian_ganggu_praktik=?,kepribadian_nilai_budaya=?,kepribadian_lainlain=?,"+
+                // --- poin 41: "6. Penapisan/Skrining Nyeri" + "7. Status Fungsional" ---
+                "nyeri_canvas_gambar=?,nyeri_p=?,nyeri_q=?,nyeri_r=?,nyeri_s=?,nyeri_t=?,"+
+                "keluhan_nyeri_kronik=?,keluhan_nyeri_akut=?,keluhan_tidak_ada_nyeri=?,"+
+                "nyerihilang_minum_obat=?,nyerihilang_istirahat=?,nyerihilang_berubah_posisi=?,nyerihilang_mendengar_musik=?,nyerihilang_lainlain=?,nyerihilang_lainlain_ket=?,"+
+                "fungsional_mandiri=?,fungsional_bantuan_minimal=?,fungsional_bantuan_sebagian=?,fungsional_ketergantungan=?,"+
+                "fungsional_berjalan_normal=?,fungsional_berjalan_perlu_bantuan=?,fungsional_berjalan_sering_jatuh=?,fungsional_berjalan_kelumpuhan=?,"+
+                // --- poin 42: 1 baris manual tambahan di "10. Perencanaan Pulang" ---
+                "discharge_manual_komponen=?,discharge_manual_ya=?,discharge_manual_tidak=?,discharge_manual_ket=?",516,new String[]{
                 TNoRw.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+"")+" "+TglAsuhan.getSelectedItem().toString().substring(11,19),Anamnesis.getSelectedItem().toString(),KetAnamnesis.getText(),TibadiRuang.getSelectedItem().toString(),MacamKasus.getSelectedItem().toString(), 
                     CaraMasuk.getSelectedItem().toString(),RPS.getText(),RPD.getText(),RPK.getText(),RPO.getText(),RPembedahan.getText(),RDirawatRS.getText(),AlatBantuDipakai.getSelectedItem().toString(),SedangMenyusui.getSelectedItem().toString(),KetSedangMenyusui.getText(),RTranfusi.getText(), 
                     Alergi.getText(),KebiasaanMerokok.getSelectedItem().toString(),KebiasaanJumlahRokok.getText(),KebiasaanAlkohol.getSelectedItem().toString(),KebiasaanJumlahAlkohol.getText(),KebiasaanNarkoba.getSelectedItem().toString(),OlahRaga.getSelectedItem().toString(),KesadaranMental.getText(), 
@@ -9210,7 +12107,51 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                     SkalaSydney3.getSelectedItem().toString(),NilaiSydney3.getText(),SkalaSydney4.getSelectedItem().toString(),NilaiSydney4.getText(),SkalaSydney5.getSelectedItem().toString(),NilaiSydney5.getText(),SkalaSydney6.getSelectedItem().toString(),NilaiSydney6.getText(), 
                     SkalaSydney7.getSelectedItem().toString(),NilaiSydney7.getText(),SkalaSydney8.getSelectedItem().toString(),NilaiSydney8.getText(),SkalaSydney9.getSelectedItem().toString(),NilaiSydney9.getText(),SkalaSydney10.getSelectedItem().toString(),NilaiSydney10.getText(), 
                     SkalaSydney11.getSelectedItem().toString(),NilaiSydney11.getText(),NilaiSydneyTotal.getText(),SkalaGizi1.getSelectedItem().toString(),NilaiGizi1.getText(),SkalaGizi2.getSelectedItem().toString(),NilaiGizi2.getText(),NilaiGiziTotal.getText(),DiagnosaKhususGizi.getSelectedItem().toString(),
-                    KeteranganDiagnosaKhususGizi.getText(),DiketahuiDietisen.getSelectedItem().toString(),KeteranganDiketahuiDietisen.getText(),Rencana.getText(),KdPetugas.getText(),KdPetugas2.getText(),KdDokter.getText(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
+                    KeteranganDiagnosaKhususGizi.getText(),DiketahuiDietisen.getSelectedItem().toString(),KeteranganDiketahuiDietisen.getText(),Rencana.getText(),KdPetugas.getText(),KdPetugas2.getText(),KdDokter.getText(),
+                    yt(chkAlergiTidakAda),yt(chkAlergiObat),txtAlergiObatSebutkan.getText(),txtAlergiObatReaksi.getText(),yt(chkAlergiMakanan),txtAlergiMakananSebutkan.getText(),txtAlergiMakananReaksi.getText(),yt(chkAlergiLainnya),txtAlergiLainnyaSebutkan.getText(),txtAlergiLainnyaReaksi.getText(),yt(chkAlergiTidakDiketahui),txtAlergiTidakDiketahuiReaksi.getText(),yt(chkAlergiTandaDipasang),
+                    yt(chkRpdHipertensi),yt(chkRpdDm),yt(chkRpdJantung),yt(chkRpdHepatitis),yt(chkRpdOperasi),yt(chkRpdAnemia),yt(chkRpdAsthma),yt(chkRpdStroke),yt(chkRpdParu),yt(chkRpdLainlain),txtRpdLainlainSebutkan.getText(),
+                    yt(chkRpkHipertensi),yt(chkRpkDm),yt(chkRpkJantung),yt(chkRpkThalasemia),yt(chkRpkLainlain),txtRpkLainlainSebutkan.getText(),
+                    txtNamaKeluargaAnamnesis.getText(),txtHubunganAnamnesis.getText(),
+                    TingkatKesadaran.getSelectedItem().toString(),LLA.getText(),
+                    Menstruasi.getSelectedItem().toString(),StatusHamil.getSelectedItem().toString(),HPHT.getText(),
+                    Papsmear.getSelectedItem().toString(),TglPapsmear.getText(),Mamografi.getSelectedItem().toString(),TglMamografi.getText(),
+                    Sadari.getSelectedItem().toString(),TglSadari.getText(),ScreeningProstat.getSelectedItem().toString(),TglScreeningProstat.getText(),
+                    SkalaBranden.getText(),
+                    StatusPernikahan.getSelectedItem().toString(),NamaKerabatTerdekat.getText(),HubunganKerabatTerdekat.getText(),TelpKerabatTerdekat.getText(),
+                    yt(chkEduBicaraTidak),yt(chkEduBicaraYa),txtEduBicaraJelaskan.getText(),
+                    yt(chkEduBahasaIndonesia),yt(chkEduBahasaDaerah),txtEduBahasaDaerah.getText(),yt(chkEduBahasaAsing),txtEduBahasaAsing.getText(),yt(chkEduBahasaIsyarat),
+                    yt(chkEduPenerjemahTidak),yt(chkEduPenerjemahYa),txtEduPenerjemahBahasa.getText(),
+                    yt(chkCaraAudioVisual),yt(chkCaraDiskusi),yt(chkCaraMembaca),yt(chkCaraMenulis),yt(chkCaraMengerjakan),yt(chkCaraGambar),yt(chkCaraMendengar),yt(chkCaraDemonstrasi),
+                    yt(chkHambatanEduTidak),yt(chkHambatanEduYa),
+                    yt(chkHambatanBahasa),yt(chkHambatanEmosi),yt(chkHambatanCaregiver),yt(chkHambatanFisiologisBelajar),yt(chkHambatanPendengaran),yt(chkHambatanPenglihatan),yt(chkHambatanMemori),yt(chkHambatanMotivasi),yt(chkHambatanBicara),
+                    yt(chkPendidikanTK),yt(chkPendidikanSD),yt(chkPendidikanSMP),yt(chkPendidikanSMA),yt(chkPendidikanD3D4),yt(chkPendidikanS1),yt(chkPendidikanS2),yt(chkPendidikanS3),
+                    yt(chkKebutuhanProsesPenyakit),yt(chkKebutuhanDiitNutrisi),yt(chkKebutuhanPerawatanLuka),yt(chkKebutuhanManajemenNyeri),yt(chkKebutuhanObatObatan),yt(chkKebutuhanRehabilitasi),yt(chkKebutuhanLainLain),txtKebutuhanLainLain.getText(),
+                    yt(chkDischargeYa[0]),yt(chkDischargeTidak[0]),txtDischargeKet[0].getText(),
+                    yt(chkDischargeYa[1]),yt(chkDischargeTidak[1]),txtDischargeKet[1].getText(),
+                    yt(chkDischargeYa[2]),yt(chkDischargeTidak[2]),txtDischargeKet[2].getText(),
+                    yt(chkDischargeYa[3]),yt(chkDischargeTidak[3]),txtDischargeKet[3].getText(),
+                    yt(chkDischargeYa[4]),yt(chkDischargeTidak[4]),txtDischargeKet[4].getText(),
+                    yt(chkDischargeYa[5]),yt(chkDischargeTidak[5]),txtDischargeKet[5].getText(),
+                    yt(chkDischargeYa[6]),yt(chkDischargeTidak[6]),txtDischargeKet[6].getText(),
+                    txtDataPenunjang[0].getText(),txtDataPenunjang[1].getText(),txtDataPenunjang[2].getText(),txtDataPenunjang[3].getText(),
+                    GCSE.getText(),GCSM.getText(),GCSV.getText(),PupilKananUkuran.getText(),PupilKananReaksi.getText(),PupilKiriUkuran.getText(),PupilKiriReaksi.getText(),
+                    KeluhanUtama.getText(),
+                    yt(chkAirwayNormal),yt(chkAirwayOropharingeal),yt(chkAirwaySekret),yt(chkAirwayTumor),yt(chkAirwayTrajeostomy),yt(chkAirwayRTT),yt(chkBreathingNormal),yt(chkBreathingSesakDyspnea),yt(chkBreathingBatuk),yt(chkBreathingTakipneu),yt(chkBreathingBatukDarah),yt(chkBreathingSleepApnea),yt(chkBreathingNgorok),yt(chkBunyiParuNormal),yt(chkBunyiParuOrthopnea),yt(chkBunyiParuStidor),yt(chkBunyiParuRonkhiKanan),yt(chkBunyiParuRonkhiKiri),yt(chkBunyiParuWheezingKanan),yt(chkBunyiParuWheezingKiri),yt(chkKesulitanBernafasTidak),yt(chkKesulitanBernafasYa),yt(chkOtotBantuNafasTidak),yt(chkOtotBantuNafasYa),yt(chkO2Tidak),yt(chkO2Ya),yt(chkO2Nasal),yt(chkO2Sungkup),yt(chkCardioTidakAdaKelainan),yt(chkCardioBradikardi),yt(chkCardioTakikardi),yt(chkCardioMurMur),yt(chkCardioGallop),yt(chkCardioPucatSianosis),yt(chkCardioNyeriDada),yt(chkGiTidakAdaKeluhan),yt(chkGiPenurunanBisingUsus),yt(chkGiGigiPalsuAtasKanan),yt(chkGiGigiPalsuAtasKiri),yt(chkGiGigiPalsuBawahKanan),yt(chkGiGigiPalsuBawahKiri),yt(chkGiPembatasanMakanan),yt(chkGiTidakNafsuMakan),yt(chkGiMual),yt(chkGiMuntah),yt(chkGiKonstipasi),yt(chkGiTerpasangNGT),yt(chkGiSulitMenelan),yt(chkGiDiare),yt(chkGiKolostomi),yt(chkGiDistensiAbdomen),yt(chkGiMakanHabis),yt(chkGiIVFD),yt(chkKemihTidakAdaKeluhan),yt(chkKemihDistensiBladder),yt(chkKemihHaematuria),yt(chkKemihRetensiUrine),yt(chkKemihOliguri),yt(chkKemihDisuria),yt(chkKemihAnuri),yt(chkKemihTerpasangKateter),yt(chkKemihInkontinensiaUrine),yt(chkPendengaranTAK),yt(chkPendengaranBerdengung),yt(chkPendengaranTuli),yt(chkPendengaranKeluarCairan),yt(chkPendengaranNyeri),yt(chkPenglihatanTAK),yt(chkPenglihatanAnemis),yt(chkPenglihatanIcterik),yt(chkPenglihatanTidakAdaReaksiCahaya),yt(chkPenglihatanKacaMata),yt(chkPenglihatanLensaKontak),yt(chkPenglihatanMerah),yt(chkPenglihatanKabur),yt(chkWicaraNormal),yt(chkWicaraCadelPelo),yt(chkWicaraAphasia),yt(chkWicaraKerusakanWicara),yt(chkOrientasiBaik),yt(chkOrientasiOrang),yt(chkOrientasiTempat),yt(chkOrientasiWaktu),yt(chkOrientasiSituasi),yt(chkMemoriBaik),yt(chkMemoriSedang),yt(chkMemoriBuruk),yt(chkKonsentrasiBaik),yt(chkKonsentrasiSedang),yt(chkKonsentrasiBuruk),yt(chkKekuatanOtotInkoordinasi),yt(chkKekuatanOtotKejang),yt(chkFrakturTanganKanan),yt(chkFrakturTanganKiri),yt(chkFrakturKakiKanan),yt(chkFrakturKakiKiri),yt(chkWarnaKulitNormal),yt(chkWarnaKulitPucat),yt(chkWarnaKulitMerah),yt(chkWarnaKulitIkterik),yt(chkWarnaKulitKemerahan),yt(chkIntegritasKulitUtuh),yt(chkIntegritasKulitRuam),yt(chkIntegritasKulitMelepuh),txtAirwayRTTUkuran.getText(),txtO2LiterMenit.getText(),txtSaturasiO2.getText(),txtCardioLain.getText(),txtGiPembatasanMakanan.getText(),txtGiMuntahKali.getText(),txtGiDiareX.getText(),txtGiIVFDTts.getText(),txtKemihLain.getText(),txtPenglihatanLain.getText(),txtKekuatanOtotTremorDi.getText(),txtHemiplegiDi.getText(),txtParaseDi.getText(),txtWarnaKulitLain.getText(),txtIntegritasKulitMelepuhDi.getText(),yt(chkBreathingLain),txtBreathingLain.getText(),yt(chkBunyiParuLain),txtBunyiParuLain.getText(),yt(chkKemihPoliuri),txtKekuatanOtot.getText(),txtEkstremitasLain.getText(),yt(chkIntegritasKulitKemerahan),txtIntegritasKulitKemerahanDi.getText(),
+                    yt(chkPsikoTAK),yt(chkPsikoMarah),yt(chkPsikoGelisah),yt(chkPsikoSedih),yt(chkPsikoCemas),yt(chkPsikoTakut),yt(chkPsikoAcuhTakAcuh),yt(chkPsikoBunuhDiri),
+                    yt(chkHubKeluargaBaik),yt(chkHubKeluargaTidakBaik),
+                    yt(chkTempatTinggalRumah),yt(chkTempatTinggalAsrama),yt(chkTempatTinggalPanti),yt(chkTempatTinggalLainnya),txtTempatTinggalLainnya.getText(),
+                    yt(chkTinggalSuamiIstri),yt(chkTinggalAnak),yt(chkTinggalOrangTua),yt(chkTinggalLainnya),txtTinggalLainnya.getText(),
+                    yt(chkPekerjaanBekerja),yt(chkPekerjaanPNS),yt(chkPekerjaanSwasta),yt(chkPekerjaanTNIPolri),yt(chkPekerjaanTaniBuruh),
+                    yt(chkKebiasaanMerokok),yt(chkKebiasaanAlkohol),yt(chkKebiasaanLainnya),txtKebiasaanJenisJumlah.getText(),
+                    yt(chkKepribadianTidakAdaKeluhan),yt(chkKepribadianPerluPendampingan),yt(chkKepribadianPerluDibantuIbadah),yt(chkKepribadianBerdoa),yt(chkKepribadianBacaLiteratur),
+                    txtKepribadianGangguPraktik.getText(),txtKepribadianNilaiBudaya.getText(),txtKepribadianLainLain.getText(),
+                    kanvasNyeri.getCoretanBase64(),txtNyeriP.getText(),txtNyeriQ.getText(),txtNyeriR.getText(),txtNyeriS.getText(),txtNyeriT.getText(),
+                    yt(chkKeluhanNyeriKronik),yt(chkKeluhanNyeriAkut),yt(chkKeluhanTidakAdaNyeri),
+                    yt(chkNyeriHilangMinumObat),yt(chkNyeriHilangIstirahat),yt(chkNyeriHilangBerubahPosisi),yt(chkNyeriHilangMendengarMusik),yt(chkNyeriHilangLainLain),txtNyeriHilangLainLain.getText(),
+                    yt(chkFungsionalMandiri),yt(chkFungsionalBantuanMinimal),yt(chkFungsionalBantuanSebagian),yt(chkFungsionalKetergantungan),
+                    yt(chkBerjalanNormal),yt(chkBerjalanPerluBantuan),yt(chkBerjalanSeringJatuh),yt(chkBerjalanKelumpuhan),
+                    txtDischargeManualKomponen.getText(),yt(chkDischargeManualYa),yt(chkDischargeManualTidak),txtDischargeManualKet.getText(),
+                    tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
              })==true){
                 tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),0);                
                 tbObat.setValueAt(TNoRM.getText(),tbObat.getSelectedRow(),1);                
@@ -9649,7 +12590,7 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
     }
 
     private void simpan() {
-        if(Sequel.menyimpantf("penilaian_awal_keperawatan_ranap","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",193,new String[]{
+        if(Sequel.menyimpantf("penilaian_awal_keperawatan_ranap","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",515,new String[]{
                 TNoRw.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+"")+" "+TglAsuhan.getSelectedItem().toString().substring(11,19),Anamnesis.getSelectedItem().toString(),KetAnamnesis.getText(),TibadiRuang.getSelectedItem().toString(),MacamKasus.getSelectedItem().toString(), 
                 CaraMasuk.getSelectedItem().toString(),RPS.getText(),RPD.getText(),RPK.getText(),RPO.getText(),RPembedahan.getText(),RDirawatRS.getText(),AlatBantuDipakai.getSelectedItem().toString(),SedangMenyusui.getSelectedItem().toString(),KetSedangMenyusui.getText(),RTranfusi.getText(), 
                 Alergi.getText(),KebiasaanMerokok.getSelectedItem().toString(),KebiasaanJumlahRokok.getText(),KebiasaanAlkohol.getSelectedItem().toString(),KebiasaanJumlahAlkohol.getText(),KebiasaanNarkoba.getSelectedItem().toString(),OlahRaga.getSelectedItem().toString(),KesadaranMental.getText(), 
@@ -9674,7 +12615,50 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                 SkalaSydney3.getSelectedItem().toString(),NilaiSydney3.getText(),SkalaSydney4.getSelectedItem().toString(),NilaiSydney4.getText(),SkalaSydney5.getSelectedItem().toString(),NilaiSydney5.getText(),SkalaSydney6.getSelectedItem().toString(),NilaiSydney6.getText(), 
                 SkalaSydney7.getSelectedItem().toString(),NilaiSydney7.getText(),SkalaSydney8.getSelectedItem().toString(),NilaiSydney8.getText(),SkalaSydney9.getSelectedItem().toString(),NilaiSydney9.getText(),SkalaSydney10.getSelectedItem().toString(),NilaiSydney10.getText(), 
                 SkalaSydney11.getSelectedItem().toString(),NilaiSydney11.getText(),NilaiSydneyTotal.getText(),SkalaGizi1.getSelectedItem().toString(),NilaiGizi1.getText(),SkalaGizi2.getSelectedItem().toString(),NilaiGizi2.getText(),NilaiGiziTotal.getText(),DiagnosaKhususGizi.getSelectedItem().toString(),
-                KeteranganDiagnosaKhususGizi.getText(),DiketahuiDietisen.getSelectedItem().toString(),KeteranganDiketahuiDietisen.getText(),Rencana.getText(),KdPetugas.getText(),KdPetugas2.getText(),KdDokter.getText()
+                KeteranganDiagnosaKhususGizi.getText(),DiketahuiDietisen.getSelectedItem().toString(),KeteranganDiketahuiDietisen.getText(),Rencana.getText(),KdPetugas.getText(),KdPetugas2.getText(),KdDokter.getText(),
+                yt(chkAlergiTidakAda),yt(chkAlergiObat),txtAlergiObatSebutkan.getText(),txtAlergiObatReaksi.getText(),yt(chkAlergiMakanan),txtAlergiMakananSebutkan.getText(),txtAlergiMakananReaksi.getText(),yt(chkAlergiLainnya),txtAlergiLainnyaSebutkan.getText(),txtAlergiLainnyaReaksi.getText(),yt(chkAlergiTidakDiketahui),txtAlergiTidakDiketahuiReaksi.getText(),yt(chkAlergiTandaDipasang),
+                yt(chkRpdHipertensi),yt(chkRpdDm),yt(chkRpdJantung),yt(chkRpdHepatitis),yt(chkRpdOperasi),yt(chkRpdAnemia),yt(chkRpdAsthma),yt(chkRpdStroke),yt(chkRpdParu),yt(chkRpdLainlain),txtRpdLainlainSebutkan.getText(),
+                yt(chkRpkHipertensi),yt(chkRpkDm),yt(chkRpkJantung),yt(chkRpkThalasemia),yt(chkRpkLainlain),txtRpkLainlainSebutkan.getText(),
+                txtNamaKeluargaAnamnesis.getText(),txtHubunganAnamnesis.getText(),
+                TingkatKesadaran.getSelectedItem().toString(),LLA.getText(),
+                Menstruasi.getSelectedItem().toString(),StatusHamil.getSelectedItem().toString(),HPHT.getText(),
+                Papsmear.getSelectedItem().toString(),TglPapsmear.getText(),Mamografi.getSelectedItem().toString(),TglMamografi.getText(),
+                Sadari.getSelectedItem().toString(),TglSadari.getText(),ScreeningProstat.getSelectedItem().toString(),TglScreeningProstat.getText(),
+                SkalaBranden.getText(),
+                StatusPernikahan.getSelectedItem().toString(),NamaKerabatTerdekat.getText(),HubunganKerabatTerdekat.getText(),TelpKerabatTerdekat.getText(),
+                yt(chkEduBicaraTidak),yt(chkEduBicaraYa),txtEduBicaraJelaskan.getText(),
+                yt(chkEduBahasaIndonesia),yt(chkEduBahasaDaerah),txtEduBahasaDaerah.getText(),yt(chkEduBahasaAsing),txtEduBahasaAsing.getText(),yt(chkEduBahasaIsyarat),
+                yt(chkEduPenerjemahTidak),yt(chkEduPenerjemahYa),txtEduPenerjemahBahasa.getText(),
+                yt(chkCaraAudioVisual),yt(chkCaraDiskusi),yt(chkCaraMembaca),yt(chkCaraMenulis),yt(chkCaraMengerjakan),yt(chkCaraGambar),yt(chkCaraMendengar),yt(chkCaraDemonstrasi),
+                yt(chkHambatanEduTidak),yt(chkHambatanEduYa),
+                yt(chkHambatanBahasa),yt(chkHambatanEmosi),yt(chkHambatanCaregiver),yt(chkHambatanFisiologisBelajar),yt(chkHambatanPendengaran),yt(chkHambatanPenglihatan),yt(chkHambatanMemori),yt(chkHambatanMotivasi),yt(chkHambatanBicara),
+                yt(chkPendidikanTK),yt(chkPendidikanSD),yt(chkPendidikanSMP),yt(chkPendidikanSMA),yt(chkPendidikanD3D4),yt(chkPendidikanS1),yt(chkPendidikanS2),yt(chkPendidikanS3),
+                yt(chkKebutuhanProsesPenyakit),yt(chkKebutuhanDiitNutrisi),yt(chkKebutuhanPerawatanLuka),yt(chkKebutuhanManajemenNyeri),yt(chkKebutuhanObatObatan),yt(chkKebutuhanRehabilitasi),yt(chkKebutuhanLainLain),txtKebutuhanLainLain.getText(),
+                yt(chkDischargeYa[0]),yt(chkDischargeTidak[0]),txtDischargeKet[0].getText(),
+                yt(chkDischargeYa[1]),yt(chkDischargeTidak[1]),txtDischargeKet[1].getText(),
+                yt(chkDischargeYa[2]),yt(chkDischargeTidak[2]),txtDischargeKet[2].getText(),
+                yt(chkDischargeYa[3]),yt(chkDischargeTidak[3]),txtDischargeKet[3].getText(),
+                yt(chkDischargeYa[4]),yt(chkDischargeTidak[4]),txtDischargeKet[4].getText(),
+                yt(chkDischargeYa[5]),yt(chkDischargeTidak[5]),txtDischargeKet[5].getText(),
+                yt(chkDischargeYa[6]),yt(chkDischargeTidak[6]),txtDischargeKet[6].getText(),
+                txtDataPenunjang[0].getText(),txtDataPenunjang[1].getText(),txtDataPenunjang[2].getText(),txtDataPenunjang[3].getText(),
+                GCSE.getText(),GCSM.getText(),GCSV.getText(),PupilKananUkuran.getText(),PupilKananReaksi.getText(),PupilKiriUkuran.getText(),PupilKiriReaksi.getText(),
+                KeluhanUtama.getText(),
+                yt(chkAirwayNormal),yt(chkAirwayOropharingeal),yt(chkAirwaySekret),yt(chkAirwayTumor),yt(chkAirwayTrajeostomy),yt(chkAirwayRTT),yt(chkBreathingNormal),yt(chkBreathingSesakDyspnea),yt(chkBreathingBatuk),yt(chkBreathingTakipneu),yt(chkBreathingBatukDarah),yt(chkBreathingSleepApnea),yt(chkBreathingNgorok),yt(chkBunyiParuNormal),yt(chkBunyiParuOrthopnea),yt(chkBunyiParuStidor),yt(chkBunyiParuRonkhiKanan),yt(chkBunyiParuRonkhiKiri),yt(chkBunyiParuWheezingKanan),yt(chkBunyiParuWheezingKiri),yt(chkKesulitanBernafasTidak),yt(chkKesulitanBernafasYa),yt(chkOtotBantuNafasTidak),yt(chkOtotBantuNafasYa),yt(chkO2Tidak),yt(chkO2Ya),yt(chkO2Nasal),yt(chkO2Sungkup),yt(chkCardioTidakAdaKelainan),yt(chkCardioBradikardi),yt(chkCardioTakikardi),yt(chkCardioMurMur),yt(chkCardioGallop),yt(chkCardioPucatSianosis),yt(chkCardioNyeriDada),yt(chkGiTidakAdaKeluhan),yt(chkGiPenurunanBisingUsus),yt(chkGiGigiPalsuAtasKanan),yt(chkGiGigiPalsuAtasKiri),yt(chkGiGigiPalsuBawahKanan),yt(chkGiGigiPalsuBawahKiri),yt(chkGiPembatasanMakanan),yt(chkGiTidakNafsuMakan),yt(chkGiMual),yt(chkGiMuntah),yt(chkGiKonstipasi),yt(chkGiTerpasangNGT),yt(chkGiSulitMenelan),yt(chkGiDiare),yt(chkGiKolostomi),yt(chkGiDistensiAbdomen),yt(chkGiMakanHabis),yt(chkGiIVFD),yt(chkKemihTidakAdaKeluhan),yt(chkKemihDistensiBladder),yt(chkKemihHaematuria),yt(chkKemihRetensiUrine),yt(chkKemihOliguri),yt(chkKemihDisuria),yt(chkKemihAnuri),yt(chkKemihTerpasangKateter),yt(chkKemihInkontinensiaUrine),yt(chkPendengaranTAK),yt(chkPendengaranBerdengung),yt(chkPendengaranTuli),yt(chkPendengaranKeluarCairan),yt(chkPendengaranNyeri),yt(chkPenglihatanTAK),yt(chkPenglihatanAnemis),yt(chkPenglihatanIcterik),yt(chkPenglihatanTidakAdaReaksiCahaya),yt(chkPenglihatanKacaMata),yt(chkPenglihatanLensaKontak),yt(chkPenglihatanMerah),yt(chkPenglihatanKabur),yt(chkWicaraNormal),yt(chkWicaraCadelPelo),yt(chkWicaraAphasia),yt(chkWicaraKerusakanWicara),yt(chkOrientasiBaik),yt(chkOrientasiOrang),yt(chkOrientasiTempat),yt(chkOrientasiWaktu),yt(chkOrientasiSituasi),yt(chkMemoriBaik),yt(chkMemoriSedang),yt(chkMemoriBuruk),yt(chkKonsentrasiBaik),yt(chkKonsentrasiSedang),yt(chkKonsentrasiBuruk),yt(chkKekuatanOtotInkoordinasi),yt(chkKekuatanOtotKejang),yt(chkFrakturTanganKanan),yt(chkFrakturTanganKiri),yt(chkFrakturKakiKanan),yt(chkFrakturKakiKiri),yt(chkWarnaKulitNormal),yt(chkWarnaKulitPucat),yt(chkWarnaKulitMerah),yt(chkWarnaKulitIkterik),yt(chkWarnaKulitKemerahan),yt(chkIntegritasKulitUtuh),yt(chkIntegritasKulitRuam),yt(chkIntegritasKulitMelepuh),txtAirwayRTTUkuran.getText(),txtO2LiterMenit.getText(),txtSaturasiO2.getText(),txtCardioLain.getText(),txtGiPembatasanMakanan.getText(),txtGiMuntahKali.getText(),txtGiDiareX.getText(),txtGiIVFDTts.getText(),txtKemihLain.getText(),txtPenglihatanLain.getText(),txtKekuatanOtotTremorDi.getText(),txtHemiplegiDi.getText(),txtParaseDi.getText(),txtWarnaKulitLain.getText(),txtIntegritasKulitMelepuhDi.getText(),yt(chkBreathingLain),txtBreathingLain.getText(),yt(chkBunyiParuLain),txtBunyiParuLain.getText(),yt(chkKemihPoliuri),txtKekuatanOtot.getText(),txtEkstremitasLain.getText(),yt(chkIntegritasKulitKemerahan),txtIntegritasKulitKemerahanDi.getText(),
+                yt(chkPsikoTAK),yt(chkPsikoMarah),yt(chkPsikoGelisah),yt(chkPsikoSedih),yt(chkPsikoCemas),yt(chkPsikoTakut),yt(chkPsikoAcuhTakAcuh),yt(chkPsikoBunuhDiri),
+                yt(chkHubKeluargaBaik),yt(chkHubKeluargaTidakBaik),
+                yt(chkTempatTinggalRumah),yt(chkTempatTinggalAsrama),yt(chkTempatTinggalPanti),yt(chkTempatTinggalLainnya),txtTempatTinggalLainnya.getText(),
+                yt(chkTinggalSuamiIstri),yt(chkTinggalAnak),yt(chkTinggalOrangTua),yt(chkTinggalLainnya),txtTinggalLainnya.getText(),
+                yt(chkPekerjaanBekerja),yt(chkPekerjaanPNS),yt(chkPekerjaanSwasta),yt(chkPekerjaanTNIPolri),yt(chkPekerjaanTaniBuruh),
+                yt(chkKebiasaanMerokok),yt(chkKebiasaanAlkohol),yt(chkKebiasaanLainnya),txtKebiasaanJenisJumlah.getText(),
+                yt(chkKepribadianTidakAdaKeluhan),yt(chkKepribadianPerluPendampingan),yt(chkKepribadianPerluDibantuIbadah),yt(chkKepribadianBerdoa),yt(chkKepribadianBacaLiteratur),
+                txtKepribadianGangguPraktik.getText(),txtKepribadianNilaiBudaya.getText(),txtKepribadianLainLain.getText(),
+                kanvasNyeri.getCoretanBase64(),txtNyeriP.getText(),txtNyeriQ.getText(),txtNyeriR.getText(),txtNyeriS.getText(),txtNyeriT.getText(),
+                yt(chkKeluhanNyeriKronik),yt(chkKeluhanNyeriAkut),yt(chkKeluhanTidakAdaNyeri),
+                yt(chkNyeriHilangMinumObat),yt(chkNyeriHilangIstirahat),yt(chkNyeriHilangBerubahPosisi),yt(chkNyeriHilangMendengarMusik),yt(chkNyeriHilangLainLain),txtNyeriHilangLainLain.getText(),
+                yt(chkFungsionalMandiri),yt(chkFungsionalBantuanMinimal),yt(chkFungsionalBantuanSebagian),yt(chkFungsionalKetergantungan),
+                yt(chkBerjalanNormal),yt(chkBerjalanPerluBantuan),yt(chkBerjalanSeringJatuh),yt(chkBerjalanKelumpuhan),
+                txtDischargeManualKomponen.getText(),yt(chkDischargeManualYa),yt(chkDischargeManualTidak),txtDischargeManualKet.getText()
             })==true){
                 tabMode.addRow(new Object[]{
                     TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TglLahir.getText(),Jk.getText(),KdPetugas.getText(),NmPetugas.getText(),KdPetugas2.getText(),NmPetugas2.getText(),KdDokter.getText(),NmDokter.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+"")+" "+TglAsuhan.getSelectedItem().toString().substring(11,19),
@@ -9698,7 +12682,97 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                     SkalaResiko4.getSelectedItem().toString(),NilaiResiko4.getText(),SkalaResiko5.getSelectedItem().toString(),NilaiResiko5.getText(),SkalaResiko6.getSelectedItem().toString(),NilaiResiko6.getText(),NilaiResikoTotal.getText(),SkalaSydney1.getSelectedItem().toString(),NilaiSydney1.getText(),SkalaSydney2.getSelectedItem().toString(),NilaiSydney2.getText(),
                     SkalaSydney3.getSelectedItem().toString(),NilaiSydney3.getText(),SkalaSydney4.getSelectedItem().toString(),NilaiSydney4.getText(),SkalaSydney5.getSelectedItem().toString(),NilaiSydney5.getText(),SkalaSydney6.getSelectedItem().toString(),NilaiSydney6.getText(),SkalaSydney7.getSelectedItem().toString(),NilaiSydney7.getText(),
                     SkalaSydney8.getSelectedItem().toString(),NilaiSydney8.getText(),SkalaSydney9.getSelectedItem().toString(),NilaiSydney9.getText(),SkalaSydney10.getSelectedItem().toString(),NilaiSydney10.getText(),SkalaSydney11.getSelectedItem().toString(),NilaiSydney11.getText(),NilaiSydneyTotal.getText(),SkalaGizi1.getSelectedItem().toString(),NilaiGizi1.getText(),
-                    SkalaGizi2.getSelectedItem().toString(),NilaiGizi2.getText(),NilaiGiziTotal.getText(),DiagnosaKhususGizi.getSelectedItem().toString(),KeteranganDiagnosaKhususGizi.getText(),DiketahuiDietisen.getSelectedItem().toString(),KeteranganDiketahuiDietisen.getText(),Rencana.getText()
+                    SkalaGizi2.getSelectedItem().toString(),NilaiGizi2.getText(),NilaiGiziTotal.getText(),DiagnosaKhususGizi.getSelectedItem().toString(),KeteranganDiagnosaKhususGizi.getText(),DiketahuiDietisen.getSelectedItem().toString(),KeteranganDiketahuiDietisen.getText(),Rencana.getText(),
+                    cekBoxRM19(chkAlergiTidakAda,chkAlergiObat,chkAlergiMakanan,chkAlergiLainnya,chkAlergiTidakDiketahui,chkAlergiTandaDipasang),
+                    gabungTeksRM19(txtAlergiObatSebutkan.getText(),txtAlergiObatReaksi.getText()),
+                    gabungTeksRM19(txtAlergiMakananSebutkan.getText(),txtAlergiMakananReaksi.getText()),
+                    gabungTeksRM19(txtAlergiLainnyaSebutkan.getText(),txtAlergiLainnyaReaksi.getText()),
+                    txtAlergiTidakDiketahuiReaksi.getText(),
+                    cekBoxRM19(chkRpdHipertensi,chkRpdDm,chkRpdJantung,chkRpdHepatitis,chkRpdOperasi,chkRpdAnemia,chkRpdAsthma,chkRpdStroke,chkRpdParu,chkRpdLainlain),
+                    txtRpdLainlainSebutkan.getText(),
+                    cekBoxRM19(chkRpkHipertensi,chkRpkDm,chkRpkJantung,chkRpkThalasemia,chkRpkLainlain),
+                    txtRpkLainlainSebutkan.getText(),
+                    gabungTeksRM19(txtNamaKeluargaAnamnesis.getText(),txtHubunganAnamnesis.getText()),
+                    KeluhanUtama.getText(),
+                    TingkatKesadaran.getSelectedItem().toString(),
+                    LLA.getText(),
+                    gabungTeksRM19(GCSE.getText(),GCSM.getText(),GCSV.getText()),
+                    cekBoxRM19(chkAirwayNormal,chkAirwayOropharingeal,chkAirwaySekret,chkAirwayTumor,chkAirwayTrajeostomy,chkAirwayRTT),
+                    txtAirwayRTTUkuran.getText(),
+                    cekBoxRM19(chkBreathingNormal,chkBreathingSesakDyspnea,chkBreathingBatuk,chkBreathingTakipneu,chkBreathingBatukDarah,chkBreathingSleepApnea,chkBreathingLain,chkBunyiParuOrthopnea),
+                    txtBreathingLain.getText(),
+                    cekBoxRM19(chkBreathingNgorok,chkBunyiParuNormal,chkBunyiParuStidor,chkBunyiParuRonkhiKanan,chkBunyiParuRonkhiKiri,chkBunyiParuWheezingKanan,chkBunyiParuWheezingKiri,chkBunyiParuLain),
+                    txtBunyiParuLain.getText(),
+                    cekBoxRM19(chkKesulitanBernafasTidak,chkKesulitanBernafasYa),
+                    cekBoxRM19(chkOtotBantuNafasTidak,chkOtotBantuNafasYa),
+                    txtSaturasiO2.getText(),
+                    cekBoxRM19(chkO2Tidak,chkO2Ya,chkO2Nasal,chkO2Sungkup),
+                    txtO2LiterMenit.getText(),
+                    cekBoxRM19(chkCardioTidakAdaKelainan,chkCardioBradikardi,chkCardioTakikardi,chkCardioMurMur,chkCardioGallop,chkCardioPucatSianosis,chkCardioNyeriDada),
+                    txtCardioLain.getText(),
+                    cekBoxRM19(chkGiTidakAdaKeluhan,chkGiPenurunanBisingUsus,chkGiGigiPalsuAtasKanan,chkGiGigiPalsuAtasKiri,chkGiGigiPalsuBawahKanan,chkGiGigiPalsuBawahKiri,chkGiPembatasanMakanan,chkGiTidakNafsuMakan,chkGiMual,chkGiMuntah,chkGiKonstipasi,chkGiTerpasangNGT,chkGiSulitMenelan,chkGiDiare,chkGiKolostomi,chkGiDistensiAbdomen,chkGiMakanHabis,chkGiIVFD),
+                    txtGiPembatasanMakanan.getText(),
+                    gabungTeksRM19(txtGiMuntahKali.getText(),txtGiDiareX.getText(),txtGiIVFDTts.getText()),
+                    cekBoxRM19(chkKemihTidakAdaKeluhan,chkKemihDistensiBladder,chkKemihHaematuria,chkKemihRetensiUrine,chkKemihOliguri,chkKemihPoliuri,chkKemihDisuria,chkKemihAnuri,chkKemihTerpasangKateter,chkKemihInkontinensiaUrine),
+                    txtKemihLain.getText(),
+                    gabungTeksRM19(Menstruasi.getSelectedItem().toString(),StatusHamil.getSelectedItem().toString(),HPHT.getText()),
+                    gabungTeksRM19(Papsmear.getSelectedItem().toString(),TglPapsmear.getText(),Mamografi.getSelectedItem().toString(),TglMamografi.getText(),Sadari.getSelectedItem().toString(),TglSadari.getText()),
+                    gabungTeksRM19(ScreeningProstat.getSelectedItem().toString(),TglScreeningProstat.getText()),
+                    cekBoxRM19(chkPendengaranTAK,chkPendengaranBerdengung,chkPendengaranTuli,chkPendengaranKeluarCairan,chkPendengaranNyeri),
+                    cekBoxRM19(chkPenglihatanTAK,chkPenglihatanAnemis,chkPenglihatanIcterik,chkPenglihatanTidakAdaReaksiCahaya,chkPenglihatanKacaMata,chkPenglihatanLensaKontak,chkPenglihatanMerah,chkPenglihatanKabur),
+                    txtPenglihatanLain.getText(),
+                    cekBoxRM19(chkWicaraNormal,chkWicaraCadelPelo,chkWicaraAphasia,chkWicaraKerusakanWicara),
+                    cekBoxRM19(chkOrientasiBaik,chkOrientasiOrang,chkOrientasiTempat,chkOrientasiWaktu,chkOrientasiSituasi),
+                    cekBoxRM19(chkMemoriBaik,chkMemoriSedang,chkMemoriBuruk),
+                    cekBoxRM19(chkKonsentrasiBaik,chkKonsentrasiSedang,chkKonsentrasiBuruk),
+                    gabungTeksRM19(PupilKananUkuran.getText(),PupilKananReaksi.getText()),
+                    gabungTeksRM19(PupilKiriUkuran.getText(),PupilKiriReaksi.getText()),
+                    txtKekuatanOtot.getText(),
+                    cekBoxRM19(chkKekuatanOtotInkoordinasi,chkKekuatanOtotKejang),
+                    gabungTeksRM19(txtKekuatanOtotTremorDi.getText(),txtHemiplegiDi.getText(),txtParaseDi.getText()),
+                    cekBoxRM19(chkFrakturTanganKanan,chkFrakturTanganKiri,chkFrakturKakiKanan,chkFrakturKakiKiri),
+                    txtEkstremitasLain.getText(),
+                    cekBoxRM19(chkWarnaKulitNormal,chkWarnaKulitPucat,chkWarnaKulitMerah,chkWarnaKulitIkterik,chkWarnaKulitKemerahan),
+                    txtWarnaKulitLain.getText(),
+                    cekBoxRM19(chkIntegritasKulitUtuh,chkIntegritasKulitRuam,chkIntegritasKulitMelepuh,chkIntegritasKulitKemerahan),
+                    gabungTeksRM19(txtIntegritasKulitMelepuhDi.getText(),txtIntegritasKulitKemerahanDi.getText()),
+                    SkalaBranden.getText(),
+                    cekBoxRM19(chkPsikoTAK,chkPsikoMarah,chkPsikoGelisah,chkPsikoSedih,chkPsikoCemas,chkPsikoTakut,chkPsikoAcuhTakAcuh,chkPsikoBunuhDiri),
+                    StatusPernikahan.getSelectedItem().toString(),
+                    gabungTeksRM19(NamaKerabatTerdekat.getText(),HubunganKerabatTerdekat.getText(),TelpKerabatTerdekat.getText()),
+                    cekBoxRM19(chkHubKeluargaBaik,chkHubKeluargaTidakBaik,chkTempatTinggalRumah,chkTempatTinggalAsrama,chkTempatTinggalPanti,chkTempatTinggalLainnya,chkTinggalSuamiIstri,chkTinggalAnak,chkTinggalOrangTua,chkTinggalLainnya,chkPekerjaanBekerja,chkPekerjaanPNS,chkPekerjaanSwasta,chkPekerjaanTNIPolri,chkPekerjaanTaniBuruh,chkKebiasaanMerokok,chkKebiasaanAlkohol,chkKebiasaanLainnya),
+                    gabungTeksRM19(txtTempatTinggalLainnya.getText(),txtTinggalLainnya.getText(),txtKebiasaanJenisJumlah.getText()),
+                    cekBoxRM19(chkKepribadianTidakAdaKeluhan,chkKepribadianPerluPendampingan,chkKepribadianPerluDibantuIbadah,chkKepribadianBerdoa,chkKepribadianBacaLiteratur),
+                    gabungTeksRM19(txtKepribadianGangguPraktik.getText(),txtKepribadianNilaiBudaya.getText(),txtKepribadianLainLain.getText()),
+                    kanvasNyeri.getCoretanBase64().isEmpty()?"":"(ada tanda)",
+                    gabungTeksRM19(txtNyeriP.getText(),txtNyeriQ.getText(),txtNyeriR.getText(),txtNyeriS.getText(),txtNyeriT.getText()),
+                    cekBoxRM19(chkKeluhanNyeriKronik,chkKeluhanNyeriAkut,chkKeluhanTidakAdaNyeri),
+                    cekBoxRM19(chkNyeriHilangMinumObat,chkNyeriHilangIstirahat,chkNyeriHilangBerubahPosisi,chkNyeriHilangMendengarMusik,chkNyeriHilangLainLain),
+                    txtNyeriHilangLainLain.getText(),
+                    cekBoxRM19(chkFungsionalMandiri,chkFungsionalBantuanMinimal,chkFungsionalBantuanSebagian,chkFungsionalKetergantungan,chkBerjalanNormal,chkBerjalanPerluBantuan,chkBerjalanSeringJatuh,chkBerjalanKelumpuhan),
+                    cekBoxRM19(chkEduBicaraTidak,chkEduBicaraYa),
+                    txtEduBicaraJelaskan.getText(),
+                    cekBoxRM19(chkEduBahasaIndonesia,chkEduBahasaDaerah,chkEduBahasaAsing,chkEduBahasaIsyarat),
+                    gabungTeksRM19(txtEduBahasaDaerah.getText(),txtEduBahasaAsing.getText()),
+                    cekBoxRM19(chkEduPenerjemahTidak,chkEduPenerjemahYa),
+                    txtEduPenerjemahBahasa.getText(),
+                    cekBoxRM19(chkCaraAudioVisual,chkCaraDiskusi,chkCaraMembaca,chkCaraMenulis,chkCaraMengerjakan,chkCaraGambar,chkCaraMendengar,chkCaraDemonstrasi),
+                    cekBoxRM19(chkHambatanEduTidak,chkHambatanEduYa,chkHambatanBahasa,chkHambatanEmosi,chkHambatanCaregiver,chkHambatanFisiologisBelajar,chkHambatanPendengaran,chkHambatanPenglihatan,chkHambatanMemori,chkHambatanMotivasi,chkHambatanBicara),
+                    cekBoxRM19(chkPendidikanTK,chkPendidikanSD,chkPendidikanSMP,chkPendidikanSMA,chkPendidikanD3D4,chkPendidikanS1,chkPendidikanS2,chkPendidikanS3),
+                    cekBoxRM19(chkKebutuhanProsesPenyakit,chkKebutuhanDiitNutrisi,chkKebutuhanPerawatanLuka,chkKebutuhanManajemenNyeri,chkKebutuhanObatObatan,chkKebutuhanRehabilitasi,chkKebutuhanLainLain),
+                    txtKebutuhanLainLain.getText(),
+                    dpBoxRM19(chkDischargeYa[0],chkDischargeTidak[0],txtDischargeKet[0]),
+                    dpBoxRM19(chkDischargeYa[1],chkDischargeTidak[1],txtDischargeKet[1]),
+                    dpBoxRM19(chkDischargeYa[2],chkDischargeTidak[2],txtDischargeKet[2]),
+                    dpBoxRM19(chkDischargeYa[3],chkDischargeTidak[3],txtDischargeKet[3]),
+                    dpBoxRM19(chkDischargeYa[4],chkDischargeTidak[4],txtDischargeKet[4]),
+                    dpBoxRM19(chkDischargeYa[5],chkDischargeTidak[5],txtDischargeKet[5]),
+                    dpBoxRM19(chkDischargeYa[6],chkDischargeTidak[6],txtDischargeKet[6]),
+                    dpmBoxRM19(txtDischargeManualKomponen,chkDischargeManualYa,chkDischargeManualTidak,txtDischargeManualKet),
+                    txtDataPenunjang[0].getText(),
+                    txtDataPenunjang[1].getText(),
+                    txtDataPenunjang[2].getText(),
+                    txtDataPenunjang[3].getText()
                 });
                 for (i = 0; i < tbMasalahKeperawatan.getRowCount(); i++) {
                     if(tbMasalahKeperawatan.getValueAt(i,0).toString().equals("true")){
