@@ -290,7 +290,8 @@ public class DlgUser extends javax.swing.JDialog {
                 "[P]Surat Permintaan Perlindungan Diri Dari Kekerasan","[P]Surat Permohonan Privasi","[P]Surat Permintaan Second Opinion","[P]Surat Keterangan Berobat","[P]Surat Penolakan Resusitasi",
                 "[M]Catatan Observasi Ruang Operasi","[M]Hasil USG Abdomen","[M]Intervensi Nyeri Farmakologi","[M]Intervensi Nyeri Non Farmakologi","[P]Surat Pengajuan Cuti Perawatan",
                 "[M]Check List Kriteria Masuk Isolasi","[L]Mapping Tindakan Ralan KPTL Satu Sehat","[L]Mapping Tindakan Ranap KPTL Satu Sehat","[L]Mapping Tindakan Radiologi KPTL Satu Sehat",
-                "[L]Mapping Tindakan Laborat KPTL Satu Sehat","[L]Mapping Tindakan Operasi KPTL Satu Sehat","[L]Mapping Tarif Kamar KPTL Satu Sehat","[M]Check List Kriteria Keluar Isolasi"
+                "[L]Mapping Tindakan Laborat KPTL Satu Sehat","[L]Mapping Tindakan Operasi KPTL Satu Sehat","[L]Mapping Tarif Kamar KPTL Satu Sehat","[M]Check List Kriteria Keluar Isolasi",
+                "[M]Asesmen Medis Rawat Inap"
         };
         
         tabMode=new DefaultTableModel(null,row){
@@ -626,7 +627,7 @@ public class DlgUser extends javax.swing.JDialog {
         tbUser.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbUser.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 1215;i++) {
+        for (i = 0; i < 1216;i++) {
             TableColumn column = tbUser.getColumnModel().getColumn(i);
             switch (i) {
                 case 0:
@@ -4236,7 +4237,15 @@ public class DlgUser extends javax.swing.JDialog {
         }else{
             i=tbUser.getSelectedRow();
             if(i!= -1){
-                if(Sequel.mengedittf("user","id_user=AES_ENCRYPT('"+tbUser.getValueAt(i,0).toString()+"','nur')",
+                // CATATAN: rantai concat "+" di bawah ini panjangnya >1200 mata
+                // dan SUDAH mepet batas stack javac. Menambah satu segmen lagi
+                // ke dalamnya membuat build gagal dengan StackOverflowError di
+                // com.sun.tools.javac.comp.Attr.visitBinary - tanpa pesan baris
+                // yang jelas, hanya stack trace (pola bug yang sama sudah pernah
+                // terjadi & tercatat di PROGRESS.md poin 44). Karena itu kolom
+                // hak akses BARU wajib ditambahkan sebagai statement TERPISAH
+                // di bawah, bukan disambung ke rantai ini.
+                String setHakAkses =
                     "id_user=AES_ENCRYPT('"+TKd.getText()+"','nur'),"+
                     "password=AES_ENCRYPT('"+TPass.getText()+"','windi'),"+
                     "penyakit='"+tbUser.getValueAt(i,4).toString()+"', "+
@@ -5449,7 +5458,12 @@ public class DlgUser extends javax.swing.JDialog {
                     "satu_sehat_mapping_kptl_tindakan_laborat='"+tbUser.getValueAt(i,1211).toString()+"',"+
                     "satu_sehat_mapping_kptl_tindakan_operasi='"+tbUser.getValueAt(i,1212).toString()+"',"+
                     "satu_sehat_mapping_kptl_tarif_kamar='"+tbUser.getValueAt(i,1213).toString()+"',"+
-                    "checklist_kriteria_keluar_isolasi='"+tbUser.getValueAt(i,1214).toString()+"'")==true){
+                    "checklist_kriteria_keluar_isolasi='"+tbUser.getValueAt(i,1214).toString()+"'";
+
+                setHakAkses += ",asesmen_medis_ranap='"+tbUser.getValueAt(i,1215).toString()+"'";
+
+                if(Sequel.mengedittf("user","id_user=AES_ENCRYPT('"+tbUser.getValueAt(i,0).toString()+"','nur')",
+                    setHakAkses)==true){
                     emptTeks();
                 }
             }         
@@ -5735,7 +5749,10 @@ private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                             try {
                                 i=tbUser.getSelectedRow();
                                 if(i!= -1){
-                                    Sequel.mengedit("user","id_user=AES_ENCRYPT('"+tbUser.getValueAt(i,0).toString()+"','nur')",
+                                    // Sama seperti di BtnEditActionPerformed: rantai concat
+                                    // ini sudah mepet batas stack javac, kolom baru WAJIB
+                                    // ditambahkan sebagai statement terpisah di bawah.
+                                    String salinHakAkses =
                                         "id_user=AES_ENCRYPT('"+TKd.getText()+"','nur'),"+
                                         "password=AES_ENCRYPT('"+TPass.getText()+"','windi'),"+
                                         "penyakit='"+tbUser.getValueAt(barisdicopy,4).toString()+"', "+
@@ -6948,7 +6965,12 @@ private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                         "satu_sehat_mapping_kptl_tindakan_laborat='"+tbUser.getValueAt(barisdicopy,1211).toString()+"',"+
                                         "satu_sehat_mapping_kptl_tindakan_operasi='"+tbUser.getValueAt(barisdicopy,1212).toString()+"',"+
                                         "satu_sehat_mapping_kptl_tarif_kamar='"+tbUser.getValueAt(barisdicopy,1213).toString()+"',"+
-                                        "checklist_kriteria_keluar_isolasi='"+tbUser.getValueAt(barisdicopy,1214).toString()+"'");
+                                        "checklist_kriteria_keluar_isolasi='"+tbUser.getValueAt(barisdicopy,1214).toString()+"'";
+
+                                    salinHakAkses += ",asesmen_medis_ranap='"+tbUser.getValueAt(barisdicopy,1215).toString()+"'";
+
+                                    Sequel.mengedit("user","id_user=AES_ENCRYPT('"+tbUser.getValueAt(i,0).toString()+"','nur')",
+                                        salinHakAkses);
                                 }
                                 userdicopy="";
                                 copyhakakses="";
@@ -7288,7 +7310,7 @@ private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                             "user.surat_permintaan_second_opinion,user.surat_keterangan_berobat,user.surat_penolakan_resusitasi,user.catatan_observasi_ruang_ok,user.hasil_pemeriksaan_usg_abdomen,"+
                             "user.intervensi_nyeri_farmakologi,user.intervensi_nyeri_nonfarmakologi,user.surat_pengajuan_cuti_pasien,user.checklist_kriteria_masuk_isolasi,user.satu_sehat_mapping_kptl_tindakan_ralan,"+
                             "user.satu_sehat_mapping_kptl_tindakan_ranap,user.satu_sehat_mapping_kptl_tindakan_radiologi,user.satu_sehat_mapping_kptl_tindakan_laborat,user.satu_sehat_mapping_kptl_tindakan_operasi,"+
-                            "user.satu_sehat_mapping_kptl_tarif_kamar,user.checklist_kriteria_keluar_isolasi from user order by AES_DECRYPT(user.id_user,'nur')");
+                            "user.satu_sehat_mapping_kptl_tarif_kamar,user.checklist_kriteria_keluar_isolasi,user.asesmen_medis_ranap from user order by AES_DECRYPT(user.id_user,'nur')");
                         try {
                             rs=ps.executeQuery();
                             i=0;
@@ -8517,7 +8539,8 @@ private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                            rs.getBoolean("satu_sehat_mapping_kptl_tindakan_laborat"),
                                            rs.getBoolean("satu_sehat_mapping_kptl_tindakan_operasi"),
                                            rs.getBoolean("satu_sehat_mapping_kptl_tarif_kamar"),
-                                           rs.getBoolean("checklist_kriteria_keluar_isolasi")
+                                           rs.getBoolean("checklist_kriteria_keluar_isolasi"),
+                                           rs.getBoolean("asesmen_medis_ranap")
                                         });
                                     }   
                                 } catch (Exception e) {
@@ -9734,7 +9757,8 @@ private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                        rs.getBoolean("satu_sehat_mapping_kptl_tindakan_laborat"),
                                        rs.getBoolean("satu_sehat_mapping_kptl_tindakan_operasi"),
                                        rs.getBoolean("satu_sehat_mapping_kptl_tarif_kamar"),
-                                       rs.getBoolean("checklist_kriteria_keluar_isolasi")
+                                       rs.getBoolean("checklist_kriteria_keluar_isolasi"),
+                                       rs.getBoolean("asesmen_medis_ranap")
                                     });
                                 }                                             
                              }

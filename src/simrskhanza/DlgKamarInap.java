@@ -254,6 +254,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         initComponents();
         widget.IconStyle.pasang(this);
         initKamarInap();
+        initMenuAsesmenMedisRanap();
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","Nomer RM","Nama Pasien","Alamat Pasien","Penanggung Jawab","Hubungan P.J.","Jenis Bayar","Kamar","Tarif Kamar",
             "Diagnosa Awal","Diagnosa Akhir","Tgl.Masuk","Jam Masuk","Tgl.Keluar","Jam Keluar",
@@ -12147,6 +12148,63 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_MnPenilaianAwalMedisRanapActionPerformed
+
+    /**
+     * Menyisipkan item "Asesmen Medis Ranap (RM 20)" ke submenu "Pengkajian
+     * Awal", tepat di bawah "Medis Umum".
+     *
+     * <p>Dibangun DI LUAR blok GEN dengan sengaja: seluruh
+     * {@code MnPenilaianAwal.add(...)} yang sudah ada berada di dalam
+     * {@code initComponents()} (blok GEN-BEGIN/GEN-END) yang menurut konvensi
+     * proyek ini tidak boleh diedit tangan - kalau file {@code .form}-nya
+     * dibuka di NetBeans Form Editor lalu disimpan, editan tangan di dalam blok
+     * itu akan tertimpa. Karena method ini dipanggil SETELAH
+     * {@code initComponents()}, seluruh item bawaan sudah terpasang sehingga
+     * posisi sisipan bisa ditentukan dengan pasti.</p>
+     *
+     * <p>Indeks 5 = tepat setelah "Medis Umum" (indeks 4). Urutan bawaan:
+     * 0 Keperawatan Umum, 1 Keperawatan Kebidanan &amp; Kandungan,
+     * 2 Keperawatan Neonatus, 3 Keperawatan Bayi/Anak, 4 Medis Umum.</p>
+     */
+    private void initMenuAsesmenMedisRanap() {
+        javax.swing.JMenuItem mnAsesmen = new javax.swing.JMenuItem();
+        mnAsesmen.setBackground(new java.awt.Color(255, 255, 254));
+        mnAsesmen.setFont(new java.awt.Font("Segoe UI", 0, 11));
+        mnAsesmen.setForeground(new java.awt.Color(50, 50, 50));
+        mnAsesmen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png")));
+        mnAsesmen.setText("Asesmen Medis Ranap (RM 20)");
+        mnAsesmen.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        mnAsesmen.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        mnAsesmen.setName("MnAsesmenMedisRanap");
+        mnAsesmen.setPreferredSize(new java.awt.Dimension(240, 26));
+        mnAsesmen.addActionListener(this::MnAsesmenMedisRanapActionPerformed);
+        MnPenilaianAwal.insert(mnAsesmen, 5);
+    }
+
+    private void MnAsesmenMedisRanapActionPerformed(java.awt.event.ActionEvent evt) {
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else{
+            if(tbKamIn.getSelectedRow()>-1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                rekammedis.RMAsesmenMedisRanap form=new rekammedis.RMAsesmenMedisRanap(null,false);
+                form.isCek();
+                form.emptTeks();
+                if(R1.isSelected()==true){
+                    form.setNoRm(norawat.getText(),new Date());
+                }else if(R2.isSelected()==true){
+                    form.setNoRm(norawat.getText(),DTPCari2.getDate());
+                }else if(R3.isSelected()==true){
+                    form.setNoRm(norawat.getText(),DTPCari4.getDate());
+                }
+                form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                form.setLocationRelativeTo(internalFrame1);
+                form.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }
 
     private void MnPenilaianAwalMedisKandunganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnPenilaianAwalMedisKandunganActionPerformed
         if(tabMode.getRowCount()==0){

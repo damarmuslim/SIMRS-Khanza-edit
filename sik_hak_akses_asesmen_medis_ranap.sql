@@ -1,0 +1,36 @@
+-- =====================================================================
+-- Hak akses form baru "Asesmen Medis Rawat Inap" (RM 20)
+-- =====================================================================
+--
+-- Di SIMRS Khanza, hak akses per-user disimpan sebagai SATU KOLOM
+-- enum('true','false') per form di tabel `user` (bukan tabel relasi).
+-- Per migrasi ini tabel `user` punya 1213 kolom; kolom ke-1214 adalah
+-- hak akses form baru ini.
+--
+-- !!! PENTING - JANGAN PAKAI "AFTER" !!!
+-- Kolom WAJIB menempel di UJUNG tabel. Alasannya:
+-- src/setting/DlgUser.java membaca & menulis hak akses lewat INDEKS
+-- POSISIONAL ke JTable (mis. tbUser.getValueAt(i,1214)), bukan lewat
+-- nama kolom. Kalau kolom baru disisipkan di TENGAH tabel `user`,
+-- SELURUH 1211 hak akses sesudahnya akan bergeser satu posisi - artinya
+-- user bisa mendapat izin form yang SALAH. Ini kelas bug yang sama
+-- dengan Sequel.menyimpantf() posisional di RM 19, tapi dampaknya
+-- keamanan, bukan sekadar data nyasar.
+--
+-- Row-size InnoDB: SUDAH DICEK sebelum migrasi ini ditulis. Tabel `user`
+-- berkarakter latin1 dengan 1211 kolom enum (1 byte masing-masing) + 1
+-- varchar(700) + 1 text. Di ROW_FORMAT=Dynamic kedua kolom panjang itu
+-- bisa didorong off-page (pointer 20 byte), jadi worst-case inline hanya
+-- ~1.250 byte dari batas keras 8.126 byte. Headroom-nya masih ribuan
+-- kolom - TIDAK akan mengulang ERROR 1118 seperti yang terjadi pada
+-- `penilaian_awal_keperawatan_ranap` (RM 19).
+--
+-- Nilai NULL untuk semua user lama itu DISENGAJA dan aman: akses.java
+-- membacanya lewat rs2.getBoolean() yang memetakan NULL -> false, jadi
+-- tidak ada user yang tiba-tiba mendapat akses ke form baru. Admin harus
+-- mencentangnya dulu lewat Setting User. Akun "Admin Utama" tetap dapat
+-- akses otomatis karena di-grant hardcode di akses.java.
+-- =====================================================================
+
+ALTER TABLE `user`
+  ADD COLUMN `asesmen_medis_ranap` enum('true','false') DEFAULT NULL;

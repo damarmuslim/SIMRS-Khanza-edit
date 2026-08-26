@@ -264,7 +264,8 @@ public final class akses {
             surat_keterangan_berobat=false,surat_penolakan_resusitasi=false,catatan_observasi_ruang_ok=false,hasil_pemeriksaan_usg_abdomen=false,intervensi_nyeri_farmakologi=false,
             intervensi_nyeri_nonfarmakologi=false,surat_pengajuan_cuti_pasien=false,checklist_kriteria_masuk_isolasi=false,satu_sehat_mapping_kptl_tindakan_ralan=false,
             satu_sehat_mapping_kptl_tindakan_ranap=false,satu_sehat_mapping_kptl_tindakan_radiologi=false,satu_sehat_mapping_kptl_tindakan_laborat=false,satu_sehat_mapping_kptl_tindakan_operasi=false,
-            satu_sehat_mapping_kptl_tarif_kamar=false,checklist_kriteria_keluar_isolasi=false;
+            satu_sehat_mapping_kptl_tarif_kamar=false,checklist_kriteria_keluar_isolasi=false,
+            asesmen_medis_ranap=false;
     
     public static void setData(String user, String pass) {
         try {        
@@ -1500,7 +1501,8 @@ public final class akses {
                         akses.satu_sehat_mapping_kptl_tindakan_operasi=true;
                         akses.satu_sehat_mapping_kptl_tarif_kamar=true;
                         akses.checklist_kriteria_keluar_isolasi=true;
-                    }else if(rs2.getRow()>=1){   
+                        akses.asesmen_medis_ranap=true;
+                    }else if(rs2.getRow()>=1){
                         rs2.beforeFirst();
                         rs2.next();
                         akses.kode=user;
@@ -2719,6 +2721,7 @@ public final class akses {
                         akses.satu_sehat_mapping_kptl_tindakan_operasi=rs2.getBoolean("satu_sehat_mapping_kptl_tindakan_operasi");
                         akses.satu_sehat_mapping_kptl_tarif_kamar=rs2.getBoolean("satu_sehat_mapping_kptl_tarif_kamar");
                         akses.checklist_kriteria_keluar_isolasi=rs2.getBoolean("checklist_kriteria_keluar_isolasi");
+                        akses.asesmen_medis_ranap=rs2.getBoolean("asesmen_medis_ranap");
                     }else if((rs.getRow()==0)&&(rs2.getRow()==0)){
                         setLogOut();
                     }
@@ -3960,6 +3963,7 @@ public final class akses {
         akses.satu_sehat_mapping_kptl_tindakan_operasi=false;
         akses.satu_sehat_mapping_kptl_tarif_kamar=false;
         akses.checklist_kriteria_keluar_isolasi=false;
+        akses.asesmen_medis_ranap=false;
     }
     
     public static int getjml1() {return akses.jml1;}    
@@ -5218,4 +5222,5 @@ public final class akses {
     public static boolean getsatu_sehat_mapping_kptl_tindakan_operasi(){return akses.satu_sehat_mapping_kptl_tindakan_operasi;}
     public static boolean getsatu_sehat_mapping_kptl_tarif_kamar(){return akses.satu_sehat_mapping_kptl_tarif_kamar;}
     public static boolean getchecklist_kriteria_keluar_isolasi(){return akses.checklist_kriteria_keluar_isolasi;}
+    public static boolean getasesmen_medis_ranap(){return akses.asesmen_medis_ranap;}
 }   
