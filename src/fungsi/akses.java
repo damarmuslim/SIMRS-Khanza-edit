@@ -265,7 +265,7 @@ public final class akses {
             intervensi_nyeri_nonfarmakologi=false,surat_pengajuan_cuti_pasien=false,checklist_kriteria_masuk_isolasi=false,satu_sehat_mapping_kptl_tindakan_ralan=false,
             satu_sehat_mapping_kptl_tindakan_ranap=false,satu_sehat_mapping_kptl_tindakan_radiologi=false,satu_sehat_mapping_kptl_tindakan_laborat=false,satu_sehat_mapping_kptl_tindakan_operasi=false,
             satu_sehat_mapping_kptl_tarif_kamar=false,checklist_kriteria_keluar_isolasi=false,
-            asesmen_medis_ranap=false;
+            asesmen_medis_ranap=false,ringkasan_pasien_masuk_keluar=false;
     
     public static void setData(String user, String pass) {
         try {        
@@ -1502,6 +1502,7 @@ public final class akses {
                         akses.satu_sehat_mapping_kptl_tarif_kamar=true;
                         akses.checklist_kriteria_keluar_isolasi=true;
                         akses.asesmen_medis_ranap=true;
+                        akses.ringkasan_pasien_masuk_keluar=true;
                     }else if(rs2.getRow()>=1){
                         rs2.beforeFirst();
                         rs2.next();
@@ -2722,6 +2723,7 @@ public final class akses {
                         akses.satu_sehat_mapping_kptl_tarif_kamar=rs2.getBoolean("satu_sehat_mapping_kptl_tarif_kamar");
                         akses.checklist_kriteria_keluar_isolasi=rs2.getBoolean("checklist_kriteria_keluar_isolasi");
                         akses.asesmen_medis_ranap=rs2.getBoolean("asesmen_medis_ranap");
+                        akses.ringkasan_pasien_masuk_keluar=rs2.getBoolean("ringkasan_pasien_masuk_keluar");
                     }else if((rs.getRow()==0)&&(rs2.getRow()==0)){
                         setLogOut();
                     }
@@ -3964,6 +3966,7 @@ public final class akses {
         akses.satu_sehat_mapping_kptl_tarif_kamar=false;
         akses.checklist_kriteria_keluar_isolasi=false;
         akses.asesmen_medis_ranap=false;
+        akses.ringkasan_pasien_masuk_keluar=false;
     }
     
     public static int getjml1() {return akses.jml1;}    
@@ -5223,4 +5226,5 @@ public final class akses {
     public static boolean getsatu_sehat_mapping_kptl_tarif_kamar(){return akses.satu_sehat_mapping_kptl_tarif_kamar;}
     public static boolean getchecklist_kriteria_keluar_isolasi(){return akses.checklist_kriteria_keluar_isolasi;}
     public static boolean getasesmen_medis_ranap(){return akses.asesmen_medis_ranap;}
+    public static boolean getringkasan_pasien_masuk_keluar(){return akses.ringkasan_pasien_masuk_keluar;}
 }   
