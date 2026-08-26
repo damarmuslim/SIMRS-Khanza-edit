@@ -348,7 +348,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			</staticText>
 		</band>
 
-		<band height="100" splitType="Prevent">
+		<band height="55" splitType="Prevent">
 			<staticText>
 				<reportElement positionType="Float" x="1" y="0" width="557" height="14" mode="Opaque" backcolor="#F0F0DC"/>
 				<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement>
@@ -384,23 +384,36 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement>
 				<textFieldExpression><![CDATA["1. "+($F{nm_dokter_asal_1}==null?"-":$F{nm_dokter_asal_1})]]></textFieldExpression>
 			</textField>
+		</band>
+
+		<!--
+		  Slot "Dokter Yang Merawat" ke-2 & ke-3 (Asal) sengaja dipecah jadi band
+		  SENDIRI-SENDIRI. printWhenExpression di level BAND membuat seluruh baris
+		  lenyap saat slotnya kosong; kalau ketiganya berbagi satu band (height=100
+		  seperti sebelumnya), printWhenExpression hanya menyembunyikan TEKS-nya
+		  sementara tinggi band tetap - menyisakan lubang kosong ~47px di kertas.
+		  Baru ketahuan saat cetak dengan data pasien sungguhan; uji data sintetis
+		  sebelumnya selalu mengisi ketiga slot sehingga lubang itu tidak muncul.
+		-->
+		<band height="13" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{nm_dokter_asal_2}!=null]]></printWhenExpression>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="150" y="55" width="400" height="11" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$F{nm_dokter_asal_2}!=null]]></printWhenExpression>
-				</reportElement>
+				<reportElement positionType="Float" x="150" y="0" width="400" height="11"/>
 				<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement>
 				<textFieldExpression><![CDATA["2. "+$F{nm_dokter_asal_2}]]></textFieldExpression>
 			</textField>
+		</band>
+		<band height="13" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{nm_dokter_asal_3}!=null]]></printWhenExpression>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="150" y="68" width="400" height="11" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$F{nm_dokter_asal_3}!=null]]></printWhenExpression>
-				</reportElement>
+				<reportElement positionType="Float" x="150" y="0" width="400" height="11"/>
 				<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement>
 				<textFieldExpression><![CDATA["3. "+$F{nm_dokter_asal_3}]]></textFieldExpression>
 			</textField>
 		</band>
+		<band height="8" splitType="Prevent"/>
 
-		<band height="100" splitType="Prevent">
+		<band height="55" splitType="Prevent">
 			<staticText>
 				<reportElement positionType="Float" x="1" y="0" width="557" height="14" mode="Opaque" backcolor="#F0F0DC"/>
 				<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement>
@@ -436,21 +449,26 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement>
 				<textFieldExpression><![CDATA["1. "+($F{nm_dokter_tujuan_1}==null?"-":$F{nm_dokter_tujuan_1})]]></textFieldExpression>
 			</textField>
+		</band>
+
+		<!-- Alasan pemecahan band sama persis dengan blok ASAL PASIEN di atas. -->
+		<band height="13" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{nm_dokter_tujuan_2}!=null]]></printWhenExpression>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="150" y="55" width="400" height="11" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$F{nm_dokter_tujuan_2}!=null]]></printWhenExpression>
-				</reportElement>
+				<reportElement positionType="Float" x="150" y="0" width="400" height="11"/>
 				<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement>
 				<textFieldExpression><![CDATA["2. "+$F{nm_dokter_tujuan_2}]]></textFieldExpression>
 			</textField>
+		</band>
+		<band height="13" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{nm_dokter_tujuan_3}!=null]]></printWhenExpression>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="150" y="68" width="400" height="11" isRemoveLineWhenBlank="true">
-					<printWhenExpression><![CDATA[$F{nm_dokter_tujuan_3}!=null]]></printWhenExpression>
-				</reportElement>
+				<reportElement positionType="Float" x="150" y="0" width="400" height="11"/>
 				<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement>
 				<textFieldExpression><![CDATA["3. "+$F{nm_dokter_tujuan_3}]]></textFieldExpression>
 			</textField>
 		</band>
+		<band height="8" splitType="Prevent"/>
 
 		<band height="26" splitType="Prevent">
 			<staticText>
@@ -798,6 +816,19 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 ("Kateter Urine".equals($F{eliminasi_bak}) ? "  No."+($F{eliminasi_bak_kateter_no}==null?"-":$F{eliminasi_bak_kateter_no})+
 " / Pasang "+($F{eliminasi_bak_kateter_tanggal_pasang}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{eliminasi_bak_kateter_tanggal_pasang})) : "")]]></textFieldExpression>
 			</textField>
+		</band>
+
+		<!--
+		  Pemisah halaman: RM 04-1 dan RM 04-2 adalah DUA LEMBAR TERPISAH pada
+		  formulir fisik, jadi RM 04-2 harus mulai di lembar baru. Tanpa <break>
+		  ini, judul "HALAMAN 2 (RM 04-2)" tercetak di tengah lembar pertama
+		  (terlihat saat cetak data sungguhan) sehingga penomoran lembar hasil
+		  cetak tidak lagi cocok dengan formulir fisiknya.
+		-->
+		<band height="1" splitType="Prevent">
+			<break>
+				<reportElement x="0" y="0" width="557" height="1"/>
+			</break>
 		</band>
 
 		<band height="20" splitType="Prevent">
@@ -1294,7 +1325,15 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="371" y="183" width="186" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
-				<textFieldExpression><![CDATA[$F{nm_dokter_asal_1}==null?$F{nm_dokter_tujuan_1}:$F{nm_dokter_asal_1}]]></textFieldExpression>
+				<!--
+				  Fallback bertingkat: dokter asal -> dokter tujuan -> "-".
+				  Cabang "-" terakhir WAJIB: formulir fisik cuma punya satu baris
+				  tanda tangan dokter generik, dan pada data sungguhan kd_dokter
+				  asal maupun tujuan sering-sering sama-sama kosong. Tanpa cabang
+				  itu ekspresi menghasilkan null dan JasperReports mencetak tulisan
+				  harfiah "null" di atas garis tanda tangan.
+				-->
+				<textFieldExpression><![CDATA[$F{nm_dokter_asal_1}!=null?$F{nm_dokter_asal_1}:($F{nm_dokter_tujuan_1}!=null?$F{nm_dokter_tujuan_1}:"-")]]></textFieldExpression>
 			</textField>
 
 			<staticText>
@@ -1310,7 +1349,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="185" y="268" width="186" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
-				<textFieldExpression><![CDATA[$F{nama_menyetujui}]]></textFieldExpression>
+				<!-- Kolom nullable - dijaga supaya tidak mencetak tulisan "null". -->
+				<textFieldExpression><![CDATA[$F{nama_menyetujui}==null?"-":$F{nama_menyetujui}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
