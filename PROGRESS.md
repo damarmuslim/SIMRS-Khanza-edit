@@ -1478,3 +1478,53 @@ User menyatakan: *"oke sementara selesai tinggal tes langsung oleh user"*. Rangk
 - ⏳ **TTD masih QR (sementara)** - user menyatakan pilihan QR vs kanvas TTD masih akan dibahas.
 - ⏳ 4 varian saudara (`...RanapJantung`/`Kandungan`/`Neonatus`/`Psikiatrik`) TIDAK disentuh sama sekali. Belum dipastikan apakah RSUD memakai lembar RM 20 yg sama utk kasus-kasus itu.
 - ⏳ `graphify update .` belum dijalankan utk perubahan sesi ini.
+
+---
+
+# Progress: Ringkasan Pasien Masuk Keluar (RM 17-01)
+
+Task baru (2026-08-27). Pintu masuknya: klik-kanan di **Daftar Pasien Rawat Inap** (`DlgKamarInap`) → Laporan & Surat → **Ringkasan Masuk Keluar**. Tidak ada form input sama sekali - klik langsung mencetak.
+
+## Temuan pokok: ini DUA formulir yang berbeda, bukan dua versi
+
+Formulir fisik yg diberikan user = **RM 17-01 "RINGKASAN PASIEN MASUK KELUAR (RM PASIEN RAWAT INAP)"**, 2 halaman (hal. 2 = **SEBAB KEMATIAN**). Laporan yg dipanggil menu itu = **`rptRM2D_2.jasper`**, berjudul **"RM.02 RINGKASAN MASUK KELUAR" REV.01.07-2019** - nomor formulir beda, tata letak beda, isi beda. Jadi ini **bukan** pekerjaan "menyesuaikan", melainkan **bangun ulang dari nol** (pola sama RM 03-2 / RM 03-4-05-06).
+
+Catatan tambahan: judul jendela yg dipakai kode aslinya `::[ Lembar Assasmen ]::` - tidak cocok dgn isi laporannya (sudah diperbaiki jadi `::[ Ringkasan Masuk Keluar ]::` saat perbaikan bug di bawah).
+
+## ✅ Bug KRITIS ditemukan & DIPERBAIKI lebih dulu (commit terpisah, 2026-08-27)
+
+Lihat pesan commit `fix: Ringkasan Masuk Keluar mencetak identitas pasien yang SALAH` untuk detail lengkap. Ringkasnya: `Valid.MyReport` meneruskan koneksi DB → JasperReports menjalankan `<queryString>` bawaan `.jasper` → query itu **tanpa WHERE** → mengembalikan seluruh tabel `pasien` → laporan merender **baris pertama**. Lembar rekam medis selalu tercetak dgn identitas **pasien lain**. Diperbaiki ke `Valid.MyReportqry` + query difilter `no_rkm_medis`, plus 2 cacat sekelas: `new Date()` pada blok MASUK RAWAT INAP (mencetak waktu saat mencetak, bukan saat masuk) dan kotak SMF yg selalu tercetak `"null"`.
+
+**Kenapa diperbaiki padahal RM.02 akan dipensiunkan**: keputusan eksplisit user - pembangunan RM 17-01 butuh beberapa sesi, dan selama itu risiko cetak salah pasien tetap aktif.
+
+## Hasil analisis gap RM 17-01 vs data yg tersedia
+
+**✅ Sudah ada di DB, tinggal diambil**: Nama, No. RM, Telepon, Kampung/Desa + Kecamatan + Kabupaten + Provinsi (join `kelurahan`/`kecamatan`/`kabupaten`/`propinsi`), Tempat & Tanggal Lahir, Usia, L/P, Status, Agama, **Pekerjaan** (kolom `pasien.pekerjaan` ADA), Nama Ibu, Masuk Tgl/Jam (`kamar_inap`), Dirawat di Ruang, Diagnose Sementara (`kamar_inap.diagnosa_awal`/`resume_pasien_ranap.diagnosa_awal`), Alergi + Diagnose Akhir + Diagnose Lain + Kode ICD (`resume_pasien_ranap`), Keluar Tgl/Jam, Kunjungan Ulang (`resume_pasien_ranap.kontrol`).
+
+**⚠️ Ada tapi butuh pemetaan/konversi**:
+- **Pendidikan** - kertas cuma py 6 kotak (Buta Huruf/SD/SLTP/SLTA/D.3/Sarjana), `pasien.pnd` py **14 nilai** (TS,TK,SD,SMP,SMA,SLTA/SEDERAJAT,D1,D2,D3,D4,S1,S2,S3,-). Butuh tabel pemetaan; **D1/D2/D4/TK tidak punya kotak** di kertas.
+- **Keadaan Keluar** (Sembuh/Berobat Jalan/Pulang Paksa/Pindah RS/Rujuk) - ada **3 sumber dgn kosakata berbeda**: `resume_pasien_ranap.keadaan` (4 nilai), `resume_pasien_ranap.cara_keluar` (4 nilai), `kamar_inap.stts_pulang` (15 nilai). **Tidak satu pun cocok persis** dgn 5 pilihan di kertas.
+- **Meninggal sebelum/sesudah 48 jam** - bisa dihitung dari selisih masuk-keluar, tapi tidak ada penanda eksplisit.
+- **Tindakan** (Operasi ke-1 / ke-2 / Operasi Khusus / Tindakan Lain, masing-masing + Tanggal + Dokter) - `prosedur_pasien` & `operasi` ada, tapi tidak berlabel per-slot spt di kertas; tanggal & dokter hanya ada utk yg lewat modul operasi.
+- **NIP dokter** (di bawah tanda tangan) - tabel `dokter` cuma py `nm_dokter` & `no_ijn_praktek`, **tidak ada kolom NIP**.
+
+**❌ Tidak ada sama sekali (9 field)**: Alamat **RT/RW**, **No. Rumah** (kolom `pasien.alamat` cuma satu teks bebas, tidak bisa dipecah), Nama **Suami**, Nama **Istri**, Nama **Ayah** (yg ada cuma `nm_ibu`), **Masuk Melalui / Dikirim Oleh** (8 pilihan: IGD/Poliklinik/RS Lain/Puskesmas/Para Medis/Polri/Dokter-Dokter Gizi/Kemauan Sendiri), **Kasus Polisi** Ya/Tidak, **Komplikasi**, **Ke Klinik**.
+
+**❌ Halaman 2 (SEBAB KEMATIAN) - NOL persen ada di DB**: rantai sebab a→b→c + "Lamanya" masing-masing, penyakit penyerta, I. Ruda Paksa (macam/cara kejadian/sifat jenis), II. Kelahiran Mati (2 item), III. Persalinan & Kehamilan (2 item), IV. Operasi (2 item), pemberi keterangan + TTD. Tidak ada tabel `sebab_kematian` atau sejenisnya di skema.
+
+## Temuan yg mempengaruhi keputusan arsitektur
+
+Dari **9 episode rawat inap** di DB, hanya **4 yg punya baris `resume_pasien_ranap`**. Artinya meski banyak field bisa diambil otomatis, pada praktiknya **sering kosong** karena resume-nya sendiri belum diisi petugas. Ini argumen kuat utk form input tersendiri (petugas bisa melengkapi langsung tanpa harus membuka form Resume dulu).
+
+## Keputusan (dikonfirmasi user 2026-08-27)
+
+1. **Form input BARU dgn pra-isi otomatis (hybrid)** - bukan cetak-langsung. Alasannya 9 field tidak ada sumbernya + satu halaman penuh Sebab Kematian; kalau cetak langsung, lembar keluar dgn belasan bagian kosong dan petugas tetap menulis tangan (= sama spt sekarang). Halaman Sebab Kematian jadi **section kondisional**, muncul saat status pulang = Meninggal.
+2. **RM.02 (`rptRM2D_2`) diganti total** oleh RM 17-01 - menu diarahkan ke laporan baru, berkas `.jasper` lama TIDAK dihapus (additive-only).
+3. **Bug "pasien salah" diperbaiki SEGERA & terpisah** - sudah dikerjakan (lihat di atas).
+
+## Belum Dikerjakan / Next Steps
+
+- ⏳ **Belum ada rencana implementasi** - analisis gap selesai, rancangan (nama kelas/tabel, daftar kolom, urutan section, hak akses, menu) belum disusun.
+- ⏳ **Perlu keputusan user sebelum implementasi**: (a) pemetaan `pasien.pnd` → 6 kotak Pendidikan, khususnya nasib D1/D2/D4/TK; (b) pemetaan Keadaan Keluar dari 3 sumber berbeda ke 5 pilihan kertas - apakah dihitung otomatis atau dipilih manual petugas; (c) apakah RT/RW & No. Rumah cukup jadi kolom baru di tabel form ini, atau memang perlu ditambahkan ke master `pasien`; (d) tanda tangan dokter: QR (pola RM 03-x/RM 20) atau kanvas; (e) NIP dokter diambil dari mana, mengingat tabel `dokter` tidak punya kolom itu.
+- ⏳ **Bug pasien-salah belum dicek di aplikasi sungguhan** - diverifikasi lewat render harness, belum lewat `JasperViewer` di `Aplikasi.bat`.
+- ⏳ **Utang teknis yg sengaja dibiarkan di `MnRingkasanMasukKeluarActionPerformed`**: 29 dari 38 parameter yg dirakit tidak pernah dipakai laporan (sekitar 25 query terpisah ke DB per cetak, hasilnya dibuang), dan parameter `pekerjaan` diisi dari kolom `pasien.agama`. Nol dampak krn parameternya memang tidak terpakai; tidak diperbaiki krn method ini akan digantikan RM 17-01.
