@@ -1522,9 +1522,46 @@ Dari **9 episode rawat inap** di DB, hanya **4 yg punya baris `resume_pasien_ran
 2. **RM.02 (`rptRM2D_2`) diganti total** oleh RM 17-01 - menu diarahkan ke laporan baru, berkas `.jasper` lama TIDAK dihapus (additive-only).
 3. **Bug "pasien salah" diperbaiki SEGERA & terpisah** - sudah dikerjakan (lihat di atas).
 
+## Keputusan lanjutan (dikonfirmasi user 2026-08-27)
+
+4. **Pendidikan**: kolom `pasien.pnd` TIDAK diubah sama sekali - pemetaan ke 6 kotak kertas terjadi murni SAAT MENCETAK. Kekhawatiran user ("akan mengubah seluruh data, di server sudah ratusan ribu") tidak berlaku: nol perubahan skema, nol perubahan data. Nilai tanpa kotak padanan (TK/D1/D2/"-") tidak mencentang kotak mana pun, nilai aslinya dicetak sebagai keterangan di ujung baris - tidak dibulatkan ke kotak yang salah karena ini dokumen rekam medis.
+5. **RT/RW & No. Rumah**: TIDAK dibuatkan field. Dicek ke `DlgPasien`: form pendaftaran memang tidak pernah punya field RT/RW sama sekali, hanya satu kotak "Alamat" teks bebas - jadi dugaan awal bahwa itu "akan terisi otomatis dari pendaftaran" tidak benar. Keputusan user: alamat dicetak apa adanya dari registrasi, baris RT/RW & No. Rumah dibiarkan kosong bergaris (di praktiknya RT/RW sudah ikut tertulis di dalam teks alamat).
+6. **Keadaan Keluar**: ikut kosakata KERTAS (5 pilihan). Sistem hanya menyarankan.
+7. **Tanda tangan**: QR lebih dulu.
+8. **NIP**: diambil dari `pegawai.nik` dan **ditampilkan APA ADANYA** - keputusan sementara user, karena di produksi isi kolom itu beragam (sebagian NIP untuk dokter PNS, sebagian kode pegawai) dan aturannya belum dipastikan. **PERLU DITINJAU LAGI.** Tabel `dokter` sendiri tidak punya kolom NIP (hanya `nm_dokter` & `no_ijn_praktek`), dan tidak ada kunci resmi yang menghubungkan `dokter` ke `pegawai` - kode mencoba dua jalur: konvensi codebase `pegawai.nik=dokter.kd_dokter` lalu fallback pencocokan nama.
+9. **Pra-isi otomatis dimaksimalkan** (permintaan user "jika memang bisa diisi otomatis isi otomatis saja") - 19 bagian terisi sendiri, termasuk tiga yang semula digolongkan manual: Masuk Melalui (dari `kd_poli`, `IGDK`=IGD), Keadaan Keluar (saran dari `stts_pulang`/`resume.keadaan`), dan meninggal sebelum/sesudah 48 jam (DIHITUNG dari selisih masuk-keluar).
+
+## Yang Sudah Dikerjakan
+
+1. ✅ **Migrasi SQL** - tabel `ringkasan_pasien_masuk_keluar` (52 kolom, PK `no_rawat`, FK ke `reg_periksa`) + 1 kolom hak akses. **SUDAH DIIMPORT** ke DB `aik` (2026-08-27, instruksi eksplisit user); cadangan tabel `user` diambil lebih dulu. Verifikasi sesudah import: tabel baru 52 kolom dgn PK+FK, `user` 1214→1215 kolom dgn 2 baris utuh, kolom baru mendarat di **ordinal 1215 (paling akhir)** - persis asumsi kode.
+2. ✅ **`RMRingkasanPasienMasukKeluar.java`** (~1.150 baris) - GridBagLayout tulis tangan tanpa `.form`/blok GEN (pola RM 20). Identitas & data registrasi TIDAK disimpan ulang (di-JOIN, field read-only); yang disimpan hanya yang tak ada sumbernya + yang kosakatanya beda dari kertas. Halaman 2 Sebab Kematian = section kondisional.
+3. ✅ **Hak akses** `ringkasan_pasien_masuk_keluar` - `akses.java` (5 titik), `DlgUser` (7 titik), `DlgUpdateUser` (6 titik), `frmUtama` (tombol + 3 titik penampil). Tombol dibangun di `initKhanzaLanjutan()`, BUKAN `initKhanza()` yg sudah mepet batas 64 KB bytecode.
+4. ✅ **`rptRingkasanPasienMasukKeluarRM17.jrxml`/`.jasper`** - F4 609x935, 2 halaman dipisah band `<break>`, QR tanda tangan. Disalin ke `report/`+`dist/report/`+`build/report/`.
+5. ✅ **Menu klik-kanan `DlgKamarInap` dialihkan** ke form baru; 3 helper pelayan cetak RM.02 ikut dihapus (239 baris → 37). `rptRM2D_2.jasper` tidak dihapus, hanya tidak dipanggil. **Pengalihan sengaja dikerjakan PALING AKHIR** supaya tidak ada jeda di mana petugas tidak bisa mencetak sama sekali.
+
+## Verifikasi yang Sudah Dijalankan
+
+- `ant jar` **BUILD SUCCESSFUL** di setiap checkpoint, tanpa `code too large` maupun `StackOverflowError`.
+- **`KOLOM_RM17` 51 == `nilaiRm17()` 51 == kolom migrasi 51**, nama cocok 100%, **urutan identik**, nol duplikat. Risiko yg dicegah bukan crash melainkan DIAM: jumlah sama tapi urutan bergeser = data masuk ke kolom yg SALAH tanpa error.
+- **Keselarasan hak akses diverifikasi sebelum DAN sesudah** perubahan: `DlgUser` judul 1217 == batas loop 1217, indeks `getValueAt` tertinggi 1216 == judul-1, **ketiga** blok pembangun baris (1x `addRow` + 2x `publish`) semuanya 1217 elemen; `DlgUpdateUser` label addRow 1213 == label simpan 1213.
+- **Keempat jalur SQL BENAR-BENAR DIJALANKAN** ke DB dlm `START TRANSACTION`+`ROLLBACK`: INSERT 51 kolom, UPDATE 51 kolom, query daftar, dan `sqlCetak` (6 subquery + 8 JOIN) - semua benar, nol sisa data uji. Query-nya dibaca LANGSUNG dari berkas Java, jadi yg diuji milik aplikasi sendiri.
+- **Tata letak form DILIHAT** lewat render offscreen, 2 keadaan (Sebab Kematian tertutup & terbuka). Nol field menciut.
+- **Cetakan DILIHAT** untuk 2 kasus (pulang hidup & meninggal), 2 halaman F4, QR ter-render.
+- **3 gotcha JRXML nol pelanggaran**: 94 `<textField>` semuanya `isStretchWithOverflow`, 103 `<staticText>` semuanya height>=11, 23 band semuanya `splitType="Prevent"`. Seluruh 74 field dicocokkan ke skema: nol tak dikenal.
+
+## 2 Bug Ditemukan Karena DILIHAT (bukan dari hitung-hitungan)
+
+- **Isi form mengambang di tengah secara vertikal** - versi vertikal dari bug pusat-otomatis `GridBagLayout` yg selama ini hanya ditangkal di sumbu horizontal. Diperbaiki dgn `tambahPengisiBaris()` (glue `weighty=1.0` di baris terbawah).
+- **Digit Nomor Rekam Medik tidak jatuh di dalam kotaknya** - satu `textField` dgn spasi penyela, lebarnya tidak pernah pas dgn lebar kotak. Diganti 6 `textField`, satu per kotak.
+
 ## Belum Dikerjakan / Next Steps
 
-- ⏳ **Belum ada rencana implementasi** - analisis gap selesai, rancangan (nama kelas/tabel, daftar kolom, urutan section, hak akses, menu) belum disusun.
-- ⏳ **Perlu keputusan user sebelum implementasi**: (a) pemetaan `pasien.pnd` → 6 kotak Pendidikan, khususnya nasib D1/D2/D4/TK; (b) pemetaan Keadaan Keluar dari 3 sumber berbeda ke 5 pilihan kertas - apakah dihitung otomatis atau dipilih manual petugas; (c) apakah RT/RW & No. Rumah cukup jadi kolom baru di tabel form ini, atau memang perlu ditambahkan ke master `pasien`; (d) tanda tangan dokter: QR (pola RM 03-x/RM 20) atau kanvas; (e) NIP dokter diambil dari mana, mengingat tabel `dokter` tidak punya kolom itu.
-- ⏳ **Bug pasien-salah belum dicek di aplikasi sungguhan** - diverifikasi lewat render harness, belum lewat `JasperViewer` di `Aplikasi.bat`.
+- ⏳ **BELUM PERNAH dibuka di `Aplikasi.bat`** - seluruh verifikasi di atas otomatis/offscreen. Riwayat proyek ini menunjukkan bug berkali-kali lolos verifikasi otomatis dan baru ketahuan dari mata sungguhan. Checklist: (a) hak akses baru dicentang dulu di Setting User - **kolom baru NULL utk semua user lama sehingga TIDAK ADA yg bisa membuka form ini sampai admin mencentangnya**, itu perilaku benar bukan bug (akun "Admin Utama" otomatis dapat lewat hardcode di `akses.java`); (b) klik-kanan pasien ranap → Laporan & Surat → Ringkasan Masuk Keluar, konfirmasi form terbuka dgn pra-isi terisi; (c) Simpan → klik baris di tab Data → konfirmasi semua field terisi balik; (d) centang "Pasien Meninggal", konfirmasi section Sebab Kematian muncul & tersimpan; (e) Cetak mode "Lembar" & "PDF", konfirmasi 2 halaman dan QR muncul.
+- ⏳ **NIP masih ditampilkan apa adanya** (keputusan sementara, lihat poin 8) - user akan menanyakan aturannya untuk dokter non-PNS.
+- ⏳ **Belum dicetak dgn data pasien SUNGGUHAN** - baru data sintetis. Pelajaran RM 04 masih berlaku: tiga bug di sana lolos justru karena data ujinya selalu terisi penuh. Sebagian sudah diantisipasi (slot kosong, nilai tanpa kotak padanan ikut diuji), tapi cetak sungguhan tetap prasyarat.
+- ⏳ `graphify update .` belum dijalankan untuk perubahan modul ini.
+
+## Catatan Infrastruktur
+
+**MySQL sempat mati sendiri** di tengah sesi (2026-08-27 ~10:00), beberapa saat setelah import migrasi. **Bukan disebabkan DDL**: log tidak mencatat shutdown maupun crash sama sekali - server berhenti mendadak tanpa sempat menulis apa pun, dan tulisan terakhir ke `ibdata1` justru menunjukkan import ter-commit dengan benar. Dihidupkan ulang lewat `mysqld.exe --defaults-file=C:\xampp\mysql\bin\my.ini`; seluruh data terkonfirmasi utuh sesudahnya. Log mengonfirmasi `innodb_force_recovery = 1` memang masih aktif (masalah lama yg belum tuntas).
 - ⏳ **Utang teknis yg sengaja dibiarkan di `MnRingkasanMasukKeluarActionPerformed`**: 29 dari 38 parameter yg dirakit tidak pernah dipakai laporan (sekitar 25 query terpisah ke DB per cetak, hasilnya dibuang), dan parameter `pekerjaan` diisi dari kolom `pasien.agama`. Nol dampak krn parameternya memang tidak terpakai; tidak diperbaiki krn method ini akan digantikan RM 17-01.
