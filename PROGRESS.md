@@ -1636,8 +1636,13 @@ Supaya tidak menyimpan data menyesatkan: **sasaran** hanya disimpan kalau baris 
 
 ## Belum Dikerjakan / Next Steps
 
-- ⏳ **Jasper `rptAsesmenPendidikanPasienRM21` belum dibuat** - 1 halaman mengikuti tata letak kertas + QR tanda tangan Perawat/Bidan. Tombol Cetak di form sudah menunjuk ke nama berkas itu, jadi **cetak belum bisa dipakai sampai laporannya jadi**.
-- ⏳ **Belum pernah dibuka di `Aplikasi.bat`** - seluruh verifikasi otomatis/offscreen.
+- ✅ **Jasper `rptAsesmenPendidikanPasienRM21` SELESAI** - 1 halaman F4 609x935, tata letak mengikuti kertas + QR tanda tangan Perawat/Bidan. Disalin ke `report/`+`dist/report/`+`build/report/`.
+    - **Sasaran diterjemahkan balik jadi tiga kotak centang** di cetakan (di form tetap dropdown) - jadi tampilan kertas persis formulir fisik, tapi datanya tidak bisa kontradiktif.
+    - 3 gotcha JRXML nol pelanggaran: 80 `<textField>` semuanya `isStretchWithOverflow`, 95 `<staticText>` semuanya height>=11, 15 band semuanya `splitType="Prevent"`. Seluruh field dicocokkan: nol yang dipakai tanpa dideklarasikan.
+    - **2 kesalahan ditemukan saat compile & diperbaiki**: (a) komentar pemisah baris memakai `----------` - string `--` DILARANG di dalam komentar XML, seluruh komentar dinormalkan; (b) satu `<rectangle>` sisa dengan `printWhenExpression false` melewati batas band (y=30 h=8 vs band 32) - dihapus.
+    - **Cetakan DILIHAT** dengan data sintetis yang SENGAJA setengah kosong (pelajaran RM 04): 4 dari 8 baris dicentang dengan sasaran berbeda-beda, 4 sisanya tidak - hasilnya ketiga kotak sasaran baris yang tidak dicentang kosong semua (tidak ada tanda hantu), dan bahasa Inggris/daerah-2 yang NULL tampil sebagai placeholder "aktif / pasif" bukan tulisan "null".
+- ⏳ **Baru sebagian dicek di `Aplikasi.bat`** - user sudah membuka form dan mengirim tangkapan layar Section A yang ter-render benar (checkbox bercentang, kolom sejajar). Yang BELUM: simpan-muat ulang, dan cetak lewat `JasperViewer` sungguhan.
+- ⏳ **Belum dicetak dengan data pasien SUNGGUHAN** - baru data sintetis.
 - ⏳ Perlu dipastikan ke petugas RM: apakah "Akademi" di kertas mencakup D1/D2/D3 - hanya relevan kalau nanti diputuskan ada pra-isi otomatis.
 - ⏳ `graphify update .` belum dijalankan untuk modul ini.
 
