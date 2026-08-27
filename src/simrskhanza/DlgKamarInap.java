@@ -12179,6 +12179,53 @@ public class DlgKamarInap extends javax.swing.JDialog {
         mnAsesmen.setPreferredSize(new java.awt.Dimension(240, 26));
         mnAsesmen.addActionListener(this::MnAsesmenMedisRanapActionPerformed);
         MnPenilaianAwal.insert(mnAsesmen, 5);
+
+        // RM 21 - Asesmen & Perencanaan Pendidikan Pasien, disisipkan tepat di
+        // bawah RM 20 (indeks 6). Dibangun di LUAR blok GEN dengan alasan yang
+        // sama seperti item RM 20 di atas: seluruh MnPenilaianAwal.add(...)
+        // bawaan berada di dalam initComponents() yang tidak boleh diedit tangan.
+        javax.swing.JMenuItem mnPendidikan = new javax.swing.JMenuItem();
+        mnPendidikan.setBackground(new java.awt.Color(255, 255, 254));
+        mnPendidikan.setFont(new java.awt.Font("Segoe UI", 0, 11));
+        mnPendidikan.setForeground(new java.awt.Color(50, 50, 50));
+        mnPendidikan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png")));
+        mnPendidikan.setText("Asesmen Pendidikan Pasien (RM 21)");
+        mnPendidikan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        mnPendidikan.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        mnPendidikan.setName("mnPendidikan");
+        mnPendidikan.setPreferredSize(new java.awt.Dimension(230, 26));
+        mnPendidikan.addActionListener(this::MnAsesmenPendidikanPasienActionPerformed);
+        MnPenilaianAwal.insert(mnPendidikan, 6);
+    }
+
+    /**
+     * Membuka form RM 21 "Asesmen &amp; Perencanaan Pendidikan Pasien".
+     *
+     * <p>Tidak ada pengecekan hak akses - keputusan eksplisit user: siapa pun
+     * boleh mengisi lembar ini.</p>
+     */
+    private void MnAsesmenPendidikanPasienActionPerformed(java.awt.event.ActionEvent evt) {
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else{
+            if(tbKamIn.getSelectedRow()>-1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                rekammedis.RMAsesmenPendidikanPasien form=new rekammedis.RMAsesmenPendidikanPasien(null,false);
+                form.isCek();
+                if(R1.isSelected()==true){
+                    form.setNoRm(norawat.getText(),new Date());
+                }else if(R2.isSelected()==true){
+                    form.setNoRm(norawat.getText(),DTPCari2.getDate());
+                }else if(R3.isSelected()==true){
+                    form.setNoRm(norawat.getText(),DTPCari4.getDate());
+                }
+                form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                form.setLocationRelativeTo(internalFrame1);
+                form.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
     }
 
     private void MnAsesmenMedisRanapActionPerformed(java.awt.event.ActionEvent evt) {

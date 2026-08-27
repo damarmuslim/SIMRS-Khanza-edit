@@ -18,6 +18,12 @@
 -- DlgIGD, DlgKasirRalan, DlgReg, dan menu utama; tidak ada pintu masuk dari
 -- rawat inap). RM 21 dipakai KHUSUS RAWAT INAP - keputusan user.
 --
+-- TIDAK ADA MIGRASI HAK AKSES untuk form ini.
+-- Keputusan eksplisit user: siapa pun boleh mengisinya, tidak perlu pembatasan.
+-- Jadi tidak ada kolom hak akses yang ditambahkan ke tabel `user`, dan menunya
+-- selalu tersedia. Berbeda dari RM 20 dan RM 17-01 yang keduanya memakai hak
+-- akses. Konsekuensinya cuma satu berkas migrasi di sini, bukan dua.
+--
 -- CATATAN ISI
 -- Identitas pasien TIDAK disimpan di sini, diambil lewat JOIN saat form dibuka
 -- dan saat mencetak - sama seperti RM 17-01.
