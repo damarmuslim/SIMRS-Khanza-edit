@@ -1718,22 +1718,62 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),31).toString());
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),32).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),31).toString():finger)+"\n"+TglAsuhan.getSelectedItem());
             Valid.MyReportqry("rptCetakAsuhanGizi.jasper","report","::[ Laporan Asuhan Gizi Pasien ]::",
-                        "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,asuhan_gizi.tanggal,"+
-                        "asuhan_gizi.antropometri_bb,asuhan_gizi.antropometri_tb,asuhan_gizi.antropometri_imt,asuhan_gizi.antropometri_lla,"+
-                        "asuhan_gizi.antropometri_tl,asuhan_gizi.antropometri_ulna,asuhan_gizi.antropometri_bbideal,asuhan_gizi.antropometri_bbperu,"+
-                        "asuhan_gizi.antropometri_tbperu,asuhan_gizi.antropometri_bbpertb,asuhan_gizi.antropometri_llaperu,asuhan_gizi.biokimia,"+
-                        "asuhan_gizi.fisik_klinis,asuhan_gizi.alergi_telur,asuhan_gizi.alergi_susu_sapi,asuhan_gizi.alergi_kacang,asuhan_gizi.alergi_gluten,"+
-                        "asuhan_gizi.alergi_udang,asuhan_gizi.alergi_ikan,asuhan_gizi.alergi_hazelnut,asuhan_gizi.pola_makan,asuhan_gizi.riwayat_personal,"+
-                        "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,asuhan_gizi.jam,petugas.nama,reg_periksa.umurdaftar,"+
-                        "reg_periksa.sttsumur,penjab.png_jawab from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                        "inner join asuhan_gizi on reg_periksa.no_rawat=asuhan_gizi.no_rawat inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
-                        "inner join petugas on asuhan_gizi.nip=petugas.nip where asuhan_gizi.no_rawat='"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"'",param);
+                        sqlCetakAsuhanGizi(tbObat.getValueAt(tbObat.getSelectedRow(),0).toString(),
+                                           tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()),param);
         }
     }//GEN-LAST:event_MnAsuhanGiziActionPerformed
 
     private void BBKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BBKeyPressed
         Valid.pindah(evt,TglAsuhan,TB);
     }//GEN-LAST:event_BBKeyPressed
+
+    /**
+     * Query cetak lembar "ASUPAN GIZI PASIEN" (halaman 1) beserta blok
+     * "MONITORING &amp; EVALUASI" (halaman 2).
+     *
+     * <p><b>Disaring no_rawat DAN tanggal.</b> Primary key `asuhan_gizi` adalah
+     * (no_rawat, tanggal), jadi satu episode bisa punya beberapa asuhan. Query
+     * lama hanya menyaring no_rawat sehingga mencetak SELURUH asuhan episode
+     * itu, bukan baris yang sedang dipilih petugas. Diperbaiki sekalian di sini
+     * - laporan ini memang sedang dibangun ulang, dan selama ini tidak pernah
+     * bisa dipakai karena berkas .jasper-nya tidak ada.</p>
+     *
+     * <p><b>Lima belas baris Monitoring &amp; Evaluasi</b> diambil dari tabel
+     * `monitoring_asuhan_gizi` - satu baris per tanggal monitoring - lewat 15
+     * correlated subquery ber-LIMIT, bukan subreport JasperReports. Codebase ini
+     * sama sekali tidak pernah memakai subreport di mana pun, dan pendekatan ini
+     * membuat tiap catatan jatuh tepat pada baris bernomornya di kertas.</p>
+     *
+     * <p>Ruangan tidak disimpan di `asuhan_gizi`; diambil dari kamar_inap
+     * terakhir lewat subquery, sama seperti pola di RM 17-01.</p>
+     */
+    private String sqlCetakAsuhanGizi(String noRawat, String tanggal) {
+        StringBuilder monitoring = new StringBuilder();
+        for (int n = 0; n < 15; n++) {
+            monitoring.append(",(select concat(date_format(m.tanggal,'%d-%m-%Y'),' : ',")
+                     .append("ifnull(m.monitoring,''),")
+                     .append("if(ifnull(m.evaluasi,'')='','',concat('  |  ',m.evaluasi)))")
+                     .append(" from monitoring_asuhan_gizi m where m.no_rawat=asuhan_gizi.no_rawat ")
+                     .append("order by m.tanggal limit ").append(n).append(",1) as me").append(n + 1);
+        }
+        return "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,asuhan_gizi.tanggal,"
+             + "asuhan_gizi.antropometri_bb,asuhan_gizi.antropometri_tb,asuhan_gizi.antropometri_imt,asuhan_gizi.antropometri_lla,"
+             + "asuhan_gizi.antropometri_tl,asuhan_gizi.antropometri_ulna,asuhan_gizi.antropometri_bbideal,asuhan_gizi.antropometri_bbperu,"
+             + "asuhan_gizi.antropometri_tbperu,asuhan_gizi.antropometri_bbpertb,asuhan_gizi.antropometri_llaperu,asuhan_gizi.biokimia,"
+             + "asuhan_gizi.fisik_klinis,asuhan_gizi.alergi_telur,asuhan_gizi.alergi_susu_sapi,asuhan_gizi.alergi_kacang,asuhan_gizi.alergi_gluten,"
+             + "asuhan_gizi.alergi_udang,asuhan_gizi.alergi_ikan,asuhan_gizi.alergi_hazelnut,asuhan_gizi.pola_makan,asuhan_gizi.riwayat_personal,"
+             + "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,asuhan_gizi.jam,"
+             + "petugas.nama,reg_periksa.umurdaftar,reg_periksa.sttsumur,penjab.png_jawab,"
+             + "date_format(asuhan_gizi.tanggal,'%d-%m-%Y') as tgl_asuhan,"
+             + "(select bangsal.nm_bangsal from kamar_inap ki inner join kamar on ki.kd_kamar=kamar.kd_kamar "
+             + "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal where ki.no_rawat=asuhan_gizi.no_rawat "
+             + "order by ki.tgl_masuk desc limit 1) as nm_ruang"
+             + monitoring
+             + " from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+             + "inner join asuhan_gizi on reg_periksa.no_rawat=asuhan_gizi.no_rawat inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "
+             + "inner join petugas on asuhan_gizi.nip=petugas.nip "
+             + "where asuhan_gizi.no_rawat='" + noRawat + "' and asuhan_gizi.tanggal='" + tanggal + "'";
+    }
 
     /**
      * Menambahkan field "Jam" ke header, tepat DI BAWAH field Tanggal.
