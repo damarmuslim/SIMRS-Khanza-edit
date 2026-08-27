@@ -1554,6 +1554,16 @@ Dari **9 episode rawat inap** di DB, hanya **4 yg punya baris `resume_pasien_ran
 - **Isi form mengambang di tengah secara vertikal** - versi vertikal dari bug pusat-otomatis `GridBagLayout` yg selama ini hanya ditangkal di sumbu horizontal. Diperbaiki dgn `tambahPengisiBaris()` (glue `weighty=1.0` di baris terbawah).
 - **Digit Nomor Rekam Medik tidak jatuh di dalam kotaknya** - satu `textField` dgn spasi penyela, lebarnya tidak pernah pas dgn lebar kotak. Diganti 6 `textField`, satu per kotak.
 
+## Status: SELESAI dari sisi dev, menunggu pengujian langsung user (2026-08-27)
+
+**Instruksi user:** *"oke sementara selesai tinggal tes langsung oleh user, di noted saja karena masih ada penyesuaian, secara fungsi sudah oke"*.
+
+Artinya: **secara fungsi sudah diterima**, rangkaian kerja RM 17-01 (migrasi, form input, hak akses, menu, cetak Jasper 2 halaman) ditutup dari sisi pengembangan. Statusnya "selesai dikembangkan", BUKAN "selesai teruji" - seluruh item ⏳ di bawah TETAP relevan.
+
+**Masih akan ada "penyesuaian", belum dirinci user.** Sama seperti pola di RM 19: **jangan menebak & merapikan sendiri** - tunggu user menunjuk bagian yang dimaksud (biasanya lewat screenshot atau setelah membandingkan dengan lembar fisik).
+
+**Kalau user melaporkan temuan dari pengujian, tambahkan sebagai poin BARU di bawah - jangan edit ulang bagian di atas yang sudah closed** (pola sama dengan modul RM 02-1 dan RM 20).
+
 ## Belum Dikerjakan / Next Steps
 
 - ⏳ **BELUM PERNAH dibuka di `Aplikasi.bat`** - seluruh verifikasi di atas otomatis/offscreen. Riwayat proyek ini menunjukkan bug berkali-kali lolos verifikasi otomatis dan baru ketahuan dari mata sungguhan. Checklist: (a) hak akses baru dicentang dulu di Setting User - **kolom baru NULL utk semua user lama sehingga TIDAK ADA yg bisa membuka form ini sampai admin mencentangnya**, itu perilaku benar bukan bug (akun "Admin Utama" otomatis dapat lewat hardcode di `akses.java`); (b) klik-kanan pasien ranap → Laporan & Surat → Ringkasan Masuk Keluar, konfirmasi form terbuka dgn pra-isi terisi; (c) Simpan → klik baris di tab Data → konfirmasi semua field terisi balik; (d) centang "Pasien Meninggal", konfirmasi section Sebab Kematian muncul & tersimpan; (e) Cetak mode "Lembar" & "PDF", konfirmasi 2 halaman dan QR muncul.
