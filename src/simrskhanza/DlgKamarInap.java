@@ -12257,243 +12257,41 @@ public class DlgKamarInap extends javax.swing.JDialog {
     }//GEN-LAST:event_MnPenilaianFisioterapiActionPerformed
 
     /**
-     * [RM.02 Ringkasan Masuk Keluar] Query cetak untuk SATU pasien.
+     * Membuka form RM 17-01 "Ringkasan Pasien Masuk Keluar".
      *
-     * <p>Laporan {@code rptRM2D_2.jasper} isinya berbasis {@code $F{...}}, jadi
-     * WAJIB dipanggil lewat {@code Valid.MyReportqry} (query dari sini) dan
-     * BUKAN {@code Valid.MyReport}. Dengan {@code MyReport}, JasperReports
-     * menjalankan {@code <queryString>} bawaan berkas .jasper - dan query bawaan
-     * itu TIDAK punya klausa WHERE sama sekali, sehingga mengembalikan SELURUH
-     * tabel pasien lalu merender baris pertamanya. Akibatnya lembar rekam medis
-     * tercetak dengan identitas pasien LAIN, siapa pun yang dipilih petugas.</p>
+     * <p>Sebelumnya menu ini langsung mencetak {@code rptRM2D_2.jasper} -
+     * formulir "RM.02 REV.01.07-2019", yang ternyata formulir yang BERBEDA dari
+     * lembar fisik yang dipakai RSUD, bukan versi lain dari lembar yang sama.
+     * Berkas .jasper lama sengaja TIDAK dihapus, hanya tidak dipanggil lagi
+     * (prinsip additive-only).</p>
      *
-     * <p>Daftar SELECT sengaja memuat SEMUA {@code <field>} yang dideklarasikan
-     * di jrxml (bukan hanya yang dipakai di badan laporan) - kalau ada field yang
-     * dirujuk tapi tidak ada di ResultSet, JasperReports gagal dengan
-     * "Unknown column name", jebakan yang sudah pernah terjadi di modul lain.</p>
-     *
-     * <p>JOIN wilayah &amp; penjamin memakai LEFT JOIN, bukan INNER JOIN seperti
-     * query bawaan jrxml: dengan INNER JOIN, pasien yang kode
-     * kelurahan/kecamatan/kabupaten/penjaminnya belum lengkap akan menghasilkan
-     * NOL baris, sehingga lembarnya tercetak kosong melompong tanpa pesan error.</p>
+     * <p>Cetak-langsung tidak lagi memungkinkan: ada sembilan bagian pada
+     * lembar RM 17-01 yang datanya tidak ada di mana pun dalam skema, ditambah
+     * satu halaman penuh "Sebab Kematian". Form barulah yang menyediakan
+     * tempat mengisinya, dengan pra-isi otomatis dari data yang sudah ada.</p>
      */
-    private String qryRingkasanMasukKeluar(String noRm){
-        return "select pasien.no_rkm_medis,pasien.nm_pasien,pasien.no_ktp,pasien.jk,"+
-               "pasien.tmp_lahir,pasien.tgl_lahir,pasien.nm_ibu,"+
-               "concat(ifnull(pasien.alamat,''),', ',ifnull(kelurahan.nm_kel,''),', ',ifnull(kecamatan.nm_kec,''),', ',ifnull(kabupaten.nm_kab,'')) as alamat,"+
-               "pasien.gol_darah,pasien.pekerjaan,pasien.stts_nikah,pasien.agama,pasien.tgl_daftar,"+
-               "pasien.no_tlp,pasien.umur,pasien.pnd,pasien.keluarga,pasien.namakeluarga,"+
-               "ifnull(penjab.png_jawab,'') as png_jawab,pasien.pekerjaanpj,pasien.no_peserta,"+
-               "concat(ifnull(pasien.alamatpj,''),', ',ifnull(pasien.kelurahanpj,''),', ',ifnull(pasien.kecamatanpj,''),', ',ifnull(pasien.kabupatenpj,'')) as alamatpj "+
-               "from pasien "+
-               "left join kelurahan on pasien.kd_kel=kelurahan.kd_kel "+
-               "left join kecamatan on pasien.kd_kec=kecamatan.kd_kec "+
-               "left join kabupaten on pasien.kd_kab=kabupaten.kd_kab "+
-               "left join penjab on pasien.kd_pj=penjab.kd_pj "+
-               "where pasien.no_rkm_medis='"+noRm+"'";
-    }
-
-    /**
-     * [RM.02] Isi kotak "SMF" pada lembar Ringkasan Masuk Keluar.
-     *
-     * <p>SMF (Staf Medis Fungsional) adalah kelompok spesialisasi, jadi yang
-     * diambil {@code spesialis.nm_sps} - bukan nama dokternya. Diutamakan dari
-     * DPJP ranap; kalau episode itu belum punya DPJP, jatuh ke dokter pada
-     * registrasi. Parameter ini ADA di jrxml tapi sebelumnya tidak pernah
-     * dikirim sama sekali, sehingga kotak SMF selalu tercetak "null".</p>
-     */
-    private String smfRanap(String noRawat){
-        String smf = Sequel.cariIsi(
-            "select ifnull(spesialis.nm_sps,'-') from dpjp_ranap "+
-            "inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter "+
-            "left join spesialis on dokter.kd_sps=spesialis.kd_sps "+
-            "where dpjp_ranap.no_rawat=? limit 1",noRawat);
-        if(smf==null || smf.trim().isEmpty()){
-            smf = Sequel.cariIsi(
-                "select ifnull(spesialis.nm_sps,'-') from reg_periksa "+
-                "inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter "+
-                "left join spesialis on dokter.kd_sps=spesialis.kd_sps "+
-                "where reg_periksa.no_rawat=?",noRawat);
-        }
-        return (smf==null || smf.trim().isEmpty()) ? "-" : smf;
-    }
-
-    /**
-     * [RM.02] Tanggal/jam pada blok "MASUK RAWAT INAP".
-     *
-     * <p>Diambil baris kamar_inap PALING AWAL ({@code order by tgl_masuk asc}),
-     * yaitu saat pasien pertama kali masuk ranap - baris berikutnya adalah
-     * perpindahan kamar, yang di formulir punya blok "PINDAH RAWAT INAP"
-     * sendiri. Sebelumnya kedua nilai ini ditulis {@code new Date()} di jrxml,
-     * jadi yang tercetak tanggal &amp; jam SAAT MENCETAK, bukan saat pasien
-     * masuk.</p>
-     *
-     * @param bagian "tgl" untuk tanggal (dd/MM/yyyy), selain itu jam masuk.
-     */
-    private String masukRanap(String noRawat,String bagian){
-        String kolom = "tgl".equals(bagian) ? "DATE_FORMAT(kamar_inap.tgl_masuk,'%d/%m/%Y')" : "kamar_inap.jam_masuk";
-        String hasil = Sequel.cariIsi("select "+kolom+" from kamar_inap where kamar_inap.no_rawat=? order by kamar_inap.tgl_masuk asc limit 1",noRawat);
-        return hasil==null ? "" : hasil;
-    }
-
     private void MnRingkasanMasukKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnRingkasanMasukKeluarActionPerformed
         if(tabMode.getRowCount()==0){
             JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
             TCari.requestFocus();
         }else{
             if(tbKamIn.getSelectedRow()>-1){
-                if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
-                    try {
-                        psanak=koneksi.prepareStatement(
-                            "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "+
-                            "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamat "+
-                            "from reg_periksa inner join pasien inner join ranap_gabung on "+
-                            "pasien.no_rkm_medis=reg_periksa.no_rkm_medis and ranap_gabung.no_rawat2=reg_periksa.no_rawat where ranap_gabung.no_rawat=?"); 
-                        try {
-                            psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
-                            rs2=psanak.executeQuery();
-                            if(rs2.next()){
-                                Map<String, Object> param = new HashMap<>();                
-                                param.put("nama",rs2.getString("nm_pasien"));             
-                                param.put("jkel",Sequel.cariIsi("select if(pasien.jk='L','Laki-Laki','Perempuan') from pasien where pasien.no_rkm_medis=?",rs2.getString("no_rkm_medis")));             
-                                param.put("lahir",Sequel.cariIsi("select DATE_FORMAT(pasien.tgl_lahir,'%d-%m-%Y') from pasien where pasien.no_rkm_medis=?",rs2.getString("no_rkm_medis")));             
-                                param.put("norm",rs2.getString("no_rkm_medis"));             
-                                param.put("ruang",tbKamIn.getValueAt(tbKamIn.getSelectedRow(),7).toString().replaceAll("  "," "));             
-                                param.put("kelas", Sequel.cariIsi("select kamar.kelas from kamar inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal where kamar.kd_kamar=? ",tbKamIn.getValueAt(tbKamIn.getSelectedRow(),19).toString()));             
-                                param.put("tanggaldaftar",Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",rs2.getString("no_rawat2")));             
-                                param.put("jamdaftar",Sequel.cariIsi("select reg_periksa.jam_reg from reg_periksa where reg_periksa.no_rawat=?",rs2.getString("no_rawat2")));             
-                                param.put("noreg",Sequel.cariIsi("select reg_periksa.no_reg from reg_periksa where reg_periksa.no_rawat=?",rs2.getString("no_rawat2")));             
-                                param.put("pendidikan","-");             
-                                param.put("agama",Sequel.cariIsi("select pasien.agama from pasien where pasien.no_rkm_medis=?",rs2.getString("no_rkm_medis")));             
-                                param.put("bangsa","Jawa/Indonesia");             
-                                param.put("pekerjaan",Sequel.cariIsi("select pasien.agama from pasien where pasien.no_rkm_medis=?",rs2.getString("no_rkm_medis")));
-                                param.put("status","Single");
-                                param.put("alamat",tbKamIn.getValueAt(tbKamIn.getSelectedRow(),3).toString());
-                                param.put("keluarga",Sequel.cariIsi("select pasien.namakeluarga from pasien where pasien.no_rkm_medis=?",rs2.getString("no_rkm_medis")));
-                                param.put("telp",Sequel.cariIsi("select pasien.no_tlp from pasien where pasien.no_rkm_medis=?",rs2.getString("no_rkm_medis")));
-                                param.put("rujukandari",Sequel.cariIsi("select rujuk_masuk.perujuk from rujuk_masuk where rujuk_masuk.no_rawat=?",rs2.getString("no_rawat2")));
-                                param.put("chkri",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,'V','') from reg_periksa inner join pasien inner join kamar_inap "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? ",rs2.getString("no_rkm_medis")));
-                                param.put("chkrj",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,'V','') from reg_periksa inner join pasien "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? ",rs2.getString("no_rkm_medis")));
-                                param.put("riterakhir",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,DATE_FORMAT(kamar_inap.tgl_keluar,'%d-%m-%Y'),'') from reg_periksa inner join pasien inner join kamar_inap "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? order by kamar_inap.tgl_masuk desc limit 1",rs2.getString("no_rkm_medis")));
-                                param.put("rjterakhir",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y'),'') from reg_periksa inner join pasien "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc ",rs2.getString("no_rkm_medis")));
-                                param.put("rike",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,(count(kamar_inap.no_rawat)-1),'') from reg_periksa inner join pasien inner join kamar_inap "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? ",rs2.getString("no_rkm_medis")));
-                                param.put("rjke",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,(count(reg_periksa.no_rawat)-1),'') from reg_periksa inner join pasien "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? ",rs2.getString("no_rkm_medis")));
-                                param.put("riruang",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,kamar_inap.kd_kamar,'') from reg_periksa inner join pasien inner join kamar_inap "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? order by kamar_inap.tgl_masuk desc limit 1",rs2.getString("no_rkm_medis")));
-                                param.put("rjruang",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,kd_poli,'') from reg_periksa inner join pasien "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc ",rs2.getString("no_rkm_medis")));
-                                param.put("chkruang",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,'V','') from reg_periksa inner join pasien inner join kamar_inap "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? order by kamar_inap.tgl_masuk desc limit 1",rs2.getString("no_rkm_medis")));
-                                param.put("chkbangsal",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,'V','') from reg_periksa inner join pasien "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc ",rs2.getString("no_rkm_medis")));
-                                param.put("chkkelri",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,'V','') from reg_periksa inner join pasien inner join kamar_inap "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? order by kamar_inap.tgl_masuk desc limit 1",rs2.getString("no_rkm_medis")));
-                                param.put("chkkelrj",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,'V','') from reg_periksa inner join pasien "+
-                                        "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc ",rs2.getString("no_rkm_medis")));
-                                param.put("petugas",Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",akses.getkode()));
-
-                                param.put("dokter",smfRanap(rs2.getString("no_rawat2")));
-                                param.put("tglmasukranap",masukRanap(rs2.getString("no_rawat2"),"tgl"));
-                                param.put("jammasukranap",masukRanap(rs2.getString("no_rawat2"),"jam"));
-
-                                param.put("namars",akses.getnamars());
-                                param.put("alamatrs",akses.getalamatrs());
-                                param.put("kotars",akses.getkabupatenrs());
-                                param.put("propinsirs",akses.getpropinsirs());
-                                param.put("kontakrs",akses.getkontakrs());
-                                param.put("emailrs",akses.getemailrs());
-                                param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
-                                Valid.MyReportqry("rptRM2D_2.jasper","report","::[ Ringkasan Masuk Keluar ]::",
-                                        qryRingkasanMasukKeluar(rs2.getString("no_rkm_medis")),param);
-                            }else{
-                                  JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
-                                  tbKamIn.requestFocus();
-                            }
-                        }catch(Exception ex){
-                            System.out.println("Notifikasi : "+ex);
-                        }finally{
-                              if(rs2 != null){
-                                  rs2.close();
-                              }
-                              if(psanak != null){
-                                  psanak.close();
-                              }
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
-                }else{        
-                    if(TNoRMCari.getText().trim().equals("")){
-                        JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
-                    }else{
-                        Map<String, Object> param = new HashMap<>();                
-                        param.put("nama",TPasienCari.getText());             
-                        param.put("jkel",Sequel.cariIsi("select if(pasien.jk='L','Laki-Laki','Perempuan') from pasien where pasien.no_rkm_medis=?",TNoRMCari.getText()));             
-                        param.put("lahir",Sequel.cariIsi("select DATE_FORMAT(pasien.tgl_lahir,'%d-%m-%Y') from pasien where pasien.no_rkm_medis=?",TNoRMCari.getText()));             
-                        param.put("norm",TNoRMCari.getText());             
-                        param.put("ruang",tbKamIn.getValueAt(tbKamIn.getSelectedRow(),7).toString().replaceAll("  "," "));             
-                        param.put("kelas", Sequel.cariIsi("select kamar.kelas from kamar inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal where kamar.kd_kamar=? ",tbKamIn.getValueAt(tbKamIn.getSelectedRow(),19).toString()));             
-                        param.put("tanggaldaftar",Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRwCari.getText()));             
-                        param.put("jamdaftar",Sequel.cariIsi("select reg_periksa.jam_reg from reg_periksa where reg_periksa.no_rawat=?",TNoRwCari.getText()));             
-                        param.put("noreg",Sequel.cariIsi("select reg_periksa.no_reg from reg_periksa where reg_periksa.no_rawat=?",TNoRwCari.getText()));             
-                        param.put("pendidikan",Sequel.cariIsi("select pasien.pnd from pasien where pasien.no_rkm_medis=?",TNoRMCari.getText()));             
-                        param.put("agama",Sequel.cariIsi("select pasien.agama from pasien where pasien.no_rkm_medis=?",TNoRMCari.getText()));             
-                        param.put("bangsa","Jawa/Indonesia");             
-                        param.put("pekerjaan",Sequel.cariIsi("select pasien.agama from pasien where pasien.no_rkm_medis=?",TNoRMCari.getText()));
-                        param.put("status",Sequel.cariIsi("select pasien.stts_nikah from pasien where pasien.no_rkm_medis=?",TNoRMCari.getText()));
-                        param.put("alamat",tbKamIn.getValueAt(tbKamIn.getSelectedRow(),3).toString());
-                        param.put("keluarga",Sequel.cariIsi("select pasien.namakeluarga from pasien where pasien.no_rkm_medis=?",TNoRMCari.getText()));
-                        param.put("telp",Sequel.cariIsi("select pasien.no_tlp from pasien where pasien.no_rkm_medis=?",TNoRMCari.getText()));
-                        param.put("rujukandari",Sequel.cariIsi("select rujuk_masuk.perujuk from rujuk_masuk where rujuk_masuk.no_rawat=?",TNoRwCari.getText()));
-                        param.put("chkri",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,'V','') from reg_periksa inner join pasien inner join kamar_inap "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? ",TNoRMCari.getText()));
-                        param.put("chkrj",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,'V','') from reg_periksa inner join pasien "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? ",TNoRMCari.getText()));
-                        param.put("riterakhir",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,DATE_FORMAT(kamar_inap.tgl_keluar,'%d-%m-%Y'),'') from reg_periksa inner join pasien inner join kamar_inap "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? order by kamar_inap.tgl_masuk desc limit 1",TNoRMCari.getText()));
-                        param.put("rjterakhir",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y'),'') from reg_periksa inner join pasien "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc ",TNoRMCari.getText()));
-                        param.put("rike",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,(count(kamar_inap.no_rawat)-1),'') from reg_periksa inner join pasien inner join kamar_inap "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? ",TNoRMCari.getText()));
-                        param.put("rjke",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,(count(reg_periksa.no_rawat)-1),'') from reg_periksa inner join pasien "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? ",TNoRMCari.getText()));
-                        param.put("riruang",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,kamar_inap.kd_kamar,'') from reg_periksa inner join pasien inner join kamar_inap "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? order by kamar_inap.tgl_masuk desc limit 1",TNoRMCari.getText()));
-                        param.put("rjruang",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,kd_poli,'') from reg_periksa inner join pasien "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc ",TNoRMCari.getText()));
-                        param.put("chkruang",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,'V','') from reg_periksa inner join pasien inner join kamar_inap "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? order by kamar_inap.tgl_masuk desc limit 1",TNoRMCari.getText()));
-                        param.put("chkbangsal",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,'V','') from reg_periksa inner join pasien "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc ",TNoRMCari.getText()));
-                        param.put("chkkelri",Sequel.cariIsi("select if(count(kamar_inap.no_rawat)>1,'V','') from reg_periksa inner join pasien inner join kamar_inap "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis and reg_periksa.no_rawat=kamar_inap.no_rawat where reg_periksa.no_rkm_medis=? order by kamar_inap.tgl_masuk desc limit 1",TNoRMCari.getText()));
-                        param.put("chkkelrj",Sequel.cariIsi("select if(count(reg_periksa.no_rawat)>1,'V','') from reg_periksa inner join pasien "+
-                                "on pasien.no_rkm_medis=reg_periksa.no_rkm_medis where reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc ",TNoRMCari.getText()));
-                        param.put("petugas",Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",akses.getkode()));
-
-                        param.put("dokter",smfRanap(TNoRwCari.getText()));
-                        param.put("tglmasukranap",masukRanap(TNoRwCari.getText(),"tgl"));
-                        param.put("jammasukranap",masukRanap(TNoRwCari.getText(),"jam"));
-
-                        param.put("namars",akses.getnamars());
-                        param.put("alamatrs",akses.getalamatrs());
-                        param.put("kotars",akses.getkabupatenrs());
-                        param.put("propinsirs",akses.getpropinsirs());
-                        param.put("kontakrs",akses.getkontakrs());
-                        param.put("emailrs",akses.getemailrs());
-                        param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
-                        Valid.MyReportqry("rptRM2D_2.jasper","report","::[ Ringkasan Masuk Keluar ]::",
-                                qryRingkasanMasukKeluar(TNoRMCari.getText()),param);
-                    }
-                }  
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                rekammedis.RMRingkasanPasienMasukKeluar form=new rekammedis.RMRingkasanPasienMasukKeluar(null,false);
+                form.isCek();
+                if(R1.isSelected()==true){
+                    form.setNoRm(norawat.getText(),new Date());
+                }else if(R2.isSelected()==true){
+                    form.setNoRm(norawat.getText(),DTPCari2.getDate());
+                }else if(R3.isSelected()==true){
+                    form.setNoRm(norawat.getText(),DTPCari4.getDate());
+                }
+                form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                form.setLocationRelativeTo(internalFrame1);
+                form.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
             }
-        } 
+        }
     }//GEN-LAST:event_MnRingkasanMasukKeluarActionPerformed
 
     private void ppSuplesiJasaRaharjaBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppSuplesiJasaRaharjaBtnPrintActionPerformed
