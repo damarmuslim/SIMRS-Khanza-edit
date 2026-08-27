@@ -1571,6 +1571,62 @@ Artinya: **secara fungsi sudah diterima**, rangkaian kerja RM 17-01 (migrasi, fo
 - ⏳ **Belum dicetak dgn data pasien SUNGGUHAN** - baru data sintetis. Pelajaran RM 04 masih berlaku: tiga bug di sana lolos justru karena data ujinya selalu terisi penuh. Sebagian sudah diantisipasi (slot kosong, nilai tanpa kotak padanan ikut diuji), tapi cetak sungguhan tetap prasyarat.
 - ⏳ `graphify update .` belum dijalankan untuk perubahan modul ini.
 
+---
+
+# Progress: Asesmen & Perencanaan Pendidikan Pasien (RM 21)
+
+Task baru (2026-08-27). Formulir fisik **RM 21 "ASESMEN & PERENCANAAN PENDIDIKAN PASIEN"**, diisi oleh **Perawat / Bidan**, 1 halaman.
+
+## Temuan analisis: form ini SEBAGIAN BESAR sudah ada, tapi tidak untuk ranap
+
+Dugaan awal user ("sepertinya belum ada di sistem") **setengah benar**. Yang sudah ada: `RMEdukasiPasienKeluargaRawatJalan` (modul RM 02-1) + tabel `edukasi_pasien_keluarga_rj`, dengan struktur besar yang sama (section "A. PENGKAJIAN KEBUTUHAN EDUKASI" lalu daftar hambatan) - **8 dari 9 baris Section A punya kolom padanan**.
+
+**TAPI form itu hanya bisa dibuka dari jalur rawat jalan & IGD**: `DlgRawatJalan`, `DlgIGD`, `DlgKasirRalan`, `DlgReg`, dan menu utama. **Nol pintu masuk dari `DlgKamarInap`/`DlgRawatInap`**, dan ketiga baris datanya semuanya pasien Ralan. Jadi untuk pasien rawat inap, asesmen edukasi **tidak ada sama sekali** di sistem. Itulah kekosongan yang diisi RM 21.
+
+## Keputusan (dikonfirmasi user 2026-08-27)
+
+1. **RM 21 KHUSUS RAWAT INAP.** Form RM 02-1 tidak disentuh sama sekali - tetap melayani rawat jalan.
+2. **Tabel terpisah.** PK tabel lama `no_rawat` saja (1 record per episode); kalau berbagi, kedua form saling menimpa baris yang sama - alasan yang persis sama membuat RM 20 dipisah dari `penilaian_medis_ranap`. Konsekuensi yang disadari: kedua form TIDAK berbagi data.
+3. **Sasaran diisi PER BARIS** mengikuti kertas (8 kolom sasaran tersendiri), bukan satu sasaran global seperti form ralan.
+4. **"Pemenuhan kebutuhan kesehatan berkelanjutan"** = konsep tersendiri, BUKAN padanan `kebutuhan_rujukan_edukasi` milik form ralan - karena konteksnya rawat inap.
+5. **Tingkat pendidikan = input MANUAL** mengikuti kertas, tidak dipetakan dari `pasien.pnd` ("Akademi" di kertas vs D1/D2/D3 di data registrasi belum pasti padanannya). Prinsip yang sama diberlakukan untuk **seluruh Section B**: diisi manual oleh perawat - asesmen edukasi harus mencerminkan yang dinilai perawat langsung, bukan data pendaftaran yang bisa basi. Yang otomatis hanya identitas pasien, tanggal/jam, dan perawat yang login.
+6. **TANPA PEMBATASAN HAK AKSES** - *"siapapun bisa mengisi tidak perlu pembatasan user"*. Migrasi hak akses yang sempat ditulis DIBATALKAN & dihapus, perubahan `akses.java` dikembalikan seluruhnya (nol sisa referensi), tombol tidak pernah dinonaktifkan, menu selalu tersedia. **Berbeda dari RM 20 & RM 17-01** yang keduanya memakai hak akses - modul ini hanya punya SATU berkas migrasi, bukan dua.
+
+## Tiga perbedaan struktural dari form rawat jalan yang ditangani
+
+- **Sasaran per baris** vs satu sasaran global (`kepada_pasien`/`kepada_keluarga`).
+- **Tiap hambatan punya isian "Ya, sebutkan"** - form ralan hanya menyimpan penanda Ya/Tidak tanpa tempat menuliskan sebutannya.
+- **"Budaya pasien dan keluarga"** tidak punya kolom sama sekali di skema lama.
+
+Kolom "Pemberian Edukasi" (Dokter/Farmasi/Perawat-Bidan/Ahli Gizi/Terapis) **tidak dibuatkan kolom**: nilainya sudah tercetak tetap per baris di formulir fisik.
+
+## Yang Sudah Dikerjakan
+
+1. ✅ **Migrasi SQL** `sik_asesmen_pendidikan_pasien_ranap_rm21.sql` - tabel `asesmen_pendidikan_pasien_ranap`, 44 kolom, PK `no_rawat`, FK ke `reg_periksa`. **SUDAH DIIMPORT** ke DB `aik` (2026-08-27, instruksi eksplisit user). Cadangan `user` TIDAK diperlukan - migrasi ini hanya CREATE TABLE, tidak menyentuh tabel `user` (diverifikasi: `user` tetap 1215 kolom sesudah import).
+2. ✅ **`RMAsesmenPendidikanPasien.java`** (~1.100 baris) - GridBagLayout tulis tangan tanpa `.form`/blok GEN. Section A dibangun dari konstanta `BARIS_KEBUTUHAN` sehingga 8 baris tetapnya tidak diketik berulang.
+3. ✅ **Menu**: item klik-kanan Rawat Inap (disisipkan di bawah RM 20, dari method di LUAR blok GEN) + tombol menu utama di `initKhanzaLanjutan()`, keduanya **tanpa gerbang hak akses**.
+
+## Verifikasi yang Sudah Dijalankan
+
+- `ant jar` **BUILD SUCCESSFUL**.
+- **`KOLOM_RM21` 43 == `nilaiRm21()` 43 == kolom migrasi 43**, nama cocok 100%, urutan identik, nol duplikat.
+- **Keempat jalur SQL dijalankan sungguhan** ke DB dalam `START TRANSACTION`+`ROLLBACK`: INSERT 43 kolom, UPDATE 43 kolom, query daftar, query cetak - semua benar, nol sisa data uji.
+- **Nilai ENUM diuji bolak-balik**: nilai yang benar-benar dikirim Java di-INSERT lalu DIBACA ULANG, termasuk `Pasien & Keluarga` yang mengandung `&`. Nol kolom yang diam-diam jadi string kosong. Ini penting karena kalau teks Java tidak sama PERSIS dengan definisi ENUM, MySQL non-strict menyimpannya kosong **tanpa pesan error**.
+- **Tata letak DILIHAT** lewat render offscreen ke PNG. Nol field menciut; `tambahPengisiBaris()` dipakai sejak awal (pelajaran RM 17-01) sehingga isi rapat ke atas.
+
+## Dua gerbang nilai yang dipasang sejak awal
+
+Supaya tidak menyimpan data menyesatkan: **sasaran** hanya disimpan kalau baris kebutuhannya dicentang, dan **kemampuan bahasa daerah** hanya kalau nama bahasanya diisi. Tanpa itu, pilihan yang tertinggal dari pengisian sebelumnya ikut tersimpan untuk baris yang sebenarnya kosong.
+
+## Belum Dikerjakan / Next Steps
+
+- ⏳ **Jasper `rptAsesmenPendidikanPasienRM21` belum dibuat** - 1 halaman mengikuti tata letak kertas + QR tanda tangan Perawat/Bidan. Tombol Cetak di form sudah menunjuk ke nama berkas itu, jadi **cetak belum bisa dipakai sampai laporannya jadi**.
+- ⏳ **Belum pernah dibuka di `Aplikasi.bat`** - seluruh verifikasi otomatis/offscreen.
+- ⏳ Perlu dipastikan ke petugas RM: apakah "Akademi" di kertas mencakup D1/D2/D3 - hanya relevan kalau nanti diputuskan ada pra-isi otomatis.
+- ⏳ `graphify update .` belum dijalankan untuk modul ini.
+
+---
+
 ## Catatan Infrastruktur
 
 **MySQL sempat mati sendiri** di tengah sesi (2026-08-27 ~10:00), beberapa saat setelah import migrasi. **Bukan disebabkan DDL**: log tidak mencatat shutdown maupun crash sama sekali - server berhenti mendadak tanpa sempat menulis apa pun, dan tulisan terakhir ke `ibdata1` justru menunjukkan import ter-commit dengan benar. Dihidupkan ulang lewat `mysqld.exe --defaults-file=C:\xampp\mysql\bin\my.ini`; seluruh data terkonfirmasi utuh sesudahnya. Log mengonfirmasi `innodb_force_recovery = 1` memang masih aktif (masalah lama yg belum tuntas).
