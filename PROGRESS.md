@@ -1614,6 +1614,22 @@ Kolom "Pemberian Edukasi" (Dokter/Farmasi/Perawat-Bidan/Ahli Gizi/Terapis) **tid
 - **Nilai ENUM diuji bolak-balik**: nilai yang benar-benar dikirim Java di-INSERT lalu DIBACA ULANG, termasuk `Pasien & Keluarga` yang mengandung `&`. Nol kolom yang diam-diam jadi string kosong. Ini penting karena kalau teks Java tidak sama PERSIS dengan definisi ENUM, MySQL non-strict menyimpannya kosong **tanpa pesan error**.
 - **Tata letak DILIHAT** lewat render offscreen ke PNG. Nol field menciut; `tambahPengisiBaris()` dipakai sejak awal (pelajaran RM 17-01) sehingga isi rapat ke atas.
 
+## ⭐ PILOT PROJECT: pola widget checklist RM 21 jadi patokan form RM berikutnya
+
+User menetapkan (2026-08-27): *"combo checkbox dengan ceklis jadikan patokan untuk form form lainnya"*, lalu menegaskan *"ceklist tersebut yang jadi pilot projek"* sambil mengirim tangkapan layar **Section A yang sudah berjalan di `Aplikasi.bat`** (checkbox ter-render dengan centang biru, kolom sejajar).
+
+Sempat ditanyakan dulu karena kalimatnya bisa dibaca dua arah - dikonfirmasi maksudnya **pola yang sudah dipakai sudah benar**, BUKAN permintaan mengubah Sasaran jadi tiga checkbox meski di kertas fisiknya digambar begitu.
+
+**Polanya, untuk disalin ke form RM berikutnya:**
+- `widget.CekBox` untuk penanda biner "dibutuhkan / tidak" pada tiap baris.
+- `widget.ComboBox` untuk pilihan **tunggal** yang melekat pada baris itu (mis. Sasaran: Pasien / Keluarga / Pasien & Keluarga) - meski di kertas digambar sebagai beberapa kotak centang berdampingan.
+- Sepasang `widget.RadioButton` untuk Tidak/Ya.
+- Baris-baris disusun sebagai **tabel dengan judul kolom**, meniru tata letak kertas.
+
+**Kenapa dropdown, bukan tiga checkbox**: dropdown mencegah pilihan yang saling bertentangan tercentang bersamaan (mis. "Pasien" dan "Pasien & Keluarga" sekaligus) - sesuatu yang tidak bisa dicegah kalau dibuat tiga checkbox terpisah - sementara tampilan tabelnya tetap sejajar dengan lembar fisik.
+
+Teks tiap pilihan **ditulis sama persis dengan nilai ENUM** di database supaya tidak perlu tabel pemetaan yang bisa desinkron.
+
 ## Dua gerbang nilai yang dipasang sejak awal
 
 Supaya tidak menyimpan data menyesatkan: **sasaran** hanya disimpan kalau baris kebutuhannya dicentang, dan **kemampuan bahasa daerah** hanya kalau nama bahasanya diisi. Tanpa itu, pilihan yang tertinggal dari pengisian sebelumnya ikut tersimpan untuk baris yang sebenarnya kosong.
