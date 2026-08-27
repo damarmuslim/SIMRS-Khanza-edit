@@ -19,6 +19,7 @@ import fungsi.validasi;
 import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -33,11 +34,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.text.Document;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 import kepegawaian.DlgCariPetugas;
 
 
@@ -68,6 +73,7 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
         initComponents();
         widget.IconStyle.pasang(this);
         initJamAsuhan();
+        initRingkasanGizi();
 
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","J.K.","Tgl.Lahir","Tgl.Asuhan","BB(Kg)","TB(Cm)","IMT(Kg/Cm)","LiLA(Cm)","TL(Cm)",
@@ -1727,6 +1733,189 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
         Valid.pindah(evt,TglAsuhan,TB);
     }//GEN-LAST:event_BBKeyPressed
 
+    // =================================================================
+    //  PANEL RINGKASAN HTML (accordion di sisi kanan tabel)
+    // =================================================================
+
+    /**
+     * Memasang panel ringkasan HTML yang bisa dilipat di sisi KANAN tabel,
+     * mengikuti pola yang sudah dipakai di RM 03-2, RM 17-01, dan RM 21.
+     *
+     * <p>Form ini sebelumnya sama sekali tidak punya panel ringkasan - berbeda
+     * dari beberapa form lain yang sudah punya {@code LoadHTML} tapi tidak
+     * pernah dipasang ke container mana pun. Jadi seluruh komponennya dibuat
+     * baru di sini.</p>
+     *
+     * <p><b>Dibangun DI LUAR blok GEN</b> - form ini punya berkas {@code .form},
+     * dan seluruh {@code internalFrame1.add(...)} bawaan berada di dalam
+     * {@code initComponents()} yang tidak boleh diedit tangan: kalau berkasnya
+     * dibuka di NetBeans Form Editor lalu disimpan, editan tangan di dalam blok
+     * itu akan tertimpa. {@code internalFrame1} memakai BorderLayout dan sisi
+     * EAST-nya masih kosong (PAGE_START, CENTER, dan PAGE_END sudah terpakai),
+     * jadi panel ini bisa ditempel tanpa mengganggu apa pun.</p>
+     */
+    private void initRingkasanGizi() {
+        LoadHTML = new widget.editorpane();
+        HTMLEditorKit kit = new HTMLEditorKit();
+        LoadHTML.setEditable(false);
+        LoadHTML.setEditorKit(kit);
+        StyleSheet styleSheet = kit.getStyleSheet();
+        styleSheet.addRule(
+                ".isi td{border-right:1px solid #e2e7dd;font:8.5px tahoma;height:12px;"
+                + "border-bottom:1px solid #e2e7dd;background:#ffffff;color:#323232;}");
+        Document doc = kit.createDefaultDocument();
+        LoadHTML.setDocument(doc);
+
+        ScrollHTML = new widget.ScrollPane();
+        ScrollHTML.setViewportView(LoadHTML);
+
+        TNoRM1 = new widget.TextBox();
+        TNoRM1.setEditable(false);
+        TNoRM1.setPreferredSize(new Dimension(90, 23));
+        TPasien1 = new widget.TextBox();
+        TPasien1.setEditable(false);
+        TPasien1.setPreferredSize(new Dimension(180, 23));
+
+        BtnPrint1 = new widget.Button();
+        BtnPrint1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item (copy).png")));
+        BtnPrint1.setPreferredSize(new Dimension(28, 23));
+        BtnPrint1.setToolTipText("Cetak Asupan Gizi pasien ini");
+        // Memakai jalur cetak yang SAMA dengan menu klik-kanan, bukan menyalin
+        // logikanya - supaya keduanya tidak bisa berbeda perilaku.
+        BtnPrint1.addActionListener(evt -> MnAsuhanGiziActionPerformed(null));
+
+        widget.Label lblPasien = new widget.Label();
+        lblPasien.setText("Pasien :");
+        lblPasien.setHorizontalAlignment(SwingConstants.LEFT);
+
+        FormMenu = new widget.panelisi();
+        FormMenu.setPreferredSize(new Dimension(44, 44));
+        FormMenu.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 9));
+        FormMenu.add(lblPasien);
+        FormMenu.add(TNoRM1);
+        FormMenu.add(TPasien1);
+        FormMenu.add(BtnPrint1);
+
+        ChkAccor = new widget.CekBox();
+        ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kiri.png")));
+        ChkAccor.setPreferredSize(new Dimension(15, 15));
+        ChkAccor.addActionListener(evt -> isMenu());
+
+        PanelAccor = new widget.PanelBiasa();
+        PanelAccor.setLayout(new java.awt.BorderLayout(1, 1));
+        PanelAccor.setPreferredSize(new Dimension(470, 44));
+        PanelAccor.add(ChkAccor, java.awt.BorderLayout.WEST);
+        PanelAccor.add(FormMenu, java.awt.BorderLayout.NORTH);
+        PanelAccor.add(ScrollHTML, java.awt.BorderLayout.CENTER);
+        internalFrame1.add(PanelAccor, java.awt.BorderLayout.EAST);
+
+        // Mulai terlipat: isinya baru relevan setelah ada baris yang diklik.
+        ChkAccor.setSelected(false);
+        isMenu();
+    }
+
+    private void isMenu() {
+        if (ChkAccor.isSelected()) {
+            ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kanan.png")));
+            PanelAccor.setPreferredSize(new Dimension(470, 44));
+            FormMenu.setVisible(true);
+            ScrollHTML.setVisible(true);
+        } else {
+            ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kiri.png")));
+            PanelAccor.setPreferredSize(new Dimension(15, 44));
+            FormMenu.setVisible(false);
+            ScrollHTML.setVisible(false);
+        }
+        PanelAccor.revalidate();
+        PanelAccor.repaint();
+    }
+
+    /**
+     * Menyusun ringkasan HTML dari widget yang SUDAH terisi {@link #getData()}.
+     *
+     * <p>Dibaca langsung dari widget, bukan query ulang ke database - dengan
+     * begitu isi ringkasan dijamin sama persis dengan yang tampil di form,
+     * tidak bisa berbeda karena selisih waktu baca. Pola yang sama dipakai di
+     * RM 03-2, RM 17-01, dan RM 21.</p>
+     */
+    private void bangunRingkasanHtml() {
+        StringBuilder h = new StringBuilder();
+        h.append("<html><table width='100%' cellpadding='2' cellspacing='0'>");
+        judulHtml(h, "IDENTITAS");
+        barisHtml(h, "No.Rawat", TNoRw.getText());
+        barisHtml(h, "No.RM / Nama", TNoRM.getText() + " / " + TPasien.getText());
+        barisHtml(h, "Tgl.Lahir / J.K.", TglLahir.getText() + " / " + Jk.getText());
+        barisHtml(h, "Tanggal & Jam", TglAsuhan.getSelectedItem() + "  " + jamAsuhan());
+        // Ahli Gizi diambil dari BARIS yang dipilih (kolom 32), bukan dari
+        // widget NmPetugas. Widget itu berisi user yang sedang LOGIN - getData()
+        // sengaja tidak menimpanya karena KdPetugas dipakai sebagai penjaga izin
+        // edit ("hanya boleh mengedit record sendiri"). Ringkasan ini
+        // menggambarkan record-nya, jadi yang benar adalah penulis record itu.
+        barisHtml(h, "Ahli Gizi", nilaiBaris(32));
+
+        judulHtml(h, "ANTROPOMETRI");
+        barisHtml(h, "BB / TB / IMT", BB.getText() + " kg / " + TB.getText() + " cm / " + IMT.getText());
+        barisHtml(h, "TL / ULNA", TL.getText() + " cm / " + ULNA.getText() + " cm");
+        barisHtml(h, "BB Ideal", BBIdeal.getText() + " kg");
+        barisHtml(h, "BB/U - TB/U - LiLA/U", BBPerU.getText() + " / " + TBPerU.getText() + " / " + LiLAPerU.getText());
+
+        judulHtml(h, "BIOKIMIA & FISIK/KLINIS");
+        barisHtml(h, "Biokimia", Biokimia.getText());
+        barisHtml(h, "Fisik / Klinis", FisikKlinis.getText());
+
+        judulHtml(h, "RIWAYAT GIZI");
+        barisHtml(h, "Alergi Makanan", ringkasAlergi());
+        barisHtml(h, "Pola Makan", PolaMakan.getText());
+
+        judulHtml(h, "DIAGNOSA & INTERVENSI");
+        barisHtml(h, "Diagnosa Gizi", DiagnosisGizi.getText());
+        barisHtml(h, "Intervensi Gizi", IntervensiGizi.getText());
+        barisHtml(h, "Monitoring & Evaluasi", Monitoring.getText());
+        h.append("</table></html>");
+        LoadHTML.setText(h.toString());
+        LoadHTML.setCaretPosition(0);
+    }
+
+    /**
+     * Hanya alergi yang berjawaban "Ya" yang diringkas - daftar tujuh baris
+     * "Tidak" tidak menambah informasi apa pun di panel sesempit ini.
+     */
+    private String ringkasAlergi() {
+        StringBuilder a = new StringBuilder();
+        if (TelurYa.isSelected()) { a.append("Telur"); }
+        if (SusuYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Susu Sapi"); }
+        if (KacangYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Kacang"); }
+        if (GlutenYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Gluten"); }
+        if (UdangYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Udang"); }
+        if (IkanYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Ikan"); }
+        if (HazelnutYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Hazelnut"); }
+        return a.length() == 0 ? "Tidak ada" : a.toString();
+    }
+
+    /**
+     * Membaca satu sel dari baris tabel yang sedang dipilih. Dipakai untuk
+     * kolom yang TIDAK punya widget di form (mis. Nama Petugas), sehingga
+     * satu-satunya sumbernya adalah tabel itu sendiri.
+     */
+    private String nilaiBaris(int kolom) {
+        int baris = tbObat.getSelectedRow();
+        if (baris < 0 || kolom >= tbObat.getColumnCount()) {
+            return "";
+        }
+        Object v = tbObat.getValueAt(baris, kolom);
+        return v == null ? "" : v.toString();
+    }
+
+    private void judulHtml(StringBuilder h, String judul) {
+        h.append("<tr class='isi'><td colspan='2' bgcolor='#FFFAF8'><b>").append(judul).append("</b></td></tr>");
+    }
+
+    private void barisHtml(StringBuilder h, String label, String nilai) {
+        h.append("<tr class='isi'><td width='38%' valign='top'>").append(label)
+         .append("</td><td valign='top'>")
+         .append((nilai == null ? "" : nilai).replace("\n", "<br>")).append("</td></tr>");
+    }
+
     /**
      * Query cetak lembar "ASUPAN GIZI PASIEN" (halaman 1) beserta blok
      * "MONITORING &amp; EVALUASI" (halaman 2).
@@ -1994,6 +2183,14 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
     /** Jam pengisian - lihat {@link #initJamAsuhan()}. Di luar blok GEN. */
     private widget.Tanggal JamAsuhan;
     private widget.Label LabelJamAsuhan;
+    // Panel ringkasan HTML - lihat initRingkasanGizi(). Semuanya di luar blok GEN.
+    private widget.PanelBiasa PanelAccor;
+    private widget.panelisi FormMenu;
+    private widget.CekBox ChkAccor;
+    private widget.editorpane LoadHTML;
+    private widget.ScrollPane ScrollHTML;
+    private widget.TextBox TNoRM1, TPasien1;
+    private widget.Button BtnPrint1;
     private widget.TextBox TglLahir;
     private widget.TextBox ULNA;
     private widget.RadioButton UdangTidak;
@@ -2261,6 +2458,14 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
             if(jam!=null && !jam.toString().trim().isEmpty()){
                 Valid.SetTgl2(JamAsuhan,tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()+" "+jam);
             }
+
+            // Ringkasan dibangun PALING AKHIR, setelah semua widget terisi -
+            // isinya dibaca dari widget, jadi urutan ini menentukan.
+            TNoRM1.setText(TNoRM.getText());
+            TPasien1.setText(TPasien.getText());
+            bangunRingkasanHtml();
+            ChkAccor.setSelected(true);
+            isMenu();
         }
     }
 
