@@ -1,0 +1,31 @@
+-- =====================================================================
+-- Asupan Gizi Pasien - kolom `jam`
+-- RSUD Demang Sepulau Raya
+--
+-- Formulir fisik "ASUPAN GIZI PASIEN" punya isian "Jam : ..... WIB" di
+-- header, sementara `asuhan_gizi`.`tanggal` bertipe DATE sehingga jam tidak
+-- punya tempat penyimpanan sama sekali.
+--
+-- KENAPA KOLOM BARU, BUKAN MENGUBAH `tanggal` JADI DATETIME
+-- `tanggal` adalah bagian dari PRIMARY KEY (no_rawat, tanggal). Mengubah
+-- tipenya mengubah makna kunci itu - dua asuhan pada hari yang sama tapi jam
+-- berbeda akan berubah dari "bentrok" menjadi "dua record berbeda", yang
+-- diam-diam mengubah perilaku form yang sudah berjalan. Menambah kolom
+-- terpisah bersifat additive dan tidak menyentuh kunci.
+--
+-- !!! PERINGATAN PENTING - WAJIB DIBARENGI PERUBAHAN JAVA !!!
+-- `RMDataAsuhanGizi.simpan()` memakai `Sequel.menyimpantf` yang menghasilkan
+-- `insert into asuhan_gizi values(?,?,...)` TANPA NAMA KOLOM, jadi jumlah
+-- nilai HARUS persis sama dengan jumlah kolom tabel. Begitu kolom ini
+-- ditambahkan, INSERT yang lama (28 placeholder) akan langsung GAGAL dengan
+-- "Column count doesn't match value count" - form tidak bisa menyimpan sama
+-- sekali.
+--
+-- Karena itu migrasi ini HANYA boleh dijalankan bersama versi aplikasi yang
+-- placeholder-nya sudah dinaikkan menjadi 29 dan nilai `jam`-nya ditaruh di
+-- URUTAN TERAKHIR - sesuai posisi kolom ini, yang otomatis berada di akhir
+-- karena ADD COLUMN tanpa klausa AFTER selalu menambahkan di belakang.
+-- =====================================================================
+
+ALTER TABLE `asuhan_gizi`
+  ADD COLUMN `jam` TIME DEFAULT NULL;
