@@ -1722,3 +1722,37 @@ Formulir fisik mencetak tepat lima baris bernomor untuk masing-masing dari empat
 - ⏳ Perlu dipastikan ke petugas RM: apakah lima baris per blok memang cukup di lapangan.
 - ⏳ `master_rencana_keperawatan` berisi data uji-coba ("DIRAWAT", "DIPELUK", "TIDUR AJA", "BANGUN PAGI") di DB lokal. Tidak dipakai modul ini, tapi perlu dicek di produksi kalau nanti diputuskan ada dropdown.
 - ⏳ `graphify update .` belum dijalankan (percobaan terakhir berhenti sebelum selesai).
+
+## 📌 CATATAN: kandidat otomatisasi RM 33 (ditunda, atas permintaan user 2026-08-28)
+
+User: *"sepertinya masih bisa disesuaikan dikarenakan kemungkinan ada yang bisa diotomatisasi, tapi nanti saja, di-note saja."*
+
+Belum dikerjakan sama sekali - ini daftar kandidat beserta sumber datanya yang **sudah diverifikasi ada** di DB `aik`, supaya nanti tinggal diputuskan mana yang dipakai.
+
+### Yang SUDAH otomatis sekarang
+
+| Isian | Sumber |
+|---|---|
+| Identitas pasien | `reg_periksa` + `pasien` |
+| Tanggal masuk / keluar / ruangan | `kamar_inap` (+ `kamar` → `bangsal`) |
+| Tanggal & jam resume | waktu sekarang |
+| Perawat / Bidan | user yang sedang login |
+| Diagnosa Medis | `kamar_inap.diagnosa_akhir`, mundur ke `diagnosa_awal` |
+| Keluhan Utama | `penilaian_awal_keperawatan_ranap.keluhan_utama` |
+
+### Kandidat yang BELUM digarap
+
+| Blok | Sumber yang mungkin | Catatan |
+|---|---|---|
+| **Diagnosa Keperawatan yang Timbul** | `penilaian_awal_keperawatan_ranap_masalah` → `master_masalah_keperawatan` (13 masalah: Nyeri, Pola Tidur, Mobilitas/Aktivitas, Integritas Kulit, Infeksi, …) | **Kandidat terkuat** - konsepnya sama persis, hanya beda waktu perekaman (masuk vs pulang). Isinya kode 3 digit, perlu di-JOIN ke master untuk jadi teks |
+| **Tindakan Keperawatan** | (a) `penilaian_awal_keperawatan_ranap_rencana` → `master_rencana_keperawatan`; (b) `rawat_inap_pr` / `rawat_inap_drpr` (tindakan yang benar-benar dilakukan) | ⚠️ `master_rencana_keperawatan` di DB lokal berisi **data uji-coba** ("DIRAWAT", "DIPELUK", "TIDUR AJA", "BANGUN PAGI") - harus dicek dulu isinya di produksi. Sumber (b) lebih jujur karena itu tindakan riil, bukan rencana |
+| **Rencana Tindak Lanjut / Nasihat Pulang** | `resume_pasien_ranap`: `edukasi`, `dilanjutkan`, `kontrol`, `obat_pulang` | Datanya milik resume MEDIS (dokter). Bisa jadi bahan awal, tapi kata-katanya perlu disesuaikan ke bahasa keperawatan |
+| **Diagnosa Medis** (penyempurnaan) | `diagnosa_pasien` → `penyakit` (nama ICD), atau `resume_pasien_ranap.diagnosa_utama` | Sekarang hanya dari `kamar_inap`, yang sering kosong. Dari 5 baris `kamar_inap` yang dicek, `diagnosa_akhir`/`diagnosa_awal` mayoritas berisi "-" |
+| **Diagnosa yang Sudah Teratasi** | **tidak ada sumbernya** | Ini penilaian klinis perawat saat pasien pulang - tidak boleh ditebak sistem. Tetap manual |
+
+### Syarat yang harus dipatuhi kalau nanti dikerjakan
+
+1. **Usulan, bukan paksaan.** Pola yang sudah dipakai untuk Diagnosa Medis & Keluhan Utama: hanya diisikan kalau perawat **belum** menuliskan apa pun, jadi tidak pernah menimpa ketikan orang. Lembar ini ditandatangani perawat - isinya harus yang dia setujui, bukan yang sistem tebak.
+2. **Jangan diam-diam.** Kalau nanti ada pra-isi, perawat harus tahu mana yang berasal dari sistem dan mana yang dia ketik sendiri.
+3. **Cek dulu isinya di PRODUKSI**, bukan di DB lokal `aik`. Beberapa tabel master di lokal berisi data uji-coba.
+4. Batas lima baris per blok tetap berlaku - kalau sumber otomatisnya mengembalikan lebih dari lima, harus diputuskan mana yang dipotong.
