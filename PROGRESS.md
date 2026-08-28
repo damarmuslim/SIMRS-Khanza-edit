@@ -1760,3 +1760,59 @@ Isi catatan **ditampilkan sebelum** kotak tanda tangan: meminta orang menandatan
 - ⏳ **Antrian hanya menampung SATU baris.** Kalau dua perawat menekan "Minta TTD" hampir bersamaan, permintaan kedua menimpa yang pertama. Ini bawaan pola `antri<modul>` yang dipakai seluruh webapp lain di sistem ini, jadi dibiarkan konsisten — tapi perlu diawasi kalau nanti dipakai di banyak ruangan sekaligus.
 - ⏳ Webapp perlu **disalin ke `htdocs` di server produksi**, tidak cukup di folder proyek.
 - ⏳ `graphify update .` belum dijalankan.
+
+## 📌 CATATAN: RM 32 menunggu tes user (2026-08-28)
+
+User: *"semua oke tinggal tes user dan kemungkinan ada penyesuaian, di-note saja jangan lakukan perubahan."*
+
+Status: **beku sampai ada hasil tes.** Tidak ada perubahan yang boleh dikerjakan atas inisiatif sendiri.
+
+### Sudah terbukti bekerja di tangan user (bukan hanya pengujian internal)
+
+Ketahuan dari isi tabel antrian saat memeriksa hal lain — user sedang mencoba modulnya:
+catatan untuk **PARAMITA RAMADANI** jam 18:50:12 oleh **RAHMI DEWI**, ALKES terisi.
+Berarti tiga hal ini sudah jalan di lapangan: kolom ALKES tersimpan, tombol **Minta TTD Pasien**
+memasukkan baris yang benar ke antrian, dan halaman tanda tangan menampilkan pasien +
+ruangan + isi catatan + kotak canvas.
+
+Yang **belum** dikonfirmasi user: menandatangani di HP/tablet sungguhan, dan mencetak lewat
+`JasperViewer`.
+
+### Kandidat penyesuaian yang sudah terlihat — JANGAN dikerjakan sebelum diminta
+
+1. **Nomor bed tampil sebagai kode mentah** `DAH.K1.002` (isi `kamar_inap.kd_kamar`). Di kertas
+   isian "Nomor" mungkin ditulis pendek saja (mis. `002`). Perlu ditanya ke petugas ruangan —
+   memotong kode sendiri berisiko salah karena format kode kamar bisa beragam.
+2. **Jam tersimpan sampai detik** (`18:50:12`) dan tercetak apa adanya. Di kertas biasanya cukup
+   jam:menit. Ini murni tampilan; datanya tidak perlu diubah.
+3. **Proporsi lebar kolom cetakan**: ALKES 140px vs Catatan 200px. Kalau di lapangan catatan
+   jauh lebih panjang daripada isian ALKES, proporsinya perlu digeser.
+4. **QR perawat per baris** memakan kolom selebar 82px. Kalau dirasa terlalu ramai, bisa
+   diganti nama saja — tapi itu menurunkan nilai pembuktiannya.
+5. **Antrian hanya satu baris.** Dua perawat menekan "Minta TTD" hampir bersamaan → permintaan
+   kedua menimpa yang pertama. Ini bawaan pola `antri<modul>` yang dipakai SELURUH webapp lain
+   di sistem ini, jadi dibiarkan konsisten. Perlu diawasi kalau nanti dipakai banyak ruangan
+   sekaligus.
+6. **Tautan pembuka webapp belum otomatis** — tablet dibuka manual sekali lewat halaman indeks
+   webapps. RM 04 pun begitu. Bisa ditambahkan tombol di desktop yang membuka browser atau
+   menampilkan QR tautannya, kalau nanti dirasa perlu.
+
+### Yang WAJIB diingat saat naik ke produksi
+
+- **Migrasi SQL dan perubahan Java harus naik BERSAMAAN.** `simpan()` posisional tanpa nama
+  kolom; salah satu saja yang duluan sampai → perawat tidak bisa menyimpan catatan sama sekali.
+- **Webapp harus disalin ke `htdocs` server**, tidak cukup ada di folder proyek. Yang perlu
+  disalin: `webapps/catatanperawatbidan/` (folder baru) **dan** `webapps/index.php` (yang
+  memuat tautannya).
+
+---
+
+## Status modul yang menunggu tes user (per 2026-08-28)
+
+| Modul | Branch | Status |
+|---|---|---|
+| RM 17-01 Ringkasan Masuk Keluar | sudah di `main` | menunggu tes |
+| RM 21 Asesmen Pendidikan Pasien | sudah di `main` | menunggu tes |
+| Asuhan Gizi | `feat/asuhan-gizi-cetak-rm` | menunggu tes, belum digabung |
+| RM 33 Resume Keperawatan/Kebidanan | `feat/rm33-resume-keperawatan` | menunggu tes, belum digabung |
+| RM 32 Catatan Perawat/Bidan | `feat/rm32-catatan-perawat-bidan` | sebagian sudah dicoba user, belum digabung |
