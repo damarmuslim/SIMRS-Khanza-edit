@@ -251,6 +251,13 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
     private DlgPeresepanDokter resepobat;
+    /**
+     * [RM 01] Tombol pembuka Resume Rawat Jalan. Dideklarasikan DI SINI, bukan
+     * di blok variabel GEN: form ini punya berkas .form, jadi apa pun yang
+     * ditulis di dalam blok itu akan hilang saat form dibuka lagi di Form
+     * Editor NetBeans.
+     */
+    private widget.Button BtnResumeRalan;
 
     /** Creates new form DlgPerawatan
      * @param parent
@@ -7772,6 +7779,28 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }//GEN-LAST:event_BtnAwalMedisActionPerformed
 
+    /**
+     * [RM 01] Membuka Resume Rawat Jalan. Dikirim NO.RM, bukan no_rawat -
+     * lembar ini berkunci pasien dan menghimpun seluruh kunjungannya.
+     *
+     * <p>Tidak ada pengecekan hak akses, mengikuti RM 21 dan RM 33.</p>
+     */
+    private void BtnResumeRalanActionPerformed(java.awt.event.ActionEvent evt) {
+        if(TNoRM.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+            TCari.requestFocus();
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            rekammedis.RMResumeRawatJalan form=new rekammedis.RMResumeRawatJalan(null,false);
+            form.isCek();
+            form.setNoRm(TNoRM.getText());
+            form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            form.setLocationRelativeTo(internalFrame1);
+            form.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
+
     private void BtnRiwayatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRiwayatActionPerformed
         if(TNoRw.getText().trim().equals("")){
             JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
@@ -14196,6 +14225,16 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         PopupPemeriksaan.add(MnPasteSOAP);
         
         FormMenu.add(BtnRiwayat);
+        // [RM 01] Diletakkan tepat di bawah "Riwayat Pasien" karena keduanya
+        // sama-sama berkunci PASIEN, bukan kunjungan. Dirakit seluruhnya di
+        // sini - di LUAR blok GEN (yang berakhir di baris 5054) - karena form
+        // ini punya berkas .form.
+        BtnResumeRalan = new widget.Button();
+        BtnResumeRalan.setText("Resume Rawat Jalan (RM 01)");
+        BtnResumeRalan.setToolTipText("Alergi obat, riwayat kesehatan, dan perhatian khusus pasien ini");
+        BtnResumeRalan.setPreferredSize(new java.awt.Dimension(190, 23));
+        BtnResumeRalan.addActionListener(this::BtnResumeRalanActionPerformed);
+        FormMenu.add(BtnResumeRalan);
         FormMenu.add(BtnResepObat);
         FormMenu.add(BtnResepIterasiBPJS);
         FormMenu.add(BtnCopyResep);
