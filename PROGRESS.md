@@ -1652,3 +1652,79 @@ Supaya tidak menyimpan data menyesatkan: **sasaran** hanya disimpan kalau baris 
 
 **MySQL sempat mati sendiri** di tengah sesi (2026-08-27 ~10:00), beberapa saat setelah import migrasi. **Bukan disebabkan DDL**: log tidak mencatat shutdown maupun crash sama sekali - server berhenti mendadak tanpa sempat menulis apa pun, dan tulisan terakhir ke `ibdata1` justru menunjukkan import ter-commit dengan benar. Dihidupkan ulang lewat `mysqld.exe --defaults-file=C:\xampp\mysql\bin\my.ini`; seluruh data terkonfirmasi utuh sesudahnya. Log mengonfirmasi `innodb_force_recovery = 1` memang masih aktif (masalah lama yg belum tuntas).
 - ⏳ **Utang teknis yg sengaja dibiarkan di `MnRingkasanMasukKeluarActionPerformed`**: 29 dari 38 parameter yg dirakit tidak pernah dipakai laporan (sekitar 25 query terpisah ke DB per cetak, hasilnya dibuang), dan parameter `pekerjaan` diisi dari kolom `pasien.agama`. Nol dampak krn parameternya memang tidak terpakai; tidak diperbaiki krn method ini akan digantikan RM 17-01.
+
+---
+
+# Progress: Resume Rawat Jalan (RM 01)
+
+**Branch**: `feat/rm01-resume-rawat-jalan` (dari `main`) | **Tanggal**: 2026-08-28 | **Status**: selesai dev, menunggu pengujian langsung user
+
+## Hasil penelusuran DlgRawatJalan — permintaan user "adakah yang bisa diambil"
+
+`DlgRawatJalan` (14.616 baris) ternyata **bukan daftar, melainkan form entri SOAP rawat jalan** yang mengisi `pemeriksaan_ralan`. Dan tabel itu memuat hampir seluruh isi grid RM 01:
+
+| Kolom kertas | Sumber yang sudah ada |
+|---|---|
+| Tanggal / Jam | `pemeriksaan_ralan.tgl_perawatan` + `jam_rawat` |
+| DPJP | `reg_periksa.kd_dokter` → `dokter.nm_dokter` |
+| Diagnosa | `diagnosa_pasien` → `penyakit.nm_penyakit` |
+| Uraian Klinis | `keluhan` + `pemeriksaan` + `penilaian` (S/O/A) |
+| Rencana Penatalaksanaan | `rtl` + `instruksi` |
+| Catatan Penting | `evaluasi` |
+| Nama & Paraf | `nip` → `petugas.nama` |
+
+Sudah ada juga `rptFormulirSOAPDokter`, tapi bentuknya **prosa SOAP satu kunjungan per halaman** (612×1008) — bukan grid RM 01, jadi tidak bisa dipakai ulang.
+
+### Untuk tiga blok kepala — jawabannya jujur: hanya satu yang berguna
+
+| Blok | Ada di DlgRawatJalan? | Putusan |
+|---|---|---|
+| **ALERGI OBAT** | Ada widget `TAlergi` → `pemeriksaan_ralan.alergi`, tapi **per kunjungan**, `varchar(80)` satu baris (kertas minta 3), dan **terisi 0 dari 66 baris** | manual |
+| **RIWAYAT KESEHATAN** | `BtnRiwayat` membuka `RMRiwayatPerawatan` (37.653 baris) — itu **penampil**, bukan sumber 7 baris berkurasi. Yang berguna: **diagnosa lampau + tahun** | **diusulkan otomatis** |
+| **PERHATIAN KHUSUS** | Hanya **tombol pembuka** asesmennya; hasilnya tersebar di 8+ tabel (risiko jatuh saja punya 5 tabel terpisah + neonatus) | manual |
+
+## Keputusan User
+
+1. **Satu lembar per PASIEN**, menghimpun seluruh kunjungan rawat jalan.
+2. **Riwayat diusulkan otomatis** dari diagnosa lampau; alergi & perhatian khusus manual.
+
+## Tiga keputusan desain yang diambil sendiri
+
+1. **Berkunci `no_rkm_medis`** — pertama di antara semua modul kita; RM 32 dan RM 33 berkunci `no_rawat`. Konsekuensinya menyebar: form dipanggil dengan No.RM, daftar tidak disaring tanggal, grid dirakit lintas kunjungan.
+2. **Grid tidak diketik ulang** — dirakit dari `pemeriksaan_ralan` saat menampilkan dan mencetak. Menggandakannya berarti dua sumber kebenaran untuk catatan klinis yang sama.
+3. **Tanpa gerbang hak akses**, mengikuti RM 21 dan RM 33.
+
+## Usulan riwayat disaring UNIK per penyakit
+
+Bukan hiasan: pasien uji (RUDI SANTOSO, 000022) punya **17 catatan SOAP tapi hanya 7 diagnosa berbeda**. Tanpa `group by nm_penyakit`, tujuh baris riwayat di kertas habis oleh satu penyakit yang diulang-ulang. Baris yang sudah diketik petugas tidak pernah ditimpa.
+
+Tahun hanya disimpan kalau baris riwayatnya diisi — tanpa gerbang itu, tahun yang tertinggal dari pengisian sebelumnya ikut tersimpan untuk baris kosong.
+
+## Cacat yang ditemukan saat merancang, sebelum sempat terjadi
+
+Rancangan awal mengambil identitas pasien dari **query**. Pasien yang sudah punya lembar RM 01 tapi **belum punya satu pun catatan SOAP** menghasilkan query nol baris — dan seluruh kepala lembar ikut hilang. Identitas dan blok kepala dipindah jadi **parameter**, ditambah `whenNoDataType="AllSectionsNoDetail"`. Kasus ini **diuji khusus**.
+
+## BUG DITEMUKAN DARI RENDER
+
+Baris dengan "Rencana Penatalaksanaan" panjang **meluber keluar kotaknya**: `isStretchWithOverflow` membuat textField dan band tumbuh, tapi `<rectangle>` dan `<line>` pembentuk kotaknya tingginya tetap, sehingga teks resep panjang tumpah ke area baris berikutnya. Diperbaiki dengan `stretchType="RelativeToBandHeight"` pada 7 elemen di band detail.
+
+Hanya ketahuan karena cetakannya benar-benar dilihat.
+
+## Verifikasi yang Sudah Dijalankan
+
+- `ant jar` **BUILD SUCCESSFUL**.
+- Migrasi diimport: 27 kolom, FK ke `pasien`; `pemeriksaan_ralan` tetap 66 baris, `user` tetap 1215 kolom.
+- **Jalur `setNoRm`, `usulkanRiwayat`, `simpan`, `tampil`, `ganti`, dan query grid yang SEBENARNYA** dipanggil ke DB dalam transaksi lalu di-ROLLBACK — method aplikasinya sendiri lewat refleksi. Nol sisa data.
+- Data uji **sengaja setengah kosong**: 2 kolom NULL sesudah simpan, 1 sesudah ganti. Grid mengembalikan 17 baris dengan DPJP dan diagnosa ter-resolve.
+- **3 gotcha JRXML nol pelanggaran**: 38 `textField`, 46 `staticText`, 4 band; 8 field dideklarasikan **dan** dipakai.
+- **Dua kasus cetak DILIHAT**: (a) 17 catatan SOAP → 3 halaman, kotak baris panjang rapat setelah perbaikan; (b) tanpa catatan SOAP → 1 halaman, kepala utuh, grid hanya judul kolom.
+
+**Catatan harness:** penutup dialog otomatis sempat membuat harness menggantung — dialog modal menjalankan event loop-nya sendiri di EDT, jadi `setVisible(false)` dari utas lain tidak pernah diproses. Diperbaiki dengan `invokeLater`. Prosesnya dihentikan dan dipastikan tidak meninggalkan transaksi menggantung.
+
+## Belum Dikerjakan / Next Steps
+
+- ⏳ **Belum diuji langsung oleh user di `Aplikasi.bat`**.
+- ⏳ **Belum ada tombol di menu utama** — RM 01 hanya bisa dibuka dari `DlgRawatJalan`. Sengaja: lembar ini berkunci pasien dan pemilihan pasiennya paling wajar dari sana. Bisa ditambahkan kalau petugas RM ingin membukanya langsung.
+- ⏳ **Data `pemeriksaan_ralan` di DB lokal isinya uji-coba** ("tes", "asas", "qwqw"). Bentuk cetakan dengan catatan SOAP sungguhan yang panjang belum pernah terlihat.
+- ⏳ Beberapa baris grid punya kolom "Nama & Paraf" kosong karena `pemeriksaan_ralan.nip` tidak ada padanannya di tabel `petugas`. Sudah ditangani dengan `left join` supaya barisnya tetap muncul, tapi perlu dicek apakah di produksi juga begitu.
+- ⏳ `graphify update .` belum dijalankan.
