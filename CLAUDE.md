@@ -86,7 +86,8 @@ Akibatnya: **migrasi dan perubahan Java WAJIB naik ke produksi BERSAMAAN.** Kala
 ## Migrasi database
 
 - **Aditif saja**: `CREATE TABLE` / `ADD COLUMN` nullable. Jangan mengubah tipe, jangan menghapus.
-- **Tunjukkan dulu isinya, jalankan HANYA atas instruksi eksplisit user.**
+- **DB uji `aik` boleh langsung dijalankan** tanpa bertanya lagi (izin tetap dari user). **Produksi tetap butuh instruksi eksplisit.** Tunjukkan isinya sebelum atau sesudah, tapi tetap tunjukkan.
+- **Menambah nilai ENUM: TEMPEL DI UJUNG, jangan pernah disisipkan atau diurutkan ulang.** MySQL menyimpan ENUM sebagai **nomor urut**, bukan teksnya. Menyisipkan nilai di tengah membuat baris lama diam-diam berubah arti — tanpa error. Nilai lama juga jangan dihapus walau form tidak menawarkannya lagi; itu yang membuat `MODIFY COLUMN ... ENUM(...)` tetap terhitung aditif.
 - Sesudah import, buktikan tabel lain tidak tersentuh (mis. `user` tetap 1215 kolom).
 - Verifikasi kesejajaran nama kolom ↔ nilai Java dengan membaca **kelas terkompilasi lewat refleksi**, bukan teks sumber — dan pastikan pemeriksanya memang bisa GAGAL (adu dengan migrasi modul lain).
 
