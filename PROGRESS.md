@@ -2345,3 +2345,109 @@ migrasi dan Java tetap wajib naik ke produksi bersamaan.
   tangan. Ini melampaui RM 19, yang cetakannya hanya menulis "(ada tanda)".
 - ⏳ Belum diuji langsung oleh user di `Aplikasi.bat`.
 - ⏳ Migrasi belum dijalankan di produksi.
+
+
+# Progress: Early Warning Scoring System Dewasa (RM 30-1A)
+
+Modulnya SUDAH ADA — `RMPemantauanEWSD` + tabel `pemantauan_pews_dewasa`,
+tersambung dari DlgRawatInap, DlgKamarInap, DlgIGD, DlgKasirRalan. Tidak dibuat
+tabel atau form baru.
+
+## Skor di sistem bukan skor yang sama dengan kertas
+
+Kertas RM 30-1A persis **NEWS2**. Yang di sistem varian lama dengan tingkat
+tambahan **7** dan pita berbeda hampir di semua parameter: respirasi 7 pita vs
+5, sistolik 7 vs 12, nadi 7 vs 11, temperatur 5 vs 6, kesadaran
+`Nyeri/Verbal`+`Unrespon` vs `C/V/P/U`. Tingkat 7 dihapus atas keputusan user.
+
+**Cacat lama yang ikut diperbaiki:** pita saturasi tumpang tindih — `>= 95` dan
+`94 - 95` sama-sama memuat 95; `<= 92` dan `92 - 93` sama-sama memuat 92.
+
+**Cacat pada kertas:** laju pernapasan `9 - 10` lalu `12 - 20`, angka 11 tidak
+punya pita. Atas keputusan user dipakai `9 - 11`.
+
+## Nilai ENUM ditempel di ujung
+
+MySQL menyimpan ENUM sebagai **nomor urut**. Menyisipkan nilai di tengah
+membuat baris lama diam-diam berubah arti tanpa error. Semua nilai baru
+ditempel di ujung, nilai lama dibiarkan — itulah yang membuat `MODIFY COLUMN`
+ini tetap aditif. Dibuktikan: baris yang sudah ada memakai enam nilai lama dan
+keenamnya **tetap sama** sesudah migrasi. Aturannya masuk CLAUDE.md.
+
+`isCombo1..7` juga masih mengenali pita lama, supaya baris lama terbaca dengan
+skor yang sama seperti waktu disimpan.
+
+## Cetakan RM 30-1A — matriks, bukan daftar
+
+Cetakan lama (`rptFormulirPemantauanPEWSD`) bentuknya satu blok per pengamatan.
+Kertasnya **matriks**: 47 baris pita × 12 kolom waktu pengamatan.
+
+`rptFormulirEWSDewasaRM30.jrxml` **dihasilkan generator** (1346 elemen) — tidak
+masuk akal ditulis tangan. Crosstab Jasper tidak dipakai karena hanya bisa
+mengisi sel dengan hasil agregasi, sedangkan tiap sel di sini harus tahu pita
+mana yang dipilih lalu menaruh skornya di baris pita itu.
+
+Datanya diratakan di Java jadi **satu `java.util.Map`** dan dibaca lewat
+`$P{ews}.get("kunci")` — alternatifnya 12 × 19 = 228 parameter terpisah.
+
+Dua keputusan yang mencegah kelas bug tertentu:
+- **Label pita = nilai ENUM database apa adanya.** Tidak ada tabel pemetaan
+  label-kertas → nilai-database yang bisa meleset satu spasi dan membuat sel
+  tidak pernah terisi tanpa error.
+- **Warna baris ditentukan oleh skor pitanya**, jadi warna dan angka tidak
+  mungkin berbeda.
+
+Pengamatan diambil 12 terbaru lalu dibalik, sehingga tercetak dari yang paling
+lama di kiri ke yang paling baru di kanan — arah baca kertasnya.
+
+Baris **Inisial** diturunkan dari `nip`, bukan kolom sendiri: satu baris tabel
+tepatnya satu kolom waktu di kertas, dan tiap baris sudah menyimpan `nip`
+pengisinya.
+
+## ⚠ Penyimpanan posisional
+
+`Sequel.menyimpantf` merakit `insert ... values(...)` tanpa nama kolom. Tiga
+kolom baru menempel di ujung, jadi Java naik dari **19 ke 22** nilai dan
+`mengedittf` dari **21 ke 24** parameter. Migrasi dan Java **wajib naik
+bersamaan**.
+
+## Bug yang ditemukan uji
+
+**Pilihan pertama tiap combo selalu bernilai 0.** `setModel()` memilih indeks 0
+tanpa memicu `ItemEvent`, jadi form terbuka dengan combo menunjuk `>= 25`
+sementara kotak skornya masih 0. Ketahuan hanya karena uji menelusuri jalur
+listener yang sebenarnya.
+
+## Dua kesalahan saat mengerjakan
+
+1. Skrip pengganti `emptTeks` memakai `replace()` tanpa batas sehingga **empat
+   baris di dalam blok GEN** ikut berubah. Dipulihkan, lalu dibuktikan otomatis
+   blok GEN nol jejak tambahan RM 30-1A.
+2. Skrip penulis ulang `isCombo1..7` menimpa rentang yang memuat `initRM301A()`
+   yang baru disisipkan, sehingga method itu **terhapus diam-diam**. Ditulis
+   ulang di posisi yang tidak bertumpuk.
+
+## Verifikasi
+
+- `ant jar` BUILD SUCCESSFUL berkali-kali.
+- **42 pita** diuji satu per satu lewat jalur listener: semua cocok kertas.
+- **5 kasus eskalasi**, termasuk dua pembeda: total 3 dari **satu** parameter
+  bernilai 3 **naik** ke tingkat dokter jaga; total 4 dari empat parameter
+  bernilai 1 **tidak**. Syarat "SKOR 5-6 ATAU satu parameter SKOR 3" memang
+  tidak bisa disimpulkan dari total saja.
+- **Insert posisional** diuji ke DB lalu ROLLBACK, tiap nilai dibuat khas:
+  22 nilai mendarat di 22 kolom yang benar, nol pergeseran.
+- **CETAKAN DILIHAT** dengan 4 pengamatan bertingkat (total 0, 6, 13, 20):
+  satu halaman A4, skor jatuh di baris pita yang benar di tiap kolom, warna
+  sesuai, gula darah yang sengaja dikosongkan tetap kosong, inisial terisi,
+  protokol lima baris lengkap. Nol sisa data uji.
+- JRXML nol pelanggaran: 568 textField, 113 staticText, 2 band.
+
+## Sisa
+
+- ⏳ Belum diuji langsung oleh user di `Aplikasi.bat`.
+- ⏳ Migrasi belum dijalankan di produksi — **SQL dan Java wajib bersamaan**.
+- ⏳ Pengamatan ke-13 dan seterusnya tidak muat dalam satu lembar; di kertas pun
+  petugas mengambil lembar baru, tapi belum ada mekanisme lembar lanjutan.
+- ⏳ `RMPemantauanPEWS` (anak) dan `RMPemantauanEWSNeonatus` belum disentuh —
+  kalau RSUD punya kertasnya juga, perlu perlakuan yang sama.

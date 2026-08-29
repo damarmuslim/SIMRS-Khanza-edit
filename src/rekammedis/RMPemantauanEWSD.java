@@ -1230,24 +1230,14 @@ public final class RMPemantauanEWSD extends javax.swing.JDialog {
     }//GEN-LAST:event_btnPetugasKeyPressed
 
     private void MnPemantauanPEWSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnPemantauanPEWSActionPerformed
+        // Body method GEN-FIRST/GEN-LAST aman diedit; NetBeans mempertahankannya.
+        // Cetakan lama (rptFormulirPemantauanPEWSD) bentuknya satu blok per
+        // pengamatan, bukan matriks seperti kertas RM 30-1A. Berkasnya tetap
+        // ada di report/ kalau sewaktu-waktu masih dibutuhkan.
         if(tbObat.getSelectedRow()>-1){
-            Map<String, Object> param = new HashMap<>();
-            param.put("namars",akses.getnamars());
-            param.put("alamatrs",akses.getalamatrs());
-            param.put("kotars",akses.getkabupatenrs());
-            param.put("propinsirs",akses.getpropinsirs());
-            param.put("kontakrs",akses.getkontakrs());
-            param.put("emailrs",akses.getemailrs());   
-            param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-            param.put("diagnosa",Sequel.cariIsi("select kamar_inap.diagnosa_awal from kamar_inap where kamar_inap.diagnosa_awal<>'' and kamar_inap.no_rawat=? ",TNoRw.getText()));
-            Valid.MyReportqry("rptFormulirPemantauanPEWSD.jasper","report","::[ Pemantauan EWS Dewasa ]::",
-                    "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"+
-                    "pasien.jk,pemantauan_pews_dewasa.tanggal,pemantauan_pews_dewasa.parameter_laju_respirasi,pemantauan_pews_dewasa.skor_laju_respirasi,pemantauan_pews_dewasa.parameter_saturasi_oksigen,"+
-                    "pemantauan_pews_dewasa.skor_saturasi_oksigen,pemantauan_pews_dewasa.parameter_suplemen_oksigen,pemantauan_pews_dewasa.skor_suplemen_oksigen,pemantauan_pews_dewasa.parameter_tekanan_darah_sistolik,"+
-                    "pemantauan_pews_dewasa.skor_tekanan_darah_sistolik,pemantauan_pews_dewasa.parameter_laju_jantung,pemantauan_pews_dewasa.skor_laju_jantung,pemantauan_pews_dewasa.parameter_kesadaran,"+
-                    "pemantauan_pews_dewasa.skor_kesadaran,pemantauan_pews_dewasa.parameter_temperatur,pemantauan_pews_dewasa.skor_temperatur,pemantauan_pews_dewasa.skor_total,pemantauan_pews_dewasa.parameter_total,pemantauan_pews_dewasa.nip,petugas.nama,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir "+
-                    "from pemantauan_pews_dewasa inner join reg_periksa on pemantauan_pews_dewasa.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                    "inner join petugas on pemantauan_pews_dewasa.nip=petugas.nip where reg_periksa.no_rawat='"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"'",param);
+            cetakRM301A(tbObat.getValueAt(tbObat.getSelectedRow(),0).toString());
+        }else{
+            JOptionPane.showMessageDialog(null,"Silahkan pilih dulu barisnya..!!");
         }
     }//GEN-LAST:event_MnPemantauanPEWSActionPerformed
 
@@ -1794,6 +1784,116 @@ public final class RMPemantauanEWSD extends javax.swing.JDialog {
         }catch(Exception e){
             System.out.println("Notif muatTambahanRM301A : "+e);
         }
+    }
+
+    /** Banyaknya kolom waktu pengamatan yang muat dalam satu lembar RM 30-1A. */
+    private static final int KOLOM_RM301A = 12;
+
+    /**
+     * Mencetak lembar EWS DEWASA RM 30-1A - bentuk MATRIKS seperti kertas:
+     * pita sebagai baris, waktu pengamatan sebagai kolom.
+     *
+     * <p>Data pengamatan diratakan di sini menjadi satu {@code java.util.Map}
+     * lalu dikirim sebagai SATU parameter. Alternatifnya 12 kolom x 19 nilai =
+     * 228 parameter terpisah di JRXML, yang tidak mungkin dijaga.</p>
+     *
+     * <p>Diambil {@value #KOLOM_RM301A} pengamatan TERBARU, lalu dibalik supaya
+     * tercetak dari yang paling lama di kiri ke yang paling baru di kanan -
+     * arah baca kertasnya. Kalau pasien punya lebih banyak pengamatan, yang
+     * lama tidak muat; itu memang sifat lembarnya, di kertas pun petugas
+     * mengambil lembar baru.</p>
+     */
+    private void cetakRM301A(String noRawat){
+        Map<String,Object> param = new HashMap<>();
+        param.put("namars",akses.getnamars());
+        param.put("alamatrs",akses.getalamatrs());
+        param.put("kotars",akses.getkabupatenrs());
+        param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+        param.put("norawat",noRawat);
+        param.put("ews",susunPetaRM301A(noRawat));
+        Valid.MyReport("rptFormulirEWSDewasaRM30.jasper","report",
+                "::[ Early Warning Scoring System (Dewasa) - RM 30-1A ]::",param);
+    }
+
+    /**
+     * Meratakan pengamatan jadi peta yang dibaca JRXML. Dipisah dari
+     * {@link #cetakRM301A} supaya bisa diuji tanpa membuka penampil laporan -
+     * kalau harness menyusun petanya sendiri, yang teruji cuma harness-nya.
+     */
+    private Map<String,Object> susunPetaRM301A(String noRawat){
+        Map<String,Object> ews = new HashMap<>();
+        java.util.List<String[]> baris = new java.util.ArrayList<>();
+        try{
+            java.sql.PreparedStatement ps = koneksi.prepareStatement(
+                "select date_format(p.tanggal,'%d-%m-%y') as tgl,date_format(p.tanggal,'%H:%i') as jam,"+
+                "p.parameter_laju_respirasi,p.skor_laju_respirasi,p.parameter_saturasi_oksigen,p.skor_saturasi_oksigen,"+
+                "p.parameter_suplemen_oksigen,p.skor_suplemen_oksigen,p.parameter_tekanan_darah_sistolik,p.skor_tekanan_darah_sistolik,"+
+                "p.parameter_laju_jantung,p.skor_laju_jantung,p.parameter_kesadaran,p.skor_kesadaran,"+
+                "p.parameter_temperatur,p.skor_temperatur,p.skor_total,"+
+                "ifnull(p.aliran_oksigen,'') as aliran,ifnull(p.alat_oksigen,'') as alat,"+
+                "ifnull(p.gula_darah,'') as gula,ifnull(g.nama,'') as petugas "+
+                "from pemantauan_pews_dewasa p left join petugas g on p.nip=g.nip "+
+                "where p.no_rawat=? order by p.tanggal desc limit "+KOLOM_RM301A);
+            try{
+                ps.setString(1, noRawat);
+                java.sql.ResultSet r = ps.executeQuery();
+                try{
+                    while(r.next()){
+                        baris.add(new String[]{
+                            r.getString("tgl"), r.getString("jam"),
+                            r.getString("parameter_laju_respirasi"), r.getString("skor_laju_respirasi"),
+                            r.getString("parameter_saturasi_oksigen"), r.getString("skor_saturasi_oksigen"),
+                            r.getString("parameter_suplemen_oksigen"), r.getString("skor_suplemen_oksigen"),
+                            r.getString("parameter_tekanan_darah_sistolik"), r.getString("skor_tekanan_darah_sistolik"),
+                            r.getString("parameter_laju_jantung"), r.getString("skor_laju_jantung"),
+                            r.getString("parameter_kesadaran"), r.getString("skor_kesadaran"),
+                            r.getString("parameter_temperatur"), r.getString("skor_temperatur"),
+                            r.getString("skor_total"), r.getString("aliran"), r.getString("alat"),
+                            r.getString("gula"), inisial(r.getString("petugas"))});
+                    }
+                }finally{ r.close(); }
+            }finally{ ps.close(); }
+        }catch(Exception e){
+            System.out.println("Notif cetakRM301A : "+e);
+        }
+        java.util.Collections.reverse(baris);
+
+        for(int n=0; n<baris.size(); n++){
+            String[] b = baris.get(n);
+            int c = n+1;
+            ews.put("tgl"+c, b[0]);   ews.put("jam"+c, b[1]);
+            ews.put("p1_"+c, b[2]);   ews.put("s1_"+c, b[3]);
+            ews.put("p2_"+c, b[4]);   ews.put("s2_"+c, b[5]);
+            ews.put("p3_"+c, b[6]);   ews.put("s3_"+c, b[7]);
+            ews.put("p4_"+c, b[8]);   ews.put("s4_"+c, b[9]);
+            ews.put("p5_"+c, b[10]);  ews.put("s5_"+c, b[11]);
+            ews.put("p6_"+c, b[12]);  ews.put("s6_"+c, b[13]);
+            ews.put("p7_"+c, b[14]);  ews.put("s7_"+c, b[15]);
+            ews.put("total"+c, b[16]);
+            ews.put("aliran"+c, b[17]); ews.put("alat"+c, b[18]);
+            ews.put("gd"+c, b[19]);     ews.put("ini"+c, b[20]);
+        }
+        return ews;
+    }
+
+    /**
+     * Inisial petugas untuk baris "Inisial" di kertas - huruf pertama tiap kata,
+     * maksimum tiga huruf.
+     *
+     * <p>DITURUNKAN dari nama petugas, bukan disimpan sebagai kolom sendiri.
+     * Satu baris tabel ini tepatnya satu kolom waktu di kertas dan tiap baris
+     * sudah menyimpan {@code nip} pengisinya, jadi inisial yang disimpan ulang
+     * hanya menciptakan salinan yang bisa berbeda dengan {@code nip}-nya.</p>
+     */
+    private String inisial(String nama){
+        if(nama==null || nama.trim().isEmpty()){ return ""; }
+        StringBuilder b = new StringBuilder();
+        for(String kata : nama.trim().split("\\s+")){
+            if(!kata.isEmpty() && b.length()<3){
+                b.append(Character.toUpperCase(kata.charAt(0)));
+            }
+        }
+        return b.toString();
     }
 
     private void isHitung(){
