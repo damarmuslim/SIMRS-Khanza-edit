@@ -248,8 +248,8 @@
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="20" y="81" width="10" height="10" uuid="b7c31a20-0002-4000-8000-000000000010"/>
 				<box><pen lineWidth="0.5"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
-				<textFieldExpression><![CDATA["Sendiri".equals($F{sumber_riwayat})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="7"/></textElement>
+				<textFieldExpression><![CDATA["Sendiri".equals($F{sumber_riwayat})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="33" y="81" width="45" height="11" uuid="b7c31a20-0002-4000-8000-000000000011"/>
@@ -259,8 +259,8 @@
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="80" y="81" width="10" height="10" uuid="b7c31a20-0002-4000-8000-000000000012"/>
 				<box><pen lineWidth="0.5"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
-				<textFieldExpression><![CDATA["Keluarga".equals($F{sumber_riwayat})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="7"/></textElement>
+				<textFieldExpression><![CDATA["Keluarga".equals($F{sumber_riwayat})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="93" y="81" width="50" height="11" uuid="b7c31a20-0002-4000-8000-000000000013"/>
@@ -343,8 +343,8 @@
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="98" y="99" width="10" height="10" uuid="b7c31a20-0003-4000-8000-000000000013"/>
 				<box><pen lineWidth="0.5"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
-				<textFieldExpression><![CDATA["Gizi Kurang".equals($F{status_pediatrik})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="7"/></textElement>
+				<textFieldExpression><![CDATA["Gizi Kurang".equals($F{status_pediatrik})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="111" y="99" width="60" height="11" uuid="b7c31a20-0003-4000-8000-000000000014"/>
@@ -354,8 +354,8 @@
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="175" y="99" width="10" height="10" uuid="b7c31a20-0003-4000-8000-000000000015"/>
 				<box><pen lineWidth="0.5"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
-				<textFieldExpression><![CDATA["Baik".equals($F{status_pediatrik})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="7"/></textElement>
+				<textFieldExpression><![CDATA["Baik".equals($F{status_pediatrik})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="188" y="99" width="35" height="11" uuid="b7c31a20-0003-4000-8000-000000000016"/>
@@ -365,8 +365,8 @@
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="225" y="99" width="10" height="10" uuid="b7c31a20-0003-4000-8000-000000000017"/>
 				<box><pen lineWidth="0.5"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
-				<textFieldExpression><![CDATA["Gizi Lebih".equals($F{status_pediatrik})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="7"/></textElement>
+				<textFieldExpression><![CDATA["Gizi Lebih".equals($F{status_pediatrik})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="238" y="99" width="60" height="11" uuid="b7c31a20-0003-4000-8000-000000000018"/>

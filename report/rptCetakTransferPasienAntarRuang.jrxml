@@ -327,8 +327,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="335" y="56" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{sudah_dijelaskan_diagnosa})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{sudah_dijelaskan_diagnosa})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="347" y="55" width="18" height="11"/>
@@ -338,8 +338,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="375" y="56" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Tidak".equals($F{sudah_dijelaskan_diagnosa})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Tidak".equals($F{sudah_dijelaskan_diagnosa})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="387" y="55" width="34" height="11"/>
@@ -610,8 +610,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="150" y="82" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_nasal_kanule})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_nasal_kanule})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="162" y="81" width="80" height="11"/>
@@ -621,8 +621,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="246" y="82" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_nasal_kateter})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_nasal_kateter})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="258" y="81" width="85" height="11"/>
@@ -632,8 +632,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="347" y="82" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_face_mask})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_face_mask})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="359" y="81" width="63" height="11"/>
@@ -643,8 +643,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="150" y="95" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_sungkup_rebreathing})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_sungkup_rebreathing})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="162" y="94" width="123" height="11"/>
@@ -654,8 +654,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="285" y="95" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_sungkup_non_rebreathing})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_sungkup_non_rebreathing})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="297" y="94" width="145" height="11"/>
@@ -665,8 +665,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="150" y="108" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_tracheostomy})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_tracheostomy})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="162" y="107" width="85" height="11"/>
@@ -676,8 +676,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="257" y="108" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_ett})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{oksigen_status}) && "Ya".equals($F{oksigen_ett})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="269" y="107" width="30" height="11"/>
@@ -710,8 +710,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="150" y="30" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{kewaspadaan_standar})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{kewaspadaan_standar})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="162" y="29" width="46" height="11"/>
@@ -721,8 +721,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="218" y="30" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{kewaspadaan_kontak})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{kewaspadaan_kontak})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="230" y="29" width="40" height="11"/>
@@ -732,8 +732,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="280" y="30" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{kewaspadaan_airborne})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{kewaspadaan_airborne})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="292" y="29" width="51" height="11"/>
@@ -743,8 +743,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="353" y="30" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{kewaspadaan_droplet})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{kewaspadaan_droplet})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="365" y="29" width="46" height="11"/>
@@ -759,8 +759,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="150" y="43" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{nutrisi_puasa})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{nutrisi_puasa})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="162" y="42" width="34" height="11"/>
@@ -770,8 +770,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="206" y="43" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{nutrisi_oral})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{nutrisi_oral})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="218" y="42" width="29" height="11"/>
@@ -781,8 +781,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="257" y="43" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{nutrisi_ngt})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{nutrisi_ngt})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="269" y="42" width="23" height="11"/>
@@ -868,8 +868,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="150" y="27" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{drainase_wsd})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{drainase_wsd})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="162" y="26" width="23" height="11"/>
@@ -879,8 +879,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="195" y="27" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{drainase_drain_luka})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{drainase_drain_luka})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="207" y="26" width="62" height="11"/>
@@ -890,8 +890,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="279" y="27" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{drainase_stoma})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{drainase_stoma})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="291" y="26" width="34" height="11"/>
@@ -901,8 +901,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="335" y="27" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{drainase_lain})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{drainase_lain})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="347" y="26" width="57" height="11"/>
@@ -925,8 +925,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="0" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{luka_tidak_ada})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{luka_tidak_ada})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="12" y="16" width="80" height="11"/>
@@ -992,8 +992,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="0" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{tindakan_resiko_jatuh})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{tindakan_resiko_jatuh})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="12" y="16" width="74" height="11"/>
@@ -1003,8 +1003,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="96" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{tindakan_pemasangan_restrain})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{tindakan_pemasangan_restrain})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="108" y="16" width="113" height="11"/>
@@ -1014,8 +1014,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="231" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{tindakan_perawatan_luka})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{tindakan_perawatan_luka})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="243" y="16" width="85" height="11"/>
@@ -1025,8 +1025,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="338" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{tindakan_hygiene})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{tindakan_hygiene})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="350" y="16" width="46" height="11"/>
@@ -1041,8 +1041,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="150" y="30" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{riwayat_alergi})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{riwayat_alergi})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="162" y="29" width="18" height="11"/>
@@ -1052,8 +1052,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="190" y="30" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Tidak".equals($F{riwayat_alergi})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Tidak".equals($F{riwayat_alergi})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="202" y="29" width="34" height="11"/>
@@ -1078,8 +1078,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="0" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_tanpa})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_tanpa})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="12" y="16" width="96" height="11"/>
@@ -1089,8 +1089,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="118" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_dengar})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_dengar})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="130" y="16" width="102" height="11"/>
@@ -1100,8 +1100,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="242" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_kaca_mata})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_kaca_mata})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="254" y="16" width="57" height="11"/>
@@ -1111,8 +1111,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="321" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_gigi_palsu})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_gigi_palsu})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="333" y="16" width="62" height="11"/>
@@ -1122,8 +1122,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="405" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_tongkat_kruk})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_tongkat_kruk})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="417" y="16" width="74" height="11"/>
@@ -1133,8 +1133,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="0" y="30" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_lain})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{alat_bantu_lain})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="12" y="29" width="57" height="11"/>
@@ -1170,8 +1170,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="0" y="17" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{penunjang_laboratorium_cek})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{penunjang_laboratorium_cek})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="12" y="16" width="543" height="11"/>
@@ -1181,8 +1181,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="0" y="30" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{penunjang_radiologi_cek})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{penunjang_radiologi_cek})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="12" y="29" width="543" height="11"/>
@@ -1192,8 +1192,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="0" y="43" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{penunjang_ct_scan_cek})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{penunjang_ct_scan_cek})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="12" y="42" width="543" height="11"/>
@@ -1203,8 +1203,8 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 			<textField>
 				<reportElement positionType="Float" x="0" y="56" width="10" height="10"/>
 				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Ya".equals($F{penunjang_lain_cek})?"X":""]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Ya".equals($F{penunjang_lain_cek})? "✓" :""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="12" y="55" width="543" height="11"/>
