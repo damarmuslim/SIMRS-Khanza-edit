@@ -2571,3 +2571,146 @@ Form kemudian **DILIHAT** sebagai PNG untuk memastikan, dan sekalian
 memperlihatkan bukti perbaikan sebelumnya: combo pada pilihan pertama
 (`>= 25`, `>= 220`, `>= 131`) kini menampilkan skor 3 dengan Total 13 — sebelum
 diperbaiki semuanya masih 0 karena `setModel()` tidak memicu `ItemEvent`.
+
+
+# Progress: Alur Git dirombak + DEPLOY.md
+
+User bertanya alur git terbaik, mengingat **seluruh form yang sudah dikerjakan
+akan disesuaikan kembali**. Jawabannya menentukan: kalau begitu polanya, cabang
+per modul akan terus bertabrakan di berkas yang sama.
+
+## Aturan "satu cabang per modul RM" DICABUT
+
+Bukan karena kurang disiplin — memang gagal dalam praktik:
+
+- Cabang `feat/rm02-…` berakhir memuat **tiga modul** (RM 02-1, RM 02-2,
+  RM 30-1A) dalam satu sesi. Modulnya dikerjakan berurutan, bukan paralel.
+- **Setiap modul menyentuh `PROGRESS.md` dan `CLAUDE.md`** → dua cabang paralel
+  dijamin konflik. Sudah memakan biaya nyata: 12 penanda konflik pernah
+  ter-commit bersarang dan harus dibangun ulang dari nol.
+- **Modul tidak saling bebas.** RM 02-2 memaksa mengubah RM 19 (`KanvasNyeri`
+  diangkat jadi kelas bersama). Di cabang terpisah, RM 19 rusak di cabang lain.
+- Tidak ada remote, tidak ada review, satu pengembang.
+
+Sekarang: **kerja langsung di `main`**. Cabang hanya untuk pekerjaan yang
+mungkin dibuang. Fungsi "cara membatalkan" digantikan **tag**.
+
+Cabang `feat/rm02-asesmen-medis-awal-ralan` digabung (fast-forward bersih,
+14 commit) lalu dihapus. Tiga belas cabang lama lain semuanya sudah masuk
+`main` sepenuhnya — nol commit akan hilang — tapi dibiarkan, belum diminta.
+
+## DEPLOY.md — risiko yang sebenarnya
+
+Ada **36 berkas migrasi** dan tidak ada catatan mana yang sudah jalan di
+produksi, padahal aturan proyek sendiri: migrasi dan Java **wajib naik
+bersamaan** karena penyimpanan posisional. Selama ini status itu cuma prosa di
+PROGRESS.md.
+
+Kolom `aik` diisi dari **pemeriksaan database sungguhan**: skripnya membaca
+tiap `CREATE TABLE` dan `ADD/MODIFY COLUMN` lalu mencocokkan ke
+`information_schema`. Hasilnya **34 sudah, 1 sebagian** (`sik_bridging_lab`),
+**1 belum** (`sik_bridging_radiologi`) — keduanya integrasi LIS/PACS, bukan
+modul rekam medis.
+
+Kolom **Produksi sengaja dikosongkan**: hanya user yang tahu, dan kolom yang
+salah di sana lebih berbahaya daripada kolom yang kosong.
+
+
+# Progress: Penanda X diganti centang di sembilan cetakan lama
+
+Permintaan user: samakan dengan RM 02-2; cetakan sebelumnya masih bertanda X.
+
+**558 penanda** di sembilan berkas: rptRM19 (261), IGD Keperawatan (82), IGD
+Medis (76), RM 21 (54), Transfer Pasien (37), RM 17 (23), Asuhan Gizi (14),
+RM 01 (6), RM 20 (5).
+
+## Kenapa bukan glif kotak-bercentang seperti RM 02-2
+
+Kotak di cetakan lama sudah tergambar sebagai `<rectangle>` 8×8, dengan
+`<textField>` berisi `KONDISI ? "X" : ""` di atasnya. Kalau dipakai glif
+kotak-bercentang, hasilnya **kotak di dalam kotak**. Jadi yang diganti hanya
+**tandanya**. Tampilannya sama.
+
+## Font wajib ikut diganti — bagian yang gampang terlewat
+
+Glif yang tidak ada **gagal diam-diam**: tidak ada error, hasilnya kotak kosong
+— lebih buruk daripada "X". Fontnya berbeda antar berkas: Tahoma di sebagian,
+**SansSerif** di rptRM19, dan SansSerif dipetakan ke **Helvetica** saat ekspor
+PDF yang encoding WinAnsi-nya tidak punya U+2713. Semua dipaksa ke DejaVu Sans.
+
+`rptJkra.jrxml` tidak disentuh — diperiksa lewat git, bawaan baseline dan tidak
+pernah dikerjakan proyek ini.
+
+## Dua hambatan
+
+1. Skrip pertama **berhenti di berkas pertama** karena pemeriksaannya langsung
+   keluar, sehingga delapan berkas lain tidak terproses sementara rptRM19 sudah
+   terlanjur berubah tandanya tanpa perbaikan font. Ditambal terpisah.
+2. rptRM19 dan rptAsesmenMedisRanapRM20 tidak punya atribut `language` sehingga
+   memakai compiler Eclipse JDT, dan `dist/lib` memuat **dua versi JDT**. Yang
+   usang (`jdt-compiler-3.1.1.jar`) tanda tangan constructor-nya tidak cocok
+   dengan JasperReports 6.8. Diselesaikan dengan mengeluarkannya dari classpath
+   **saat compile saja**; isi `dist/lib` tidak diubah.
+
+## Verifikasi
+
+Nol sisa ternary `"X"`, nol elemen bercentang berfont selain DejaVu Sans —
+diperiksa atas **berkas hasilnya**, bukan atas niat skripnya. Cetakan dilihat
+untuk dua berkas termasuk yang paling berisiko (rptRM19, 4 halaman).
+
+Pemeriksanya generik (`UjiCentang`): membaca sendiri pola
+`"LITERAL".equals($F{field})` dari jrxml lalu mengisi field dengan literal
+pembandingnya, sehingga centang dijamin muncul tanpa perlu tahu isi laporannya.
+
+
+# Progress: RM 03-1 — cetak triase salah lembar, dan cetakan "null"
+
+Dilaporkan user dari layar: tombol cetak triase gagal dengan
+`FileNotFoundException .\report\rptLembarTriaseSkala1.jasper`.
+
+## Dugaan pertama saya SALAH
+
+Saya kira `.jasper`-nya sekadar hilang — Skala 1 dan 2 memang hanya punya
+`.jrxml` sejak baseline sedangkan Skala 3/4/5 lengkap — lalu saya compile
+keduanya. **User mengoreksi: "seharusnya cetakan bernama pacs".** Benar; lembar
+Skala 1–5 formulir bawaan Khanza, sedangkan RSUD memakai RM 03-1
+(`rptLembarTriasePacs`) yang dibuat di proyek ini.
+
+Jadi yang salah bukan berkas hilang, melainkan **kode memanggil lembar yang
+salah**. Dua `.jasper` yang terlanjur di-compile dihapus lagi.
+
+## Sebab sebenarnya
+
+`BtnPrint1ActionPerformed` memilih lembar dari isi panel detail: hanya kalau
+bertuliskan "Triase PACS" ia mencetak RM 03-1; selain itu jatuh ke Skala 1–5
+menurut warna. Record **Triase Primer** karena itu mencetak Skala 1.
+
+Sekarang tombol itu **selalu** mencetak RM 03-1; 623 baris jalur skala lama
+dihapus. Aman untuk record tanpa data PACS karena query-nya `left join` —
+dibuktikan ke database dengan record yang dilaporkan user
+(`2026/08/06/000003`): punya data Primer, **nol** data PACS, query cetaknya
+tetap menghasilkan **1 baris**.
+
+## Bug kedua yang terungkap KARENA perbaikan ini
+
+Justru karena record tanpa data PACS kini rutin mencetak lembar ini, kata
+**"null"** tercetak di lembar yang **ditandatangani**: `kontak_awal_tanggal`,
+`kontak_awal_pukul`, dan ketujuh kolom skor EWS bertipe Date/Time/Integer yang
+NULL dari `left join`. Sembilan textField memakai ekspresi telanjang `$F{...}`
+**tanpa `isBlankWhenNull`**.
+
+Diperbaiki dengan menambahkan `isBlankWhenNull` ke seluruh 40 textField berkas
+itu — atribut itu hanya berpengaruh saat ekspresi bernilai null.
+
+Satu kesalahan saat mengerjakannya: pola `<textField` juga mengenai
+`<textFieldExpression`, menyisipkan atribut ke tag yang salah dan merusak XML
+(40 elemen → 80 atribut). Dikembalikan lewat `git checkout` lalu diulang dengan
+pola yang membatasi ke tag sebenarnya.
+
+## Sisa
+
+- ⏳ Lembar Skala 1–5 masih ada `.jrxml`-nya di `report/` tapi tidak dipanggil
+  kode mana pun lagi. Dibiarkan; menghapusnya keputusan user.
+- ⏳ Ekspresi gabungan lain di `rptLembarTriasePacs` (mis. `$P{alamatrs}+", "+…`)
+  belum dijaga null. Tidak masalah selama identitas RS terisi, tapi belum
+  dibuktikan untuk semua kasus.
