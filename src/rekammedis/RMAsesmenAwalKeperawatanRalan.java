@@ -123,86 +123,21 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
         "nip"
     };
 
-    /**
-     * Pemeriksaan fisik: {kolom, judul di layar, pilihan dipisah '|'}.
-     * Sumber tunggal untuk panel DAN untuk daftar temuan yang dikenali saat
-     * memuat ulang record.
-     */
-    private static final String[][] REGIO = {
-        {"kepala", "Kepala", "Simetris|Tidak simetris|Benjolan|Nyeri tekan|Hematoma"},
-        {"rambut", "Rambut", "Bersih|Kotor|Rontok|Beruban|Mudah dicabut|Ketombe"},
-        {"mata", "Mata", "Simetris|Konjungtiva anemis|Konjungtiva merah muda|Sklera ikterik"
-            + "|Pupil isokor|Pupil anisokor|Reflek cahaya positif|Sekret|Memakai alat bantu lihat"
-            + "|Penglihatan kabur"},
-        {"hidung", "Hidung", "Simetris|Polip|Sekret|Epistaksis|Pernafasan cuping hidung"
-            + "|Terpasang oksigen"},
-        {"telinga", "Telinga", "Simetris|Serumen|Sekret|Nyeri|Gangguan pendengaran"
-            + "|Memakai alat bantu dengar"},
-        {"mulut", "Mulut", "Mukosa lembab|Mukosa kering|Sianosis|Stomatitis|Bibir pecah-pecah"
-            + "|Bau mulut"},
-        {"gigi", "Gigi", "Lengkap|Tidak lengkap|Caries|Karang gigi|Gigi palsu|Nyeri gigi"},
-        {"lidah", "Lidah", "Bersih|Kotor|Tremor|Sariawan"},
-        {"tenggorokan", "Tenggorokan", "Normal|Nyeri telan|Pembesaran tonsil|Serak"},
-        {"leher", "Leher", "Normal|Pembesaran kelenjar tiroid|Pembesaran kelenjar getah bening"
-            + "|Peningkatan tekanan vena jugularis|Kaku kuduk|Keterbatasan gerak"},
-        {"integumen", "Integumen/Kulit", "Turgor baik|Turgor jelek|Pucat|Sianosis|Ikterik"
-            + "|Kemerahan|Oedema|Luka|Akral hangat|Akral dingin|Gatal|Bekas garukan"},
-        {"payudara_ukuran_bentuk", "Payudara - ukuran & bentuk",
-            "Simetris|Tidak simetris|Membesar|Mengecil"},
-        {"payudara_warna", "Payudara - warna",
-            "Normal|Hiperpigmentasi areola|Kemerahan|Kehitaman"},
-        {"payudara_kelainan", "Payudara - kelainan",
-            "Tidak ada kelainan|Benjolan|Nyeri tekan|Puting masuk ke dalam|Pengeluaran ASI"
-            + "|Pengeluaran cairan|Luka"},
-        {"thorax_paru", "Thorax/Paru", "Simetris|Retraksi dinding dada|Vesikuler|Ronchi"
-            + "|Wheezing|Sesak nafas|Batuk|Nyeri dada|Penggunaan otot bantu nafas"},
-        {"jantung", "Jantung", "Bunyi jantung normal|Murmur|Gallop|Palpitasi|Nyeri dada"
-            + "|Pembesaran jantung"},
-        {"abdomen", "Abdomen", "Datar|Distensi|Nyeri tekan|Bising usus normal"
-            + "|Bising usus meningkat|Bising usus menurun|Asites|Teraba massa|Hepatomegali"
-            + "|Luka operasi"},
-        {"genitalia", "Genitalia", "Bersih|Kotor|Terpasang kateter|Keputihan|Perdarahan"
-            + "|Nyeri berkemih|Lesi"},
-        {"anus", "Anus", "Normal|Hemoroid|Fissura|Teraba massa|Nyeri"},
-        {"muskuloskeletal", "Muskuloskeletal", "Normal|Kelemahan otot|Atrofi|Kontraktur"
-            + "|Fraktur|Oedema ekstremitas|Nyeri sendi|Keterbatasan gerak|Memakai alat bantu jalan"}
-    };
+    /** Daftar pilihan hidup di {@link CentangRM022} - dipakai bersama oleh
+     * form ini dan berkas laporan, supaya layar dan kertas tidak bisa berbeda. */
+    private static final String[][] REGIO = CentangRM022.REGIO;
 
-    /** Pola kebiasaan pasien: {kolom, judul, pilihan}. */
-    private static final String[][] KEBIASAAN = {
-        {"nutrisi", "Nutrisi", "Nafsu makan baik|Nafsu makan menurun|Mual|Muntah"
-            + "|Sulit menelan|Diet khusus|Pantangan makanan"},
-        {"eliminasi", "Eliminasi", "BAK lancar|BAK nyeri|BAK tidak lancar|Sering BAK malam"
-            + "|BAB teratur|Konstipasi|Diare|BAB berdarah"},
-        {"istirahat", "Istirahat/Tidur", "Cukup|Kurang|Sulit memulai tidur|Sering terbangun"
-            + "|Memakai obat tidur"},
-        {"aktivitas", "Aktivitas", "Mandiri|Dibantu sebagian|Dibantu penuh|Rutin berolahraga"
-            + "|Merokok|Minum alkohol"}
-    };
+    /** Daftar pilihan hidup di {@link CentangRM022} - dipakai bersama oleh
+     * form ini dan berkas laporan, supaya layar dan kertas tidak bisa berbeda. */
+    private static final String[][] KEBIASAAN = CentangRM022.KEBIASAAN;
 
-    /** Data psikologis, sosiologis, dan spiritual: {kolom, judul, pilihan}. */
-    private static final String[][] PSIKOSOSIAL = {
-        {"psikologi", "Psikologi", "Tenang|Cemas|Takut|Marah|Sedih|Menarik diri|Gelisah"},
-        {"cemas", "Tingkat kecemasan", "Tidak ada|Ringan|Sedang|Berat"},
-        {"sosiologi", "Sosiologi", "Hubungan dengan keluarga baik|Hubungan dengan lingkungan baik"
-            + "|Ada masalah keluarga|Ada masalah ekonomi|Tinggal sendiri"},
-        {"spiritual", "Spiritual", "Taat beribadah|Kadang-kadang beribadah|Tidak beribadah"
-            + "|Perlu bimbingan rohani"},
-        {"kebutuhan_informasi", "Kebutuhan informasi", "Penyakit|Pengobatan|Diet"
-            + "|Perawatan di rumah|Jadwal kontrol|Pencegahan"}
-    };
+    /** Daftar pilihan hidup di {@link CentangRM022} - dipakai bersama oleh
+     * form ini dan berkas laporan, supaya layar dan kertas tidak bisa berbeda. */
+    private static final String[][] PSIKOSOSIAL = CentangRM022.PSIKOSOSIAL;
 
-    /** Blok balita yang berupa pilihan centang: {kolom, judul, pilihan}. */
-    private static final String[][] BALITA_CENTANG = {
-        {"balita_usia_kehamilan", "Usia kehamilan saat lahir", "Aterm (cukup bulan)|Prematur|Postterm"},
-        {"balita_lahir_di", "Lahir di", "Rumah Sakit|Puskesmas|Praktik Bidan|Rumah"},
-        {"balita_ditolong", "Ditolong oleh", "Dokter|Bidan|Perawat|Dukun|Keluarga"},
-        {"balita_mendapat", "Mendapat", "ASI eksklusif|ASI tidak eksklusif|Susu formula"
-            + "|MPASI|Vitamin A"},
-        {"balita_imunisasi_dasar", "Imunisasi dasar", "HB-0|BCG|Polio|DPT-HB-Hib|Campak"},
-        {"balita_imunisasi_ulang", "Imunisasi ulang", "DPT ulangan|Polio ulangan|Campak ulangan"
-            + "|Belum pernah"}
-    };
+    /** Daftar pilihan hidup di {@link CentangRM022} - dipakai bersama oleh
+     * form ini dan berkas laporan, supaya layar dan kertas tidak bisa berbeda. */
+    private static final String[][] BALITA_CENTANG = CentangRM022.BALITA_CENTANG;
 
     /** Tonggak perkembangan balita - diisi usia dalam bulan. */
     private static final String[][] BALITA_TONGGAK = {
@@ -214,18 +149,9 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
         {"balita_berbicara", "Berbicara"}
     };
 
-    /** Blok reproduksi yang berupa pilihan centang: {kolom, judul, pilihan}. */
-    private static final String[][] REPRO_CENTANG = {
-        {"repro_siklus", "Siklus haid", "Teratur|Tidak teratur"},
-        {"repro_bercak", "Perdarahan bercak", "Tidak ada|Ada|Di luar siklus"},
-        {"repro_kb", "Kontrasepsi", "Tidak memakai|Suntik|Pil|IUD|Implan|Kondom|MOW/MOP"},
-        {"repro_pernah", "Riwayat", "Tidak ada|Keputihan|Kista|Mioma|Kanker serviks"
-            + "|Operasi kandungan|Keguguran"},
-        {"janin_pergerakan", "Pergerakan janin", "Aktif|Kurang aktif|Tidak terasa|Belum terasa"},
-        {"janin_posisi", "Posisi janin", "Memanjang|Melintang|Oblique"},
-        {"palpasi_presentasi", "Presentasi", "Kepala|Bokong|Bahu|Belum jelas"},
-        {"palpasi_masuk_pap", "Masuk PAP", "Belum|Sudah"}
-    };
+    /** Daftar pilihan hidup di {@link CentangRM022} - dipakai bersama oleh
+     * form ini dan berkas laporan, supaya layar dan kertas tidak bisa berbeda. */
+    private static final String[][] REPRO_CENTANG = CentangRM022.REPRO_CENTANG;
 
     private static final String[] PILIHAN_DIAGNOSA = {
         "dx_oksigen", "Gangguan pemenuhan kebutuhan oksigen",
