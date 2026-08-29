@@ -1036,6 +1036,7 @@ import rekammedis.RMPenilaianAwalMedisRalanUrologi;
 import rekammedis.RMAsesmenMedisRanap;
 import rekammedis.RMRingkasanPasienMasukKeluar;
 import rekammedis.RMAsesmenPendidikanPasien;
+import rekammedis.RMResumeKeperawatanKebidanan;
 import rekammedis.RMPenilaianAwalMedisRanapDewasa;
 import rekammedis.RMPenilaianAwalMedisRanapJantung;
 import rekammedis.RMPenilaianAwalMedisRanapKandungan;
@@ -18302,6 +18303,20 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         this.setCursor(Cursor.getDefaultCursor());
     }
     
+    private void btnResumeKeperawatanKebidananActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        RMResumeKeperawatanKebidanan aplikasi=new RMResumeKeperawatanKebidanan(this,false);
+        aplikasi.isCek();
+        aplikasi.emptTeks();
+        aplikasi.setTampil();
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
     private void btnAsesmenPendidikanPasienActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
         DlgHome.dispose();
@@ -24584,7 +24599,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             btnPCRAICRAPersyaratanHarusDipenuhi,btnKirimQRTelaahFarmasiSatuSehat,btnKirimAllergiSatuSehat,btnKonsultasiPerawat,btnMappingProsedurSmartKlaimBPJS,btnMappingPenyakitSmartKlaimBPJS,btnKirimFHIRSmartKlaimBPJS,
             btnSuratPermintaanBinrohtal,btnSuratPermintaanPerlindunganDariKekerasan,btnSuratPermohonanPrivasi,btnSuratPermintaanSecondOpinion,btnSuratKeteranganBerobat,btnSuratPenolakanResusitasi,btnCatatanObservasiRuangOperasi,
             btnHasilUSGAbdomen,btnIntervensiNyeriFarmakologi,btnIntervensiNyeriNonFarmakologi,btnSuratPengajuanCutiPerawatan,btnChecklistKriteriaMasukIsolasi,btnMapingTarifTindakanRalanKPTLSatuSehat,
-            btnMapingTarifTindakanRanapKPTLSatuSehat,btnMapingTarifTindakanRadiologiKPTLSatuSehat,btnMapingTarifTindakanLabKPTLSatuSehat,btnMapingTarifTindakanOperasiKPTLSatuSehat,btnMapingTarifKamarKPTLSatuSehat,btnAsesmenMedisRanap,btnRingkasanPasienMasukKeluar,btnAsesmenPendidikanPasien;
+            btnMapingTarifTindakanRanapKPTLSatuSehat,btnMapingTarifTindakanRadiologiKPTLSatuSehat,btnMapingTarifTindakanLabKPTLSatuSehat,btnMapingTarifTindakanOperasiKPTLSatuSehat,btnMapingTarifKamarKPTLSatuSehat,btnAsesmenMedisRanap,btnRingkasanPasienMasukKeluar,btnAsesmenPendidikanPasien,btnResumeKeperawatanKebidanan;
     
     private javax.swing.ImageIcon skalakanIkon(java.awt.Image src, int w, int h){
         return new javax.swing.ImageIcon(src.getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH));
@@ -28664,6 +28679,10 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             // RM 21 SENGAJA tanpa pengecekan hak akses - keputusan user: siapa
             // pun boleh mengisinya, jadi tombolnya selalu ditampilkan.
             Panelmenu.add(btnAsesmenPendidikanPasien);
+            jmlmenu++;
+
+            // RM 33 juga tanpa hak akses, alasan yang sama.
+            Panelmenu.add(btnResumeKeperawatanKebidanan);
             jmlmenu++;
 
             if(akses.getpenilaian_awal_medis_ranap_neonatus()==true){
@@ -34697,7 +34716,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         // RM 21 SENGAJA tanpa pengecekan hak akses (lihat catatan di atas).
         Panelmenu.add(btnAsesmenPendidikanPasien);
         jmlmenu++;
-        
+
+        // RM 33 juga tanpa hak akses, alasan yang sama.
+        Panelmenu.add(btnResumeKeperawatanKebidanan);
+        jmlmenu++;
+
         if(akses.getpenilaian_awal_medis_ranap_neonatus()==true){
             Panelmenu.add(btnPenilaianAwalMedisRanapNeonatus);
             jmlmenu++;
@@ -42285,7 +42308,13 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             Panelmenu.add(btnAsesmenPendidikanPasien);
             jmlmenu++;
         }
-        
+
+        // RM 33 SENGAJA tanpa pengecekan hak akses - hanya disaring kata kunci.
+        if(btnResumeKeperawatanKebidanan.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
+            Panelmenu.add(btnResumeKeperawatanKebidanan);
+            jmlmenu++;
+        }
+
         if(akses.getpenilaian_awal_medis_ranap_neonatus()==true){
             if(btnPenilaianAwalMedisRanapNeonatus.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
                 Panelmenu.add(btnPenilaianAwalMedisRanapNeonatus);
@@ -48002,6 +48031,14 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnAsesmenPendidikanPasien.setName("btnAsesmenPendidikanPasien");
         btnAsesmenPendidikanPasien.setPreferredSize(new java.awt.Dimension(200, 90));
         btnAsesmenPendidikanPasien.addActionListener(this::btnAsesmenPendidikanPasienActionPerformed);
+
+        btnResumeKeperawatanKebidanan = new widget.ButtonBig();
+        btnResumeKeperawatanKebidanan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/1360815295_medical_case.png")));
+        btnResumeKeperawatanKebidanan.setText("Resume Keperawatan/Kebidanan");
+        btnResumeKeperawatanKebidanan.setIconTextGap(0);
+        btnResumeKeperawatanKebidanan.setName("btnResumeKeperawatanKebidanan");
+        btnResumeKeperawatanKebidanan.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnResumeKeperawatanKebidanan.addActionListener(this::btnResumeKeperawatanKebidananActionPerformed);
 
         btnPermintaanResepPulang = new widget.ButtonBig();
         btnPermintaanResepPulang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/iconfinder_paper_pencil-lb_86334.png"))); 

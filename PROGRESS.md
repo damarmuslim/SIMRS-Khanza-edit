@@ -1731,3 +1731,106 @@ Karena ringkasan menggambarkan **record**-nya - bukan siapa yang sedang membukan
 - ⏳ **Belum diuji langsung oleh user di `Aplikasi.bat`** - simpan/ganti dengan kolom Jam, dan cetak lewat `JasperViewer` sungguhan.
 - ⏳ Belum dicetak dengan pasien yang halaman 2-nya benar-benar penuh (>15 catatan monitoring) - perilaku catatan ke-16 dan seterusnya belum pernah dilihat.
 - ⏳ `graphify update .` belum dijalankan untuk modul ini.
+
+---
+# Progress: Resume Keperawatan / Kebidanan (RM 33)
+
+**Branch**: `feat/rm33-resume-keperawatan` (dari `main`) | **Tanggal**: 2026-08-28 | **Status**: selesai dev, menunggu pengujian langsung user
+
+## Temuan Awal: tidak ada padanannya sama sekali
+
+Dicek tiga arah sebelum memutuskan membuat form baru:
+
+| Yang ada | Isinya | Kenapa bukan RM 33 |
+|---|---|---|
+| `resume_pasien_ranap` + `RMDataResumePasienRanap` | 41 kolom: diagnosa & prosedur ICD, obat pulang, cara keluar, keadaan | Resume **MEDIS**, ditandatangani **dokter** (`kd_dokter`). RM 33 ditandatangani **perawat/bidan** |
+| `resume_pasien` | sama, versi rawat jalan | Medis juga, dan ralan |
+| `penilaian_awal_keperawatan_ranap_masalah` / `_rencana` | masalah & rencana keperawatan | Diambil saat **MASUK** (asesmen awal), bukan saat **PULANG**; berupa kode 3 digit ke tabel master, bukan 5 baris teks bebas |
+
+Pencarian nama berkas (`*esume*`) hanya menemukan resume medis dan modul penggajian; pola tabel `%resume%`/`%keperawatan%`/`%kebidanan%` tidak memunculkan satu pun tabel resume keperawatan; `graphify query` hanya mengarah ke `RMPenilaianAwalKeperawatanKebidanan` yang merupakan asesmen awal.
+
+## Keputusan User
+
+1. **Keempat blok teks bebas semua** - mengikuti kertas, sama seperti keputusan RM 21. Dropdown dari `master_masalah_keperawatan` ditawarkan tapi tidak dipilih.
+2. **Tanpa pembatasan hak akses** - siapa pun boleh mengisi, sama seperti RM 21. Tidak ada kolom yang ditambahkan ke tabel `user`.
+
+## Tiga isian kepala yang SENGAJA tidak jadi kolom
+
+TANGGAL MASUK, TANGGAL KELUAR, dan RUANGAN dibaca dari `kamar_inap` lewat JOIN, tidak disalin ke tabel form. Menyalinnya membuat lembar ini **basi diam-diam** kalau pasien pindah kamar atau tanggal pulangnya dikoreksi. Pola yang sama dipakai untuk Ruangan di modul Asuhan Gizi.
+
+### Aturan pasien pindah kamar
+
+Dibuktikan nyata di data: `2026/07/28/000001` punya **dua baris** `kamar_inap` (RUANG ANGGREK → RUANG DAHLIA). Aturannya:
+
+- **TANGGAL MASUK** dari baris paling **AWAL** (subquery `min`)
+- **RUANGAN & TANGGAL KELUAR** dari baris **TERAKHIR**
+
+Kalau ruangan diambil dari baris pertama, lembar pulang akan menyebut kamar yang sudah lama ditinggalkan pasien. Aturan ini dipakai **sama persis** di form maupun di query cetak supaya layar dan kertas tidak pernah berbeda.
+
+`tgl_keluar='0000-00-00'` berarti belum pulang → di layar tampil `(belum pulang)`, di cetakan dibiarkan kosong seperti kertasnya.
+
+## Lima baris tetap, bukan tabel anak
+
+Formulir fisik mencetak tepat lima baris bernomor untuk masing-masing dari empat blok - lima adalah batas yang ditetapkan **kertasnya**. Tabel anak akan memberi baris tak terbatas yang tidak akan muat saat dicetak. ⚠️ Kalau nanti petugas butuh lebih dari lima, ini harus diubah jadi tabel anak **DAN** tata letak cetakannya dirancang ulang - keduanya sekaligus, bukan salah satu.
+
+## Yang Sudah Dikerjakan
+
+1. ✅ **Migrasi** `sik_resume_keperawatan_ranap_rm33.sql` - tabel `resume_keperawatan_ranap`, 26 kolom, PK `no_rawat`, FK ke `reg_periksa`. **SUDAH DIIMPORT** ke DB `aik` (2026-08-28, instruksi eksplisit user).
+2. ✅ **`RMResumeKeperawatanKebidanan.java`** - GridBagLayout tulis tangan tanpa `.form`/GEN. `KOLOM_RM33` dan `nilaiRm33()` sama-sama dirakit dengan perulangan **berbentuk identik** atas konstanta `BLOK` - itulah yang menjamin urutan keduanya tidak bisa desinkron. Plus panel ringkasan HTML.
+3. ✅ **Menu**: item klik-kanan Rawat Inap (indeks 7, di bawah RM 21) + tombol menu utama di `initKhanzaLanjutan()`, keduanya **tanpa gerbang hak akses**.
+4. ✅ **Jasper `rptResumeKeperawatanKebidananRM33`** - 1 halaman F4 609×935 + QR tanda tangan. Disalin ke `report/` + `dist/report/` + `build/report/`.
+
+## Verifikasi yang Sudah Dijalankan
+
+- `ant jar` **BUILD SUCCESSFUL**.
+- **Nama kolom migrasi == `KOLOM_RM33` == jumlah `nilaiRm33()`**: cocok 100% (26 = 25 + `no_rawat`). Dibaca lewat **refleksi dari kelas terkompilasi**, bukan dari teks sumber. Pemeriksanya **diadu dulu dengan migrasi RM 21** dan memang gagal keras di sana - jadi hasil "cocok" bukan lolos kosong.
+- **Jalur `simpan()`, `tampil()`, `ganti()` yang SEBENARNYA** dipanggil ke DB dalam transaksi lalu di-ROLLBACK. Method aplikasinya sendiri yang dipanggil, bukan query-nya disalin. `koneksiDB.condb()` mengembalikan `Connection` **singleton statis** sehingga form dan `Sequel` berbagi koneksi dan transaksi membungkus keduanya. Nol sisa data uji.
+- **Data uji sengaja setengah kosong** (pelajaran RM 04): satu blok penuh tidak diisi sama sekali → 15 kolom NULL sesudah simpan, 14 sesudah ganti.
+- **3 gotcha JRXML nol pelanggaran**: 33 `textField` semuanya `isStretchWithOverflow`, 38 `staticText` semuanya height≥11, 10 band semuanya `splitType="Prevent"`, nol elemen melewati batas band. Seluruh 32 field dideklarasikan **dan** dipakai.
+- **Cetakan DILIHAT** dengan data pasien sungguhan lewat query cetak milik aplikasi (diambil refleksi dari `sqlCetak()`): ruangan RUANG DAHLIA (kamar terakhir) sementara tanggal masuk 28-07 (baris pertama) - aturan pindah kamar terbukti bekerja. Jenis kelamin "L" benar (pelajaran Asuhan Gizi diterapkan: ekspresi menerima `'L'` maupun `'Laki-Laki'`).
+- **Tata letak form DILIHAT** kedua tab dengan data terisi. `tambahPengisiBaris()` dipakai sejak awal (pelajaran RM 17-01).
+
+**Dua perbaikan yang hanya ketahuan karena hasilnya dilihat:**
+- Kotak NIP dilebarkan 80→110 px - NIP produksi berbentuk `12/09/1988/001` dan terpotong pada lebar 80.
+- Garis bawah Diagnosa Medis & Keluhan Utama **dihapus** - lembar fisik tidak punya garis di dua isian itu, dan garis Keluhan Utama menggantung jauh di bawah teksnya sehingga terbaca seperti baris kosong.
+
+## Belum Dikerjakan / Next Steps
+
+- ⏳ **Belum diuji langsung oleh user di `Aplikasi.bat`** - simpan/ganti, dan cetak lewat `JasperViewer` sungguhan.
+- ⏳ Perlu dipastikan ke petugas RM: apakah lima baris per blok memang cukup di lapangan.
+- ⏳ `master_rencana_keperawatan` berisi data uji-coba ("DIRAWAT", "DIPELUK", "TIDUR AJA", "BANGUN PAGI") di DB lokal. Tidak dipakai modul ini, tapi perlu dicek di produksi kalau nanti diputuskan ada dropdown.
+- ⏳ `graphify update .` belum dijalankan (percobaan terakhir berhenti sebelum selesai).
+
+## 📌 CATATAN: kandidat otomatisasi RM 33 (ditunda, atas permintaan user 2026-08-28)
+
+User: *"sepertinya masih bisa disesuaikan dikarenakan kemungkinan ada yang bisa diotomatisasi, tapi nanti saja, di-note saja."*
+
+Belum dikerjakan sama sekali - ini daftar kandidat beserta sumber datanya yang **sudah diverifikasi ada** di DB `aik`, supaya nanti tinggal diputuskan mana yang dipakai.
+
+### Yang SUDAH otomatis sekarang
+
+| Isian | Sumber |
+|---|---|
+| Identitas pasien | `reg_periksa` + `pasien` |
+| Tanggal masuk / keluar / ruangan | `kamar_inap` (+ `kamar` → `bangsal`) |
+| Tanggal & jam resume | waktu sekarang |
+| Perawat / Bidan | user yang sedang login |
+| Diagnosa Medis | `kamar_inap.diagnosa_akhir`, mundur ke `diagnosa_awal` |
+| Keluhan Utama | `penilaian_awal_keperawatan_ranap.keluhan_utama` |
+
+### Kandidat yang BELUM digarap
+
+| Blok | Sumber yang mungkin | Catatan |
+|---|---|---|
+| **Diagnosa Keperawatan yang Timbul** | `penilaian_awal_keperawatan_ranap_masalah` → `master_masalah_keperawatan` (13 masalah: Nyeri, Pola Tidur, Mobilitas/Aktivitas, Integritas Kulit, Infeksi, …) | **Kandidat terkuat** - konsepnya sama persis, hanya beda waktu perekaman (masuk vs pulang). Isinya kode 3 digit, perlu di-JOIN ke master untuk jadi teks |
+| **Tindakan Keperawatan** | (a) `penilaian_awal_keperawatan_ranap_rencana` → `master_rencana_keperawatan`; (b) `rawat_inap_pr` / `rawat_inap_drpr` (tindakan yang benar-benar dilakukan) | ⚠️ `master_rencana_keperawatan` di DB lokal berisi **data uji-coba** ("DIRAWAT", "DIPELUK", "TIDUR AJA", "BANGUN PAGI") - harus dicek dulu isinya di produksi. Sumber (b) lebih jujur karena itu tindakan riil, bukan rencana |
+| **Rencana Tindak Lanjut / Nasihat Pulang** | `resume_pasien_ranap`: `edukasi`, `dilanjutkan`, `kontrol`, `obat_pulang` | Datanya milik resume MEDIS (dokter). Bisa jadi bahan awal, tapi kata-katanya perlu disesuaikan ke bahasa keperawatan |
+| **Diagnosa Medis** (penyempurnaan) | `diagnosa_pasien` → `penyakit` (nama ICD), atau `resume_pasien_ranap.diagnosa_utama` | Sekarang hanya dari `kamar_inap`, yang sering kosong. Dari 5 baris `kamar_inap` yang dicek, `diagnosa_akhir`/`diagnosa_awal` mayoritas berisi "-" |
+| **Diagnosa yang Sudah Teratasi** | **tidak ada sumbernya** | Ini penilaian klinis perawat saat pasien pulang - tidak boleh ditebak sistem. Tetap manual |
+
+### Syarat yang harus dipatuhi kalau nanti dikerjakan
+
+1. **Usulan, bukan paksaan.** Pola yang sudah dipakai untuk Diagnosa Medis & Keluhan Utama: hanya diisikan kalau perawat **belum** menuliskan apa pun, jadi tidak pernah menimpa ketikan orang. Lembar ini ditandatangani perawat - isinya harus yang dia setujui, bukan yang sistem tebak.
+2. **Jangan diam-diam.** Kalau nanti ada pra-isi, perawat harus tahu mana yang berasal dari sistem dan mana yang dia ketik sendiri.
+3. **Cek dulu isinya di PRODUKSI**, bukan di DB lokal `aik`. Beberapa tabel master di lokal berisi data uji-coba.
+4. Batas lima baris per blok tetap berlaku - kalau sumber otomatisnya mengembalikan lebih dari lima, harus diputuskan mana yang dipotong.

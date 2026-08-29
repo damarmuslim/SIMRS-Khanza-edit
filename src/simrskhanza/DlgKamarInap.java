@@ -12196,6 +12196,52 @@ public class DlgKamarInap extends javax.swing.JDialog {
         mnPendidikan.setPreferredSize(new java.awt.Dimension(230, 26));
         mnPendidikan.addActionListener(this::MnAsesmenPendidikanPasienActionPerformed);
         MnPenilaianAwal.insert(mnPendidikan, 6);
+
+        // RM 33 - Resume Keperawatan / Kebidanan, disisipkan tepat di bawah
+        // RM 21 (indeks 7). Alasan dibangun di LUAR blok GEN sama seperti dua
+        // item di atas.
+        javax.swing.JMenuItem mnResumeKep = new javax.swing.JMenuItem();
+        mnResumeKep.setBackground(new java.awt.Color(255, 255, 254));
+        mnResumeKep.setFont(new java.awt.Font("Segoe UI", 0, 11));
+        mnResumeKep.setForeground(new java.awt.Color(50, 50, 50));
+        mnResumeKep.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png")));
+        mnResumeKep.setText("Resume Keperawatan / Kebidanan (RM 33)");
+        mnResumeKep.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        mnResumeKep.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        mnResumeKep.setName("mnResumeKep");
+        mnResumeKep.setPreferredSize(new java.awt.Dimension(250, 26));
+        mnResumeKep.addActionListener(this::MnResumeKeperawatanActionPerformed);
+        MnPenilaianAwal.insert(mnResumeKep, 7);
+    }
+
+    /**
+     * Membuka form RM 33 "Resume Keperawatan / Kebidanan".
+     *
+     * <p>Tidak ada pengecekan hak akses - keputusan eksplisit user: siapa pun
+     * boleh mengisi lembar ini, sama seperti RM 21.</p>
+     */
+    private void MnResumeKeperawatanActionPerformed(java.awt.event.ActionEvent evt) {
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else{
+            if(tbKamIn.getSelectedRow()>-1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                rekammedis.RMResumeKeperawatanKebidanan form=new rekammedis.RMResumeKeperawatanKebidanan(null,false);
+                form.isCek();
+                if(R1.isSelected()==true){
+                    form.setNoRm(norawat.getText(),new Date());
+                }else if(R2.isSelected()==true){
+                    form.setNoRm(norawat.getText(),DTPCari2.getDate());
+                }else if(R3.isSelected()==true){
+                    form.setNoRm(norawat.getText(),DTPCari4.getDate());
+                }
+                form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                form.setLocationRelativeTo(internalFrame1);
+                form.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
     }
 
     /**
