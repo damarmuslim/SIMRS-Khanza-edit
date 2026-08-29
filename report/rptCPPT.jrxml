@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  CATATAN PERKEMBANGAN PASIEN TERINTEGRASI / CPPT (RM 27-1)
+  RSUD Demang Sepulau Raya. Satu lembar per KUNJUNGAN (satu no_rawat).
+
+  Tiga gotcha wajib proyek ini dipatuhi di SELURUH berkas:
+    1. semua textField memakai isStretchWithOverflow="true"
+    2. semua staticText tingginya >= 11 (di bawah itu teks tidak tampil)
+    3. semua band memakai splitType="Prevent"
+
+  TIDAK ADA TABEL BARU - DIRAKIT DARI TIGA SUMBER YANG SUDAH ADA
+  Kertasnya menyebut "ditulis dengan format SOAP atau ADIME", dan sistem
+  kebetulan punya persis keduanya sebagai tabel terpisah:
+      pemeriksaan_ranap   -> SOAP rawat inap
+      pemeriksaan_ralan   -> SOAP rawat jalan
+      catatan_adime_gizi  -> ADIME gizi
+  Ketiganya digabung dengan UNION ALL lalu diurutkan menurut waktu, sehingga
+  catatan semua profesi tampil berselang-seling secara kronologis - itulah
+  yang membuat CPPT "terintegrasi".
+
+  BERLAKU UNTUK RALAN DAN RANAP - keputusan user.
+  Petunjuknya ada di kertas itu sendiri: CPPT TIDAK punya isian Ruangan
+  maupun Tanggal Masuk, padahal RM 32 dan RM 33 yang khusus rawat inap
+  keduanya punya. Struktur pemeriksaan_ranap dan pemeriksaan_ralan pun
+  identik kolom demi kolom.
+
+  KOLOM `nip` BISA BERISI DUA JENIS KODE
+  Pada data nyata, nip di tabel pemeriksaan berisi NIP petugas
+  (mis. 12/09/1988/001 -> ANJASMARA) ATAU kode dokter (mis. D0000003 ->
+  dr. Qotrunnada). Karena itu profesi dicari ke DUA arah: lewat
+  petugas->jabatan, dan kalau tidak ketemu lewat dokter->spesialis. Kalau
+  hanya join ke petugas, SELURUH catatan dokter akan kehilangan kolom
+  Profesi - padahal justru itu inti CPPT.
+
+  VERIFIKASI DPJP SENGAJA DICETAK KOSONG
+  Kertasnya berbunyi "Bubuhkan Stempel, Nama Paraf, Tgl, Jam" - kolom itu
+  memang dirancang untuk stempel dan paraf BASAH. Tidak ada datanya di
+  sistem, dan tidak dikarang.
+-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="rptCPPT" language="groovy"
+              pageWidth="609" pageHeight="935" columnWidth="569"
+              leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
+              whenNoDataType="AllSectionsNoDetail"
+              uuid="d1e2f3a4-2701-0000-0000-000000000001">
+
+	<parameter name="namars" class="java.lang.String"/>
+	<parameter name="alamatrs" class="java.lang.String"/>
+	<parameter name="kotars" class="java.lang.String"/>
+	<parameter name="propinsirs" class="java.lang.String"/>
+	<parameter name="kontakrs" class="java.lang.String"/>
+	<parameter name="emailrs" class="java.lang.String"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="norawat" class="java.lang.String"/>
+	<!-- Identitas pasien lewat parameter, bukan field: nilainya sama untuk
+	     seluruh halaman, dan lembar tetap tercetak utuh walau belum ada satu
+	     pun catatan (whenNoDataType AllSectionsNoDetail). -->
+	<parameter name="no_rkm_medis" class="java.lang.String"/>
+	<parameter name="nm_pasien" class="java.lang.String"/>
+	<parameter name="jk" class="java.lang.String"/>
+	<parameter name="tgl_lahir" class="java.lang.String"/>
+	<parameter name="umur" class="java.lang.String"/>
+
+	<queryString>
+		<![CDATA[select x.tgl, x.jam, x.profesi, x.nm_pengisi, x.analisis, x.instruksi from (
+
+  select pr.tgl_perawatan as tgl, pr.jam_rawat as jam,
+         ifnull(jabatan.nm_jbtn, if(dokter.kd_dokter is not null,
+                ifnull(nullif(spesialis.nm_sps,''),'DOKTER'), '')) as profesi,
+         ifnull(petugas.nama, ifnull(dokter.nm_dokter,'')) as nm_pengisi,
+         concat_ws('\n',
+             concat('S : ', ifnull(nullif(pr.keluhan,''),'-')),
+             concat('O : ', ifnull(nullif(pr.pemeriksaan,''),'-')),
+             nullif(concat_ws(' ',
+                 nullif(concat('TD ',pr.tensi),'TD '),
+                 nullif(concat('N ',pr.nadi),'N '),
+                 nullif(concat('Suhu ',pr.suhu_tubuh),'Suhu '),
+                 nullif(concat('RR ',pr.respirasi),'RR '),
+                 nullif(concat('SpO2 ',pr.spo2),'SpO2 ')),''),
+             concat('A : ', ifnull(nullif(pr.penilaian,''),'-')),
+             nullif(concat('Evaluasi : ', nullif(pr.evaluasi,'')),''),
+             concat('P : ', ifnull(nullif(pr.rtl,''),'-'))) as analisis,
+         ifnull(pr.instruksi,'') as instruksi
+  from pemeriksaan_ranap pr
+  left join petugas   on pr.nip = petugas.nip
+  left join jabatan   on petugas.kd_jbtn = jabatan.kd_jbtn
+  left join dokter    on pr.nip = dokter.kd_dokter
+  left join spesialis on dokter.kd_sps = spesialis.kd_sps
+  where pr.no_rawat = $P{norawat}
+
+  union all
+
+  select pr.tgl_perawatan as tgl, pr.jam_rawat as jam,
+         ifnull(jabatan.nm_jbtn, if(dokter.kd_dokter is not null,
+                ifnull(nullif(spesialis.nm_sps,''),'DOKTER'), '')) as profesi,
+         ifnull(petugas.nama, ifnull(dokter.nm_dokter,'')) as nm_pengisi,
+         concat_ws('\n',
+             concat('S : ', ifnull(nullif(pr.keluhan,''),'-')),
+             concat('O : ', ifnull(nullif(pr.pemeriksaan,''),'-')),
+             nullif(concat_ws(' ',
+                 nullif(concat('TD ',pr.tensi),'TD '),
+                 nullif(concat('N ',pr.nadi),'N '),
+                 nullif(concat('Suhu ',pr.suhu_tubuh),'Suhu '),
+                 nullif(concat('RR ',pr.respirasi),'RR '),
+                 nullif(concat('SpO2 ',pr.spo2),'SpO2 ')),''),
+             concat('A : ', ifnull(nullif(pr.penilaian,''),'-')),
+             nullif(concat('Evaluasi : ', nullif(pr.evaluasi,'')),''),
+             concat('P : ', ifnull(nullif(pr.rtl,''),'-'))) as analisis,
+         ifnull(pr.instruksi,'') as instruksi
+  from pemeriksaan_ralan pr
+  left join petugas   on pr.nip = petugas.nip
+  left join jabatan   on petugas.kd_jbtn = jabatan.kd_jbtn
+  left join dokter    on pr.nip = dokter.kd_dokter
+  left join spesialis on dokter.kd_sps = spesialis.kd_sps
+  where pr.no_rawat = $P{norawat}
+
+  union all
+
+  select date(cag.tanggal) as tgl, time(cag.tanggal) as jam,
+         ifnull(nullif(jabatan.nm_jbtn,''),'AHLI GIZI') as profesi,
+         ifnull(petugas.nama,'') as nm_pengisi,
+         concat_ws('\n',
+             concat('A : ', ifnull(nullif(cag.asesmen,''),'-')),
+             concat('D : ', ifnull(nullif(cag.diagnosis,''),'-')),
+             concat('I : ', ifnull(nullif(cag.intervensi,''),'-')),
+             concat('M : ', ifnull(nullif(cag.monitoring,''),'-')),
+             concat('E : ', ifnull(nullif(cag.evaluasi,''),'-'))) as analisis,
+         ifnull(cag.instruksi,'') as instruksi
+  from catatan_adime_gizi cag
+  left join petugas on cag.nip = petugas.nip
+  left join jabatan on petugas.kd_jbtn = jabatan.kd_jbtn
+  where cag.no_rawat = $P{norawat}
+
+) x order by x.tgl, x.jam]]>
+	</queryString>
+
+	<field name="tgl" class="java.lang.String"/>
+	<field name="jam" class="java.lang.String"/>
+	<field name="profesi" class="java.lang.String"/>
+	<field name="nm_pengisi" class="java.lang.String"/>
+	<field name="analisis" class="java.lang.String"/>
+	<field name="instruksi" class="java.lang.String"/>
+
+	<pageHeader>
+		<band height="118" splitType="Prevent">
+			<!-- ===================== KOP ===================== -->
+			<rectangle><reportElement mode="Transparent" x="0" y="0" width="569" height="64" uuid="d1e2f3a4-2701-0001-0000-000000000001"/></rectangle>
+			<image onErrorType="Blank">
+				<reportElement x="5" y="5" width="52" height="52" uuid="d1e2f3a4-2701-0001-0000-000000000002"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="62" y="4" width="296" height="11" uuid="d1e2f3a4-2701-0001-0000-000000000003"/>
+				<textElement><font fontName="Tahoma" size="8"/></textElement>
+				<text><![CDATA[PEMERINTAH KABUPATEN LAMPUNG TENGAH]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="62" y="16" width="296" height="15" uuid="d1e2f3a4-2701-0001-0000-000000000004"/>
+				<textElement><font fontName="Tahoma" size="11" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="62" y="33" width="296" height="11" uuid="d1e2f3a4-2701-0001-0000-000000000005"/>
+				<textElement><font fontName="Tahoma" size="6"/></textElement>
+				<textFieldExpression><![CDATA[($P{alamatrs}==null?"":$P{alamatrs})+", "+($P{kotars}==null?"":$P{kotars})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="62" y="45" width="296" height="11" uuid="d1e2f3a4-2701-0001-0000-000000000006"/>
+				<textElement><font fontName="Tahoma" size="6"/></textElement>
+				<textFieldExpression><![CDATA["Telp/Fax. "+($P{kontakrs}==null?"-":$P{kontakrs})]]></textFieldExpression>
+			</textField>
+			<line><reportElement x="362" y="0" width="1" height="64" uuid="d1e2f3a4-2701-0001-0000-000000000007"/></line>
+			<staticText><reportElement x="368" y="8" width="66" height="11" uuid="d1e2f3a4-2701-0001-0000-000000000008"/><textElement><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[No. RM]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="436" y="8" width="129" height="11" uuid="d1e2f3a4-2701-0001-0000-000000000009"/><textElement><font fontName="Tahoma" size="8" isBold="true"/></textElement><textFieldExpression><![CDATA[": "+($P{no_rkm_medis}==null?"":$P{no_rkm_medis})]]></textFieldExpression></textField>
+			<staticText><reportElement x="368" y="26" width="66" height="11" uuid="d1e2f3a4-2701-0001-0000-00000000000a"/><textElement><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Nama]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="436" y="26" width="129" height="11" uuid="d1e2f3a4-2701-0001-0000-00000000000b"/><textElement><font fontName="Tahoma" size="8" isBold="true"/></textElement><textFieldExpression><![CDATA[": "+($P{nm_pasien}==null?"":$P{nm_pasien})+"  "+(("L".equals($P{jk})||"Laki-Laki".equals($P{jk}))?"L":"P")]]></textFieldExpression></textField>
+			<staticText><reportElement x="368" y="44" width="66" height="11" uuid="d1e2f3a4-2701-0001-0000-00000000000c"/><textElement><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Tgl Lahir/Umur]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="436" y="44" width="129" height="11" uuid="d1e2f3a4-2701-0001-0000-00000000000d"/><textElement><font fontName="Tahoma" size="8" isBold="true"/></textElement><textFieldExpression><![CDATA[": "+($P{tgl_lahir}==null?"":$P{tgl_lahir})+" / "+($P{umur}==null?"":$P{umur})]]></textFieldExpression></textField>
+
+			<staticText>
+				<reportElement x="490" y="66" width="75" height="13" uuid="d1e2f3a4-2701-0001-0000-00000000000e"/>
+				<textElement textAlignment="Right"><font fontName="Tahoma" size="10" isBold="true"/></textElement>
+				<text><![CDATA[RM 27-1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="82" width="569" height="15" uuid="d1e2f3a4-2701-0001-0000-00000000000f"/>
+				<textElement textAlignment="Center"><font fontName="Tahoma" size="11" isBold="true"/></textElement>
+				<text><![CDATA[CATATAN PERKEMBANGAN PASIEN TERINTEGRASI / CPPT]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+
+	<columnHeader>
+		<band height="76" splitType="Prevent">
+			<rectangle><reportElement mode="Transparent" x="0" y="0" width="569" height="76" uuid="d1e2f3a4-2701-0002-0000-000000000001"/></rectangle>
+			<line><reportElement x="58" y="0" width="1" height="76" uuid="d1e2f3a4-2701-0002-0000-000000000002"/></line>
+			<line><reportElement x="120" y="0" width="1" height="76" uuid="d1e2f3a4-2701-0002-0000-000000000003"/></line>
+			<line><reportElement x="320" y="0" width="1" height="76" uuid="d1e2f3a4-2701-0002-0000-000000000004"/></line>
+			<line><reportElement x="480" y="0" width="1" height="76" uuid="d1e2f3a4-2701-0002-0000-000000000005"/></line>
+
+			<staticText><reportElement x="2" y="26" width="54" height="11" uuid="d1e2f3a4-2701-0002-0000-000000000006"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[TANGGAL/]]></text></staticText>
+			<staticText><reportElement x="2" y="37" width="54" height="11" uuid="d1e2f3a4-2701-0002-0000-000000000007"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[JAM]]></text></staticText>
+
+			<staticText><reportElement x="62" y="26" width="56" height="11" uuid="d1e2f3a4-2701-0002-0000-000000000008"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[PROFESI]]></text></staticText>
+			<staticText><reportElement x="62" y="37" width="56" height="11" uuid="d1e2f3a4-2701-0002-0000-000000000009"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[BAGIAN]]></text></staticText>
+
+			<staticText><reportElement x="124" y="4" width="192" height="11" uuid="d1e2f3a4-2701-0002-0000-00000000000a"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[HASIL PEMERIKSAAN ANALISIS]]></text></staticText>
+			<staticText><reportElement x="124" y="16" width="192" height="56" uuid="d1e2f3a4-2701-0002-0000-00000000000b"/><textElement textAlignment="Center"><font fontName="Tahoma" size="6"/></textElement><text><![CDATA[(ditulis dengan format SOAP atau ADIME disertai dengan target yang terukur, Evaluasi hasil tata laksana dituliskan dalam assesmen (Harap Bubuhkan Stempel, Nama, dan Paraf pada akhir catatan)]]></text></staticText>
+
+			<staticText><reportElement x="324" y="10" width="152" height="11" uuid="d1e2f3a4-2701-0002-0000-00000000000c"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[INSTRUSI TENAGA]]></text></staticText>
+			<staticText><reportElement x="324" y="21" width="152" height="11" uuid="d1e2f3a4-2701-0002-0000-00000000000d"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[KESEHATAN]]></text></staticText>
+			<staticText><reportElement x="324" y="32" width="152" height="11" uuid="d1e2f3a4-2701-0002-0000-00000000000e"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[TERMASUK PASCA BEDAH /]]></text></staticText>
+			<staticText><reportElement x="324" y="43" width="152" height="11" uuid="d1e2f3a4-2701-0002-0000-00000000000f"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[PROSEDUR]]></text></staticText>
+			<staticText><reportElement x="324" y="56" width="152" height="11" uuid="d1e2f3a4-2701-0002-0000-000000000010"/><textElement textAlignment="Center"><font fontName="Tahoma" size="6"/></textElement><text><![CDATA[(Instruksi diisi dengan rinci dan jelas)]]></text></staticText>
+
+			<staticText><reportElement x="484" y="10" width="81" height="11" uuid="d1e2f3a4-2701-0002-0000-000000000011"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[FERIVIKASI]]></text></staticText>
+			<staticText><reportElement x="484" y="21" width="81" height="11" uuid="d1e2f3a4-2701-0002-0000-000000000012"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[DPJP]]></text></staticText>
+			<staticText><reportElement x="484" y="36" width="81" height="30" uuid="d1e2f3a4-2701-0002-0000-000000000013"/><textElement textAlignment="Center"><font fontName="Tahoma" size="6"/></textElement><text><![CDATA[( Bubuhkan Stempel, Nama Paraf, Tgl, Jam )]]></text></staticText>
+		</band>
+	</columnHeader>
+
+	<detail>
+		<band height="86" splitType="Prevent">
+			<rectangle><reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="569" height="86" uuid="d1e2f3a4-2701-0003-0000-000000000001"/></rectangle>
+			<line><reportElement stretchType="RelativeToBandHeight" x="58" y="0" width="1" height="86" uuid="d1e2f3a4-2701-0003-0000-000000000002"/></line>
+			<line><reportElement stretchType="RelativeToBandHeight" x="120" y="0" width="1" height="86" uuid="d1e2f3a4-2701-0003-0000-000000000003"/></line>
+			<line><reportElement stretchType="RelativeToBandHeight" x="320" y="0" width="1" height="86" uuid="d1e2f3a4-2701-0003-0000-000000000004"/></line>
+			<line><reportElement stretchType="RelativeToBandHeight" x="480" y="0" width="1" height="86" uuid="d1e2f3a4-2701-0003-0000-000000000005"/></line>
+
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="2" y="4" width="54" height="11" uuid="d1e2f3a4-2701-0003-0000-000000000006"/>
+				<textElement textAlignment="Center"><font fontName="Tahoma" size="6"/></textElement>
+				<textFieldExpression><![CDATA[$F{tgl}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="2" y="15" width="54" height="11" uuid="d1e2f3a4-2701-0003-0000-000000000007"/>
+				<textElement textAlignment="Center"><font fontName="Tahoma" size="6"/></textElement>
+				<textFieldExpression><![CDATA[$F{jam}]]></textFieldExpression>
+			</textField>
+
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="62" y="4" width="56" height="34" uuid="d1e2f3a4-2701-0003-0000-000000000008"/>
+				<textElement textAlignment="Center"><font fontName="Tahoma" size="6" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{profesi}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="62" y="40" width="56" height="34" uuid="d1e2f3a4-2701-0003-0000-000000000009"/>
+				<textElement textAlignment="Center"><font fontName="Tahoma" size="5"/></textElement>
+				<textFieldExpression><![CDATA[$F{nm_pengisi}]]></textFieldExpression>
+			</textField>
+
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="124" y="4" width="192" height="78" uuid="d1e2f3a4-2701-0003-0000-00000000000a"/>
+				<textElement><font fontName="Tahoma" size="6"/></textElement>
+				<textFieldExpression><![CDATA[$F{analisis}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="324" y="4" width="152" height="78" uuid="d1e2f3a4-2701-0003-0000-00000000000b"/>
+				<textElement><font fontName="Tahoma" size="6"/></textElement>
+				<textFieldExpression><![CDATA[$F{instruksi}]]></textFieldExpression>
+			</textField>
+			<!-- Kolom FERIVIKASI DPJP sengaja DIBIARKAN KOSONG - untuk stempel
+			     dan paraf basah, sesuai bunyi kertasnya. -->
+		</band>
+	</detail>
+
+	<pageFooter>
+		<band height="20" splitType="Prevent">
+			<staticText>
+				<reportElement x="0" y="5" width="569" height="12" uuid="d1e2f3a4-2701-0004-0000-000000000001"/>
+				<textElement textAlignment="Center"><font fontName="Tahoma" size="7" isItalic="true"/></textElement>
+				<text><![CDATA[Terima kasih atas kerjasamanya telah mengisi formulir ini dengan benar dan jelas]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

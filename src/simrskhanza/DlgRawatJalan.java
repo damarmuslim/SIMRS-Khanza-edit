@@ -7801,6 +7801,40 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
 
+    /**
+     * [RM 27-1] Mencetak Catatan Perkembangan Pasien Terintegrasi (CPPT).
+     *
+     * <p>CPPT berlaku untuk rawat jalan MAUPUN rawat inap - keputusan user.
+     * Petunjuknya ada di kertasnya sendiri: CPPT tidak punya isian Ruangan
+     * maupun Tanggal Masuk, padahal RM 32 dan RM 33 yang khusus rawat inap
+     * keduanya punya. Karena itu tombol yang sama juga dipasang di
+     * DlgRawatInap, memanggil laporan yang sama.</p>
+     *
+     * <p>Query gabungannya ada DI DALAM berkas .jasper dengan parameter
+     * {@code $P{norawat}}, supaya tidak digandakan di dua dialog.</p>
+     */
+    private void cetakCPPT() {
+        if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+            return;
+        }
+        Map<String, Object> param = new HashMap<>();
+        param.put("namars",akses.getnamars());
+        param.put("alamatrs",akses.getalamatrs());
+        param.put("kotars",akses.getkabupatenrs());
+        param.put("propinsirs",akses.getpropinsirs());
+        param.put("kontakrs",akses.getkontakrs());
+        param.put("emailrs",akses.getemailrs());
+        param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+        param.put("norawat",TNoRw.getText());
+        param.put("no_rkm_medis",TNoRM.getText());
+        param.put("nm_pasien",TPasien.getText());
+        param.put("jk",Sequel.cariIsi("select if(pasien.jk='L','Laki-Laki','Perempuan') from pasien where pasien.no_rkm_medis=?",TNoRM.getText()));
+        param.put("tgl_lahir",Sequel.cariIsi("select date_format(pasien.tgl_lahir,'%d-%m-%Y') from pasien where pasien.no_rkm_medis=?",TNoRM.getText()));
+        param.put("umur",Sequel.cariIsi("select concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur) from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));
+        Valid.MyReport("rptCPPT.jasper","report","::[ Catatan Perkembangan Pasien Terintegrasi ]::",param);
+    }
+
     private void BtnRiwayatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRiwayatActionPerformed
         if(TNoRw.getText().trim().equals("")){
             JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
@@ -14235,6 +14269,15 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         BtnResumeRalan.setPreferredSize(new java.awt.Dimension(190, 23));
         BtnResumeRalan.addActionListener(this::BtnResumeRalanActionPerformed);
         FormMenu.add(BtnResumeRalan);
+        // [RM 27-1 CPPT] Tombolnya sengaja variabel LOKAL, bukan field: tidak
+        // ada kode lain yang perlu merujuknya, jadi area deklarasi blok GEN
+        // (yang berakhir di baris 5054) tidak perlu disentuh sama sekali.
+        widget.Button btnCPPT = new widget.Button();
+        btnCPPT.setText("CPPT (RM 27-1)");
+        btnCPPT.setToolTipText("Cetak Catatan Perkembangan Pasien Terintegrasi");
+        btnCPPT.setPreferredSize(new java.awt.Dimension(190, 23));
+        btnCPPT.addActionListener(evt -> cetakCPPT());
+        FormMenu.add(btnCPPT);
         FormMenu.add(BtnResepObat);
         FormMenu.add(BtnResepIterasiBPJS);
         FormMenu.add(BtnCopyResep);

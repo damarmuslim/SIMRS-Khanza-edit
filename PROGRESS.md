@@ -2075,3 +2075,84 @@ Hanya ketahuan karena cetakannya benar-benar dilihat.
 - ⏳ **Data `pemeriksaan_ralan` di DB lokal isinya uji-coba** ("tes", "asas", "qwqw"). Bentuk cetakan dengan catatan SOAP sungguhan yang panjang belum pernah terlihat.
 - ⏳ Beberapa baris grid punya kolom "Nama & Paraf" kosong karena `pemeriksaan_ralan.nip` tidak ada padanannya di tabel `petugas`. Sudah ditangani dengan `left join` supaya barisnya tetap muncul, tapi perlu dicek apakah di produksi juga begitu.
 - ⏳ `graphify update .` belum dijalankan.
+
+---
+
+# Progress: Catatan Perkembangan Pasien Terintegrasi / CPPT (RM 27-1)
+
+**Branch**: `feat/rm27-cppt` (dari `main`) | **Tanggal**: 2026-08-29 | **Status**: selesai dev, menunggu pengujian langsung user
+
+## Temuan Awal: yang ada ternyata LEMBAR KOSONG
+
+`rptLembarPerkembangan` sudah ada, tapi query-nya **hanya mengambil identitas pasien** — nol isi klinis. Itu formulir untuk ditulis tangan. Dan laporan yang **sama persis** dipakai ulang untuk dua item menu berbeda di `DlgPasien` (`MnLembarCatatanPerkembangan` dan `MnLembarCatatanKeperawatan`), hanya beda judul jendela.
+
+Keduanya **tidak disentuh** — masih berguna untuk mencetak lembar kosong.
+
+## Tanpa tabel baru — dirakit dari tiga sumber
+
+Kertasnya menyebut *"ditulis dengan format SOAP atau ADIME"*, dan sistem kebetulan punya **persis keduanya**:
+
+| Sumber | Format | Baris (DB lokal) |
+|---|---|---|
+| `pemeriksaan_ranap` | SOAP rawat inap | 14 |
+| `pemeriksaan_ralan` | SOAP rawat jalan | 66 |
+| `catatan_adime_gizi` | ADIME gizi | **0** |
+
+Digabung `UNION ALL` lalu diurutkan menurut waktu, sehingga catatan semua profesi tampil berselang-seling kronologis — itulah yang membuat CPPT "terintegrasi".
+
+## Berlaku untuk ralan DAN ranap
+
+Keputusan user, dan ada buktinya di kertas itu sendiri:
+
+| Form | Ada "Ruangan" di kepala? | Cakupan |
+|---|---|---|
+| RM 32 Catatan Perawat/Bidan | Ya (+ Nomor bed) | khusus ranap |
+| RM 33 Resume Keperawatan | Ya (+ Tgl Masuk/Keluar) | khusus ranap |
+| **RM 27-1 CPPT** | **tidak** | **keduanya** |
+
+CPPT tidak punya isian Ruangan maupun Tanggal Masuk. Kalau dirancang khusus ranap, hampir pasti ada — seperti dua form ranap lainnya. Struktur `pemeriksaan_ranap` dan `pemeriksaan_ralan` pun **identik kolom demi kolom**; Khanza sendiri memperlakukannya sebagai hal yang sama, hanya beda tempat.
+
+## ⚠️ Temuan yang hampir terlewat: `nip` berisi DUA jenis kode
+
+Pada data nyata, kolom `nip` di tabel pemeriksaan berisi **NIP petugas** (`12/09/1988/001` → ANJASMARA) **atau kode dokter** (`D0000003` → dr. Qotrunnada).
+
+Kalau hanya join ke `petugas`, **seluruh catatan dokter kehilangan kolom Profesi** — padahal justru itu inti CPPT. Karena itu profesi dicari **ke dua arah**:
+
+```
+petugas → jabatan.nm_jbtn          (BIDAN, FISIOTERAPI, SARPRAS, …)
+dokter  → spesialis.nm_sps         (Anak, Bedah, …), mundur ke 'DOKTER'
+```
+
+Dibuktikan pada kunjungan uji `2026/02/25/000005` yang isinya **campuran: 3 catatan dokter dan 3 catatan petugas**.
+
+## Verifikasi DPJP sengaja dicetak kosong
+
+Kertasnya berbunyi *"Bubuhkan Stempel, Nama Paraf, Tgl, Jam"* — kolom itu dirancang untuk **stempel dan paraf basah**. Tidak ada datanya di sistem, dan tidak dikarang.
+
+## SBAR — dicek, tidak ada
+
+Ditanyakan user apakah CPPT berhubungan dengan SBAR. Hasil pencarian: **nol tabel, nol form, nol laporan** (yang muncul semuanya kata "barang" — positif palsu). Dikonfirmasi user memang belum ada.
+
+Hubungannya: CPPT itu **lembarnya**, sedangkan SOAP/ADIME/SBAR adalah **format menulis** di dalamnya. Kertas RM 27-1 hanya menyebut SOAP dan ADIME. Kolom Verifikasi DPJP memang mekanisme yang dibutuhkan alur SBAR/TBAK, tapi selama SBAR belum ada, kolom itu cukup dikosongkan. Kalau kelak dibuat, itu **modul tersendiri** dengan tabel dan form input sendiri.
+
+## Penempatan
+
+Tombol **"CPPT (RM 27-1)"** di `FormMenu` **`DlgRawatInap` DAN `DlgRawatJalan`**, keduanya memanggil laporan yang sama.
+
+Query gabungannya diletakkan **di dalam `.jasper`** dengan `$P{norawat}` justru supaya tidak digandakan di dua dialog. Tombolnya dibuat sebagai **variabel lokal, bukan field**, sehingga area deklarasi blok GEN kedua form (yang punya berkas `.form`) tidak perlu disentuh sama sekali.
+
+## Verifikasi yang Sudah Dijalankan
+
+- `ant jar` **BUILD SUCCESSFUL**.
+- **3 gotcha JRXML nol pelanggaran**: 12 `textField`, 21 `staticText`, 4 band; nol elemen melewati batas band; 6 field dideklarasikan **dan** dipakai.
+- **Cetakan DILIHAT** dengan data sungguhan: 6 catatan urut waktu, kolom PROFESI terisi dari **dua arah**, kolom Verifikasi DPJP kosong sesuai rancangan.
+- Elemen bingkai band detail memakai `stretchType="RelativeToBandHeight"` (pelajaran RM 01) supaya kotak ikut memanjang saat catatan panjang.
+
+**Satu cacat ditemukan dari render, bukan dari membaca kode:** baris tanda vital memakai label `S` untuk suhu, sehingga terbaca bercampur dengan huruf S pada SOAP — `S : tes 1 / O : 2 / S 3 / A : 5`. Diganti jadi `Suhu` di **kedua** cabang UNION, lalu dirender ulang untuk memastikan.
+
+## Belum Dikerjakan / Next Steps
+
+- ⏳ **Belum diuji langsung oleh user di `Aplikasi.bat`**.
+- ⏳ **`catatan_adime_gizi` kosong** di DB lokal — cabang ADIME belum pernah terlihat berisi. Perlu dipastikan apakah di produksi memang dipakai; kalau tidak pernah diisi, kolom Profesi hanya akan berisi profesi pengisi SOAP.
+- ⏳ Beberapa `petugas` punya `kd_jbtn` yang menunjuk jabatan bernama `-` (J001), sehingga kolom Profesi tercetak `-`. Itu data master yang perlu dirapikan petugas, bukan bug.
+- ⏳ Belum dilihat perilakunya saat catatan sangat banyak (>6 baris) sehingga berlembar-lembar.
