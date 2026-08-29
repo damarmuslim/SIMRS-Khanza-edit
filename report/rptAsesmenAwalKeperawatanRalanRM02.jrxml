@@ -403,11 +403,30 @@ where a.no_rawat=$P{norawat}]]>
 		<band height="168" splitType="Prevent">
 			<staticText><reportElement x="3" y="1" width="330" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000001"/><textElement><font fontName="Tahoma" size="7" isBold="true"/></textElement><text><![CDATA[DIAGNOSA KEPERAWATAN]]></text></staticText>
 			<line><reportElement x="0" y="13" width="569" height="1" uuid="d1e2f3a4-0202-0009-0000-000000000002"/></line>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="16" width="450" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000003"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[("Ya".equals($F{dx_oksigen})?"[X]  ":"[   ]  ")+"Gangguan pemenuhan kebutuhan oksigen"]]></textFieldExpression></textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="28" width="450" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000004"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[("Ya".equals($F{dx_nutrisi})?"[X]  ":"[   ]  ")+"Gangguan pemenuhan kebutuhan nutrisi"]]></textFieldExpression></textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="40" width="450" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000005"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[("Ya".equals($F{dx_eliminasi})?"[X]  ":"[   ]  ")+"Gangguan pemenuhan kebutuhan eliminasi"]]></textFieldExpression></textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="52" width="450" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000006"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[("Ya".equals($F{dx_integritas_kulit})?"[X]  ":"[   ]  ")+"Gangguan integritas kulit"]]></textFieldExpression></textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="64" width="450" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000007"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[("Ya".equals($F{dx_kurang_pengetahuan})?"[X]  ":"[   ]  ")+"Kurang pengetahuan tentang penyakit"]]></textFieldExpression></textField>
+			<!--
+			  Kotak centang dipisah jadi dua elemen per baris: glif kotaknya
+			  sendiri memakai DejaVu Sans (didaftarkan oleh
+			  jasperreports-fonts-6.8.0.jar yang memang ada di Class-Path jar
+			  aplikasi), sedangkan labelnya tetap Tahoma seperti seluruh berkas.
+			  Tahoma tidak punya U+2610/U+2611 dan glif yang tidak ada GAGAL
+			  DIAM-DIAM jadi kotak kosong atau spasi, jadi fontnya tidak boleh
+			  ikut-ikutan Tahoma.
+			  Glifnya ditulis sebagai karakter UTF-8 langsung, mengandalkan
+			  encoding="UTF-8" pada deklarasi XML di baris pertama berkas ini.
+			  Kalau berkas ini kelak tersimpan ulang dengan encoding lain,
+			  kotaknya akan berubah jadi sampah - itu yang harus dicek duluan
+			  kalau cetakannya tiba-tiba aneh.
+			-->
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="16" width="14" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000003"/><textElement><font fontName="DejaVu Sans" size="8"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_oksigen})?"☑":"☐"]]></textFieldExpression></textField>
+			<staticText><reportElement x="26" y="16" width="430" height="11" uuid="d1e2f3a4-0202-0009-0000-00000000000d"/><textElement><font fontName="Tahoma" size="6"/></textElement><text><![CDATA[Gangguan pemenuhan kebutuhan oksigen]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="28" width="14" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000004"/><textElement><font fontName="DejaVu Sans" size="8"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_nutrisi})?"☑":"☐"]]></textFieldExpression></textField>
+			<staticText><reportElement x="26" y="28" width="430" height="11" uuid="d1e2f3a4-0202-0009-0000-00000000000e"/><textElement><font fontName="Tahoma" size="6"/></textElement><text><![CDATA[Gangguan pemenuhan kebutuhan nutrisi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="40" width="14" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000005"/><textElement><font fontName="DejaVu Sans" size="8"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_eliminasi})?"☑":"☐"]]></textFieldExpression></textField>
+			<staticText><reportElement x="26" y="40" width="430" height="11" uuid="d1e2f3a4-0202-0009-0000-00000000000f"/><textElement><font fontName="Tahoma" size="6"/></textElement><text><![CDATA[Gangguan pemenuhan kebutuhan eliminasi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="52" width="14" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000006"/><textElement><font fontName="DejaVu Sans" size="8"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_integritas_kulit})?"☑":"☐"]]></textFieldExpression></textField>
+			<staticText><reportElement x="26" y="52" width="430" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000010"/><textElement><font fontName="Tahoma" size="6"/></textElement><text><![CDATA[Gangguan integritas kulit]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="64" width="14" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000007"/><textElement><font fontName="DejaVu Sans" size="8"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_kurang_pengetahuan})?"☑":"☐"]]></textFieldExpression></textField>
+			<staticText><reportElement x="26" y="64" width="430" height="11" uuid="d1e2f3a4-0202-0009-0000-000000000011"/><textElement><font fontName="Tahoma" size="6"/></textElement><text><![CDATA[Kurang pengetahuan tentang penyakit]]></text></staticText>
 
 			<staticText><reportElement x="330" y="85" width="235" height="12" uuid="d1e2f3a4-0202-0009-0000-000000000008"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[Perawat/Bidan yang mengkaji]]></text></staticText>
 			<componentElement>
