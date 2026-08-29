@@ -177,17 +177,17 @@ where data_triase_igd.no_rawat = $P{norawat}]]>
 				<reportElement x="2" y="2" width="45" height="45"/>
 				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="50" y="0" width="300" height="15"/>
 				<textElement textAlignment="Center"><font fontName="Tahoma" size="11"/></textElement>
 				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="50" y="15" width="300" height="12"/>
 				<textElement textAlignment="Center"><font fontName="Tahoma" size="8"/></textElement>
 				<textFieldExpression><![CDATA[$P{alamatrs}+", "+$P{kotars}+", "+$P{propinsirs}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="50" y="27" width="300" height="12"/>
 				<textElement textAlignment="Center"><font fontName="Tahoma" size="8"/></textElement>
 				<textFieldExpression><![CDATA[$P{kontakrs}+" - "+$P{emailrs}]]></textFieldExpression>
@@ -199,16 +199,16 @@ where data_triase_igd.no_rawat = $P{norawat}]]>
 				<reportElement x="354" y="0" width="215" height="48"/>
 			</rectangle>
 			<staticText><reportElement x="358" y="1" width="70" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[No. RM :]]></text></staticText>
-			<textField><reportElement x="428" y="1" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[$F{no_rkm_medis}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="428" y="1" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[$F{no_rkm_medis}]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="358" y="12" width="70" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[Nama :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="428" y="12" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[$F{nm_pasien}+($F{jk}==null?"":" ("+$F{jk}+")")]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="428" y="12" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[$F{nm_pasien}+($F{jk}==null?"":" ("+$F{jk}+")")]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="358" y="23" width="70" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[Tgl Lahir/Umur :]]></text></staticText>
-			<textField><reportElement x="428" y="23" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[($F{tgl_lahir}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_lahir}))+($F{umur}==null?"":" / "+$F{umur}+" th")]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="428" y="23" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[($F{tgl_lahir}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_lahir}))+($F{umur}==null?"":" / "+$F{umur}+" th")]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="358" y="34" width="70" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[Tgl Masuk RS :]]></text></staticText>
-			<textField><reportElement x="428" y="34" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[($F{tgl_registrasi}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_registrasi}))+($F{jam_reg}==null?"":" "+new java.text.SimpleDateFormat("HH:mm").format($F{jam_reg}))]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="428" y="34" width="138" height="11"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[($F{tgl_registrasi}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_registrasi}))+($F{jam_reg}==null?"":" "+new java.text.SimpleDateFormat("HH:mm").format($F{jam_reg}))]]></textFieldExpression></textField>
 
 			<line><reportElement x="0" y="49" width="569" height="1"/></line>
 
@@ -216,77 +216,77 @@ where data_triase_igd.no_rawat = $P{norawat}]]>
 			<line><reportElement x="0" y="65" width="569" height="1"/></line>
 
 			<staticText><reportElement x="8" y="66" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Kontak Awal Pasien :]]></text></staticText>
-			<textField pattern="dd-MM-yyyy"><reportElement x="190" y="66" width="150" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kontak_awal_tanggal}]]></textFieldExpression></textField>
-			<textField pattern="HH:mm"><reportElement x="345" y="66" width="210" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kontak_awal_pukul}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" pattern="dd-MM-yyyy"><reportElement x="190" y="66" width="150" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kontak_awal_tanggal}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" pattern="HH:mm"><reportElement x="345" y="66" width="210" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kontak_awal_pukul}]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="80" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Cara Masuk :]]></text></staticText>
-			<textField><reportElement x="190" y="80" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{cara_masuk}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="190" y="80" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{cara_masuk}]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="94" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Sudah Terpasang :]]></text></staticText>
-			<textField isStretchWithOverflow="true">
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true">
 				<reportElement x="190" y="94" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement>
 				<textFieldExpression><![CDATA[((("Ya".equals($F{terpasang_infus})?"Infus, ":"")+("Ya".equals($F{terpasang_ngt})?"NGT, ":"")+("Ya".equals($F{terpasang_kateter_urin})?"Kateter Urin, ":"")).isEmpty())?"-":(("Ya".equals($F{terpasang_infus})?"Infus, ":"")+("Ya".equals($F{terpasang_ngt})?"NGT, ":"")+("Ya".equals($F{terpasang_kateter_urin})?"Kateter Urin, ":"")).replaceAll(", $","")]]></textFieldExpression>
 			</textField>
 
 			<staticText><reportElement x="8" y="108" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Asal Kedatangan :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="190" y="108" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{alasan_kedatangan}+(($F{keterangan_kedatangan}==null||$F{keterangan_kedatangan}.trim().isEmpty())?"":" ("+$F{keterangan_kedatangan}+")")]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="190" y="108" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{alasan_kedatangan}+(($F{keterangan_kedatangan}==null||$F{keterangan_kedatangan}.trim().isEmpty())?"":" ("+$F{keterangan_kedatangan}+")")]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="122" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Kendaraan :]]></text></staticText>
-			<textField><reportElement x="190" y="122" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kendaraan_tampil}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="190" y="122" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kendaraan_tampil}]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="136" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Identitas Pengantar :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="190" y="136" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[(($F{nama_pengantar}==null||$F{nama_pengantar}.trim().isEmpty())?"-":$F{nama_pengantar})+(($F{telp_pengantar}==null||$F{telp_pengantar}.trim().isEmpty())?"":" / "+$F{telp_pengantar})]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="190" y="136" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[(($F{nama_pengantar}==null||$F{nama_pengantar}.trim().isEmpty())?"-":$F{nama_pengantar})+(($F{telp_pengantar}==null||$F{telp_pengantar}.trim().isEmpty())?"":" / "+$F{telp_pengantar})]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="150" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Kasus :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="190" y="150" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kasus_tampil}+(($F{macam_kasus}==null)?"":" - "+$F{macam_kasus})]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="190" y="150" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kasus_tampil}+(($F{macam_kasus}==null)?"":" - "+$F{macam_kasus})]]></textFieldExpression></textField>
 			<line><reportElement x="0" y="164" width="569" height="1"/></line>
 
 			<staticText><reportElement mode="Opaque" backcolor="#F0F0DC" x="0" y="165" width="569" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[  MEKANISME TRAUMA]]></text></staticText>
 
 			<staticText><reportElement x="8" y="179" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[KKL :]]></text></staticText>
-			<textField isStretchWithOverflow="true">
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true">
 				<reportElement x="190" y="179" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement>
 				<textFieldExpression><![CDATA[(!"Ya".equals($F{kkl_tunggal})&&!"Ya".equals($F{kkl_dengan_lawan}))?"-":(("Ya".equals($F{kkl_tunggal})?"KKL Tunggal":"KKL vs "+($F{kkl_lawan}==null?"":$F{kkl_lawan}))+(($F{kkl_tempat_kejadian}==null||$F{kkl_tempat_kejadian}.trim().isEmpty())?"":", Tempat: "+$F{kkl_tempat_kejadian}))]]></textFieldExpression>
 			</textField>
 
 			<staticText><reportElement x="8" y="193" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Jatuh dari Ketinggian :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="190" y="193" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{jatuh_ketinggian})?"-":"Ya"+(($F{jatuh_ketinggian_keterangan}==null||$F{jatuh_ketinggian_keterangan}.trim().isEmpty())?"":" - "+$F{jatuh_ketinggian_keterangan})]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="190" y="193" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{jatuh_ketinggian})?"-":"Ya"+(($F{jatuh_ketinggian_keterangan}==null||$F{jatuh_ketinggian_keterangan}.trim().isEmpty())?"":" - "+$F{jatuh_ketinggian_keterangan})]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="207" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Luka Bakar :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="190" y="207" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{luka_bakar})?"-":"Ya"+(($F{luka_bakar_keterangan}==null||$F{luka_bakar_keterangan}.trim().isEmpty())?"":" - "+$F{luka_bakar_keterangan})]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="190" y="207" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{luka_bakar})?"-":"Ya"+(($F{luka_bakar_keterangan}==null||$F{luka_bakar_keterangan}.trim().isEmpty())?"":" - "+$F{luka_bakar_keterangan})]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="221" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Trauma Fisik :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="190" y="221" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{trauma_fisik})?"-":"Ya"+(($F{trauma_fisik_keterangan}==null||$F{trauma_fisik_keterangan}.trim().isEmpty())?"":" - "+$F{trauma_fisik_keterangan})]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="190" y="221" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{trauma_fisik})?"-":"Ya"+(($F{trauma_fisik_keterangan}==null||$F{trauma_fisik_keterangan}.trim().isEmpty())?"":" - "+$F{trauma_fisik_keterangan})]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="235" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Trauma Zat Kimia :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="190" y="235" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{trauma_zat_kimia})?"-":"Ya"+(($F{trauma_zat_kimia_keterangan}==null||$F{trauma_zat_kimia_keterangan}.trim().isEmpty())?"":" - "+$F{trauma_zat_kimia_keterangan})]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="190" y="235" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{trauma_zat_kimia})?"-":"Ya"+(($F{trauma_zat_kimia_keterangan}==null||$F{trauma_zat_kimia_keterangan}.trim().isEmpty())?"":" - "+$F{trauma_zat_kimia_keterangan})]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="249" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Trauma Zat Lainnya :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="190" y="249" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{trauma_zat_lainnya})?"-":"Ya"+(($F{trauma_zat_lainnya_keterangan}==null||$F{trauma_zat_lainnya_keterangan}.trim().isEmpty())?"":" - "+$F{trauma_zat_lainnya_keterangan})]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="190" y="249" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[!"Ya".equals($F{trauma_zat_lainnya})?"-":"Ya"+(($F{trauma_zat_lainnya_keterangan}==null||$F{trauma_zat_lainnya_keterangan}.trim().isEmpty())?"":" - "+$F{trauma_zat_lainnya_keterangan})]]></textFieldExpression></textField>
 			<line><reportElement x="0" y="263" width="569" height="1"/></line>
 
 			<staticText><reportElement x="8" y="264" width="180" height="30"/><textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Keluhan Utama :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="190" y="264" width="365" height="30"/><textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{keluhan_utama}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="190" y="264" width="365" height="30"/><textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{keluhan_utama}]]></textFieldExpression></textField>
 			<line><reportElement x="0" y="294" width="569" height="1"/></line>
 
 			<staticText><reportElement mode="Opaque" backcolor="#F0F0DC" x="0" y="295" width="569" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[  TANDA-TANDA VITAL]]></text></staticText>
 
 			<staticText><reportElement x="8" y="309" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Tekanan Darah / Nadi :]]></text></staticText>
-			<textField><reportElement x="190" y="309" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{tekanan_darah}+" mmHg   /   Nadi "+$F{nadi}+" x/menit"]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="190" y="309" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{tekanan_darah}+" mmHg   /   Nadi "+$F{nadi}+" x/menit"]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="323" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Pernapasan / Saturasi O2 :]]></text></staticText>
-			<textField><reportElement x="190" y="323" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{pernapasan}+" x/menit   /   SaO2 "+$F{saturasi_o2}+"%"]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="190" y="323" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{pernapasan}+" x/menit   /   SaO2 "+$F{saturasi_o2}+"%"]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="337" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Suhu / Nyeri :]]></text></staticText>
-			<textField><reportElement x="190" y="337" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{suhu}+" C   /   Nyeri "+$F{nyeri}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="190" y="337" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{suhu}+" C   /   Nyeri "+$F{nyeri}]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="351" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Kesadaran (AVPU) :]]></text></staticText>
-			<textField><reportElement x="190" y="351" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kesadaran}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="190" y="351" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{kesadaran}]]></textFieldExpression></textField>
 			<line><reportElement x="0" y="365" width="569" height="1"/></line>
 
 			<staticText><reportElement mode="Opaque" backcolor="#F0F0DC" x="0" y="366" width="569" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[  ANTROPOMETRI]]></text></staticText>
 			<staticText><reportElement x="8" y="380" width="180" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Berat Badan / Tinggi Badan :]]></text></staticText>
-			<textField><reportElement x="190" y="380" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{berat_badan}+" kg   /   "+$F{tinggi_badan}+" cm"]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="190" y="380" width="365" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{berat_badan}+" kg   /   "+$F{tinggi_badan}+" cm"]]></textFieldExpression></textField>
 			<line><reportElement x="0" y="394" width="569" height="1"/></line>
 
 			<staticText><reportElement mode="Opaque" backcolor="#F0F0DC" x="0" y="395" width="569" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[  TABEL SKOR EWS]]></text></staticText>
@@ -294,39 +294,39 @@ where data_triase_igd.no_rawat = $P{norawat}]]>
 			<staticText><reportElement mode="Opaque" backcolor="#EFEFEF" x="366" y="409" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[Skor (0-3)]]></text></staticText>
 
 			<staticText><reportElement x="8" y="423" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Kesadaran]]></text></staticText>
-			<textField><reportElement x="366" y="423" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_kesadaran}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="366" y="423" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_kesadaran}]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="437" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Tekanan Darah Sistolik]]></text></staticText>
-			<textField><reportElement x="366" y="437" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_tekanan_darah_sistolik}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="366" y="437" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_tekanan_darah_sistolik}]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="451" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Nadi]]></text></staticText>
-			<textField><reportElement x="366" y="451" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_nadi}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="366" y="451" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_nadi}]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="465" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Respirasi]]></text></staticText>
-			<textField><reportElement x="366" y="465" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_respirasi}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="366" y="465" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_respirasi}]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="479" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Temperatur]]></text></staticText>
-			<textField><reportElement x="366" y="479" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_temperatur}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="366" y="479" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_temperatur}]]></textFieldExpression></textField>
 
 			<staticText><reportElement x="8" y="493" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Saturasi O2]]></text></staticText>
-			<textField><reportElement x="366" y="493" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_saturasi_o2}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="366" y="493" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{skor_saturasi_o2}]]></textFieldExpression></textField>
 
 			<staticText><reportElement mode="Opaque" backcolor="#EFEFEF" x="8" y="507" width="358" height="14"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><text><![CDATA[TOTAL SKOR]]></text></staticText>
-			<textField><reportElement mode="Opaque" backcolor="#EFEFEF" x="366" y="507" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{total_skor}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement mode="Opaque" backcolor="#EFEFEF" x="366" y="507" width="189" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{total_skor}]]></textFieldExpression></textField>
 			<line><reportElement x="0" y="521" width="569" height="1"/></line>
 
 			<staticText><reportElement x="8" y="522" width="180" height="20"/><textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Catatan Khusus :]]></text></staticText>
-			<textField isStretchWithOverflow="true"><reportElement x="190" y="522" width="365" height="20"/><textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{catatan_khusus}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="190" y="522" width="365" height="20"/><textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{catatan_khusus}]]></textFieldExpression></textField>
 			<line><reportElement x="0" y="542" width="569" height="1"/></line>
 
 			<staticText><reportElement x="8" y="543" width="120" height="20"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Level Triage (PACS) :]]></text></staticText>
-			<textField><reportElement style="GayaLevelPacs" x="130" y="543" width="120" height="20"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{level_pacs}==null?"-":$F{level_pacs}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement style="GayaLevelPacs" x="130" y="543" width="120" height="20"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{level_pacs}==null?"-":$F{level_pacs}]]></textFieldExpression></textField>
 			<line><reportElement x="0" y="563" width="569" height="1"/></line>
 
 			<staticText><reportElement x="8" y="564" width="120" height="20"/><textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><text><![CDATA[Keputusan :]]></text></staticText>
 			<!-- [PACS] "Pukul :" dihapus - sudah terwakili oleh Kontak Awal Pasien di atas.
 			     Bar keputusan dilebarkan mengisi ruang yang kosong. -->
-			<textField isStretchWithOverflow="true"><reportElement style="GayaKeputusanPacs" x="130" y="564" width="425" height="20"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{keputusan_pacs}==null?"-":$F{keputusan_pacs}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement style="GayaKeputusanPacs" x="130" y="564" width="425" height="20"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="9" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{keputusan_pacs}==null?"-":$F{keputusan_pacs}]]></textFieldExpression></textField>
 			<line><reportElement x="0" y="584" width="569" height="1"/></line>
 
 			<!-- [PACS] Tanda tangan basah diganti QR Code verifikasi elektronik, pola
@@ -341,11 +341,11 @@ where data_triase_igd.no_rawat = $P{norawat}]]>
 					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
 				</jr:QRCode>
 			</componentElement>
-			<textField isStretchWithOverflow="true"><reportElement x="365" y="678" width="190" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{petugas_nama}==null?"":$F{petugas_nama}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true" isStretchWithOverflow="true"><reportElement x="365" y="678" width="190" height="14"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="8"/></textElement><textFieldExpression><![CDATA[$F{petugas_nama}==null?"":$F{petugas_nama}]]></textFieldExpression></textField>
 			<!-- [PACS] No. Ijin Praktek cuma terisi kalau petugas kebetulan seorang dokter
 			     (tabel dokter) - kosong utk perawat/staf lain, itu wajar. NIK selalu ada. -->
-			<textField><reportElement x="365" y="692" width="190" height="12"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[$P{noijinpraktek}==null||$P{noijinpraktek}.isEmpty()?"-":"No. Ijin Praktek: "+$P{noijinpraktek}]]></textFieldExpression></textField>
-			<textField><reportElement x="365" y="704" width="190" height="12"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA["NIK: "+($P{nikpetugas}==null?"":$P{nikpetugas})]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="365" y="692" width="190" height="12"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[$P{noijinpraktek}==null||$P{noijinpraktek}.isEmpty()?"-":"No. Ijin Praktek: "+$P{noijinpraktek}]]></textFieldExpression></textField>
+			<textField isBlankWhenNull="true"><reportElement x="365" y="704" width="190" height="12"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA["NIK: "+($P{nikpetugas}==null?"":$P{nikpetugas})]]></textFieldExpression></textField>
 		</band>
 	</title>
 </jasperReport>
