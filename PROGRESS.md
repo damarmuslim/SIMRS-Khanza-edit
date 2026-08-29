@@ -1655,8 +1655,6 @@ Supaya tidak menyimpan data menyesatkan: **sasaran** hanya disimpan kalau baris 
 
 ---
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 # Progress: Asuhan Gizi - Laporan "ASUPAN GIZI PASIEN" + Kolom Jam + Panel Ringkasan
 
 **Branch**: `feat/asuhan-gizi-cetak-rm` | **Tanggal**: 2026-08-27 | **Status**: selesai dev, menunggu pengujian langsung user
@@ -1735,6 +1733,7 @@ Karena ringkasan menggambarkan **record**-nya - bukan siapa yang sedang membukan
 - ⏳ `graphify update .` belum dijalankan untuk modul ini.
 
 ---
+
 # Progress: Resume Keperawatan / Kebidanan (RM 33)
 
 **Branch**: `feat/rm33-resume-keperawatan` (dari `main`) | **Tanggal**: 2026-08-28 | **Status**: selesai dev, menunggu pengujian langsung user
@@ -1781,7 +1780,64 @@ Formulir fisik mencetak tepat lima baris bernomor untuk masing-masing dari empat
 2. ✅ **`RMResumeKeperawatanKebidanan.java`** - GridBagLayout tulis tangan tanpa `.form`/GEN. `KOLOM_RM33` dan `nilaiRm33()` sama-sama dirakit dengan perulangan **berbentuk identik** atas konstanta `BLOK` - itulah yang menjamin urutan keduanya tidak bisa desinkron. Plus panel ringkasan HTML.
 3. ✅ **Menu**: item klik-kanan Rawat Inap (indeks 7, di bawah RM 21) + tombol menu utama di `initKhanzaLanjutan()`, keduanya **tanpa gerbang hak akses**.
 4. ✅ **Jasper `rptResumeKeperawatanKebidananRM33`** - 1 halaman F4 609×935 + QR tanda tangan. Disalin ke `report/` + `dist/report/` + `build/report/`.
-=======
+
+## Verifikasi yang Sudah Dijalankan
+
+- `ant jar` **BUILD SUCCESSFUL**.
+- **Nama kolom migrasi == `KOLOM_RM33` == jumlah `nilaiRm33()`**: cocok 100% (26 = 25 + `no_rawat`). Dibaca lewat **refleksi dari kelas terkompilasi**, bukan dari teks sumber. Pemeriksanya **diadu dulu dengan migrasi RM 21** dan memang gagal keras di sana - jadi hasil "cocok" bukan lolos kosong.
+- **Jalur `simpan()`, `tampil()`, `ganti()` yang SEBENARNYA** dipanggil ke DB dalam transaksi lalu di-ROLLBACK. Method aplikasinya sendiri yang dipanggil, bukan query-nya disalin. `koneksiDB.condb()` mengembalikan `Connection` **singleton statis** sehingga form dan `Sequel` berbagi koneksi dan transaksi membungkus keduanya. Nol sisa data uji.
+- **Data uji sengaja setengah kosong** (pelajaran RM 04): satu blok penuh tidak diisi sama sekali → 15 kolom NULL sesudah simpan, 14 sesudah ganti.
+- **3 gotcha JRXML nol pelanggaran**: 33 `textField` semuanya `isStretchWithOverflow`, 38 `staticText` semuanya height≥11, 10 band semuanya `splitType="Prevent"`, nol elemen melewati batas band. Seluruh 32 field dideklarasikan **dan** dipakai.
+- **Cetakan DILIHAT** dengan data pasien sungguhan lewat query cetak milik aplikasi (diambil refleksi dari `sqlCetak()`): ruangan RUANG DAHLIA (kamar terakhir) sementara tanggal masuk 28-07 (baris pertama) - aturan pindah kamar terbukti bekerja. Jenis kelamin "L" benar (pelajaran Asuhan Gizi diterapkan: ekspresi menerima `'L'` maupun `'Laki-Laki'`).
+- **Tata letak form DILIHAT** kedua tab dengan data terisi. `tambahPengisiBaris()` dipakai sejak awal (pelajaran RM 17-01).
+
+**Dua perbaikan yang hanya ketahuan karena hasilnya dilihat:**
+- Kotak NIP dilebarkan 80→110 px - NIP produksi berbentuk `12/09/1988/001` dan terpotong pada lebar 80.
+- Garis bawah Diagnosa Medis & Keluhan Utama **dihapus** - lembar fisik tidak punya garis di dua isian itu, dan garis Keluhan Utama menggantung jauh di bawah teksnya sehingga terbaca seperti baris kosong.
+
+## Belum Dikerjakan / Next Steps
+
+- ⏳ **Belum diuji langsung oleh user di `Aplikasi.bat`** - simpan/ganti, dan cetak lewat `JasperViewer` sungguhan.
+- ⏳ Perlu dipastikan ke petugas RM: apakah lima baris per blok memang cukup di lapangan.
+- ⏳ `master_rencana_keperawatan` berisi data uji-coba ("DIRAWAT", "DIPELUK", "TIDUR AJA", "BANGUN PAGI") di DB lokal. Tidak dipakai modul ini, tapi perlu dicek di produksi kalau nanti diputuskan ada dropdown.
+- ⏳ `graphify update .` belum dijalankan (percobaan terakhir berhenti sebelum selesai).
+
+## 📌 CATATAN: kandidat otomatisasi RM 33 (ditunda, atas permintaan user 2026-08-28)
+
+User: *"sepertinya masih bisa disesuaikan dikarenakan kemungkinan ada yang bisa diotomatisasi, tapi nanti saja, di-note saja."*
+
+Belum dikerjakan sama sekali - ini daftar kandidat beserta sumber datanya yang **sudah diverifikasi ada** di DB `aik`, supaya nanti tinggal diputuskan mana yang dipakai.
+
+### Yang SUDAH otomatis sekarang
+
+| Isian | Sumber |
+|---|---|
+| Identitas pasien | `reg_periksa` + `pasien` |
+| Tanggal masuk / keluar / ruangan | `kamar_inap` (+ `kamar` → `bangsal`) |
+| Tanggal & jam resume | waktu sekarang |
+| Perawat / Bidan | user yang sedang login |
+| Diagnosa Medis | `kamar_inap.diagnosa_akhir`, mundur ke `diagnosa_awal` |
+| Keluhan Utama | `penilaian_awal_keperawatan_ranap.keluhan_utama` |
+
+### Kandidat yang BELUM digarap
+
+| Blok | Sumber yang mungkin | Catatan |
+|---|---|---|
+| **Diagnosa Keperawatan yang Timbul** | `penilaian_awal_keperawatan_ranap_masalah` → `master_masalah_keperawatan` (13 masalah: Nyeri, Pola Tidur, Mobilitas/Aktivitas, Integritas Kulit, Infeksi, …) | **Kandidat terkuat** - konsepnya sama persis, hanya beda waktu perekaman (masuk vs pulang). Isinya kode 3 digit, perlu di-JOIN ke master untuk jadi teks |
+| **Tindakan Keperawatan** | (a) `penilaian_awal_keperawatan_ranap_rencana` → `master_rencana_keperawatan`; (b) `rawat_inap_pr` / `rawat_inap_drpr` (tindakan yang benar-benar dilakukan) | ⚠️ `master_rencana_keperawatan` di DB lokal berisi **data uji-coba** ("DIRAWAT", "DIPELUK", "TIDUR AJA", "BANGUN PAGI") - harus dicek dulu isinya di produksi. Sumber (b) lebih jujur karena itu tindakan riil, bukan rencana |
+| **Rencana Tindak Lanjut / Nasihat Pulang** | `resume_pasien_ranap`: `edukasi`, `dilanjutkan`, `kontrol`, `obat_pulang` | Datanya milik resume MEDIS (dokter). Bisa jadi bahan awal, tapi kata-katanya perlu disesuaikan ke bahasa keperawatan |
+| **Diagnosa Medis** (penyempurnaan) | `diagnosa_pasien` → `penyakit` (nama ICD), atau `resume_pasien_ranap.diagnosa_utama` | Sekarang hanya dari `kamar_inap`, yang sering kosong. Dari 5 baris `kamar_inap` yang dicek, `diagnosa_akhir`/`diagnosa_awal` mayoritas berisi "-" |
+| **Diagnosa yang Sudah Teratasi** | **tidak ada sumbernya** | Ini penilaian klinis perawat saat pasien pulang - tidak boleh ditebak sistem. Tetap manual |
+
+### Syarat yang harus dipatuhi kalau nanti dikerjakan
+
+1. **Usulan, bukan paksaan.** Pola yang sudah dipakai untuk Diagnosa Medis & Keluhan Utama: hanya diisikan kalau perawat **belum** menuliskan apa pun, jadi tidak pernah menimpa ketikan orang. Lembar ini ditandatangani perawat - isinya harus yang dia setujui, bukan yang sistem tebak.
+2. **Jangan diam-diam.** Kalau nanti ada pra-isi, perawat harus tahu mana yang berasal dari sistem dan mana yang dia ketik sendiri.
+3. **Cek dulu isinya di PRODUKSI**, bukan di DB lokal `aik`. Beberapa tabel master di lokal berisi data uji-coba.
+4. Batas lima baris per blok tetap berlaku - kalau sumber otomatisnya mengembalikan lebih dari lima, harus diputuskan mana yang dipotong.
+
+---
+
 # Progress: Catatan Perawat / Bidan (RM 32)
 
 **Branch**: `feat/rm32-catatan-perawat-bidan` (dari `main`) | **Tanggal**: 2026-08-28 | **Status**: selesai dev, menunggu pengujian langsung user
@@ -1867,121 +1923,10 @@ Query cetak gagal: `Illegal mix of collations (utf8mb4_general_ci,COERCIBLE) and
 3. **Nama berkas dari ketiga bagian kunci** — kalau hanya `no_rawat`, tanda tangan baris berikutnya akan menimpa yang sebelumnya.
 
 Isi catatan **ditampilkan sebelum** kotak tanda tangan: meminta orang menandatangani sesuatu yang tidak bisa dia baca bukan persetujuan.
->>>>>>> feat/rm32-catatan-perawat-bidan
-=======
-# Progress: Resume Rawat Jalan (RM 01)
-
-**Branch**: `feat/rm01-resume-rawat-jalan` (dari `main`) | **Tanggal**: 2026-08-28 | **Status**: selesai dev, menunggu pengujian langsung user
-
-## Hasil penelusuran DlgRawatJalan — permintaan user "adakah yang bisa diambil"
-
-`DlgRawatJalan` (14.616 baris) ternyata **bukan daftar, melainkan form entri SOAP rawat jalan** yang mengisi `pemeriksaan_ralan`. Dan tabel itu memuat hampir seluruh isi grid RM 01:
-
-| Kolom kertas | Sumber yang sudah ada |
-|---|---|
-| Tanggal / Jam | `pemeriksaan_ralan.tgl_perawatan` + `jam_rawat` |
-| DPJP | `reg_periksa.kd_dokter` → `dokter.nm_dokter` |
-| Diagnosa | `diagnosa_pasien` → `penyakit.nm_penyakit` |
-| Uraian Klinis | `keluhan` + `pemeriksaan` + `penilaian` (S/O/A) |
-| Rencana Penatalaksanaan | `rtl` + `instruksi` |
-| Catatan Penting | `evaluasi` |
-| Nama & Paraf | `nip` → `petugas.nama` |
-
-Sudah ada juga `rptFormulirSOAPDokter`, tapi bentuknya **prosa SOAP satu kunjungan per halaman** (612×1008) — bukan grid RM 01, jadi tidak bisa dipakai ulang.
-
-### Untuk tiga blok kepala — jawabannya jujur: hanya satu yang berguna
-
-| Blok | Ada di DlgRawatJalan? | Putusan |
-|---|---|---|
-| **ALERGI OBAT** | Ada widget `TAlergi` → `pemeriksaan_ralan.alergi`, tapi **per kunjungan**, `varchar(80)` satu baris (kertas minta 3), dan **terisi 0 dari 66 baris** | manual |
-| **RIWAYAT KESEHATAN** | `BtnRiwayat` membuka `RMRiwayatPerawatan` (37.653 baris) — itu **penampil**, bukan sumber 7 baris berkurasi. Yang berguna: **diagnosa lampau + tahun** | **diusulkan otomatis** |
-| **PERHATIAN KHUSUS** | Hanya **tombol pembuka** asesmennya; hasilnya tersebar di 8+ tabel (risiko jatuh saja punya 5 tabel terpisah + neonatus) | manual |
-
-## Keputusan User
-
-1. **Satu lembar per PASIEN**, menghimpun seluruh kunjungan rawat jalan.
-2. **Riwayat diusulkan otomatis** dari diagnosa lampau; alergi & perhatian khusus manual.
-
-## Tiga keputusan desain yang diambil sendiri
-
-1. **Berkunci `no_rkm_medis`** — pertama di antara semua modul kita; RM 32 dan RM 33 berkunci `no_rawat`. Konsekuensinya menyebar: form dipanggil dengan No.RM, daftar tidak disaring tanggal, grid dirakit lintas kunjungan.
-2. **Grid tidak diketik ulang** — dirakit dari `pemeriksaan_ralan` saat menampilkan dan mencetak. Menggandakannya berarti dua sumber kebenaran untuk catatan klinis yang sama.
-3. **Tanpa gerbang hak akses**, mengikuti RM 21 dan RM 33.
-
-## Usulan riwayat disaring UNIK per penyakit
-
-Bukan hiasan: pasien uji (RUDI SANTOSO, 000022) punya **17 catatan SOAP tapi hanya 7 diagnosa berbeda**. Tanpa `group by nm_penyakit`, tujuh baris riwayat di kertas habis oleh satu penyakit yang diulang-ulang. Baris yang sudah diketik petugas tidak pernah ditimpa.
-
-Tahun hanya disimpan kalau baris riwayatnya diisi — tanpa gerbang itu, tahun yang tertinggal dari pengisian sebelumnya ikut tersimpan untuk baris kosong.
-
-## Cacat yang ditemukan saat merancang, sebelum sempat terjadi
-
-Rancangan awal mengambil identitas pasien dari **query**. Pasien yang sudah punya lembar RM 01 tapi **belum punya satu pun catatan SOAP** menghasilkan query nol baris — dan seluruh kepala lembar ikut hilang. Identitas dan blok kepala dipindah jadi **parameter**, ditambah `whenNoDataType="AllSectionsNoDetail"`. Kasus ini **diuji khusus**.
-
-## BUG DITEMUKAN DARI RENDER
-
-Baris dengan "Rencana Penatalaksanaan" panjang **meluber keluar kotaknya**: `isStretchWithOverflow` membuat textField dan band tumbuh, tapi `<rectangle>` dan `<line>` pembentuk kotaknya tingginya tetap, sehingga teks resep panjang tumpah ke area baris berikutnya. Diperbaiki dengan `stretchType="RelativeToBandHeight"` pada 7 elemen di band detail.
-
-Hanya ketahuan karena cetakannya benar-benar dilihat.
->>>>>>> feat/rm01-resume-rawat-jalan
 
 ## Verifikasi yang Sudah Dijalankan
 
 - `ant jar` **BUILD SUCCESSFUL**.
-<<<<<<< HEAD
-<<<<<<< HEAD
-- **Nama kolom migrasi == `KOLOM_RM33` == jumlah `nilaiRm33()`**: cocok 100% (26 = 25 + `no_rawat`). Dibaca lewat **refleksi dari kelas terkompilasi**, bukan dari teks sumber. Pemeriksanya **diadu dulu dengan migrasi RM 21** dan memang gagal keras di sana - jadi hasil "cocok" bukan lolos kosong.
-- **Jalur `simpan()`, `tampil()`, `ganti()` yang SEBENARNYA** dipanggil ke DB dalam transaksi lalu di-ROLLBACK. Method aplikasinya sendiri yang dipanggil, bukan query-nya disalin. `koneksiDB.condb()` mengembalikan `Connection` **singleton statis** sehingga form dan `Sequel` berbagi koneksi dan transaksi membungkus keduanya. Nol sisa data uji.
-- **Data uji sengaja setengah kosong** (pelajaran RM 04): satu blok penuh tidak diisi sama sekali → 15 kolom NULL sesudah simpan, 14 sesudah ganti.
-- **3 gotcha JRXML nol pelanggaran**: 33 `textField` semuanya `isStretchWithOverflow`, 38 `staticText` semuanya height≥11, 10 band semuanya `splitType="Prevent"`, nol elemen melewati batas band. Seluruh 32 field dideklarasikan **dan** dipakai.
-- **Cetakan DILIHAT** dengan data pasien sungguhan lewat query cetak milik aplikasi (diambil refleksi dari `sqlCetak()`): ruangan RUANG DAHLIA (kamar terakhir) sementara tanggal masuk 28-07 (baris pertama) - aturan pindah kamar terbukti bekerja. Jenis kelamin "L" benar (pelajaran Asuhan Gizi diterapkan: ekspresi menerima `'L'` maupun `'Laki-Laki'`).
-- **Tata letak form DILIHAT** kedua tab dengan data terisi. `tambahPengisiBaris()` dipakai sejak awal (pelajaran RM 17-01).
-
-**Dua perbaikan yang hanya ketahuan karena hasilnya dilihat:**
-- Kotak NIP dilebarkan 80→110 px - NIP produksi berbentuk `12/09/1988/001` dan terpotong pada lebar 80.
-- Garis bawah Diagnosa Medis & Keluhan Utama **dihapus** - lembar fisik tidak punya garis di dua isian itu, dan garis Keluhan Utama menggantung jauh di bawah teksnya sehingga terbaca seperti baris kosong.
-
-## Belum Dikerjakan / Next Steps
-
-- ⏳ **Belum diuji langsung oleh user di `Aplikasi.bat`** - simpan/ganti, dan cetak lewat `JasperViewer` sungguhan.
-- ⏳ Perlu dipastikan ke petugas RM: apakah lima baris per blok memang cukup di lapangan.
-- ⏳ `master_rencana_keperawatan` berisi data uji-coba ("DIRAWAT", "DIPELUK", "TIDUR AJA", "BANGUN PAGI") di DB lokal. Tidak dipakai modul ini, tapi perlu dicek di produksi kalau nanti diputuskan ada dropdown.
-- ⏳ `graphify update .` belum dijalankan (percobaan terakhir berhenti sebelum selesai).
-
-## 📌 CATATAN: kandidat otomatisasi RM 33 (ditunda, atas permintaan user 2026-08-28)
-
-User: *"sepertinya masih bisa disesuaikan dikarenakan kemungkinan ada yang bisa diotomatisasi, tapi nanti saja, di-note saja."*
-
-Belum dikerjakan sama sekali - ini daftar kandidat beserta sumber datanya yang **sudah diverifikasi ada** di DB `aik`, supaya nanti tinggal diputuskan mana yang dipakai.
-
-### Yang SUDAH otomatis sekarang
-
-| Isian | Sumber |
-|---|---|
-| Identitas pasien | `reg_periksa` + `pasien` |
-| Tanggal masuk / keluar / ruangan | `kamar_inap` (+ `kamar` → `bangsal`) |
-| Tanggal & jam resume | waktu sekarang |
-| Perawat / Bidan | user yang sedang login |
-| Diagnosa Medis | `kamar_inap.diagnosa_akhir`, mundur ke `diagnosa_awal` |
-| Keluhan Utama | `penilaian_awal_keperawatan_ranap.keluhan_utama` |
-
-### Kandidat yang BELUM digarap
-
-| Blok | Sumber yang mungkin | Catatan |
-|---|---|---|
-| **Diagnosa Keperawatan yang Timbul** | `penilaian_awal_keperawatan_ranap_masalah` → `master_masalah_keperawatan` (13 masalah: Nyeri, Pola Tidur, Mobilitas/Aktivitas, Integritas Kulit, Infeksi, …) | **Kandidat terkuat** - konsepnya sama persis, hanya beda waktu perekaman (masuk vs pulang). Isinya kode 3 digit, perlu di-JOIN ke master untuk jadi teks |
-| **Tindakan Keperawatan** | (a) `penilaian_awal_keperawatan_ranap_rencana` → `master_rencana_keperawatan`; (b) `rawat_inap_pr` / `rawat_inap_drpr` (tindakan yang benar-benar dilakukan) | ⚠️ `master_rencana_keperawatan` di DB lokal berisi **data uji-coba** ("DIRAWAT", "DIPELUK", "TIDUR AJA", "BANGUN PAGI") - harus dicek dulu isinya di produksi. Sumber (b) lebih jujur karena itu tindakan riil, bukan rencana |
-| **Rencana Tindak Lanjut / Nasihat Pulang** | `resume_pasien_ranap`: `edukasi`, `dilanjutkan`, `kontrol`, `obat_pulang` | Datanya milik resume MEDIS (dokter). Bisa jadi bahan awal, tapi kata-katanya perlu disesuaikan ke bahasa keperawatan |
-| **Diagnosa Medis** (penyempurnaan) | `diagnosa_pasien` → `penyakit` (nama ICD), atau `resume_pasien_ranap.diagnosa_utama` | Sekarang hanya dari `kamar_inap`, yang sering kosong. Dari 5 baris `kamar_inap` yang dicek, `diagnosa_akhir`/`diagnosa_awal` mayoritas berisi "-" |
-| **Diagnosa yang Sudah Teratasi** | **tidak ada sumbernya** | Ini penilaian klinis perawat saat pasien pulang - tidak boleh ditebak sistem. Tetap manual |
-
-### Syarat yang harus dipatuhi kalau nanti dikerjakan
-
-1. **Usulan, bukan paksaan.** Pola yang sudah dipakai untuk Diagnosa Medis & Keluhan Utama: hanya diisikan kalau perawat **belum** menuliskan apa pun, jadi tidak pernah menimpa ketikan orang. Lembar ini ditandatangani perawat - isinya harus yang dia setujui, bukan yang sistem tebak.
-2. **Jangan diam-diam.** Kalau nanti ada pra-isi, perawat harus tahu mana yang berasal dari sistem dan mana yang dia ketik sendiri.
-3. **Cek dulu isinya di PRODUKSI**, bukan di DB lokal `aik`. Beberapa tabel master di lokal berisi data uji-coba.
-4. Batas lima baris per blok tetap berlaku - kalau sumber otomatisnya mengembalikan lebih dari lima, harus diputuskan mana yang dipotong.
-=======
 - Migrasi diimport; kolom baru terbukti mendarat di **ordinal 6 dan 7**.
 - **Webapp dijalankan sungguhan lewat HTTP**, bukan dibaca saja: disalin ke `C:\xampp\htdocs\webapps\` (tempat webapp **benar-benar dilayani**; folder proyek hanya salinan sumber, md5 keduanya identik), login → halaman TTD menampilkan nama pasien, ruangan hasil JOIN `kamar_inap`, isi catatan, dan ALKES dengan benar.
 - **JPEG asli di-POST** ke `storeTtd.php`: berkas tertulis 3907 byte, path masuk kolom, antrian otomatis kosong, dan berkasnya terbukti bisa diambil lewat URL http (200, image/jpeg).
@@ -2054,8 +1999,67 @@ Yang **belum** dikonfirmasi user: menandatangani di HP/tablet sungguhan, dan men
 | Asuhan Gizi | `feat/asuhan-gizi-cetak-rm` | menunggu tes, belum digabung |
 | RM 33 Resume Keperawatan/Kebidanan | `feat/rm33-resume-keperawatan` | menunggu tes, belum digabung |
 | RM 32 Catatan Perawat/Bidan | `feat/rm32-catatan-perawat-bidan` | sebagian sudah dicoba user, belum digabung |
->>>>>>> feat/rm32-catatan-perawat-bidan
-=======
+
+---
+
+# Progress: Resume Rawat Jalan (RM 01)
+
+**Branch**: `feat/rm01-resume-rawat-jalan` (dari `main`) | **Tanggal**: 2026-08-28 | **Status**: selesai dev, menunggu pengujian langsung user
+
+## Hasil penelusuran DlgRawatJalan — permintaan user "adakah yang bisa diambil"
+
+`DlgRawatJalan` (14.616 baris) ternyata **bukan daftar, melainkan form entri SOAP rawat jalan** yang mengisi `pemeriksaan_ralan`. Dan tabel itu memuat hampir seluruh isi grid RM 01:
+
+| Kolom kertas | Sumber yang sudah ada |
+|---|---|
+| Tanggal / Jam | `pemeriksaan_ralan.tgl_perawatan` + `jam_rawat` |
+| DPJP | `reg_periksa.kd_dokter` → `dokter.nm_dokter` |
+| Diagnosa | `diagnosa_pasien` → `penyakit.nm_penyakit` |
+| Uraian Klinis | `keluhan` + `pemeriksaan` + `penilaian` (S/O/A) |
+| Rencana Penatalaksanaan | `rtl` + `instruksi` |
+| Catatan Penting | `evaluasi` |
+| Nama & Paraf | `nip` → `petugas.nama` |
+
+Sudah ada juga `rptFormulirSOAPDokter`, tapi bentuknya **prosa SOAP satu kunjungan per halaman** (612×1008) — bukan grid RM 01, jadi tidak bisa dipakai ulang.
+
+### Untuk tiga blok kepala — jawabannya jujur: hanya satu yang berguna
+
+| Blok | Ada di DlgRawatJalan? | Putusan |
+|---|---|---|
+| **ALERGI OBAT** | Ada widget `TAlergi` → `pemeriksaan_ralan.alergi`, tapi **per kunjungan**, `varchar(80)` satu baris (kertas minta 3), dan **terisi 0 dari 66 baris** | manual |
+| **RIWAYAT KESEHATAN** | `BtnRiwayat` membuka `RMRiwayatPerawatan` (37.653 baris) — itu **penampil**, bukan sumber 7 baris berkurasi. Yang berguna: **diagnosa lampau + tahun** | **diusulkan otomatis** |
+| **PERHATIAN KHUSUS** | Hanya **tombol pembuka** asesmennya; hasilnya tersebar di 8+ tabel (risiko jatuh saja punya 5 tabel terpisah + neonatus) | manual |
+
+## Keputusan User
+
+1. **Satu lembar per PASIEN**, menghimpun seluruh kunjungan rawat jalan.
+2. **Riwayat diusulkan otomatis** dari diagnosa lampau; alergi & perhatian khusus manual.
+
+## Tiga keputusan desain yang diambil sendiri
+
+1. **Berkunci `no_rkm_medis`** — pertama di antara semua modul kita; RM 32 dan RM 33 berkunci `no_rawat`. Konsekuensinya menyebar: form dipanggil dengan No.RM, daftar tidak disaring tanggal, grid dirakit lintas kunjungan.
+2. **Grid tidak diketik ulang** — dirakit dari `pemeriksaan_ralan` saat menampilkan dan mencetak. Menggandakannya berarti dua sumber kebenaran untuk catatan klinis yang sama.
+3. **Tanpa gerbang hak akses**, mengikuti RM 21 dan RM 33.
+
+## Usulan riwayat disaring UNIK per penyakit
+
+Bukan hiasan: pasien uji (RUDI SANTOSO, 000022) punya **17 catatan SOAP tapi hanya 7 diagnosa berbeda**. Tanpa `group by nm_penyakit`, tujuh baris riwayat di kertas habis oleh satu penyakit yang diulang-ulang. Baris yang sudah diketik petugas tidak pernah ditimpa.
+
+Tahun hanya disimpan kalau baris riwayatnya diisi — tanpa gerbang itu, tahun yang tertinggal dari pengisian sebelumnya ikut tersimpan untuk baris kosong.
+
+## Cacat yang ditemukan saat merancang, sebelum sempat terjadi
+
+Rancangan awal mengambil identitas pasien dari **query**. Pasien yang sudah punya lembar RM 01 tapi **belum punya satu pun catatan SOAP** menghasilkan query nol baris — dan seluruh kepala lembar ikut hilang. Identitas dan blok kepala dipindah jadi **parameter**, ditambah `whenNoDataType="AllSectionsNoDetail"`. Kasus ini **diuji khusus**.
+
+## BUG DITEMUKAN DARI RENDER
+
+Baris dengan "Rencana Penatalaksanaan" panjang **meluber keluar kotaknya**: `isStretchWithOverflow` membuat textField dan band tumbuh, tapi `<rectangle>` dan `<line>` pembentuk kotaknya tingginya tetap, sehingga teks resep panjang tumpah ke area baris berikutnya. Diperbaiki dengan `stretchType="RelativeToBandHeight"` pada 7 elemen di band detail.
+
+Hanya ketahuan karena cetakannya benar-benar dilihat.
+
+## Verifikasi yang Sudah Dijalankan
+
+- `ant jar` **BUILD SUCCESSFUL**.
 - Migrasi diimport: 27 kolom, FK ke `pasien`; `pemeriksaan_ralan` tetap 66 baris, `user` tetap 1215 kolom.
 - **Jalur `setNoRm`, `usulkanRiwayat`, `simpan`, `tampil`, `ganti`, dan query grid yang SEBENARNYA** dipanggil ke DB dalam transaksi lalu di-ROLLBACK — method aplikasinya sendiri lewat refleksi. Nol sisa data.
 - Data uji **sengaja setengah kosong**: 2 kolom NULL sesudah simpan, 1 sesudah ganti. Grid mengembalikan 17 baris dengan DPJP dan diagnosa ter-resolve.
@@ -2071,4 +2075,3 @@ Yang **belum** dikonfirmasi user: menandatangani di HP/tablet sungguhan, dan men
 - ⏳ **Data `pemeriksaan_ralan` di DB lokal isinya uji-coba** ("tes", "asas", "qwqw"). Bentuk cetakan dengan catatan SOAP sungguhan yang panjang belum pernah terlihat.
 - ⏳ Beberapa baris grid punya kolom "Nama & Paraf" kosong karena `pemeriksaan_ralan.nip` tidak ada padanannya di tabel `petugas`. Sudah ditangani dengan `left join` supaya barisnya tetap muncul, tapi perlu dicek apakah di produksi juga begitu.
 - ⏳ `graphify update .` belum dijalankan.
->>>>>>> feat/rm01-resume-rawat-jalan
