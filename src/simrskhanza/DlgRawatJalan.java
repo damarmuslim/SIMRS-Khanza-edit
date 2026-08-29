@@ -7828,6 +7828,38 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     }
 
     /**
+     * [RM 02-2] Membuka Asesmen Awal Keperawatan di Instalasi Rawat Jalan.
+     *
+     * <p>Terpisah dari RM 02-1: yang ini diisi PERAWAT/BIDAN, yang itu diisi
+     * dokter. Tabelnya pun terpisah, tidak menumpang
+     * {@code penilaian_awal_keperawatan_ralan} yang sudah dipakai form
+     * "Pengkajian Awal Keperawatan Rawat Jalan" bawaan Khanza beserta 13 tabel
+     * turunannya - lihat catatan kelas {@code RMAsesmenAwalKeperawatanRalan}.</p>
+     *
+     * <p>Blok Balita dan Kesehatan Reproduksi di dalamnya BERSYARAT: masing-
+     * masing hanya tampil untuk pasien di bawah 5 tahun dan pasien perempuan.
+     * Karena itu {@code setNoRm} dipanggil setelah form terbentuk - identitas
+     * pasienlah yang menentukan blok mana yang dirakit tampil.</p>
+     *
+     * <p>Tanpa pengecekan hak akses, mengikuti RM 21/33/01/02-1.</p>
+     */
+    private void bukaAsesmenAwalKeperawatan() {
+        if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+            TCari.requestFocus();
+            return;
+        }
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        rekammedis.RMAsesmenAwalKeperawatanRalan form=new rekammedis.RMAsesmenAwalKeperawatanRalan(null,false);
+        form.isCek();
+        form.setNoRm(TNoRw.getText(),new Date());
+        form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        form.setLocationRelativeTo(internalFrame1);
+        form.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    /**
      * [RM 27-1] Mencetak Catatan Perkembangan Pasien Terintegrasi (CPPT).
      *
      * <p>CPPT berlaku untuk rawat jalan MAUPUN rawat inap - keputusan user.
@@ -14313,6 +14345,14 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         btnAsesmenAwal.setPreferredSize(new java.awt.Dimension(190, 23));
         btnAsesmenAwal.addActionListener(evt -> bukaAsesmenMedisAwal());
         FormMenu.add(btnAsesmenAwal);
+        // [RM 02-2] Asesmen Awal Keperawatan Rawat Jalan. Variabel LOKAL, sama
+        // seperti tiga tombol di atasnya.
+        widget.Button btnAsesmenKeperawatan = new widget.Button();
+        btnAsesmenKeperawatan.setText("Asesmen Kep. Awal (RM 02-2)");
+        btnAsesmenKeperawatan.setToolTipText("Pemeriksaan fisik, pola kebiasaan, balita, reproduksi, psikososial");
+        btnAsesmenKeperawatan.setPreferredSize(new java.awt.Dimension(190, 23));
+        btnAsesmenKeperawatan.addActionListener(evt -> bukaAsesmenAwalKeperawatan());
+        FormMenu.add(btnAsesmenKeperawatan);
         FormMenu.add(BtnResepObat);
         FormMenu.add(BtnResepIterasiBPJS);
         FormMenu.add(BtnCopyResep);

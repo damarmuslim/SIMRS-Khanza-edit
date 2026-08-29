@@ -2156,3 +2156,102 @@ Query gabungannya diletakkan **di dalam `.jasper`** dengan `$P{norawat}` justru 
 - ⏳ **`catatan_adime_gizi` kosong** di DB lokal — cabang ADIME belum pernah terlihat berisi. Perlu dipastikan apakah di produksi memang dipakai; kalau tidak pernah diisi, kolom Profesi hanya akan berisi profesi pengisi SOAP.
 - ⏳ Beberapa `petugas` punya `kd_jbtn` yang menunjuk jabatan bernama `-` (J001), sehingga kolom Profesi tercetak `-`. Itu data master yang perlu dirapikan petugas, bukan bug.
 - ⏳ Belum dilihat perilakunya saat catatan sangat banyak (>6 baris) sehingga berlembar-lembar.
+
+
+# Progress: Asesmen Medis Awal Rawat Jalan (RM 02-1)
+
+Diisi DOKTER, satu lembar per kunjungan rawat jalan.
+
+## Yang dibuat
+- `sik_asesmen_medis_awal_ralan_rm02_1.sql` — tabel `asesmen_medis_awal_ralan`, 61 kolom.
+- `src/rekammedis/RMAsesmenMedisAwalRalan.java` — form GridBagLayout tulis tangan, tanpa `.form`.
+- `report/rptAsesmenMedisAwalRalanRM02.jrxml` — 1 halaman F4, enam seksi.
+- Tombol "Asesmen Medis Awal (RM 02-1)" di FormMenu `DlgRawatJalan`, variabel LOKAL.
+
+## Keputusan
+- **Tabel baru**, keputusan user ("takut menimpa yang lainnya") dan alasannya tepat. Tiga tabel yang sempat dipertimbangkan semuanya bermasalah: `asesmen_pendidikan_pasien_ranap` (RM 21) isinya sama persis untuk blok edukasi tapi PK-nya `no_rawat` saja sehingga akan saling menimpa; `edukasi_pasien_keluarga_rj` bentuknya berbeda jauh dan tidak punya "tingkatan pendidikan"; `penilaian_medis_ralan` dipakai form bawaan Khanza beserta 11 tabel turunan.
+- **Tingkat risiko jatuh TIDAK disimpan** — ia turunan murni dari dua jawaban Get Up and Go. Dihitung di form (label berubah saat radio diklik) dan di ekspresi cetakan.
+- **Klinik diusulkan, tidak ditebak** — poli yang tidak cocok dibiarkan KOSONG supaya dokter memilih sendiri.
+
+## Verifikasi
+- `ant jar` BUILD SUCCESSFUL. Nama kolom migrasi == `KOLOM_RM02` == jumlah `nilaiRm02()` cocok 100% lewat refleksi, pemeriksanya diadu dengan migrasi RM 33 dan gagal keras di sana.
+- Jalur SQL sebenarnya dijalankan dalam transaksi lalu ROLLBACK, data uji sengaja setengah kosong.
+- Cetakan DILIHAT: 1 halaman, "Tingkat risiko : BERESIKO" terhitung benar, QR ter-render.
+
+## Sisa
+- ⏳ Belum diuji langsung oleh user di `Aplikasi.bat`.
+- ⏳ Migrasi belum dijalankan di produksi.
+
+
+# Progress: Asesmen Awal Keperawatan di Instalasi Rawat Jalan (RM 02-2 / RM 02-3)
+
+Diisi PERAWAT/BIDAN, satu lembar per kunjungan rawat jalan. Pasangan RM 02-1 yang diisi dokter.
+
+## Yang dibuat
+- `sik_asesmen_awal_keperawatan_ralan_rm02_2.sql` — tabel `asesmen_awal_keperawatan_ralan`, **106 kolom**, `ROW_FORMAT=DYNAMIC`. **Sudah diimport ke `aik`** atas instruksi eksplisit user.
+- `src/rekammedis/RMAsesmenAwalKeperawatanRalan.java` — form 8 seksi, GridBagLayout tulis tangan, tanpa `.form`.
+- `report/rptAsesmenAwalKeperawatanRalanRM02.jrxml` — 2 halaman F4, 9 band.
+- Tombol "Asesmen Kep. Awal (RM 02-2)" di FormMenu `DlgRawatJalan`, variabel LOKAL sehingga area deklarasi blok GEN tidak tersentuh.
+
+## Keputusan besar
+
+### Tabel baru, tidak menumpang `penilaian_awal_keperawatan_ralan`
+Tabel itu (57 kolom, 8 baris) sebagian isinya cocok — TTV, keluhan utama, RPD/RPK, nyeri, risiko jatuh, skrining gizi. Tapi ia melayani form "Pengkajian Awal Keperawatan Rawat Jalan" bawaan Khanza yang bentuknya lain beserta 13 tabel turunan per kelompok pasien, dan TIDAK punya blok terbesar kertas ini: pemeriksaan fisik 20 regio, pola kebiasaan, pertumbuhan balita, kesehatan reproduksi. Situasinya sama persis dengan RM 02-1.
+
+### Satu kolom per REGIO, bukan per kotak centang
+Kertasnya punya ~130 kotak centang hanya untuk pemeriksaan fisik. Satu kolom ENUM per kotak akan membuat tabelnya ~235 kolom. Yang dipakai: tiap regio = SATU teks berisi temuan yang dicentang, dipisah koma. Kotak centangnya tetap ada di form; penggabungan terjadi di `GrupCentang.nilai()`, pemulihannya di `GrupCentang.set()`.
+
+Potongan yang **tidak dikenali** jatuh ke kotak "Lain-lain". Itu membuat data lama tetap bisa dibuka kalau daftar pilihannya kelak berubah. Terbukti saat uji: "Cekung" bukan pilihan yang terdaftar dan benar masuk ke Lain-lain.
+
+Konsekuensi yang disadari: temuan hanya bisa dicari dengan LIKE, tidak bisa diagregasi rapi per temuan.
+
+### Urutan temuan DINORMALKAN, bukan dipertahankan
+`nilai()` menelusuri kotak centang menurut urutan daftar pilihan, jadi teks yang dibaca dari database bisa pulang dengan urutan berbeda dari saat disimpan. Isinya sama persis. Ini ketahuan saat uji round-trip ("Bising usus meningkat, Nyeri tekan" pulang jadi "Nyeri tekan, Bising usus meningkat") — harapan harness-nya yang keliru, bukan kodenya. Perilakunya disengaja supaya cetakan selalu mengikuti urutan kertas, dan sudah didokumentasikan di javadoc `GrupCentang.nilai()`.
+
+### Kolom dan nilai dijaga oleh SATU peta
+Berbeda dari RM 02-1 yang memakai dua daftar sejajar (`KOLOM_RM02` + `nilaiRm02()`) yang harus dijaga manual, di sini tiap kolom didaftarkan bersama kendalinya di `kendali`. Simpan dan muat sama-sama menelusuri `KOLOM` atas peta itu, jadi salah urutan secara struktural tidak mungkin — jenis bug yang sudah tiga kali kejadian di proyek ini. Constructor memanggil `periksaPemetaan()` yang melempar kalau ada kolom tanpa kendali ATAU kendali tanpa kolom.
+
+### Dua blok BERSYARAT — permintaan user
+"untuk blok balita buat jika balita maka muncul isian menu nya jika tidak maka tidak usah dimunculkan seperti form yang lain".
+
+- Blok **BALITA** muncul kalau `sttsumur` Bl/Hr, atau Th dengan umur < 5.
+- Blok **KESEHATAN REPRODUKSI** diberi perlakuan sama: hanya untuk pasien perempuan.
+
+Bersyarat di LAYAR dan di KERTAS (`printWhenExpression`) — lembar pasien laki-laki dewasa tidak memuat kotak Balita kosong. Aturan umurnya ditaruh di query juga (alias `balita`) supaya layar dan kertas memakai satu rumus, bukan dua yang bisa berbeda diam-diam.
+
+**Pengaman:** kalau recordnya sudah berisi data pada blok itu, bloknya tetap ditampilkan/dicetak walau syaratnya tidak lagi terpenuhi. Tanpa itu, balita yang ulang tahun kelima akan kehilangan akses ke datanya sendiri.
+
+## Bug yang ditemukan dan bagaimana ketahuannya
+
+### 1. Row size too large — ketahuan saat import PERTAMA GAGAL
+```
+ERROR 1118 (42000) at line 45: Row size too large (> 8126)
+```
+Versi pertama migrasi memakai VARCHAR(150..400) per regio. Jumlah kolomnya bukan penyebabnya — PANJANG VARCHAR yang dijumlahkan: 20 regio yang masing-masing menampung dua belas temuan sudah menghabiskan >5 KB sendirian.
+
+Obatnya: semua kolom teks bebas panjang jadi `TEXT` (disimpan di luar baris, hanya menitipkan penunjuk 20 byte), kolom pendek tetap VARCHAR. **`ROW_FORMAT=DYNAMIC` ditulis eksplisit** dan itu penting: pada ROW_FORMAT COMPACT tiap TEXT masih menitipkan 768 byte pertama di dalam baris, jadi 50 kolom TEXT akan menabrak batas yang sama persis lagi.
+
+Ini obat yang sama untuk `penilaian_awal` RM 19 yang sudah mentok di 442 kolom — belum dikerjakan, dicatat supaya tidak dicari ulang.
+
+### 2. Seluruh isian kosong tercetak "null" — ketahuan HANYA dari MELIHAT
+`isBlankWhenNull="true"` cuma bekerja kalau SELURUH ekspresi bernilai null. Begitu digabung jadi `": "+$F{kepala}`, hasilnya teks `": null"` yang tercetak apa adanya. Tidak ada satu pun pemeriksaan angka yang bisa menangkap ini — hanya render lalu lihat.
+
+Diperbaiki di 58 ekspresi (`($F{x}==null?"":$F{x})`), termasuk empat di kop yang sebenarnya jarang null (`tgl_lahir` bisa null kalau tanggal lahirnya `0000-00-00`).
+
+## Verifikasi
+- `ant jar` **BUILD SUCCESSFUL** (tiga kali: form, penyambungan tombol, sesudah dokumentasi).
+- Nama + urutan + jumlah kolom migrasi == `KOLOM` **cocok 100%** (106 = 105 + PK), dibaca lewat **refleksi kelas terkompilasi**. Pemeriksa `CekKolom2` diadu dengan migrasi RM 02-1 → **gagal keras**, jadi hasil "cocok" bukan lolos kosong.
+- Constructor terbentuk → `periksaPemetaan()` lolos. `nilai(kolom)` dipanggil untuk 105 kolom, nol yang melempar.
+- **Blok bersyarat diuji dengan tiga pasien nyata**: balita → Balita tampil / Repro tidak; perempuan dewasa → kebalikannya; laki dewasa → keduanya tidak. Semua sesuai.
+- Jalur `setNoRm`, `simpan`, `tampil`, `getData`, `ganti` yang SEBENARNYA dijalankan ke DB dalam transaksi lalu **ROLLBACK**, lewat method aplikasinya sendiri. Data uji SENGAJA setengah kosong: 37 kolom terisi / 69 NULL sesudah simpan, 38 / 68 sesudah ganti. **Nol sisa data uji.**
+- Round-trip `GrupCentang` diuji lewat DB, bukan hanya di memori: teks gabungan dibuka ulang dengan `getData()` dan benar jadi centang lagi.
+- JRXML: 77 textField semuanya `isStretchWithOverflow`, 80 staticText semuanya height>=11, 9 band semuanya `splitType="Prevent"`, nol elemen melewati batas band, seluruh 114 field dideklarasikan DAN dipakai. Pemeriksanya diadu dengan `rptCetakPenilaianAwalKeperawatanRalan` → gagal, jadi bukan lolos kosong.
+- **CETAKAN DILIHAT** untuk dua pasien: 2 halaman F4 masing-masing; blok Balita ada pada balita dan hilang pada perempuan dewasa, blok Reproduksi kebalikannya; QR ter-render; nama perawat terisi; baris yang sengaja dikosongkan tetap kosong.
+- Sesudah import dibuktikan tabel lain tidak tersentuh: `penilaian_awal_keperawatan_ralan` tetap 57 kolom / 8 baris, `asesmen_medis_awal_ralan` 61, `penilaian_medis_ralan` 35, `user` tetap 1215 kolom.
+- `.jasper` disebar ke `report/`, `dist/report/`, `build/report/` — hash MD5 ketiganya identik.
+
+## Sisa
+- ⏳ **Belum diuji langsung oleh user di `Aplikasi.bat`**.
+- ⏳ Migrasi belum dijalankan di produksi. RM 02-2 dan perubahan Java WAJIB naik bersamaan.
+- ⏳ Daftar pilihan tiap regio disusun dari asesmen keperawatan umum, belum dicocokkan kata per kata dengan kertas RSUD. Pilihan yang kurang tinggal ditambah di konstanta `REGIO`/`KEBIASAAN`/`PSIKOSOSIAL` — kolomnya tidak perlu diubah, dan temuan lama yang pilihannya belum ada tetap terbaca lewat kotak Lain-lain.
+- ⏳ Blok balita/reproduksi memakai `reg_periksa.umurdaftar`+`sttsumur` dan `pasien.jk`. Kalau data pendaftarannya salah, blok bisa tidak muncul — pengaman "sudah ada isinya" hanya menolong untuk record yang terlanjur terisi.
