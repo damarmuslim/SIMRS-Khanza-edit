@@ -140,8 +140,19 @@ Pola tanda tangan: satu tabel `antri<modul>` berisi SATU baris penanda record ya
 
 ## Git
 
-- `main` adalah trunk. **Satu cabang per modul RM**, dicabangkan dari `main`.
-- Alat/berkas yang tidak terkait modul mana pun boleh langsung di `main`.
+- `main` adalah trunk. **Kerja langsung di `main`.** Jangan membuat cabang per modul RM.
+
+  Aturan "satu cabang per modul" **dicabut 2026-08-29** karena terbukti gagal, bukan karena kurang disiplin:
+  - Cabang `feat/rm02-…` berakhir memuat **tiga modul** (RM 02-1, RM 02-2, RM 30-1A) dalam satu sesi — modulnya memang dikerjakan berurutan, bukan paralel.
+  - **Setiap modul menyentuh `PROGRESS.md` dan `CLAUDE.md`**, jadi dua cabang paralel dijamin konflik di situ. Itu sudah memakan biaya nyata: 12 penanda konflik pernah ter-commit bersarang di `PROGRESS.md` dan harus dibangun ulang dari nol.
+  - **Modul tidak saling bebas.** RM 02-2 memaksa mengubah RM 19 (`KanvasNyeri` diangkat jadi kelas bersama). Di cabang terpisah, RM 19 akan rusak di cabang lain.
+  - Tidak ada remote, tidak ada review, satu pengembang. Cabang tidak melayani apa pun di sini.
+
+  Cabang **hanya** untuk pekerjaan yang mungkin dibuang — refactor besar yang belum tentu jadi. Bukan untuk penyesuaian form.
+
+- Yang menggantikan fungsi "cara membatalkan": **tag**, bukan cabang. Beri tag tiap kali naik ke produksi (`git tag prod-2026-09-01`), supaya jelas jar mana berpasangan dengan migrasi mana.
+- **`DEPLOY.md` wajib diperbarui** setiap ada migrasi baru dan setiap kali migrasi dijalankan di produksi. Risiko terbesar proyek ini bukan konflik git, melainkan migrasi dan Java yang tidak naik bersamaan.
+- Alat/berkas yang tidak terkait modul mana pun juga langsung di `main`.
 - Pesan commit **menjelaskan ALASAN**, bukan daftar perubahan: keputusan yang diambil, alternatif yang ditolak beserta sebabnya, bug yang ditemukan dan bagaimana ketahuannya.
 - Pesan panjang ditulis lewat berkas (`git commit -F`) — PowerShell here-string merusak tanda kutip, dan `Out-File -Encoding utf8` menyisipkan BOM.
 - Menambah ke `PROGRESS.md` pakai `[System.IO.File]::AppendAllText` dengan `UTF8Encoding($false)`; `Get-Content` tanpa `-Encoding` membaca UTF-8 sebagai ANSI dan menghasilkan mojibake.
