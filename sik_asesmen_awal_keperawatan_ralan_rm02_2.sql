@@ -47,8 +47,10 @@
 -- 50 kolom TEXT akan menabrak batas yang sama persis lagi. DYNAMIC hanya
 -- menitipkan penunjuknya. Jangan menghapus klausa ini.
 --
--- Ini juga obat yang sama untuk `penilaian_awal` RM 19 yang sudah mentok di
--- 442 kolom - belum dikerjakan, dicatat di sini supaya tidak dicari ulang.
+-- Obat yang sama sudah pernah dipakai di proyek ini: `penilaian_awal_
+-- keperawatan_ranap` (RM 19) mentok di 442 kolom, 72 VARCHAR panjangnya
+-- diubah jadi TEXT, dan tabelnya kini 515 kolom. Jadi pola ini bukan
+-- percobaan - sudah terbukti sekali di tabel yang jauh lebih besar.
 --
 -- IDENTITAS TIDAK DISIMPAN
 -- Nama, L/P, tanggal lahir, status nikah, agama, pendidikan, cara bayar,

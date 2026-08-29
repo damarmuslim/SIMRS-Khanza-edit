@@ -2231,7 +2231,7 @@ Versi pertama migrasi memakai VARCHAR(150..400) per regio. Jumlah kolomnya bukan
 
 Obatnya: semua kolom teks bebas panjang jadi `TEXT` (disimpan di luar baris, hanya menitipkan penunjuk 20 byte), kolom pendek tetap VARCHAR. **`ROW_FORMAT=DYNAMIC` ditulis eksplisit** dan itu penting: pada ROW_FORMAT COMPACT tiap TEXT masih menitipkan 768 byte pertama di dalam baris, jadi 50 kolom TEXT akan menabrak batas yang sama persis lagi.
 
-Ini obat yang sama untuk `penilaian_awal` RM 19 yang sudah mentok di 442 kolom — belum dikerjakan, dicatat supaya tidak dicari ulang.
+Obat yang sama sudah pernah dipakai di proyek ini: `penilaian_awal_keperawatan_ranap` (RM 19) mentok di 442 kolom, 72 VARCHAR panjangnya diubah jadi TEXT, dan tabelnya kini **515 kolom / 72 TEXT / Dynamic** (dicek ulang ke `aik`). Jadi pola ini bukan percobaan — sudah terbukti sekali di tabel yang jauh lebih besar.
 
 ### 2. Seluruh isian kosong tercetak "null" — ketahuan HANYA dari MELIHAT
 `isBlankWhenNull="true"` cuma bekerja kalau SELURUH ekspresi bernilai null. Begitu digabung jadi `": "+$F{kepala}`, hasilnya teks `": null"` yang tercetak apa adanya. Tidak ada satu pun pemeriksaan angka yang bisa menangkap ini — hanya render lalu lihat.
