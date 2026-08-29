@@ -2451,3 +2451,123 @@ listener yang sebenarnya.
   petugas mengambil lembar baru, tapi belum ada mekanisme lembar lanjutan.
 - ⏳ `RMPemantauanPEWS` (anak) dan `RMPemantauanEWSNeonatus` belum disentuh —
   kalau RSUD punya kertasnya juga, perlu perlakuan yang sama.
+
+
+# Progress: RM 02-2 — cetakan jadi kotak centang, ukuran huruf, dan pilihan keluaran
+
+Rangkaian penyempurnaan atas permintaan user setelah RM 02-2 dipakai melihat
+hasilnya. Ditulis menyusul karena sempat tertinggal dari PROGRESS.
+
+## Dari `[X]` menjadi kotak centang sungguhan
+
+Awalnya Diagnosa Keperawatan tercetak `[X]` / `[   ]`. User minta menyerupai
+kotak centang di form inputan.
+
+Tiap baris dipecah jadi **dua elemen**: glif kotaknya sendiri dengan font
+**DejaVu Sans**, labelnya tetap Tahoma. Fontnya tidak boleh ikut Tahoma —
+Tahoma tidak punya glif `☐`/`☑` dan **gagalnya diam-diam** jadi kotak kosong
+atau spasi. DejaVu tersedia karena `jasperreports-fonts-6.8.0.jar` terdaftar di
+Class-Path manifest jar aplikasi; itu diperiksa dulu sebelum dipakai.
+
+## Lalu seluruh lembar disamakan
+
+User minta seluruh pilihan ikut berbentuk kotak centang, bukan daftar dipisah
+koma. Pemeriksaan fisik, pola kebiasaan, balita, reproduksi, dan psikososial
+kini mencetak **seluruh** pilihan; yang terpilih bercentang.
+
+Daftar pilihannya dipindah ke satu kelas bersama **`CentangRM022`** yang dipakai
+form dan laporan sekaligus. JRXML tidak memuat daftar apa pun — hanya memanggil
+`CentangRM022.baris(kolom, isi)` dengan nama kolom. Kalau daftarnya disalin ke
+JRXML, layar dan kertas akan berbeda diam-diam begitu ada pilihan ditambah.
+
+Isian "Lain-lain" tidak hilang: potongan yang tidak cocok dengan pilihan mana
+pun tetap dicetak di belakang barisnya. Terbukti — "Cekung" bukan pilihan baku
+dan tercetak sebagai `Lain-lain : Cekung`.
+
+**Satu band per baris adalah keharusan, bukan gaya.** JasperReports
+memposisikan elemen secara absolut; kalau semua baris ada di satu band dan
+salah satunya memanjang, baris di bawahnya **tertimpa**. Konsekuensi yang
+diterima: kotak pembungkus per seksi tidak mungkin dipertahankan karena
+`rectangle` tidak bisa membentang lintas band.
+
+## Ukuran huruf: 6 → 12 → 10
+
+Ukuran 6 dipakai supaya muat dua halaman. User minta 12, lalu menilai terlalu
+besar dan memilih **10**. Hasil akhir: judul seksi 12 tebal, label kiri 9, isi
+dan kotak centang 10.
+
+Seluruh badan laporan kini dihasilkan generator dengan **tiga konstanta
+ukuran**, jadi tinggi kotak dan jarak baris ikut menyesuaikan — penting karena
+teks 10 di dalam kotak setinggi 11 akan terpotong diam-diam.
+
+Dua hal ketahuan hanya dari melihat: hierarki sempat **terbalik** (judul seksi
+11 lebih kecil dari isinya 12), dan **QR tanda tangan gepeng** karena ukuran
+warisan 50×38 bukan persegi.
+
+## Pilihan keluaran Lembar / PDF
+
+Tombol Cetak sekarang bertanya. **Lembar** → penampil Jasper yang bisa langsung
+dikirim ke printer. **PDF** → diekspor ke `report/<nama laporan>.pdf` lalu
+dibuka pembaca PDF komputer. `MyReportPDF` memakai nama berkas tetap, jadi PDF
+pasien sebelumnya ditimpa tiap kali mencetak — perilaku bawaan Khanza, sengaja
+tidak diubah supaya tidak ada dua kebiasaan berbeda.
+
+**Temuan sampingan:** folder `report/` dilacak git dan `*.pdf` tidak diabaikan,
+jadi tiap cetak PDF meninggalkan berkas berisi **data pasien** di folder source.
+Bukan dugaan — `report/rptLembarSkriningRalan.pdf` sudah terlanjur ter-commit
+lewat jalur yang sama, berisi nama pasien, tanggal lahir, dan nama ibu kandung
+(instansinya "RS SIMRS KHANZA, Bantul", jadi kemungkinan data contoh bawaan).
+`/report/*.pdf` ditambahkan ke `.gitignore`. Berkas yang terlanjur dilacak
+**tidak ikut hilang** — gitignore tidak berlaku surut — dan penghapusannya
+menunggu keputusan user.
+
+## Perawat/Bidan dipilih dari master, tidak diketik
+
+Kotak NIP jadi `setEditable(false)` dan `KeyListener` yang memungut ketikan
+dihapus; di sebelahnya tombol cari yang membuka `DlgCariPetugas`.
+
+**Kenapa keras:** NIP salah satu digit gagalnya **tidak kelihatan** — JOIN ke
+`pegawai` gagal diam-diam sehingga nama dan QR tanda tangan tercetak kosong
+pada lembar yang **sudah ditandatangani**. Sesi ini memperlihatkannya: harness
+mengisi NIP karangan "1" dan cetakan keluar tanpa nama perawat, tanpa satu pun
+pesan kesalahan.
+
+Diperiksa lebih dulu bahwa `petugas.nip` dan `pegawai.nik` sejajar — ketujuh
+baris `petugas` di `aik` punya pasangan di `pegawai`, nol yang menggantung.
+
+**Dijadikan aturan baku di CLAUDE.md** untuk seluruh modul, lengkap dengan
+polanya. Satu kesalahan saat mengerjakan: tombolnya sempat memakai ikon
+`/picture/permission.png` yang **tidak ada**, yang akan melempar NPE begitu form
+dibuka; ketahuan karena ikonnya dicek keberadaannya sebelum build.
+
+## Sisa
+
+- ⏳ Modul RM lain masih memakai isian petugas/dokter manual — belum disisir.
+- ⏳ `report/rptLembarSkriningRalan.pdf` masih dilacak git.
+- ⏳ Cabang `Valid.MyReportPDF` belum dieksekusi langsung karena diakhiri
+  `Desktop.getDesktop().open()` yang akan membuka pembaca PDF di layar user.
+
+
+# Progress: RM 30-1A — isian tambahan sempat terpotong
+
+Dilaporkan user lewat tangkapan layar sesudah mencoba formnya.
+
+Ketiga isian baru (aliran oksigen, alat, gula darah) ditaruh di baris y=240
+dengan asumsi `FormInput` yang berukuran 870×780 berarti ruangnya lega.
+**Salah**: yang membatasi bukan ukuran `FormInput`, melainkan tinggi panel yang
+**menampungnya**. Diukur lewat refleksi — induknya hanya **244 px**, sedangkan
+isian di y=240 berakhir di **263**.
+
+Jenis kegagalan ini tidak bisa ditangkap pemeriksaan angka biasa: widget-nya
+ada, ukurannya benar, nilainya tersimpan dengan benar — hanya tidak kelihatan.
+
+Dipindah ke ruang kosong di **baris y=180 sebelah kanan**, sejajar Tekanan
+Darah Sistolik. Baris itu hanya terpakai sampai x=389, sedangkan kolom kanannya
+kosong karena Laju Jantung/Kesadaran/Temperatur ada di baris atasnya. Batas
+kanannya 789, sama dengan tepi kanan kotak Skor 7. Tinggi panel **tidak**
+diubah — mengubahnya akan menggeser tabel di bawahnya.
+
+Form kemudian **DILIHAT** sebagai PNG untuk memastikan, dan sekalian
+memperlihatkan bukti perbaikan sebelumnya: combo pada pilihan pertama
+(`>= 25`, `>= 220`, `>= 131`) kini menampilkan skor 3 dengan Total 13 — sebelum
+diperbaiki semuanya masih 0 karena `setModel()` tidak memicu `ItemEvent`.
