@@ -2255,3 +2255,91 @@ Diperbaiki di 58 ekspresi (`($F{x}==null?"":$F{x})`), termasuk empat di kop yang
 - ⏳ Migrasi belum dijalankan di produksi. RM 02-2 dan perubahan Java WAJIB naik bersamaan.
 - ⏳ Daftar pilihan tiap regio disusun dari asesmen keperawatan umum, belum dicocokkan kata per kata dengan kertas RSUD. Pilihan yang kurang tinggal ditambah di konstanta `REGIO`/`KEBIASAAN`/`PSIKOSOSIAL` — kolomnya tidak perlu diubah, dan temuan lama yang pilihannya belum ada tetap terbaca lewat kotak Lain-lain.
 - ⏳ Blok balita/reproduksi memakai `reg_periksa.umurdaftar`+`sttsumur` dan `pasien.jk`. Kalau data pendaftarannya salah, blok bisa tidak muncul — pengaman "sudah ada isinya" hanya menolong untuk record yang terlanjur terisi.
+
+
+# Progress: RM 02-2 — kanvas skala nyeri yang bisa ditandai mouse
+
+Permintaan user: gambar skala nyeri belum ada di form; tampilkan gambarnya dan
+buat jadi kanvas supaya bisa ditandai pakai mouse.
+
+## Sudah ada, dan user yang mengingatkan
+
+Pencarian awal saya berhenti di `src/picture/nyeri.png` yang di sebelas form
+lain hanya dipakai sebagai LATAR panel dengan combo 0–10 di sebelahnya — tidak
+bisa diklik. Saya hampir menggambar sendiri skala Wong-Baker dengan Java2D dan
+sempat menulis alat pengukur posisi garis skala di dalam PNG-nya.
+
+User memotong: *"ada form yang sudah dirubah agar skala nyeri bisa diberi
+tanda"*. Benar — `RMPenilaianAwalKeperawatanRanap` (RM 19) punya inner class
+`KanvasNyeri` yang persis melakukan itu. Kalau tidak diingatkan, saya akan
+membuat mekanisme kedua yang berbeda untuk masalah yang sama.
+
+**Pelajarannya sama dengan aturan "PERIKSA DULU" di CLAUDE.md, tapi lolos
+karena cara mencarinya salah**: saya mencari nama berkas gambar dan nama
+kelas, bukan mencari PERILAKUNYA. Yang menemukannya akhirnya justru pencarian
+`paintComponent` di `src/rekammedis/` — hanya satu form yang punya.
+
+## Kelas diangkat, bukan disalin
+
+`KanvasNyeri` dipindah dari inner class RM 19 menjadi kelas tersendiri
+`rekammedis.KanvasNyeri` yang dipakai RM 19 dan RM 02-2 bersama. Aman karena
+kelasnya tidak pernah menyentuh state form induknya — diperiksa sebelum
+dipindah, dan RM 19 tetap `BUILD SUCCESSFUL` sesudahnya. Perilaku, ukuran
+layer, warna coretan, dan format base64-nya sengaja tidak diubah sama sekali
+supaya data `nyeri_canvas_gambar` RM 19 yang sudah tersimpan tetap terbaca.
+
+## Cara kerjanya
+
+Gambar `/picture/nyeri.png` jadi LATAR; coretan perawat masuk ke layer
+TRANSPARAN terpisah. Yang disimpan ke database hanya layer coretannya sebagai
+PNG base64 (820 karakter untuk satu lingkaran) — bukan gambar latarnya, yang
+selalu sama dan sudah jadi resource aplikasi. Kalau belum dicoret sama sekali,
+yang tersimpan NULL, bukan ribuan byte gambar kosong.
+
+Angka VAS tidak diganti oleh kanvas ini; keduanya berdampingan seperti di
+kertas.
+
+## Migrasi
+
+`ALTER TABLE asesmen_awal_keperawatan_ralan ADD COLUMN IF NOT EXISTS
+nyeri_canvas_gambar TEXT` — **sudah dijalankan ke `aik`** atas instruksi
+eksplisit user. Nama kolomnya disamakan dengan RM 19. Ditaruh di ujung tanpa
+`AFTER`, dan kolom yang sama juga ditambahkan di `CREATE TABLE` pada berkas
+yang sama, supaya urutan kolom database lama dan database baru tetap identik.
+
+Penyimpanan RM 02-2 memakai INSERT dengan NAMA KOLOM, bukan positional, jadi
+penambahan ini tidak bisa menggeser nilai ke kolom yang salah. Meski begitu
+migrasi dan Java tetap wajib naik ke produksi bersamaan.
+
+## Verifikasi
+
+- `ant jar` BUILD SUCCESSFUL dua kali: sesudah kelas diangkat (membuktikan RM 19
+  tidak rusak) dan sesudah kanvas disambungkan ke RM 02-2.
+- Kolom migrasi == `KOLOM` cocok 100% (107 = 106 + PK) lewat refleksi kelas
+  terkompilasi; `periksaPemetaan()` lolos; `nilai(kolom)` untuk 106 kolom nol
+  yang melempar.
+- Sesudah migrasi: `nyeri_canvas_gambar` TEXT di posisi 107, dan tabel lain
+  tidak tersentuh (`penilaian_awal_keperawatan_ranap` tetap 515 kolom,
+  `penilaian_awal_keperawatan_ralan` 57, `asesmen_medis_awal_ralan` 61, `user`
+  1215).
+- Coretan dibuat dengan **mengirim event mouse sungguhan** ke kanvas, bukan
+  memanggil method penggambarnya — kalau listener-nya salah pasang, memanggil
+  method langsung tetap "berhasil" dan bugnya lolos. Hasil: kosong→NULL,
+  dicoret→515 piksel bertanda, tersimpan ke DB **byte-identik**, `emptTeks`
+  benar-benar membersihkan, dibuka ulang dari DB pulang utuh 515 piksel. Nol
+  sisa data uji sesudah ROLLBACK.
+- **Kanvas DILIHAT** sebagai PNG: gambar Wong-Baker ter-render sebagai latar
+  dengan coretan merah melingkari angka 8. Ini menutup kegagalan diam-diam
+  yang tidak bisa ditangkap angka: kalau `nyeri.png` gagal dimuat, `latar` jadi
+  null dan kanvasnya putih polos tanpa error — sementara uji base64 tetap lulus
+  karena coretannya sendiri tetap tersimpan. Angka pendampingnya: 10.459 piksel
+  bukan putih vs 195 piksel merah.
+
+## Sisa
+
+- ⏳ **Cetakan belum menampilkan gambar skala nyeri beserta tandanya.** RM 19
+  pun hanya mencetak "(ada tanda)". Untuk RM 02-2 coretan bisa ditimpakan ke
+  gambar latar lalu dikirim ke Jasper sebagai parameter gambar — belum
+  dikerjakan, menunggu keputusan user.
+- ⏳ Belum diuji langsung oleh user di `Aplikasi.bat`.
+- ⏳ Migrasi belum dijalankan di produksi.

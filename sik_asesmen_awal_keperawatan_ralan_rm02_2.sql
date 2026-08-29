@@ -203,8 +203,33 @@ CREATE TABLE IF NOT EXISTS `asesmen_awal_keperawatan_ralan` (
   -- Perawat yang mengkaji; tanda tangannya jadi QR pada cetakan.
   `nip` VARCHAR(20) DEFAULT NULL,
 
+  -- Coretan skala nyeri di atas gambar Wong-Baker, PNG TRANSPARAN base64.
+  -- Yang disimpan HANYA layer coretannya, bukan gambar latarnya - latarnya
+  -- resource aplikasi (/picture/nyeri.png) yang selalu sama. Nama kolom
+  -- sengaja disamakan dengan `penilaian_awal_keperawatan_ranap` RM 19 yang
+  -- sudah memakai pola dan kelas kanvas yang sama.
+  `nyeri_canvas_gambar` TEXT DEFAULT NULL,
+
   PRIMARY KEY (`no_rawat`),
   KEY `idx_aakr_nip` (`nip`),
   CONSTRAINT `fk_aakr_no_rawat` FOREIGN KEY (`no_rawat`)
       REFERENCES `reg_periksa` (`no_rawat`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=latin1;
+
+-- =====================================================================
+-- Untuk database yang TABELNYA SUDAH DIBUAT sebelum kolom kanvas nyeri ada
+-- (mis. `aik`, yang sudah menerima versi pertama migrasi ini). CREATE TABLE
+-- di atas dilewati IF NOT EXISTS, jadi kolomnya tidak akan ikut terbuat.
+--
+-- Ditaruh di UJUNG dan tanpa AFTER, jadi kolomnya menempel paling belakang -
+-- sama persis dengan posisinya di CREATE TABLE di atas. Itu disengaja supaya
+-- urutan kolom database baru dan database lama tetap identik.
+--
+-- Penyimpanan RM 02-2 memakai INSERT dengan NAMA KOLOM, bukan positional
+-- `values(?,?,?)`, jadi menambah kolom di sini tidak bisa menggeser nilai ke
+-- kolom yang salah. Meski begitu, migrasi dan perubahan Java tetap WAJIB naik
+-- ke produksi BERSAMAAN: tanpa kolomnya, INSERT akan gagal karena menyebut
+-- kolom yang tidak ada.
+-- =====================================================================
+ALTER TABLE `asesmen_awal_keperawatan_ralan`
+  ADD COLUMN IF NOT EXISTS `nyeri_canvas_gambar` TEXT DEFAULT NULL;

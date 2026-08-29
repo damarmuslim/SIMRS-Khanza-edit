@@ -120,7 +120,8 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
         "kontrol_rawat_inap", "kontrol_tanggal",
         "dx_oksigen", "dx_nutrisi", "dx_eliminasi", "dx_integritas_kulit",
         "dx_kurang_pengetahuan",
-        "nip"
+        "nip",
+        "nyeri_canvas_gambar"
     };
 
     /** Daftar pilihan hidup di {@link CentangRM022} - dipakai bersama oleh
@@ -198,6 +199,7 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
     private final ButtonGroup bgCrt = new ButtonGroup();
     private widget.CekBox AdaKontrol;
     private widget.Tanggal TglKontrol;
+    private KanvasNyeri kanvasNyeri;
 
     // ---------- Tab Data ----------
     private widget.ScrollPane Scroll, ScrollHTML;
@@ -713,6 +715,24 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
                 teks("(0-10)")), konstrain(1, r));
         r++;
 
+        // Gambar skala nyeri Wong-Baker yang bisa DICORET pakai mouse, memakai
+        // kelas yang sama dengan RM 19 - lihat KanvasNyeri. Angka VAS di baris
+        // atas TIDAK diganti olehnya: keduanya berdampingan seperti di kertas,
+        // yang satu angka yang satu tanda tangan tangan perawat.
+        kanvasNyeri = new KanvasNyeri(380, 150);
+        kanvasNyeri.setPreferredSize(new Dimension(380, 150));
+        kendali.put("nyeri_canvas_gambar", kanvasNyeri);
+
+        widget.Button btnHapusNyeri = new widget.Button();
+        btnHapusNyeri.setText("Hapus tanda");
+        btnHapusNyeri.setPreferredSize(new Dimension(110, 23));
+        btnHapusNyeri.setToolTipText("Menghapus coretan pada gambar skala nyeri");
+        btnHapusNyeri.addActionListener(evt -> kanvasNyeri.hapusCoretan());
+
+        p.add(labelKolom("Skala nyeri"), konstrain(0, r));
+        p.add(baris(kanvasNyeri, btnHapusNyeri), konstrain(1, r));
+        r++;
+
         for (String[] reg : REGIO) {
             barisRegio(p, r++, reg[0], reg[1], reg[2], 5, true);
         }
@@ -1091,6 +1111,11 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
         if (k instanceof GrupCentang) {
             return ((GrupCentang) k).nilai();
         }
+        if (k instanceof KanvasNyeri) {
+            // "" kalau memang belum dicoret - kosongKeNull membuatnya NULL,
+            // bukan ribuan byte gambar kosong.
+            return kosongKeNull(((KanvasNyeri) k).getCoretanBase64());
+        }
         if (k instanceof widget.CekBox) {
             // Kolom ENUM('Ya','Tidak') - dicentang berarti Ya.
             return ((widget.CekBox) k).isSelected() ? "Ya" : "Tidak";
@@ -1114,6 +1139,8 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
         Object k = kendali.get(kolom);
         if (k instanceof GrupCentang) {
             ((GrupCentang) k).set(isi);
+        } else if (k instanceof KanvasNyeri) {
+            ((KanvasNyeri) k).setCoretanBase64(isi);
         } else if (k instanceof widget.CekBox) {
             ((widget.CekBox) k).setSelected("Ya".equalsIgnoreCase(teksAman(isi)));
         } else if (k instanceof ButtonGroup) {
@@ -1341,6 +1368,8 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
             Object c = kendali.get(k);
             if (c instanceof GrupCentang) {
                 ((GrupCentang) c).kosongkan();
+            } else if (c instanceof KanvasNyeri) {
+                ((KanvasNyeri) c).hapusCoretan();
             } else if (c instanceof widget.CekBox) {
                 ((widget.CekBox) c).setSelected(false);
             } else if (c instanceof ButtonGroup) {
@@ -1488,6 +1517,10 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
                 + teksAman(nilai("td_diastolik")) + " mmHg, HR " + teksAman(nilai("hr"))
                 + ", RR " + teksAman(nilai("rr")) + ", Suhu " + teksAman(nilai("suhu"))
                 + ", VAS " + teksAman(nilai("vas")));
+        // Coretan kanvas tidak bisa ditampilkan di ringkasan HTML, jadi cukup
+        // dinyatakan ada atau tidak - meniru cara RM 19 melaporkannya.
+        barisHtml(h, "Gambar skala nyeri",
+                nilai("nyeri_canvas_gambar") == null ? "tidak ditandai" : "ada tanda");
         for (String[] reg : REGIO) {
             String v = nilai(reg[0]);
             if (v != null) {
