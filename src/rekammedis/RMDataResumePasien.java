@@ -64,7 +64,21 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
     private String tanggal="",finger="",variabel="";
-    
+    /**
+     * [Resume Medis Rawat Jalan BPJS] Panel ringkasan HTML yang bisa dilipat.
+     * Dideklarasikan DI SINI, bukan di blok variabel GEN: form ini punya berkas
+     * .form (107 KB), jadi apa pun yang ditulis di dalam blok itu akan hilang
+     * begitu form dibuka lagi di Form Editor NetBeans. Seluruh perakitannya ada
+     * di {@link #initRingkasanResume()}.
+     */
+    private widget.PanelBiasa PanelAccor;
+    private widget.panelisi FormMenu;
+    private widget.CekBox ChkAccor;
+    private widget.editorpane LoadHTML;
+    private widget.ScrollPane ScrollHTML;
+    private widget.TextBox TNoRM1, TPasien1;
+    private widget.Button BtnPrintBPJS;
+
     /** Creates new form DlgRujuk
      * @param parent
      * @param modal */
@@ -86,6 +100,7 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
         //tbObat.setDefaultRenderer(Object.class, new WarnaTable(panelJudul.getBackground(),tbObat.getBackground()));
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        initRingkasanResume();
 
         for (i = 0; i < 30; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
@@ -2257,6 +2272,265 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
         Kondisi.requestFocus();
     } 
 
+    /**
+     * [Resume Medis Rawat Jalan BPJS] Merakit panel ringkasan HTML di sisi
+     * KANAN tabel data.
+     *
+     * <p>Dibangun di LUAR {@code initComponents()} karena form ini punya
+     * berkas {@code .form}. {@code internalFrame1} memakai BorderLayout dengan
+     * PAGE_START, CENTER, dan PAGE_END sudah terpakai sementara EAST kosong -
+     * jadi panel ini menempel di situ tanpa menggeser satu pun komponen lama.
+     * Pola yang sama dipakai di modul Asuhan Gizi.</p>
+     */
+    private void initRingkasanResume(){
+        LoadHTML=new widget.editorpane();
+        javax.swing.text.html.HTMLEditorKit kit=new javax.swing.text.html.HTMLEditorKit();
+        LoadHTML.setEditable(false);
+        LoadHTML.setEditorKit(kit);
+        kit.getStyleSheet().addRule(
+                ".isi td{border-right:1px solid #e2e7dd;font:8.5px tahoma;height:12px;"
+                + "border-bottom:1px solid #e2e7dd;background:#ffffff;color:#323232;}");
+        LoadHTML.setDocument(kit.createDefaultDocument());
+
+        ScrollHTML=new widget.ScrollPane();
+        ScrollHTML.setViewportView(LoadHTML);
+
+        TNoRM1=new widget.TextBox();
+        TNoRM1.setEditable(false);
+        TNoRM1.setPreferredSize(new Dimension(90,23));
+        TPasien1=new widget.TextBox();
+        TPasien1.setEditable(false);
+        TPasien1.setPreferredSize(new Dimension(180,23));
+
+        BtnPrintBPJS=new widget.Button();
+        BtnPrintBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item (copy).png")));
+        BtnPrintBPJS.setPreferredSize(new Dimension(28,23));
+        BtnPrintBPJS.setToolTipText("Cetak Resume Medis Rawat Jalan BPJS pasien ini");
+        BtnPrintBPJS.addActionListener(evt -> cetakResumeBPJS());
+
+        widget.Label lbl=new widget.Label();
+        lbl.setText("Pasien :");
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+
+        FormMenu=new widget.panelisi();
+        FormMenu.setPreferredSize(new Dimension(44,44));
+        FormMenu.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,9));
+        FormMenu.add(lbl);
+        FormMenu.add(TNoRM1);
+        FormMenu.add(TPasien1);
+        FormMenu.add(BtnPrintBPJS);
+
+        ChkAccor=new widget.CekBox();
+        ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kiri.png")));
+        ChkAccor.setPreferredSize(new Dimension(15,15));
+        ChkAccor.addActionListener(evt -> isMenuResume());
+
+        PanelAccor=new widget.PanelBiasa();
+        PanelAccor.setLayout(new java.awt.BorderLayout(1,1));
+        PanelAccor.setPreferredSize(new Dimension(470,44));
+        PanelAccor.add(ChkAccor,java.awt.BorderLayout.WEST);
+        PanelAccor.add(FormMenu,java.awt.BorderLayout.NORTH);
+        PanelAccor.add(ScrollHTML,java.awt.BorderLayout.CENTER);
+        internalFrame1.add(PanelAccor,java.awt.BorderLayout.EAST);
+
+        ChkAccor.setSelected(false);
+        isMenuResume();
+
+        // Item cetak keempat pada menu klik-kanan, mengikuti pola tiga item
+        // yang sudah ada (Laporan Resume Pasien, SBPK, SBPK 2). Dibangun di
+        // sini - di LUAR blok GEN - karena seluruh jPopupMenu1.add(...) bawaan
+        // berada di dalam initComponents() yang tidak boleh diedit tangan.
+        javax.swing.JMenuItem mnResumeBPJS=new javax.swing.JMenuItem();
+        mnResumeBPJS.setBackground(new java.awt.Color(255,255,254));
+        mnResumeBPJS.setFont(new java.awt.Font("Segoe UI",0,11));
+        mnResumeBPJS.setForeground(new java.awt.Color(50,50,50));
+        mnResumeBPJS.setText("Resume Medis Rawat Jalan BPJS");
+        mnResumeBPJS.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        mnResumeBPJS.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        mnResumeBPJS.setName("mnResumeBPJS");
+        mnResumeBPJS.setPreferredSize(new java.awt.Dimension(260,26));
+        mnResumeBPJS.addActionListener(evt -> cetakResumeBPJS());
+        jPopupMenu1.add(mnResumeBPJS);
+    }
+
+    /**
+     * Mencetak lembar "RESUME MEDIS RAWAT JALAN BPJS".
+     *
+     * <p>Mengikuti pola tiga item cetak yang sudah ada di form ini:
+     * {@code Valid.MyReport} dengan parameter {@code norawat}, dan query-nya
+     * berada di dalam berkas {@code .jasper} sendiri.</p>
+     *
+     * <p>Pemeriksaan Fisik dan Saran/Keterangan TIDAK punya kolom di
+     * {@code resume_pasien}; keduanya diambil dari catatan SOAP rawat jalan
+     * ({@code pemeriksaan_ralan}) di dalam query laporan - keputusan user,
+     * supaya tidak perlu menambah kolom dan mengubah form input.</p>
+     */
+    private void cetakResumeBPJS(){
+        if(tbObat.getSelectedRow()<=-1){
+            JOptionPane.showMessageDialog(rootPane,"Silahkan anda pilih data terlebih dahulu..!!");
+            return;
+        }
+        Map<String,Object> param=new HashMap<>();
+        param.put("namars",akses.getnamars());
+        param.put("alamatrs",akses.getalamatrs());
+        param.put("kotars",akses.getkabupatenrs());
+        param.put("propinsirs",akses.getpropinsirs());
+        param.put("kontakrs",akses.getkontakrs());
+        param.put("emailrs",akses.getemailrs());
+        param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+        param.put("norawat",tbObat.getValueAt(tbObat.getSelectedRow(),1).toString());
+
+        String nipDokter=tbObat.getValueAt(tbObat.getSelectedRow(),4)==null
+                ?"":tbObat.getValueAt(tbObat.getSelectedRow(),4).toString();
+        String nmDokter=tbObat.getValueAt(tbObat.getSelectedRow(),5)==null
+                ?"":tbObat.getValueAt(tbObat.getSelectedRow(),5).toString();
+        finger=Sequel.cariIsi(
+                "select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id "
+                + "where pegawai.nik=?",nipDokter);
+        param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()
+                +"\nDitandatangani secara elektronik oleh "+nmDokter
+                +"\nID "+(finger==null||finger.equals("")?nipDokter:finger));
+
+        Valid.MyReport("rptResumeMedisRalanBPJS.jasper","report",
+                "::[ Resume Medis Rawat Jalan BPJS ]::",param);
+    }
+
+    private void isMenuResume(){
+        if(ChkAccor.isSelected()){
+            ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kanan.png")));
+            PanelAccor.setPreferredSize(new Dimension(470,44));
+            FormMenu.setVisible(true);
+            ScrollHTML.setVisible(true);
+        }else{
+            ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kiri.png")));
+            PanelAccor.setPreferredSize(new Dimension(15,44));
+            FormMenu.setVisible(false);
+            ScrollHTML.setVisible(false);
+        }
+        PanelAccor.revalidate();
+        PanelAccor.repaint();
+    }
+
+    /**
+     * Isi ringkasan dibaca dari BARIS TABEL yang dipilih, bukan dari widget
+     * form. Tabel selalu memuat seluruh 30 kolom hasil query, sementara
+     * sebagian di antaranya tidak punya widget di form input.
+     */
+    private void bangunRingkasanResumeHtml(){
+        int b=tbObat.getSelectedRow();
+        if(b<0){
+            return;
+        }
+        StringBuilder h=new StringBuilder();
+        h.append("<html><table width='100%' cellpadding='2' cellspacing='0'>");
+
+        judulResumeHtml(h,"IDENTITAS");
+        barisResumeHtml(h,"Tgl.Rawat",selResume(0));
+        barisResumeHtml(h,"No.Rawat",selResume(1));
+        barisResumeHtml(h,"No.RM / Nama",selResume(2)+" / "+selResume(3));
+        barisResumeHtml(h,"Dokter",selResume(5));
+        barisResumeHtml(h,"Kondisi Pulang",selResume(6));
+
+        judulResumeHtml(h,"ANAMNESA & PEMERIKSAAN");
+        barisResumeHtml(h,"Keluhan Utama",selResume(7));
+        barisResumeHtml(h,"Jalannya Penyakit",selResume(8));
+        barisResumeHtml(h,"Pemeriksaan Penunjang",selResume(9));
+        barisResumeHtml(h,"Hasil Laboratorium",selResume(10));
+
+        judulResumeHtml(h,"DIAGNOSA");
+        barisDiagnosaHtml(h,"Utama",11,12);
+        barisDiagnosaHtml(h,"Sekunder 1",13,14);
+        barisDiagnosaHtml(h,"Sekunder 2",15,16);
+        barisDiagnosaHtml(h,"Sekunder 3",17,18);
+        barisDiagnosaHtml(h,"Sekunder 4",19,20);
+
+        judulResumeHtml(h,"PROSEDUR / TINDAKAN");
+        barisDiagnosaHtml(h,"Utama",21,22);
+        barisDiagnosaHtml(h,"Sekunder 1",23,24);
+        barisDiagnosaHtml(h,"Sekunder 2",25,26);
+        barisDiagnosaHtml(h,"Sekunder 3",27,28);
+
+        judulResumeHtml(h,"OBAT / NASIHAT");
+        barisResumeHtml(h,"Obat waktu pulang",selResume(29));
+
+        // Dua isian yang ADA DI KERTAS tapi tidak ada kolomnya di
+        // `resume_pasien`, jadi diambil dari SOAP rawat jalan
+        // (`pemeriksaan_ralan`) - baris TERAKHIR kunjungan ini.
+        judulResumeHtml(h,"DARI SOAP RAWAT JALAN");
+        String[] soap=ambilSoapRalan(selResume(1));
+        barisResumeHtml(h,"Pemeriksaan Fisik",soap[0].isEmpty()?"<i>belum diisi di SOAP</i>":soap[0]);
+        barisResumeHtml(h,"Saran / Keterangan",soap[1].isEmpty()?"<i>belum diisi di SOAP</i>":soap[1]);
+
+        h.append("</table></html>");
+        LoadHTML.setText(h.toString());
+        LoadHTML.setCaretPosition(0);
+    }
+
+    /**
+     * Mengambil Pemeriksaan Fisik dan Saran/Keterangan dari catatan SOAP rawat
+     * jalan. Diambil baris TERAKHIR: satu kunjungan bisa punya beberapa catatan
+     * SOAP, dan menggabung semuanya membuat kotak di kertas penuh pengulangan.
+     *
+     * <p>Saran diambil dari {@code rtl} (rencana tindak lanjut); kalau kosong
+     * mundur ke {@code instruksi}.</p>
+     */
+    private String[] ambilSoapRalan(String noRawat){
+        String[] hasil={"",""};
+        if(noRawat==null||noRawat.trim().isEmpty()){
+            return hasil;
+        }
+        try{
+            ps=koneksi.prepareStatement(
+                    "select ifnull(pemeriksaan,'') as pemeriksaan,"
+                    + "ifnull(nullif(rtl,''),ifnull(instruksi,'')) as saran "
+                    + "from pemeriksaan_ralan where no_rawat=? "
+                    + "order by tgl_perawatan desc,jam_rawat desc limit 1");
+            try{
+                ps.setString(1,noRawat);
+                rs=ps.executeQuery();
+                if(rs.next()){
+                    hasil[0]=rs.getString("pemeriksaan")==null?"":rs.getString("pemeriksaan");
+                    hasil[1]=rs.getString("saran")==null?"":rs.getString("saran");
+                }
+            }finally{
+                if(rs!=null){ rs.close(); }
+                if(ps!=null){ ps.close(); }
+            }
+        }catch(Exception e){
+            System.out.println("Notif : "+e);
+        }
+        return hasil;
+    }
+
+    private String selResume(int kolom){
+        int b=tbObat.getSelectedRow();
+        if(b<0||kolom>=tbObat.getColumnCount()){
+            return "";
+        }
+        Object v=tbObat.getValueAt(b,kolom);
+        return v==null?"":v.toString();
+    }
+
+    /** Baris diagnosa/prosedur: hanya ditampilkan kalau namanya terisi. */
+    private void barisDiagnosaHtml(StringBuilder h,String label,int kolomNama,int kolomKode){
+        String nama=selResume(kolomNama);
+        if(nama.trim().isEmpty()||nama.trim().equals("-")){
+            return;
+        }
+        String kode=selResume(kolomKode);
+        barisResumeHtml(h,label,nama+(kode.trim().isEmpty()?"":"  <b>["+kode+"]</b>"));
+    }
+
+    private void judulResumeHtml(StringBuilder h,String judul){
+        h.append("<tr class='isi'><td colspan='2' bgcolor='#FFFAF8'><b>").append(judul).append("</b></td></tr>");
+    }
+
+    private void barisResumeHtml(StringBuilder h,String label,String nilai){
+        h.append("<tr class='isi'><td width='34%' valign='top'>").append(label)
+         .append("</td><td valign='top'>")
+         .append((nilai==null?"":nilai).replace("\n","<br>")).append("</td></tr>");
+    }
+
     private void getData() {
         if(tbObat.getSelectedRow()!= -1){
             Tanggal.setText(tbObat.getValueAt(tbObat.getSelectedRow(),0).toString());  
@@ -2286,7 +2560,14 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
             KodeProsedurSekunder2.setText(tbObat.getValueAt(tbObat.getSelectedRow(),26).toString()); 
             ProsedurSekunder3.setText(tbObat.getValueAt(tbObat.getSelectedRow(),27).toString());  
             KodeProsedurSekunder3.setText(tbObat.getValueAt(tbObat.getSelectedRow(),28).toString());  
-            Obat2an.setText(tbObat.getValueAt(tbObat.getSelectedRow(),29).toString());     
+            Obat2an.setText(tbObat.getValueAt(tbObat.getSelectedRow(),29).toString());
+            // [Resume Medis Rawat Jalan BPJS] Panel ringkasan ikut terisi dan
+            // terbuka sendiri begitu satu baris dipilih.
+            TNoRM1.setText(tbObat.getValueAt(tbObat.getSelectedRow(),2).toString());
+            TPasien1.setText(tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
+            bangunRingkasanResumeHtml();
+            ChkAccor.setSelected(true);
+            isMenuResume();
         }
     }
 
