@@ -7802,6 +7802,32 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     }
 
     /**
+     * [RM 02-1] Membuka Asesmen Medis Awal Rawat Jalan.
+     *
+     * <p>Tabel dan form-nya sengaja BARU, tidak menumpang
+     * {@code penilaian_medis_ralan}, {@code asesmen_pendidikan_pasien_ranap},
+     * maupun {@code edukasi_pasien_keluarga_rj} - ketiganya sudah dipakai modul
+     * lain dan PK-nya {@code no_rawat} saja, sehingga akan saling menimpa.</p>
+     *
+     * <p>Tanpa pengecekan hak akses, mengikuti RM 21/33/01.</p>
+     */
+    private void bukaAsesmenMedisAwal() {
+        if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+            TCari.requestFocus();
+            return;
+        }
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        rekammedis.RMAsesmenMedisAwalRalan form=new rekammedis.RMAsesmenMedisAwalRalan(null,false);
+        form.isCek();
+        form.setNoRm(TNoRw.getText(),new Date());
+        form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        form.setLocationRelativeTo(internalFrame1);
+        form.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
+    /**
      * [RM 27-1] Mencetak Catatan Perkembangan Pasien Terintegrasi (CPPT).
      *
      * <p>CPPT berlaku untuk rawat jalan MAUPUN rawat inap - keputusan user.
@@ -14278,6 +14304,15 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         btnCPPT.setPreferredSize(new java.awt.Dimension(190, 23));
         btnCPPT.addActionListener(evt -> cetakCPPT());
         FormMenu.add(btnCPPT);
+        // [RM 02-1] Asesmen Medis Awal Rawat Jalan. Variabel LOKAL seperti dua
+        // tombol di atasnya - tidak ada kode lain yang merujuknya, jadi area
+        // deklarasi blok GEN tidak perlu disentuh.
+        widget.Button btnAsesmenAwal = new widget.Button();
+        btnAsesmenAwal.setText("Asesmen Medis Awal (RM 02-1)");
+        btnAsesmenAwal.setToolTipText("Edukasi, riwayat, risiko jatuh, anamnesis, dan diagnosis awal");
+        btnAsesmenAwal.setPreferredSize(new java.awt.Dimension(190, 23));
+        btnAsesmenAwal.addActionListener(evt -> bukaAsesmenMedisAwal());
+        FormMenu.add(btnAsesmenAwal);
         FormMenu.add(BtnResepObat);
         FormMenu.add(BtnResepIterasiBPJS);
         FormMenu.add(BtnCopyResep);
