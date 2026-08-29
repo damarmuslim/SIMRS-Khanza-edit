@@ -408,6 +408,38 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
     }
 
     /**
+     * Memilih Perawat/Bidan dari master {@code petugas} lewat
+     * {@link kepegawaian.DlgCariPetugas} - kolom 0 NIP, kolom 1 nama.
+     *
+     * <p>Dialognya dibuka TIDAK modal dan nilainya diambil pada
+     * {@code windowClosed}, mengikuti pola yang sudah dipakai modul lain di
+     * aplikasi ini. Kalau petugas menutup dialog tanpa memilih, isian lama
+     * dibiarkan apa adanya - bukan dikosongkan.</p>
+     *
+     * <p>{@code petugas.nip} dan {@code pegawai.nik} memakai nilai yang sama
+     * (diperiksa: ketujuh baris {@code petugas} semuanya punya pasangan di
+     * {@code pegawai}), jadi nama dan QR tanda tangan yang mencari lewat
+     * {@code pegawai} tetap ketemu.</p>
+     */
+    private void pilihPetugas() {
+        kepegawaian.DlgCariPetugas petugas = new kepegawaian.DlgCariPetugas(null, false);
+        petugas.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override public void windowClosed(java.awt.event.WindowEvent e) {
+                JTable t = petugas.getTable();
+                if (t.getSelectedRow() != -1) {
+                    NipPerawat.setText(t.getValueAt(t.getSelectedRow(), 0).toString());
+                    NmPerawat.setText(t.getValueAt(t.getSelectedRow(), 1).toString());
+                }
+            }
+        });
+        petugas.emptTeks();
+        petugas.isCek();
+        petugas.setSize(getWidth() - 60, getHeight() - 60);
+        petugas.setLocationRelativeTo(this);
+        petugas.setVisible(true);
+    }
+
+    /**
      * Mengembalikan ikon bawaan pada semua radio button - {@code IconStyle}
      * memasang ikon SVG ke SEMUA AbstractButton berdasarkan kata kunci teksnya
      * dan JRadioButton ikut kena.
@@ -631,14 +663,20 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
         TUmur = kotakBaca(110);
         Jk = kotakBaca(80);
         TglAsesmen = tanggal("dd-MM-yyyy HH:mm:ss", 150);
-        NipPerawat = kotak(110);
+        // Perawat/Bidan TIDAK boleh diketik manual - dipilih dari master
+        // `petugas` lewat DlgCariPetugas. NIP yang diketik tangan gampang salah
+        // satu digit, dan akibatnya tidak kelihatan: JOIN ke pegawai gagal diam-
+        // diam sehingga nama dan QR tanda tangan tercetak KOSONG pada lembar
+        // yang sudah ditandatangani. Aturan ini berlaku untuk seluruh modul RM;
+        // lihat CLAUDE.md.
+        NipPerawat = kotakBaca(110);
         NmPerawat = kotakBaca(210);
-        NipPerawat.addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override public void keyReleased(KeyEvent evt) {
-                NmPerawat.setText(teksAman(Sequel.cariIsi(
-                        "select nama from pegawai where nik=?", NipPerawat.getText())));
-            }
-        });
+        widget.Button btnPilihPerawat = new widget.Button();
+        btnPilihPerawat.setIcon(new javax.swing.ImageIcon(
+                getClass().getResource("/picture/Search-16x16.png")));
+        btnPilihPerawat.setPreferredSize(new Dimension(28, 23));
+        btnPilihPerawat.setToolTipText("Pilih perawat/bidan dari daftar petugas");
+        btnPilihPerawat.addActionListener(evt -> pilihPetugas());
 
         // Ketiganya ditangani khusus di nilai()/set(), tapi tetap HARUS
         // terdaftar - periksaPemetaan() menolak kolom tanpa kendali.
@@ -654,7 +692,8 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
         p.add(baris(TglLahir, teks("   Umur :"), TUmur, teks("   L/P :"), Jk), konstrain(1, r));
         r++;
         p.add(labelKolom("Tanggal & Jam"), konstrain(0, r));
-        p.add(baris(TglAsesmen, teks("   Perawat/Bidan (NIP) :"), NipPerawat, NmPerawat), konstrain(1, r));
+        p.add(baris(TglAsesmen, teks("   Perawat/Bidan :"), btnPilihPerawat, NipPerawat,
+                NmPerawat), konstrain(1, r));
 
         tambahPengisiKolom(p, 2);
         tambahSeksi(p, 0);

@@ -46,6 +46,32 @@ Form BARU ditulis tangan dengan `GridBagLayout`, **tanpa `.form`, tanpa blok GEN
 - `widget.Tanggal` buatan tangan **tidak** otomatis dapat `displayFormat`. Tanpa `setDisplayFormat(...)`, `substring(11,19)` untuk mengambil jam akan meledak.
 - `GridBagLayout` men-TENGAH-kan isinya pada **kedua sumbu** kalau container lebih besar. Butuh **dua** pengisi: glue horizontal (`weightx=1.0`) di kolom terakhir DAN glue vertikal (`weighty=1.0`) di baris terakhir. Tanpa yang vertikal, isi form melayang di tengah.
 
+## Petugas dan dokter DIPILIH dari master, tidak pernah diketik
+
+**Aturan baku, berlaku untuk seluruh modul.** Setiap isian petugas, perawat,
+bidan, atau dokter diambil dari tabel masternya lewat dialog pencari — tidak
+pernah lewat kotak teks yang bisa diketik, dan tidak pernah lewat combo yang
+diisi tangan.
+
+- Petugas/perawat/bidan → `kepegawaian.DlgCariPetugas` (tabel `petugas`)
+- Dokter → `kepegawaian.DlgCariDokter` (tabel `dokter`)
+
+Polanya: dialog dibuka **tidak modal**, nilainya dipungut di `windowClosed`
+dari `getTable()` — **kolom 0 = kode/NIP, kolom 1 = nama**. Kalau ditutup tanpa
+memilih, isian lama **dibiarkan**, bukan dikosongkan. Kotak NIP dan kotak nama
+keduanya `setEditable(false)`.
+
+**Kenapa keras:** NIP yang diketik tangan gampang salah satu digit, dan
+akibatnya **tidak kelihatan**. JOIN ke `pegawai`/`dokter` gagal diam-diam,
+sehingga nama dan QR tanda tangan tercetak **kosong** pada lembar yang sudah
+ditandatangani — baru ketahuan setelah kertasnya di tangan pasien.
+
+`petugas.nip` dan `pegawai.nik` memakai nilai yang sama, jadi pencarian nama
+dan sidik jari lewat `pegawai` tetap ketemu setelah dipilih dari `petugas`.
+
+Prefill dari petugas yang sedang login (`akses.getkode()`) boleh, itu bukan
+ketikan. `"Admin Utama"` bukan NIP — jangan dipakai sebagai nilai.
+
 ## ⚠️ Penyimpanan POSISIONAL — penyebab bug paling mahal di proyek ini
 
 `Sequel.menyimpantf("tabel", "?,?,?", "pesan", 3, nilai)` merakit
