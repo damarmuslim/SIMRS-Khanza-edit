@@ -1709,18 +1709,24 @@ public final class RMPemantauanEWSD extends javax.swing.JDialog {
         // Baris tambahan di kertas: aliran oksigen (L/menit), alat, gula darah.
         // Ketiganya DOKUMENTASI, tidak menentukan skor - yang menentukan skor 2
         // adalah pasien memakai oksigen atau tidak, dan itu sudah cmbSkor3.
-        // FormInput bertata letak absolut; baris terakhir yang ada di y=210,
-        // jadi baris baru ditaruh di y=240 dan masih di dalam 870x780.
-        FormInput.add(labelRM301A("Aliran Oksigen :", 8, 240, 165));
-        AliranOksigen = kotakRM301A(180, 240, 115);
-        FormInput.add(labelRM301A("L/menit, Alat :", 300, 240, 100));
+        //
+        // FormInput bertata letak absolut. Sempat ditaruh di baris baru y=240
+        // dan ternyata TERPOTONG: panel input yang terlihat berakhir sebelum
+        // itu, walau FormInput sendiri berukuran 870x780. Dipindah ke ruang
+        // KOSONG di baris y=180 sebelah kanan - baris itu hanya terpakai
+        // sampai x=389 oleh Tekanan Darah Sistolik, sedangkan kolom kanan di
+        // y=180 memang kosong karena cmbSkor5/6/7 ada di y=90/120/150.
+        // Batas kanannya 789, sama dengan tepi kanan kotak Skor7.
+        FormInput.add(labelRM301A("Aliran O2 :", 400, 180, 70));
+        AliranOksigen = kotakRM301A(472, 180, 45);
+        FormInput.add(labelRM301A("L/mnt  Alat :", 520, 180, 70));
         AlatOksigen = new widget.ComboBox();
         AlatOksigen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
             "Tanpa Alat","RM","NRM","NK"}));
         FormInput.add(AlatOksigen);
-        AlatOksigen.setBounds(405, 240, 115, 23);
-        FormInput.add(labelRM301A("Gula Darah :", 530, 240, 100));
-        GulaDarah = kotakRM301A(640, 240, 115);
+        AlatOksigen.setBounds(592, 180, 90, 23);
+        FormInput.add(labelRM301A("G.Darah :", 685, 180, 55));
+        GulaDarah = kotakRM301A(742, 180, 47);
 
         // WAJIB: setModel() memilih indeks 0 tanpa memicu ItemEvent, jadi kotak
         // skor tidak ikut terisi dan form terbuka dengan pita dan angka yang
