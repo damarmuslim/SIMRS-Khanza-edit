@@ -9,3 +9,10 @@ cache/
 # menghasilkan diff sekitar 4 juta baris pada graph.json, yang membuat riwayat
 # git tidak terbaca dan folder .git membengkak.
 graphify-out/
+
+# Keluaran cetak PDF (Valid.MyReportPDF menulis ./report/<nama laporan>.pdf).
+# Berisi DATA PASIEN dan ditimpa setiap kali tombol Cetak > PDF ditekan, jadi
+# tidak boleh ikut ter-commit. Ditambahkan saat RM 02-2 diberi pilihan keluaran
+# Lembar/PDF; sebelumnya report/rptLembarSkriningRalan.pdf sudah terlanjur
+# masuk repo lewat jalur yang sama.
+/report/*.pdf

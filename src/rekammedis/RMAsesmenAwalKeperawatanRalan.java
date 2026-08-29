@@ -1617,8 +1617,27 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
         param.put("gambarnyeri", KanvasNyeri.gambarCetak(Sequel.cariIsi(
                 "select nyeri_canvas_gambar from asesmen_awal_keperawatan_ralan where no_rawat=?",
                 noRawat)));
-        Valid.MyReport("rptAsesmenAwalKeperawatanRalanRM02.jasper", "report",
-                "::[ Asesmen Awal Keperawatan Rawat Jalan ]::", param);
+        // Pilihan bentuk keluaran - permintaan user. "Lembar" membuka penampil
+        // Jasper yang bisa langsung dikirim ke printer; "PDF" mengekspor ke
+        // report/rptAsesmenAwalKeperawatanRalanRM02.pdf lalu membukanya dengan
+        // pembaca PDF bawaan komputer.
+        //
+        // Yang perlu diketahui: MyReportPDF memakai nama berkas TETAP dari nama
+        // laporannya, jadi PDF pasien sebelumnya DITIMPA setiap kali mencetak.
+        // Itu perilaku bawaan Khanza yang dipakai seluruh modul lain; dibiarkan
+        // sama supaya tidak ada dua kebiasaan berbeda di aplikasi yang sama.
+        String[] pilihan = {"Lembar", "PDF", "Batal"};
+        int jawab = JOptionPane.showOptionDialog(rootPane,
+                "Cetak dalam bentuk apa?", "Cetak Asesmen Awal Keperawatan",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                pilihan, pilihan[0]);
+        String judul = "::[ Asesmen Awal Keperawatan Rawat Jalan ]::";
+        if (jawab == 0) {
+            Valid.MyReport("rptAsesmenAwalKeperawatanRalanRM02.jasper", "report", judul, param);
+        } else if (jawab == 1) {
+            Valid.MyReportPDF("rptAsesmenAwalKeperawatanRalanRM02.jasper", "report", judul, param);
+        }
+        // Batal atau dialog ditutup: tidak melakukan apa-apa.
     }
 
     private String tandaTangan(String nip, String nama) {
