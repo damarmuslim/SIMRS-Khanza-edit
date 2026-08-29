@@ -1652,3 +1652,82 @@ Supaya tidak menyimpan data menyesatkan: **sasaran** hanya disimpan kalau baris 
 
 **MySQL sempat mati sendiri** di tengah sesi (2026-08-27 ~10:00), beberapa saat setelah import migrasi. **Bukan disebabkan DDL**: log tidak mencatat shutdown maupun crash sama sekali - server berhenti mendadak tanpa sempat menulis apa pun, dan tulisan terakhir ke `ibdata1` justru menunjukkan import ter-commit dengan benar. Dihidupkan ulang lewat `mysqld.exe --defaults-file=C:\xampp\mysql\bin\my.ini`; seluruh data terkonfirmasi utuh sesudahnya. Log mengonfirmasi `innodb_force_recovery = 1` memang masih aktif (masalah lama yg belum tuntas).
 - ⏳ **Utang teknis yg sengaja dibiarkan di `MnRingkasanMasukKeluarActionPerformed`**: 29 dari 38 parameter yg dirakit tidak pernah dipakai laporan (sekitar 25 query terpisah ke DB per cetak, hasilnya dibuang), dan parameter `pekerjaan` diisi dari kolom `pasien.agama`. Nol dampak krn parameternya memang tidak terpakai; tidak diperbaiki krn method ini akan digantikan RM 17-01.
+
+---
+
+# Progress: Asuhan Gizi - Laporan "ASUPAN GIZI PASIEN" + Kolom Jam + Panel Ringkasan
+
+**Branch**: `feat/asuhan-gizi-cetak-rm` | **Tanggal**: 2026-08-27 | **Status**: selesai dev, menunggu pengujian langsung user
+
+## Temuan Awal: tombol cetak per-pasien memang TIDAK PERNAH bisa dipakai
+
+Berkas `.jasper` untuk `rptCetakAsuhanGizi` **tidak ada di lokasi mana pun** (`report/`, `dist/report/`, `build/report/`), padahal dua belas laporan gizi lainnya punya pasangan `.jrxml` + `.jasper` lengkap. Akibatnya `Valid.MyReportqry` selalu mencari berkas yang tidak ada. Cetak *daftar* tetap jalan karena berkasnya memang ada - jadi kerusakannya tidak kentara.
+
+## Kenapa DITULIS ULANG TOTAL, bukan sekadar di-compile
+
+Versi `.jrxml` yang tersisa ternyata bukan hanya perlu dikompilasi - isinya beda modul dari lembar fisik RSUD:
+
+| | JRXML lama | Lembar fisik RSUD |
+|---|---|---|
+| Judul | FORMULIR ASUHAN GIZI | **ASUPAN GIZI PASIEN** |
+| Ukuran / halaman | A4, satu band | **F4 609x935, dua halaman** |
+| Ruangan & Jam | tidak ada | **ada** |
+| Antropometri | 11 item berderet | **9 item tersusun 3x3** |
+| Tanda tangan | Petugas Gizi | **AHLI GIZI** |
+| Salah ketik | ANTROPOMERI, MONOTORING, almont | - |
+
+Versi lama tetap tersimpan di riwayat git.
+
+## Keputusan Desain
+
+- **Halaman 2 (MONITORING & EVALUASI)** diisi dari tabel `monitoring_asuhan_gizi` lewat **15 correlated subquery ber-LIMIT** (`me1..me15`) - satu catatan bertanggal per baris bernomor, bukan satu blok teks. **Tidak memakai subreport**: codebase ini tidak pernah memakainya di mana pun.
+- **Tiga kolom sistem yang tidak ada di kertas** (`antropometri_lla`, `antropometri_bbpertb`, `riwayat_personal`) tidak dicetak. Kolomnya tetap ada dan tetap bisa diisi lewat form.
+- **Ruangan** diambil dari `kamar_inap` terakhir lewat subquery, tidak disimpan sebagai kolom baru.
+
+## Kolom `jam` - satu-satunya perubahan skema
+
+`sik_asuhan_gizi_jam.sql`: `ALTER TABLE asuhan_gizi ADD COLUMN jam TIME DEFAULT NULL;` - **SUDAH DIIMPORT** ke DB `aik`. Lembar fisik punya isian Jam, sistem lama hanya punya tanggal.
+
+**Migrasi ini WAJIB dikirim bersama perubahan Java-nya.** `Sequel.menyimpantf` merakit `insert into asuhan_gizi values(?,?,...)` **tanpa nama kolom** - jadi posisional. Kalau kodenya jalan tanpa migrasi (atau sebaliknya), jumlah nilai tidak sama dengan jumlah kolom dan seluruh penyimpanan gagal. `ADD COLUMN` tanpa `AFTER` selalu menempel di ujung, jadi `jam` mendarat di ordinal 29 dan `jamAsuhan()` ikut ditulis **paling akhir** di `simpan()`.
+
+Di form, `LabelJamAsuhan` + `JamAsuhan` dipasang di baris y=70 - dipilih karena baris itu satu-satunya yang kosong di kanan x=130 (form hanya selebar 786px, baris y=40 sudah terpakai sampai x=779). Dibangun di **luar blok GEN**.
+
+## Perbaikan Sampingan: query cetak mencetak SELURUH episode
+
+Query cetak lama hanya menyaring `no_rawat`, padahal PK `asuhan_gizi` adalah **(no_rawat, tanggal)** - satu episode bisa punya beberapa asuhan, sehingga yang tercetak semuanya, bukan baris yang sedang dipilih petugas. Ditambahkan penyaring tanggal. Aman diubah karena laporan ini memang sedang dibangun ulang dan selama ini tidak pernah bisa dipakai.
+
+## Panel Ringkasan HTML yang bisa dilipat
+
+Menyamakan form ini dengan form RM lain: sekali baris tabel diklik, isinya terbaca sebagai lembar ringkas tanpa perlu menggeser tabel selebar 34 kolom.
+
+`internalFrame1` memakai BorderLayout dengan PAGE_START/CENTER/PAGE_END sudah terpakai tapi **EAST kosong** - `PanelAccor` dipasang di situ, jadi tidak satu pun komponen lama bergeser. Seluruhnya dibangun di `initRingkasanGizi()` **di luar `initComponents()`**. Diff-nya murni penambahan: **205 baris masuk, 0 dihapus**.
+
+Lima bagian: IDENTITAS, ANTROPOMETRI, BIOKIMIA & FISIK/KLINIS, RIWAYAT GIZI, DIAGNOSA & INTERVENSI. Alergi diringkas **hanya yang "Ya"**. `BtnPrint1` memanggil ulang jalur cetak yang sudah ada (`MnAsuhanGiziActionPerformed(null)`), bukan menyalin logikanya.
+
+### Baris "Ahli Gizi" - kelihatan seperti bug, ternyata bukan
+
+Saat dirender, baris ini **kosong**. Penelusuran: `getData()` membaca kolom `[0..30]` dan `[33]` - kolom **31 (NIP) dan 32 (Nama Petugas) memang tidak pernah disentuh**.
+
+Itu **disengaja, bukan bug**: `KdPetugas` berisi user yang sedang **login** dan dipakai sebagai penjaga izin edit (*"hanya boleh mengedit record milik sendiri"*). Kalau `getData()` menimpanya dengan nilai baris, penjaga itu akan selalu lolos.
+
+Karena ringkasan menggambarkan **record**-nya - bukan siapa yang sedang membukanya - nilainya dibaca langsung dari kolom 32 lewat `nilaiBaris()`. Perilaku izin edit tidak diubah sama sekali.
+
+## BUG DITEMUKAN DARI RENDER DATA SUNGGUHAN
+
+**Jenis kelamin tercetak "P" untuk pasien laki-laki.** Query menyeleksi `pasien.jk` **mentah** yang isinya `'L'`/`'P'`, bukan hasil `if(...,'Laki-Laki','Perempuan')` seperti di laporan lain, sementara ekspresinya membandingkan dengan `"Laki-Laki"` - sehingga **SEMUA** pasien jatuh ke cabang "P". Dibuat menerima kedua bentuk. Hanya ketahuan karena cetakannya benar-benar dilihat dengan data asli.
+
+## Verifikasi yang Sudah Dijalankan
+
+- `ant jar` **BUILD SUCCESSFUL** (dua perbaikan di jalan: tinggi band baris Gluten 86→90; nama widget `SusuSapiYa` → `SusuYa`).
+- **3 gotcha JRXML nol pelanggaran**: 54 `<textField>` semuanya `isStretchWithOverflow`, 72 `<staticText>` semuanya height>=11, 11 band semuanya `splitType="Prevent"`. Seluruh 46 field dideklarasikan **dan** dipakai - nol di kedua arah.
+- **Penyisip posisional diuji SEBELUM migrasi** untuk membuktikan alatnya memang mendeteksi ketidakcocokan (melaporkan 29 vs 28), lalu diulang sesudahnya.
+- **Query cetak yang SEBENARNYA** - dirakit ulang dari literal Java, bukan disalin - dijalankan ke DB: 5.219 karakter, 15 subquery, mengembalikan 1 baris.
+- **Pemetaan `me1..me15` dibuktikan terpisah**: tiga baris monitoring disisipkan dalam transaksi, `me1/me2/me3` terisi urut tanggal dan `me4` NULL, lalu di-rollback. Perlu diuji begini karena pada data yang ada halaman 2 tampil kosong - dan itu ternyata **benar**: satu-satunya baris monitoring milik `no_rawat` yang berbeda.
+- **Cetakan DILIHAT** dengan data pasien asli: 2 halaman F4, identitas dan isian terisi benar, QR ter-render.
+- **Panel ringkasan DILIHAT** dengan data asli, bukan form kosong: harness memanggil `tampil()` lalu memilih baris 0 dan memanggil `getData()` lewat refleksi supaya panelnya benar-benar terisi. Panel menempel di kanan, auto terbuka saat baris diklik, alergi teringkas "Telur, Susu Sapi, Kacang, Gluten", Ahli Gizi terisi "ANJASMARA".
+
+## Belum Dikerjakan / Next Steps
+
+- ⏳ **Belum diuji langsung oleh user di `Aplikasi.bat`** - simpan/ganti dengan kolom Jam, dan cetak lewat `JasperViewer` sungguhan.
+- ⏳ Belum dicetak dengan pasien yang halaman 2-nya benar-benar penuh (>15 catatan monitoring) - perilaku catatan ke-16 dan seterusnya belum pernah dilihat.
+- ⏳ `graphify update .` belum dijalankan untuk modul ini.

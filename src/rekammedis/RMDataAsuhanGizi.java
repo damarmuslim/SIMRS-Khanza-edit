@@ -19,6 +19,7 @@ import fungsi.validasi;
 import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -33,11 +34,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.text.Document;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 import kepegawaian.DlgCariPetugas;
 
 
@@ -67,12 +72,14 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         widget.IconStyle.pasang(this);
-        
+        initJamAsuhan();
+        initRingkasanGizi();
+
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","J.K.","Tgl.Lahir","Tgl.Asuhan","BB(Kg)","TB(Cm)","IMT(Kg/Cm)","LiLA(Cm)","TL(Cm)",
             "ULNA(Cm)","BB Ideal(Kg)","BB/U(%)","TB/U(%)","BB/TB(%)","LiLA/U(%)","Biokimia","Fisik/Klinis","Telur","Susu Sapi",
             "Kacang","Gluten","Udang","Ikan","Hazelnut","Pola Makan","Riwayat Personal","Diagnosis Gizi","Intervensi Gizi",
-            "Monitoring & Evaluasi","NIP","Nama Petugas"
+            "Monitoring & Evaluasi","NIP","Nama Petugas","Jam"
         }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -82,7 +89,11 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 33; i++) {
+        // 34, bukan 33: kolom "Jam" ditambahkan di AKHIR daftar judul supaya
+        // indeks kolom lama tidak bergeser - beberapa tempat di file ini membaca
+        // tbObat lewat indeks angka (NIP=31, Nama Petugas=32), jadi menyisipkan
+        // di tengah akan membuatnya menunjuk kolom yang salah tanpa error.
+        for (i = 0; i < 34; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(105);
@@ -1387,19 +1398,25 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
                 alergi_hazelnut="Ya";
             }
             
-            if(Sequel.menyimpantf("asuhan_gizi","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",28,new String[]{
-                    TNoRw.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+""),BB.getText(),TB.getText(),IMT.getText(),LiLA.getText(), 
-                    TL.getText(),ULNA.getText(),BBIdeal.getText(),BBPerU.getText(),TBPerU.getText(),BBPerTB.getText(),LiLAPerU.getText(), 
-                    Biokimia.getText(),FisikKlinis.getText(), alergi_telur, alergi_susu_sapi, alergi_kacang, alergi_gluten, alergi_udang, 
+            // 29 placeholder, BUKAN 28. Sequel.menyimpantf menghasilkan
+            // "insert into asuhan_gizi values(?,?,...)" TANPA nama kolom, jadi
+            // jumlah nilai harus persis sama dengan jumlah kolom tabel dan
+            // urutannya harus mengikuti urutan FISIK kolom. Kolom `jam` berada
+            // di posisi terakhir (ADD COLUMN tanpa AFTER selalu menambahkan di
+            // belakang), karena itu nilainya juga ditaruh paling akhir.
+            if(Sequel.menyimpantf("asuhan_gizi","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",29,new String[]{
+                    TNoRw.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+""),BB.getText(),TB.getText(),IMT.getText(),LiLA.getText(),
+                    TL.getText(),ULNA.getText(),BBIdeal.getText(),BBPerU.getText(),TBPerU.getText(),BBPerTB.getText(),LiLAPerU.getText(),
+                    Biokimia.getText(),FisikKlinis.getText(), alergi_telur, alergi_susu_sapi, alergi_kacang, alergi_gluten, alergi_udang,
                     alergi_ikan, alergi_hazelnut, PolaMakan.getText(),RiwayatPersonal.getText(),DiagnosisGizi.getText(),IntervensiGizi.getText(),
-                    Monitoring.getText(),KdPetugas.getText()
+                    Monitoring.getText(),KdPetugas.getText(),jamAsuhan()
                 })==true){
                     tabMode.addRow(new Object[]{
                         TNoRw.getText(),TNoRM.getText(),TPasien.getText(),Jk.getText().substring(0,1),TglLahir.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+""),
                         BB.getText(),TB.getText(),IMT.getText(),LiLA.getText(),TL.getText(),ULNA.getText(),BBIdeal.getText(),BBPerU.getText(),TBPerU.getText(),BBPerTB.getText(),
                         LiLAPerU.getText(),Biokimia.getText(),FisikKlinis.getText(),alergi_telur, alergi_susu_sapi, alergi_kacang, alergi_gluten, alergi_udang, 
                         alergi_ikan, alergi_hazelnut, PolaMakan.getText(),RiwayatPersonal.getText(),DiagnosisGizi.getText(),IntervensiGizi.getText(),Monitoring.getText(),
-                        KdPetugas.getText(),NmPetugas.getText()
+                        KdPetugas.getText(),NmPetugas.getText(),jamAsuhan()
                     });
                     LCount.setText(""+tabMode.getRowCount());
                     emptTeks();
@@ -1550,7 +1567,7 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
                         "asuhan_gizi.antropometri_tbperu,asuhan_gizi.antropometri_bbpertb,asuhan_gizi.antropometri_llaperu,asuhan_gizi.biokimia,"+
                         "asuhan_gizi.fisik_klinis,asuhan_gizi.alergi_telur,asuhan_gizi.alergi_susu_sapi,asuhan_gizi.alergi_kacang,asuhan_gizi.alergi_gluten,"+
                         "asuhan_gizi.alergi_udang,asuhan_gizi.alergi_ikan,asuhan_gizi.alergi_hazelnut,asuhan_gizi.pola_makan,asuhan_gizi.riwayat_personal,"+
-                        "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,petugas.nama "+
+                        "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,asuhan_gizi.jam,petugas.nama "+
                         "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                         "inner join asuhan_gizi on reg_periksa.no_rawat=asuhan_gizi.no_rawat "+
                         "inner join petugas on asuhan_gizi.nip=petugas.nip where "+
@@ -1563,7 +1580,7 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
                         "asuhan_gizi.antropometri_tbperu,asuhan_gizi.antropometri_bbpertb,asuhan_gizi.antropometri_llaperu,asuhan_gizi.biokimia,"+
                         "asuhan_gizi.fisik_klinis,asuhan_gizi.alergi_telur,asuhan_gizi.alergi_susu_sapi,asuhan_gizi.alergi_kacang,asuhan_gizi.alergi_gluten,"+
                         "asuhan_gizi.alergi_udang,asuhan_gizi.alergi_ikan,asuhan_gizi.alergi_hazelnut,asuhan_gizi.pola_makan,asuhan_gizi.riwayat_personal,"+
-                        "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,petugas.nama "+
+                        "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,asuhan_gizi.jam,petugas.nama "+
                         "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                         "inner join asuhan_gizi on reg_periksa.no_rawat=asuhan_gizi.no_rawat "+
                         "inner join petugas on asuhan_gizi.nip=petugas.nip where "+
@@ -1707,22 +1724,292 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),31).toString());
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),32).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),31).toString():finger)+"\n"+TglAsuhan.getSelectedItem());
             Valid.MyReportqry("rptCetakAsuhanGizi.jasper","report","::[ Laporan Asuhan Gizi Pasien ]::",
-                        "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,asuhan_gizi.tanggal,"+
-                        "asuhan_gizi.antropometri_bb,asuhan_gizi.antropometri_tb,asuhan_gizi.antropometri_imt,asuhan_gizi.antropometri_lla,"+
-                        "asuhan_gizi.antropometri_tl,asuhan_gizi.antropometri_ulna,asuhan_gizi.antropometri_bbideal,asuhan_gizi.antropometri_bbperu,"+
-                        "asuhan_gizi.antropometri_tbperu,asuhan_gizi.antropometri_bbpertb,asuhan_gizi.antropometri_llaperu,asuhan_gizi.biokimia,"+
-                        "asuhan_gizi.fisik_klinis,asuhan_gizi.alergi_telur,asuhan_gizi.alergi_susu_sapi,asuhan_gizi.alergi_kacang,asuhan_gizi.alergi_gluten,"+
-                        "asuhan_gizi.alergi_udang,asuhan_gizi.alergi_ikan,asuhan_gizi.alergi_hazelnut,asuhan_gizi.pola_makan,asuhan_gizi.riwayat_personal,"+
-                        "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,petugas.nama,reg_periksa.umurdaftar,"+
-                        "reg_periksa.sttsumur,penjab.png_jawab from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                        "inner join asuhan_gizi on reg_periksa.no_rawat=asuhan_gizi.no_rawat inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
-                        "inner join petugas on asuhan_gizi.nip=petugas.nip where asuhan_gizi.no_rawat='"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"'",param);
+                        sqlCetakAsuhanGizi(tbObat.getValueAt(tbObat.getSelectedRow(),0).toString(),
+                                           tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()),param);
         }
     }//GEN-LAST:event_MnAsuhanGiziActionPerformed
 
     private void BBKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BBKeyPressed
         Valid.pindah(evt,TglAsuhan,TB);
     }//GEN-LAST:event_BBKeyPressed
+
+    // =================================================================
+    //  PANEL RINGKASAN HTML (accordion di sisi kanan tabel)
+    // =================================================================
+
+    /**
+     * Memasang panel ringkasan HTML yang bisa dilipat di sisi KANAN tabel,
+     * mengikuti pola yang sudah dipakai di RM 03-2, RM 17-01, dan RM 21.
+     *
+     * <p>Form ini sebelumnya sama sekali tidak punya panel ringkasan - berbeda
+     * dari beberapa form lain yang sudah punya {@code LoadHTML} tapi tidak
+     * pernah dipasang ke container mana pun. Jadi seluruh komponennya dibuat
+     * baru di sini.</p>
+     *
+     * <p><b>Dibangun DI LUAR blok GEN</b> - form ini punya berkas {@code .form},
+     * dan seluruh {@code internalFrame1.add(...)} bawaan berada di dalam
+     * {@code initComponents()} yang tidak boleh diedit tangan: kalau berkasnya
+     * dibuka di NetBeans Form Editor lalu disimpan, editan tangan di dalam blok
+     * itu akan tertimpa. {@code internalFrame1} memakai BorderLayout dan sisi
+     * EAST-nya masih kosong (PAGE_START, CENTER, dan PAGE_END sudah terpakai),
+     * jadi panel ini bisa ditempel tanpa mengganggu apa pun.</p>
+     */
+    private void initRingkasanGizi() {
+        LoadHTML = new widget.editorpane();
+        HTMLEditorKit kit = new HTMLEditorKit();
+        LoadHTML.setEditable(false);
+        LoadHTML.setEditorKit(kit);
+        StyleSheet styleSheet = kit.getStyleSheet();
+        styleSheet.addRule(
+                ".isi td{border-right:1px solid #e2e7dd;font:8.5px tahoma;height:12px;"
+                + "border-bottom:1px solid #e2e7dd;background:#ffffff;color:#323232;}");
+        Document doc = kit.createDefaultDocument();
+        LoadHTML.setDocument(doc);
+
+        ScrollHTML = new widget.ScrollPane();
+        ScrollHTML.setViewportView(LoadHTML);
+
+        TNoRM1 = new widget.TextBox();
+        TNoRM1.setEditable(false);
+        TNoRM1.setPreferredSize(new Dimension(90, 23));
+        TPasien1 = new widget.TextBox();
+        TPasien1.setEditable(false);
+        TPasien1.setPreferredSize(new Dimension(180, 23));
+
+        BtnPrint1 = new widget.Button();
+        BtnPrint1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item (copy).png")));
+        BtnPrint1.setPreferredSize(new Dimension(28, 23));
+        BtnPrint1.setToolTipText("Cetak Asupan Gizi pasien ini");
+        // Memakai jalur cetak yang SAMA dengan menu klik-kanan, bukan menyalin
+        // logikanya - supaya keduanya tidak bisa berbeda perilaku.
+        BtnPrint1.addActionListener(evt -> MnAsuhanGiziActionPerformed(null));
+
+        widget.Label lblPasien = new widget.Label();
+        lblPasien.setText("Pasien :");
+        lblPasien.setHorizontalAlignment(SwingConstants.LEFT);
+
+        FormMenu = new widget.panelisi();
+        FormMenu.setPreferredSize(new Dimension(44, 44));
+        FormMenu.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 9));
+        FormMenu.add(lblPasien);
+        FormMenu.add(TNoRM1);
+        FormMenu.add(TPasien1);
+        FormMenu.add(BtnPrint1);
+
+        ChkAccor = new widget.CekBox();
+        ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kiri.png")));
+        ChkAccor.setPreferredSize(new Dimension(15, 15));
+        ChkAccor.addActionListener(evt -> isMenu());
+
+        PanelAccor = new widget.PanelBiasa();
+        PanelAccor.setLayout(new java.awt.BorderLayout(1, 1));
+        PanelAccor.setPreferredSize(new Dimension(470, 44));
+        PanelAccor.add(ChkAccor, java.awt.BorderLayout.WEST);
+        PanelAccor.add(FormMenu, java.awt.BorderLayout.NORTH);
+        PanelAccor.add(ScrollHTML, java.awt.BorderLayout.CENTER);
+        internalFrame1.add(PanelAccor, java.awt.BorderLayout.EAST);
+
+        // Mulai terlipat: isinya baru relevan setelah ada baris yang diklik.
+        ChkAccor.setSelected(false);
+        isMenu();
+    }
+
+    private void isMenu() {
+        if (ChkAccor.isSelected()) {
+            ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kanan.png")));
+            PanelAccor.setPreferredSize(new Dimension(470, 44));
+            FormMenu.setVisible(true);
+            ScrollHTML.setVisible(true);
+        } else {
+            ChkAccor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/kiri.png")));
+            PanelAccor.setPreferredSize(new Dimension(15, 44));
+            FormMenu.setVisible(false);
+            ScrollHTML.setVisible(false);
+        }
+        PanelAccor.revalidate();
+        PanelAccor.repaint();
+    }
+
+    /**
+     * Menyusun ringkasan HTML dari widget yang SUDAH terisi {@link #getData()}.
+     *
+     * <p>Dibaca langsung dari widget, bukan query ulang ke database - dengan
+     * begitu isi ringkasan dijamin sama persis dengan yang tampil di form,
+     * tidak bisa berbeda karena selisih waktu baca. Pola yang sama dipakai di
+     * RM 03-2, RM 17-01, dan RM 21.</p>
+     */
+    private void bangunRingkasanHtml() {
+        StringBuilder h = new StringBuilder();
+        h.append("<html><table width='100%' cellpadding='2' cellspacing='0'>");
+        judulHtml(h, "IDENTITAS");
+        barisHtml(h, "No.Rawat", TNoRw.getText());
+        barisHtml(h, "No.RM / Nama", TNoRM.getText() + " / " + TPasien.getText());
+        barisHtml(h, "Tgl.Lahir / J.K.", TglLahir.getText() + " / " + Jk.getText());
+        barisHtml(h, "Tanggal & Jam", TglAsuhan.getSelectedItem() + "  " + jamAsuhan());
+        // Ahli Gizi diambil dari BARIS yang dipilih (kolom 32), bukan dari
+        // widget NmPetugas. Widget itu berisi user yang sedang LOGIN - getData()
+        // sengaja tidak menimpanya karena KdPetugas dipakai sebagai penjaga izin
+        // edit ("hanya boleh mengedit record sendiri"). Ringkasan ini
+        // menggambarkan record-nya, jadi yang benar adalah penulis record itu.
+        barisHtml(h, "Ahli Gizi", nilaiBaris(32));
+
+        judulHtml(h, "ANTROPOMETRI");
+        barisHtml(h, "BB / TB / IMT", BB.getText() + " kg / " + TB.getText() + " cm / " + IMT.getText());
+        barisHtml(h, "TL / ULNA", TL.getText() + " cm / " + ULNA.getText() + " cm");
+        barisHtml(h, "BB Ideal", BBIdeal.getText() + " kg");
+        barisHtml(h, "BB/U - TB/U - LiLA/U", BBPerU.getText() + " / " + TBPerU.getText() + " / " + LiLAPerU.getText());
+
+        judulHtml(h, "BIOKIMIA & FISIK/KLINIS");
+        barisHtml(h, "Biokimia", Biokimia.getText());
+        barisHtml(h, "Fisik / Klinis", FisikKlinis.getText());
+
+        judulHtml(h, "RIWAYAT GIZI");
+        barisHtml(h, "Alergi Makanan", ringkasAlergi());
+        barisHtml(h, "Pola Makan", PolaMakan.getText());
+
+        judulHtml(h, "DIAGNOSA & INTERVENSI");
+        barisHtml(h, "Diagnosa Gizi", DiagnosisGizi.getText());
+        barisHtml(h, "Intervensi Gizi", IntervensiGizi.getText());
+        barisHtml(h, "Monitoring & Evaluasi", Monitoring.getText());
+        h.append("</table></html>");
+        LoadHTML.setText(h.toString());
+        LoadHTML.setCaretPosition(0);
+    }
+
+    /**
+     * Hanya alergi yang berjawaban "Ya" yang diringkas - daftar tujuh baris
+     * "Tidak" tidak menambah informasi apa pun di panel sesempit ini.
+     */
+    private String ringkasAlergi() {
+        StringBuilder a = new StringBuilder();
+        if (TelurYa.isSelected()) { a.append("Telur"); }
+        if (SusuYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Susu Sapi"); }
+        if (KacangYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Kacang"); }
+        if (GlutenYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Gluten"); }
+        if (UdangYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Udang"); }
+        if (IkanYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Ikan"); }
+        if (HazelnutYa.isSelected()) { a.append(a.length() > 0 ? ", " : "").append("Hazelnut"); }
+        return a.length() == 0 ? "Tidak ada" : a.toString();
+    }
+
+    /**
+     * Membaca satu sel dari baris tabel yang sedang dipilih. Dipakai untuk
+     * kolom yang TIDAK punya widget di form (mis. Nama Petugas), sehingga
+     * satu-satunya sumbernya adalah tabel itu sendiri.
+     */
+    private String nilaiBaris(int kolom) {
+        int baris = tbObat.getSelectedRow();
+        if (baris < 0 || kolom >= tbObat.getColumnCount()) {
+            return "";
+        }
+        Object v = tbObat.getValueAt(baris, kolom);
+        return v == null ? "" : v.toString();
+    }
+
+    private void judulHtml(StringBuilder h, String judul) {
+        h.append("<tr class='isi'><td colspan='2' bgcolor='#FFFAF8'><b>").append(judul).append("</b></td></tr>");
+    }
+
+    private void barisHtml(StringBuilder h, String label, String nilai) {
+        h.append("<tr class='isi'><td width='38%' valign='top'>").append(label)
+         .append("</td><td valign='top'>")
+         .append((nilai == null ? "" : nilai).replace("\n", "<br>")).append("</td></tr>");
+    }
+
+    /**
+     * Query cetak lembar "ASUPAN GIZI PASIEN" (halaman 1) beserta blok
+     * "MONITORING &amp; EVALUASI" (halaman 2).
+     *
+     * <p><b>Disaring no_rawat DAN tanggal.</b> Primary key `asuhan_gizi` adalah
+     * (no_rawat, tanggal), jadi satu episode bisa punya beberapa asuhan. Query
+     * lama hanya menyaring no_rawat sehingga mencetak SELURUH asuhan episode
+     * itu, bukan baris yang sedang dipilih petugas. Diperbaiki sekalian di sini
+     * - laporan ini memang sedang dibangun ulang, dan selama ini tidak pernah
+     * bisa dipakai karena berkas .jasper-nya tidak ada.</p>
+     *
+     * <p><b>Lima belas baris Monitoring &amp; Evaluasi</b> diambil dari tabel
+     * `monitoring_asuhan_gizi` - satu baris per tanggal monitoring - lewat 15
+     * correlated subquery ber-LIMIT, bukan subreport JasperReports. Codebase ini
+     * sama sekali tidak pernah memakai subreport di mana pun, dan pendekatan ini
+     * membuat tiap catatan jatuh tepat pada baris bernomornya di kertas.</p>
+     *
+     * <p>Ruangan tidak disimpan di `asuhan_gizi`; diambil dari kamar_inap
+     * terakhir lewat subquery, sama seperti pola di RM 17-01.</p>
+     */
+    private String sqlCetakAsuhanGizi(String noRawat, String tanggal) {
+        StringBuilder monitoring = new StringBuilder();
+        for (int n = 0; n < 15; n++) {
+            monitoring.append(",(select concat(date_format(m.tanggal,'%d-%m-%Y'),' : ',")
+                     .append("ifnull(m.monitoring,''),")
+                     .append("if(ifnull(m.evaluasi,'')='','',concat('  |  ',m.evaluasi)))")
+                     .append(" from monitoring_asuhan_gizi m where m.no_rawat=asuhan_gizi.no_rawat ")
+                     .append("order by m.tanggal limit ").append(n).append(",1) as me").append(n + 1);
+        }
+        return "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.tgl_lahir,asuhan_gizi.tanggal,"
+             + "asuhan_gizi.antropometri_bb,asuhan_gizi.antropometri_tb,asuhan_gizi.antropometri_imt,asuhan_gizi.antropometri_lla,"
+             + "asuhan_gizi.antropometri_tl,asuhan_gizi.antropometri_ulna,asuhan_gizi.antropometri_bbideal,asuhan_gizi.antropometri_bbperu,"
+             + "asuhan_gizi.antropometri_tbperu,asuhan_gizi.antropometri_bbpertb,asuhan_gizi.antropometri_llaperu,asuhan_gizi.biokimia,"
+             + "asuhan_gizi.fisik_klinis,asuhan_gizi.alergi_telur,asuhan_gizi.alergi_susu_sapi,asuhan_gizi.alergi_kacang,asuhan_gizi.alergi_gluten,"
+             + "asuhan_gizi.alergi_udang,asuhan_gizi.alergi_ikan,asuhan_gizi.alergi_hazelnut,asuhan_gizi.pola_makan,asuhan_gizi.riwayat_personal,"
+             + "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,asuhan_gizi.jam,"
+             + "petugas.nama,reg_periksa.umurdaftar,reg_periksa.sttsumur,penjab.png_jawab,"
+             + "date_format(asuhan_gizi.tanggal,'%d-%m-%Y') as tgl_asuhan,"
+             + "(select bangsal.nm_bangsal from kamar_inap ki inner join kamar on ki.kd_kamar=kamar.kd_kamar "
+             + "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal where ki.no_rawat=asuhan_gizi.no_rawat "
+             + "order by ki.tgl_masuk desc limit 1) as nm_ruang"
+             + monitoring
+             + " from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+             + "inner join asuhan_gizi on reg_periksa.no_rawat=asuhan_gizi.no_rawat inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "
+             + "inner join petugas on asuhan_gizi.nip=petugas.nip "
+             + "where asuhan_gizi.no_rawat='" + noRawat + "' and asuhan_gizi.tanggal='" + tanggal + "'";
+    }
+
+    /**
+     * Menambahkan field "Jam" ke header, tepat DI BAWAH field Tanggal.
+     *
+     * <p>Formulir fisik "ASUPAN GIZI PASIEN" punya isian "Jam : ..... WIB",
+     * sementara {@code asuhan_gizi.tanggal} bertipe DATE sehingga jam tidak
+     * punya tempat penyimpanan. Kolom {@code jam} ditambahkan lewat migrasi
+     * additive, dan field ini yang mengisinya.</p>
+     *
+     * <p><b>Dibangun DI LUAR blok GEN dengan sengaja</b> - seluruh
+     * {@code FormInput.add(...)} bawaan berada di dalam {@code initComponents()}
+     * yang menurut konvensi proyek ini tidak boleh diedit tangan: kalau berkas
+     * {@code .form}-nya dibuka di NetBeans Form Editor lalu disimpan, editan
+     * tangan di dalam blok itu akan tertimpa. Karena method ini dipanggil
+     * SETELAH {@code initComponents()}, posisi widget lain sudah pasti.</p>
+     *
+     * <p>Koordinat x=625 dan x=689 SENGAJA sama persis dengan label dan field
+     * Tanggal di atasnya (y=40) supaya kedua baris sejajar. Baris y=70 dipilih
+     * karena di sana hanya ada satu label di ujung kiri (berakhir di x=130),
+     * jadi sisi kanannya benar-benar kosong - form ini lebarnya hanya 786px dan
+     * baris Tanggal sudah terpakai sampai x=779.</p>
+     */
+    private void initJamAsuhan() {
+        LabelJamAsuhan = new widget.Label();
+        LabelJamAsuhan.setText("Jam :");
+        LabelJamAsuhan.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        FormInput.add(LabelJamAsuhan);
+        LabelJamAsuhan.setBounds(625, 70, 60, 23);
+
+        JamAsuhan = new widget.Tanggal();
+        // widget.Tanggal yang dibangun tangan TIDAK otomatis mendapat
+        // displayFormat seperti versi Form Editor; tanpa ini isinya berformat
+        // acak dan substring untuk mengambil jam akan meleset.
+        JamAsuhan.setDisplayFormat("HH:mm:ss");
+        JamAsuhan.setDate(new java.util.Date());
+        // setPreferredSize + setBounds keduanya dipasang: constructor
+        // widget.Tanggal diam-diam memanggil setSize(WIDTH,23) dengan WIDTH=1
+        // (warisan ImageObserver), jadi tanpa ukuran eksplisit field menciut.
+        JamAsuhan.setPreferredSize(new java.awt.Dimension(90, 23));
+        FormInput.add(JamAsuhan);
+        JamAsuhan.setBounds(689, 70, 90, 23);
+    }
+
+    /** Nilai kolom {@code jam}, format HH:mm:ss sesuai tipe TIME di database. */
+    private String jamAsuhan() {
+        return JamAsuhan.getSelectedItem().toString();
+    }
 
     private void TglAsuhanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TglAsuhanKeyPressed
         Valid.pindah(evt,TCari,BB);
@@ -1893,6 +2180,17 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
     private widget.RadioButton TelurTidak;
     private widget.RadioButton TelurYa;
     private widget.Tanggal TglAsuhan;
+    /** Jam pengisian - lihat {@link #initJamAsuhan()}. Di luar blok GEN. */
+    private widget.Tanggal JamAsuhan;
+    private widget.Label LabelJamAsuhan;
+    // Panel ringkasan HTML - lihat initRingkasanGizi(). Semuanya di luar blok GEN.
+    private widget.PanelBiasa PanelAccor;
+    private widget.panelisi FormMenu;
+    private widget.CekBox ChkAccor;
+    private widget.editorpane LoadHTML;
+    private widget.ScrollPane ScrollHTML;
+    private widget.TextBox TNoRM1, TPasien1;
+    private widget.Button BtnPrint1;
     private widget.TextBox TglLahir;
     private widget.TextBox ULNA;
     private widget.RadioButton UdangTidak;
@@ -1982,7 +2280,7 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
                         "asuhan_gizi.antropometri_tbperu,asuhan_gizi.antropometri_bbpertb,asuhan_gizi.antropometri_llaperu,asuhan_gizi.biokimia,"+
                         "asuhan_gizi.fisik_klinis,asuhan_gizi.alergi_telur,asuhan_gizi.alergi_susu_sapi,asuhan_gizi.alergi_kacang,asuhan_gizi.alergi_gluten,"+
                         "asuhan_gizi.alergi_udang,asuhan_gizi.alergi_ikan,asuhan_gizi.alergi_hazelnut,asuhan_gizi.pola_makan,asuhan_gizi.riwayat_personal,"+
-                        "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,petugas.nama "+
+                        "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,asuhan_gizi.jam,petugas.nama "+
                         "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                         "inner join asuhan_gizi on reg_periksa.no_rawat=asuhan_gizi.no_rawat "+
                         "inner join petugas on asuhan_gizi.nip=petugas.nip where "+
@@ -1995,7 +2293,7 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
                         "asuhan_gizi.antropometri_tbperu,asuhan_gizi.antropometri_bbpertb,asuhan_gizi.antropometri_llaperu,asuhan_gizi.biokimia,"+
                         "asuhan_gizi.fisik_klinis,asuhan_gizi.alergi_telur,asuhan_gizi.alergi_susu_sapi,asuhan_gizi.alergi_kacang,asuhan_gizi.alergi_gluten,"+
                         "asuhan_gizi.alergi_udang,asuhan_gizi.alergi_ikan,asuhan_gizi.alergi_hazelnut,asuhan_gizi.pola_makan,asuhan_gizi.riwayat_personal,"+
-                        "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,petugas.nama "+
+                        "asuhan_gizi.diagnosis,asuhan_gizi.intervensi_gizi,asuhan_gizi.monitoring_evaluasi,asuhan_gizi.nip,asuhan_gizi.jam,petugas.nama "+
                         "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                         "inner join asuhan_gizi on reg_periksa.no_rawat=asuhan_gizi.no_rawat "+
                         "inner join petugas on asuhan_gizi.nip=petugas.nip where "+
@@ -2041,7 +2339,7 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
                         rs.getString("biokimia"),rs.getString("fisik_klinis"),rs.getString("alergi_telur"),rs.getString("alergi_susu_sapi"),
                         rs.getString("alergi_kacang"),rs.getString("alergi_gluten"),rs.getString("alergi_udang"),rs.getString("alergi_ikan"),
                         rs.getString("alergi_hazelnut"),rs.getString("pola_makan"),rs.getString("riwayat_personal"),rs.getString("diagnosis"),
-                        rs.getString("intervensi_gizi"),rs.getString("monitoring_evaluasi"),rs.getString("nip"),rs.getString("nama")
+                        rs.getString("intervensi_gizi"),rs.getString("monitoring_evaluasi"),rs.getString("nip"),rs.getString("nama"),rs.getString("jam")
                     });
                 }
             } catch (Exception e) {
@@ -2152,6 +2450,22 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
             IntervensiGizi.setText(tbObat.getValueAt(tbObat.getSelectedRow(),29).toString()); 
             Monitoring.setText(tbObat.getValueAt(tbObat.getSelectedRow(),30).toString());
             Valid.SetTgl(TglAsuhan,tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());
+            // Kolom 33 = Jam, ditaruh paling akhir supaya indeks kolom lama
+            // (NIP=31, Nama Petugas=32) tidak bergeser. Record lama yang dibuat
+            // sebelum kolom `jam` ada bernilai NULL - dibiarkan apa adanya, jam
+            // tetap pada nilai bawaan dan tidak menimpa apa pun.
+            Object jam = tbObat.getValueAt(tbObat.getSelectedRow(),33);
+            if(jam!=null && !jam.toString().trim().isEmpty()){
+                Valid.SetTgl2(JamAsuhan,tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()+" "+jam);
+            }
+
+            // Ringkasan dibangun PALING AKHIR, setelah semua widget terisi -
+            // isinya dibaca dari widget, jadi urutan ini menentukan.
+            TNoRM1.setText(TNoRM.getText());
+            TPasien1.setText(TPasien.getText());
+            bangunRingkasanHtml();
+            ChkAccor.setSelected(true);
+            isMenu();
         }
     }
 
@@ -2293,12 +2607,13 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
             alergi_hazelnut="Ya";
         }
 
-        if(Sequel.mengedittf("asuhan_gizi","no_rawat=? and tanggal=?","no_rawat=?,tanggal=?,antropometri_bb=?,antropometri_tb=?,antropometri_imt=?,antropometri_lla=?,antropometri_tl=?,antropometri_ulna=?,antropometri_bbideal=?,antropometri_bbperu=?,antropometri_tbperu=?,antropometri_bbpertb=?,antropometri_llaperu=?,biokimia=?,fisik_klinis=?,alergi_telur=?,alergi_susu_sapi=?,alergi_kacang=?,alergi_gluten=?,alergi_udang=?,alergi_ikan=?,alergi_hazelnut=?,pola_makan=?,riwayat_personal=?,diagnosis=?,intervensi_gizi=?,monitoring_evaluasi=?,nip=?",30,new String[]{
-                TNoRw.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+""),BB.getText(),TB.getText(),IMT.getText(),LiLA.getText(), 
-                TL.getText(),ULNA.getText(),BBIdeal.getText(),BBPerU.getText(),TBPerU.getText(),BBPerTB.getText(),LiLAPerU.getText(), 
-                Biokimia.getText(),FisikKlinis.getText(), alergi_telur, alergi_susu_sapi, alergi_kacang, alergi_gluten, alergi_udang, 
+        if(Sequel.mengedittf("asuhan_gizi","no_rawat=? and tanggal=?","no_rawat=?,tanggal=?,antropometri_bb=?,antropometri_tb=?,antropometri_imt=?,antropometri_lla=?,antropometri_tl=?,antropometri_ulna=?,antropometri_bbideal=?,antropometri_bbperu=?,antropometri_tbperu=?,antropometri_bbpertb=?,antropometri_llaperu=?,biokimia=?,fisik_klinis=?,alergi_telur=?,alergi_susu_sapi=?,alergi_kacang=?,alergi_gluten=?,alergi_udang=?,alergi_ikan=?,alergi_hazelnut=?,pola_makan=?,riwayat_personal=?,diagnosis=?,intervensi_gizi=?,monitoring_evaluasi=?,nip=?,jam=?",31,new String[]{
+                TNoRw.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+""),BB.getText(),TB.getText(),IMT.getText(),LiLA.getText(),
+                TL.getText(),ULNA.getText(),BBIdeal.getText(),BBPerU.getText(),TBPerU.getText(),BBPerTB.getText(),LiLAPerU.getText(),
+                Biokimia.getText(),FisikKlinis.getText(), alergi_telur, alergi_susu_sapi, alergi_kacang, alergi_gluten, alergi_udang,
                 alergi_ikan, alergi_hazelnut, PolaMakan.getText(),RiwayatPersonal.getText(),DiagnosisGizi.getText(),IntervensiGizi.getText(),
-                Monitoring.getText(),KdPetugas.getText(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString(),tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()
+                Monitoring.getText(),KdPetugas.getText(),jamAsuhan(),
+                tbObat.getValueAt(tbObat.getSelectedRow(),0).toString(),tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()
             })==true){
                 tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),0);
                 tbObat.setValueAt(TNoRM.getText(),tbObat.getSelectedRow(),1);
@@ -2333,6 +2648,7 @@ public final class RMDataAsuhanGizi extends javax.swing.JDialog {
                 tbObat.setValueAt(Monitoring.getText(),tbObat.getSelectedRow(),30);
                 tbObat.setValueAt(KdPetugas.getText(),tbObat.getSelectedRow(),31);
                 tbObat.setValueAt(NmPetugas.getText(),tbObat.getSelectedRow(),32);
+                tbObat.setValueAt(jamAsuhan(),tbObat.getSelectedRow(),33);
                 emptTeks();
         }
     }
