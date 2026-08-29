@@ -2337,9 +2337,11 @@ migrasi dan Java tetap wajib naik ke produksi bersamaan.
 
 ## Sisa
 
-- ⏳ **Cetakan belum menampilkan gambar skala nyeri beserta tandanya.** RM 19
-  pun hanya mencetak "(ada tanda)". Untuk RM 02-2 coretan bisa ditimpakan ke
-  gambar latar lalu dikirim ke Jasper sebagai parameter gambar — belum
-  dikerjakan, menunggu keputusan user.
+- ✅ **Cetakan sudah menampilkan gambar skala nyeri beserta tandanya** (atas
+  permintaan user, dikerjakan menyusul). `KanvasNyeri.gambarCetak()` menimpakan
+  coretan ke gambar latar pada ukuran ASLI `nyeri.png`, lalu dikirim ke Jasper
+  sebagai parameter `java.awt.Image`. Latarnya SELALU dicetak walau belum ada
+  coretan — di kertas skala nyeri memang tercetak kosong dan tinggal ditandai
+  tangan. Ini melampaui RM 19, yang cetakannya hanya menulis "(ada tanda)".
 - ⏳ Belum diuji langsung oleh user di `Aplikasi.bat`.
 - ⏳ Migrasi belum dijalankan di produksi.

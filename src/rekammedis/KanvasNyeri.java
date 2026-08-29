@@ -109,6 +109,64 @@ public class KanvasNyeri extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Menyusun gambar untuk CETAKAN: latar skala nyeri dengan coretan perawat
+     * ditimpakan di atasnya, jadi satu gambar utuh yang bisa dikirim ke Jasper
+     * sebagai parameter {@code java.awt.Image}.
+     *
+     * <p>Latarnya SELALU digambar, walau belum ada coretan - di kertas skala
+     * nyeri memang tercetak kosong dan tinggal ditandai tangan. Jadi lembar
+     * pasien yang tidak dinilai nyerinya tetap memuat skalanya, sama seperti
+     * formulir aslinya.</p>
+     *
+     * <p>Disusun pada ukuran ASLI {@code nyeri.png}, bukan ukuran kanvas di
+     * layar. Coretannya yang diregangkan mengikuti latar - bukan sebaliknya -
+     * supaya ketajaman latar tidak turun hanya karena kanvas di layar kebetulan
+     * lebih kecil.</p>
+     *
+     * <p>Mengembalikan {@code null} kalau {@code /picture/nyeri.png} tidak bisa
+     * dibaca; elemen gambar di JRXML memakai {@code onErrorType="Blank"}
+     * sehingga lembar tetap tercetak, hanya tanpa gambarnya.</p>
+     *
+     * @param coretanBase64 isi kolom {@code nyeri_canvas_gambar}; boleh null
+     */
+    public static java.awt.image.BufferedImage gambarCetak(String coretanBase64) {
+        java.awt.image.BufferedImage bg;
+        try {
+            bg = javax.imageio.ImageIO.read(KanvasNyeri.class.getResource("/picture/nyeri.png"));
+        } catch (Exception e) {
+            System.out.println("Notif gambarCetak (nyeri.png tidak terbaca) : " + e);
+            return null;
+        }
+        if (bg == null) {
+            return null;
+        }
+        java.awt.image.BufferedImage hasil = new java.awt.image.BufferedImage(
+                bg.getWidth(), bg.getHeight(), java.awt.image.BufferedImage.TYPE_INT_RGB);
+        java.awt.Graphics2D g = hasil.createGraphics();
+        g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION,
+                java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.setColor(java.awt.Color.WHITE);
+        g.fillRect(0, 0, hasil.getWidth(), hasil.getHeight());
+        g.drawImage(bg, 0, 0, null);
+        if (coretanBase64 != null && !coretanBase64.trim().isEmpty()) {
+            try {
+                byte[] data = java.util.Base64.getDecoder().decode(coretanBase64.trim());
+                java.awt.image.BufferedImage coret = javax.imageio.ImageIO.read(
+                        new java.io.ByteArrayInputStream(data));
+                if (coret != null) {
+                    g.drawImage(coret, 0, 0, hasil.getWidth(), hasil.getHeight(), null);
+                }
+            } catch (Exception e) {
+                // Coretan rusak tidak boleh menggagalkan cetakan; latarnya tetap
+                // tercetak dan petugas bisa menandai dengan tangan.
+                System.out.println("Notif gambarCetak (coretan tidak terbaca) : " + e);
+            }
+        }
+        g.dispose();
+        return hasil;
+    }
+
     public void setCoretanBase64(String b64) {
         hapusCoretan();
         if (b64 == null || b64.trim().isEmpty()) { return; }

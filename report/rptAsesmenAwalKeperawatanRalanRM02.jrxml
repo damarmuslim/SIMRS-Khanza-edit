@@ -46,6 +46,14 @@
 	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="finger" class="java.lang.String"/>
 	<parameter name="norawat" class="java.lang.String"/>
+	<!--
+	  Gambar skala nyeri: latar Wong-Baker dengan coretan perawat sudah
+	  ditimpakan di atasnya, disusun di Java oleh KanvasNyeri.gambarCetak().
+	  Dikirim sebagai PARAMETER, bukan field, karena satu lembar hanya punya
+	  satu gambar dan penyusunannya butuh resource aplikasi (/picture/nyeri.png)
+	  yang tidak bisa dijangkau dari query SQL.
+	-->
+	<parameter name="gambarnyeri" class="java.awt.Image" isForPrompting="false"/>
 
 	<queryString>
 		<![CDATA[select a.*,
@@ -247,337 +255,345 @@ where a.no_rawat=$P{norawat}]]>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000013"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": TD "+($F{td_sistolik}==null?"":$F{td_sistolik})+"/"+($F{td_diastolik}==null?"":$F{td_diastolik})+" mmHg    HR "+($F{hr}==null?"":$F{hr})+" x/mnt    RR "+($F{rr}==null?"":$F{rr})+" x/mnt    Suhu "+($F{suhu}==null?"":$F{suhu})+" C    VAS "+($F{vas}==null?"":$F{vas})]]></textFieldExpression></textField>
 		</band>
 
-		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000016"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kepala]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000015"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("kepala", $F{kepala})]]></textFieldExpression></textField>
+		<band height="172" splitType="Prevent">
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000015"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Gambar skala nyeri]]></text></staticText>
+			<image scaleImage="RetainShape" onErrorType="Blank">
+				<reportElement x="143" y="1" width="420" height="166" uuid="d1e2f3a4-0202-1003-0000-000000000016"/>
+				<imageExpression><![CDATA[$P{gambarnyeri}]]></imageExpression>
+			</image>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000018"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Rambut]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000017"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("rambut", $F{rambut})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000018"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kepala]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000017"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("kepala", $F{kepala})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000020"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Mata]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000019"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("mata", $F{mata})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000020"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Rambut]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000019"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("rambut", $F{rambut})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000022"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Hidung]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000021"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("hidung", $F{hidung})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000022"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Mata]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000021"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("mata", $F{mata})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000024"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Telinga]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000023"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("telinga", $F{telinga})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000024"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Hidung]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000023"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("hidung", $F{hidung})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000026"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Mulut]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000025"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("mulut", $F{mulut})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000026"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Telinga]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000025"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("telinga", $F{telinga})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000028"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Gigi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000027"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("gigi", $F{gigi})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000028"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Mulut]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000027"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("mulut", $F{mulut})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000030"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Lidah]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000029"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("lidah", $F{lidah})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000030"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Gigi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000029"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("gigi", $F{gigi})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000032"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Tenggorokan]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000031"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("tenggorokan", $F{tenggorokan})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000032"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Lidah]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000031"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("lidah", $F{lidah})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000034"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Leher]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000033"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("leher", $F{leher})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000034"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Tenggorokan]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000033"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("tenggorokan", $F{tenggorokan})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000036"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Integumen/Kulit]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000035"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("integumen", $F{integumen})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000036"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Leher]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000035"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("leher", $F{leher})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000038"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Payudara - ukuran & bentuk]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000037"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("payudara_ukuran_bentuk", $F{payudara_ukuran_bentuk})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000038"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Integumen/Kulit]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000037"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("integumen", $F{integumen})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000040"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Payudara - warna]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000039"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("payudara_warna", $F{payudara_warna})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000040"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Payudara - ukuran & bentuk]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000039"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("payudara_ukuran_bentuk", $F{payudara_ukuran_bentuk})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000042"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Payudara - kelainan]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000041"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("payudara_kelainan", $F{payudara_kelainan})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000042"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Payudara - warna]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000041"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("payudara_warna", $F{payudara_warna})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000044"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Thorax/Paru]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000043"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("thorax_paru", $F{thorax_paru})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000044"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Payudara - kelainan]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000043"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("payudara_kelainan", $F{payudara_kelainan})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000046"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Jantung]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000045"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("jantung", $F{jantung})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000046"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Thorax/Paru]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000045"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("thorax_paru", $F{thorax_paru})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000048"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Abdomen]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000047"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("abdomen", $F{abdomen})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000048"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Jantung]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000047"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("jantung", $F{jantung})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000050"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Genitalia]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000049"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("genitalia", $F{genitalia})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000050"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Abdomen]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000049"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("abdomen", $F{abdomen})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000052"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Anus]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000051"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("anus", $F{anus})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000052"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Genitalia]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000051"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("genitalia", $F{genitalia})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000054"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Muskuloskeletal]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000053"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("muskuloskeletal", $F{muskuloskeletal})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000054"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Anus]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000053"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("anus", $F{anus})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000056"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[CRT]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000055"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("crt", $F{crt})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000056"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Muskuloskeletal]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000055"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("muskuloskeletal", $F{muskuloskeletal})]]></textFieldExpression></textField>
+		</band>
+
+		<band height="23" splitType="Prevent">
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000058"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[CRT]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000057"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("crt", $F{crt})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="24" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000058"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kekuatan otot]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000057"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Superior dextra "+($F{otot_esd}==null?"":$F{otot_esd})+" / sinistra "+($F{otot_ess}==null?"":$F{otot_ess})+"      Inferior dextra "+($F{otot_eid}==null?"":$F{otot_eid})+" / sinistra "+($F{otot_eis}==null?"":$F{otot_eis})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1003-0000-000000000060"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kekuatan otot]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1003-0000-000000000059"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Superior dextra "+($F{otot_esd}==null?"":$F{otot_esd})+" / sinistra "+($F{otot_ess}==null?"":$F{otot_ess})+"      Inferior dextra "+($F{otot_eid}==null?"":$F{otot_eid})+" / sinistra "+($F{otot_eis}==null?"":$F{otot_eis})]]></textFieldExpression></textField>
 		</band>
 
 		<!-- ================= POLA KEBIASAAN PASIEN ================= -->
 		<band height="48" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1004-0000-000000000059"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[POLA KEBIASAAN PASIEN]]></text></staticText>
-			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1004-0000-000000000060"/></line>
-			<staticText><reportElement x="3" y="25" width="135" height="15" uuid="d1e2f3a4-0202-1004-0000-000000000062"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Nutrisi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="25" width="426" height="16" uuid="d1e2f3a4-0202-1004-0000-000000000061"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("nutrisi", $F{nutrisi})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1004-0000-000000000061"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[POLA KEBIASAAN PASIEN]]></text></staticText>
+			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1004-0000-000000000062"/></line>
+			<staticText><reportElement x="3" y="25" width="135" height="15" uuid="d1e2f3a4-0202-1004-0000-000000000064"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Nutrisi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="25" width="426" height="16" uuid="d1e2f3a4-0202-1004-0000-000000000063"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("nutrisi", $F{nutrisi})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1004-0000-000000000064"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Eliminasi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1004-0000-000000000063"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("eliminasi", $F{eliminasi})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1004-0000-000000000066"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Eliminasi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1004-0000-000000000065"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("eliminasi", $F{eliminasi})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1004-0000-000000000066"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Istirahat/Tidur]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1004-0000-000000000065"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("istirahat", $F{istirahat})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1004-0000-000000000068"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Istirahat/Tidur]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1004-0000-000000000067"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("istirahat", $F{istirahat})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1004-0000-000000000068"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Aktivitas]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1004-0000-000000000067"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("aktivitas", $F{aktivitas})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1004-0000-000000000070"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Aktivitas]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1004-0000-000000000069"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("aktivitas", $F{aktivitas})]]></textFieldExpression></textField>
 		</band>
 
 		<!-- ================= PERTUMBUHAN BALITA (BERSYARAT) ================= -->
 		<band height="48" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{balita}) || ($F{isi_balita}!=null && $F{isi_balita}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1005-0000-000000000069"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[PERTUMBUHAN DAN PERKEMBANGAN (BALITA)]]></text></staticText>
-			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1005-0000-000000000070"/></line>
-			<staticText><reportElement x="3" y="25" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000072"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Usia kehamilan saat lahir]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="25" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000071"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_usia_kehamilan", $F{balita_usia_kehamilan})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1005-0000-000000000071"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[PERTUMBUHAN DAN PERKEMBANGAN (BALITA)]]></text></staticText>
+			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1005-0000-000000000072"/></line>
+			<staticText><reportElement x="3" y="25" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000074"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Usia kehamilan saat lahir]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="25" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000073"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_usia_kehamilan", $F{balita_usia_kehamilan})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{balita}) || ($F{isi_balita}!=null && $F{isi_balita}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000074"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Lahir di]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000073"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_lahir_di", $F{balita_lahir_di})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000076"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Lahir di]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000075"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_lahir_di", $F{balita_lahir_di})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{balita}) || ($F{isi_balita}!=null && $F{isi_balita}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000076"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Ditolong oleh]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000075"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_ditolong", $F{balita_ditolong})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000078"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Ditolong oleh]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000077"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_ditolong", $F{balita_ditolong})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{balita}) || ($F{isi_balita}!=null && $F{isi_balita}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000078"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Mendapat]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000077"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_mendapat", $F{balita_mendapat})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000080"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Mendapat]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000079"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_mendapat", $F{balita_mendapat})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{balita}) || ($F{isi_balita}!=null && $F{isi_balita}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000080"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Imunisasi dasar]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000079"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_imunisasi_dasar", $F{balita_imunisasi_dasar})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000082"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Imunisasi dasar]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000081"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_imunisasi_dasar", $F{balita_imunisasi_dasar})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{balita}) || ($F{isi_balita}!=null && $F{isi_balita}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000082"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Imunisasi ulang]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000081"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_imunisasi_ulang", $F{balita_imunisasi_ulang})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000084"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Imunisasi ulang]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000083"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("balita_imunisasi_ulang", $F{balita_imunisasi_ulang})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="82" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{balita}) || ($F{isi_balita}!=null && $F{isi_balita}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000084"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kelahiran]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000083"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Anak ke "+($F{balita_anak_ke}==null?"":$F{balita_anak_ke})+"      BB lahir "+($F{balita_bb_lahir}==null?"":$F{balita_bb_lahir})+" gram      TB lahir "+($F{balita_tb_lahir}==null?"":$F{balita_tb_lahir})+" cm"]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="22" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000086"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[BB/TB sekarang]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="22" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000085"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{balita_bbtb_sekarang}==null?"":$F{balita_bbtb_sekarang})+"      Kelainan bawaan : "+($F{balita_kelainan}==null?"":$F{balita_kelainan})]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="43" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000088"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Perkembangan (bulan)]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="43" width="426" height="32" uuid="d1e2f3a4-0202-1005-0000-000000000087"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Membalikkan badan "+($F{balita_membalikkan}==null?"":$F{balita_membalikkan})+"   Duduk "+($F{balita_duduk}==null?"":$F{balita_duduk})+"   Berdiri "+($F{balita_berdiri}==null?"":$F{balita_berdiri})+"   Berjalan "+($F{balita_berjalan}==null?"":$F{balita_berjalan})+"   Mengoceh "+($F{balita_mengoceh}==null?"":$F{balita_mengoceh})+"   Berbicara "+($F{balita_berbicara}==null?"":$F{balita_berbicara})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000086"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kelahiran]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000085"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Anak ke "+($F{balita_anak_ke}==null?"":$F{balita_anak_ke})+"      BB lahir "+($F{balita_bb_lahir}==null?"":$F{balita_bb_lahir})+" gram      TB lahir "+($F{balita_tb_lahir}==null?"":$F{balita_tb_lahir})+" cm"]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="22" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000088"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[BB/TB sekarang]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="22" width="426" height="16" uuid="d1e2f3a4-0202-1005-0000-000000000087"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{balita_bbtb_sekarang}==null?"":$F{balita_bbtb_sekarang})+"      Kelainan bawaan : "+($F{balita_kelainan}==null?"":$F{balita_kelainan})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="43" width="135" height="15" uuid="d1e2f3a4-0202-1005-0000-000000000090"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Perkembangan (bulan)]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="43" width="426" height="32" uuid="d1e2f3a4-0202-1005-0000-000000000089"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Membalikkan badan "+($F{balita_membalikkan}==null?"":$F{balita_membalikkan})+"   Duduk "+($F{balita_duduk}==null?"":$F{balita_duduk})+"   Berdiri "+($F{balita_berdiri}==null?"":$F{balita_berdiri})+"   Berjalan "+($F{balita_berjalan}==null?"":$F{balita_berjalan})+"   Mengoceh "+($F{balita_mengoceh}==null?"":$F{balita_mengoceh})+"   Berbicara "+($F{balita_berbicara}==null?"":$F{balita_berbicara})]]></textFieldExpression></textField>
 		</band>
 
 		<!-- ================= KESEHATAN REPRODUKSI (BERSYARAT) ================= -->
 		<band height="48" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{perempuan}) || ($F{isi_repro}!=null && $F{isi_repro}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1006-0000-000000000090"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[KESEHATAN REPRODUKSI]]></text></staticText>
-			<staticText><reportElement x="489" y="1" width="80" height="18" uuid="d1e2f3a4-0202-1006-0000-000000000089"/><textElement textAlignment="Right"><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[RM 02-3]]></text></staticText>
-			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1006-0000-000000000091"/></line>
-			<staticText><reportElement x="3" y="25" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000093"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Haid]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="25" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000092"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Usia menarche "+($F{repro_usia_menstruasi}==null?"":$F{repro_usia_menstruasi})+" th   Interval "+($F{repro_interval}==null?"":$F{repro_interval})+" hari   Jumlah "+($F{repro_jumlah}==null?"":$F{repro_jumlah})+"   Skala nyeri "+($F{repro_nyeri_skala}==null?"":$F{repro_nyeri_skala})+"   HPHT "+($F{repro_hpht}==null?"":$F{repro_hpht})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1006-0000-000000000092"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[KESEHATAN REPRODUKSI]]></text></staticText>
+			<staticText><reportElement x="489" y="1" width="80" height="18" uuid="d1e2f3a4-0202-1006-0000-000000000091"/><textElement textAlignment="Right"><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[RM 02-3]]></text></staticText>
+			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1006-0000-000000000093"/></line>
+			<staticText><reportElement x="3" y="25" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000095"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Haid]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="25" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000094"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Usia menarche "+($F{repro_usia_menstruasi}==null?"":$F{repro_usia_menstruasi})+" th   Interval "+($F{repro_interval}==null?"":$F{repro_interval})+" hari   Jumlah "+($F{repro_jumlah}==null?"":$F{repro_jumlah})+"   Skala nyeri "+($F{repro_nyeri_skala}==null?"":$F{repro_nyeri_skala})+"   HPHT "+($F{repro_hpht}==null?"":$F{repro_hpht})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{perempuan}) || ($F{isi_repro}!=null && $F{isi_repro}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000095"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Siklus haid]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000094"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("repro_siklus", $F{repro_siklus})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000097"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Siklus haid]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000096"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("repro_siklus", $F{repro_siklus})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{perempuan}) || ($F{isi_repro}!=null && $F{isi_repro}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000097"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Perdarahan bercak]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000096"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("repro_bercak", $F{repro_bercak})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000099"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Perdarahan bercak]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000098"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("repro_bercak", $F{repro_bercak})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{perempuan}) || ($F{isi_repro}!=null && $F{isi_repro}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000099"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kontrasepsi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000098"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("repro_kb", $F{repro_kb})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000101"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kontrasepsi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000100"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("repro_kb", $F{repro_kb})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{perempuan}) || ($F{isi_repro}!=null && $F{isi_repro}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000101"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Riwayat]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000100"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("repro_pernah", $F{repro_pernah})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000103"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Riwayat]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000102"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("repro_pernah", $F{repro_pernah})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{perempuan}) || ($F{isi_repro}!=null && $F{isi_repro}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000103"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Pergerakan janin]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000102"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("janin_pergerakan", $F{janin_pergerakan})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000105"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Pergerakan janin]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000104"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("janin_pergerakan", $F{janin_pergerakan})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{perempuan}) || ($F{isi_repro}!=null && $F{isi_repro}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000105"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Posisi janin]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000104"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("janin_posisi", $F{janin_posisi})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000107"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Posisi janin]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000106"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("janin_posisi", $F{janin_posisi})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{perempuan}) || ($F{isi_repro}!=null && $F{isi_repro}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000107"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Presentasi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000106"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("palpasi_presentasi", $F{palpasi_presentasi})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000109"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Presentasi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000108"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("palpasi_presentasi", $F{palpasi_presentasi})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{perempuan}) || ($F{isi_repro}!=null && $F{isi_repro}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000109"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Masuk PAP]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000108"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("palpasi_masuk_pap", $F{palpasi_masuk_pap})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000111"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Masuk PAP]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000110"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("palpasi_masuk_pap", $F{palpasi_masuk_pap})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="161" splitType="Prevent">
 			<printWhenExpression><![CDATA["Ya".equals($F{perempuan}) || ($F{isi_repro}!=null && $F{isi_repro}.trim().length()>0)]]></printWhenExpression>
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000111"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Status obstetri]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000110"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": G"+($F{obs_g}==null?"":$F{obs_g})+" P"+($F{obs_p}==null?"":$F{obs_p})+" A"+($F{obs_o}==null?"":$F{obs_o})+"      Jumlah anak "+($F{obs_jumlah_anak}==null?"":$F{obs_jumlah_anak})+" (L "+($F{obs_laki}==null?"":$F{obs_laki})+" / P "+($F{obs_perempuan}==null?"":$F{obs_perempuan})+")      Usia anak terkecil "+($F{obs_anak_terkecil}==null?"":$F{obs_anak_terkecil})]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="22" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000113"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kehamilan ini]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="22" width="426" height="32" uuid="d1e2f3a4-0202-1006-0000-000000000112"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Keluhan "+($F{repro_keluhan_hamil}==null?"":$F{repro_keluhan_hamil})+"      Obat yang diminum "+($F{repro_obat}==null?"":$F{repro_obat})]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="59" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000115"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Palpasi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="59" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000114"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": TFU "+($F{palpasi_tfu}==null?"":$F{palpasi_tfu})+" cm      Auskultasi DJJ "+($F{palpasi_auskultasi}==null?"":$F{palpasi_auskultasi})+" x/mnt"]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="80" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000117"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Janin]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="80" width="426" height="32" uuid="d1e2f3a4-0202-1006-0000-000000000116"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Umur kehamilan "+($F{janin_umur_kehamilan}==null?"":$F{janin_umur_kehamilan})+" mgg      Masalah "+($F{janin_masalah}==null?"":$F{janin_masalah})]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="117" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000119"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Informasi lain]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="117" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000118"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{repro_informasi_lain}==null?"":$F{repro_informasi_lain})]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="138" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000121"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Dirujuk ke]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="138" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000120"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{repro_dirujuk}==null?"":$F{repro_dirujuk})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000113"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Status obstetri]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000112"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": G"+($F{obs_g}==null?"":$F{obs_g})+" P"+($F{obs_p}==null?"":$F{obs_p})+" A"+($F{obs_o}==null?"":$F{obs_o})+"      Jumlah anak "+($F{obs_jumlah_anak}==null?"":$F{obs_jumlah_anak})+" (L "+($F{obs_laki}==null?"":$F{obs_laki})+" / P "+($F{obs_perempuan}==null?"":$F{obs_perempuan})+")      Usia anak terkecil "+($F{obs_anak_terkecil}==null?"":$F{obs_anak_terkecil})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="22" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000115"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kehamilan ini]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="22" width="426" height="32" uuid="d1e2f3a4-0202-1006-0000-000000000114"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Keluhan "+($F{repro_keluhan_hamil}==null?"":$F{repro_keluhan_hamil})+"      Obat yang diminum "+($F{repro_obat}==null?"":$F{repro_obat})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="59" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000117"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Palpasi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="59" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000116"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": TFU "+($F{palpasi_tfu}==null?"":$F{palpasi_tfu})+" cm      Auskultasi DJJ "+($F{palpasi_auskultasi}==null?"":$F{palpasi_auskultasi})+" x/mnt"]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="80" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000119"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Janin]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="80" width="426" height="32" uuid="d1e2f3a4-0202-1006-0000-000000000118"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": Umur kehamilan "+($F{janin_umur_kehamilan}==null?"":$F{janin_umur_kehamilan})+" mgg      Masalah "+($F{janin_masalah}==null?"":$F{janin_masalah})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="117" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000121"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Informasi lain]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="117" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000120"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{repro_informasi_lain}==null?"":$F{repro_informasi_lain})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="138" width="135" height="15" uuid="d1e2f3a4-0202-1006-0000-000000000123"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Dirujuk ke]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="138" width="426" height="16" uuid="d1e2f3a4-0202-1006-0000-000000000122"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{repro_dirujuk}==null?"":$F{repro_dirujuk})]]></textFieldExpression></textField>
 		</band>
 
 		<!-- ================= DATA PSIKOSOSIAL SPIRITUAL ================= -->
 		<band height="48" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1007-0000-000000000122"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[DATA PSIKOLOGIS, SOSIOLOGIS, DAN SPIRITUAL]]></text></staticText>
-			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1007-0000-000000000123"/></line>
-			<staticText><reportElement x="3" y="25" width="135" height="15" uuid="d1e2f3a4-0202-1007-0000-000000000125"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Psikologi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="25" width="426" height="16" uuid="d1e2f3a4-0202-1007-0000-000000000124"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("psikologi", $F{psikologi})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1007-0000-000000000124"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[DATA PSIKOLOGIS, SOSIOLOGIS, DAN SPIRITUAL]]></text></staticText>
+			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1007-0000-000000000125"/></line>
+			<staticText><reportElement x="3" y="25" width="135" height="15" uuid="d1e2f3a4-0202-1007-0000-000000000127"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Psikologi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="25" width="426" height="16" uuid="d1e2f3a4-0202-1007-0000-000000000126"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("psikologi", $F{psikologi})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1007-0000-000000000127"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Tingkat kecemasan]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1007-0000-000000000126"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("cemas", $F{cemas})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1007-0000-000000000129"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Tingkat kecemasan]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1007-0000-000000000128"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("cemas", $F{cemas})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1007-0000-000000000129"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Sosiologi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1007-0000-000000000128"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("sosiologi", $F{sosiologi})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1007-0000-000000000131"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Sosiologi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1007-0000-000000000130"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("sosiologi", $F{sosiologi})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1007-0000-000000000131"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Spiritual]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1007-0000-000000000130"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("spiritual", $F{spiritual})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1007-0000-000000000133"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Spiritual]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1007-0000-000000000132"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("spiritual", $F{spiritual})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="23" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1007-0000-000000000133"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kebutuhan informasi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1007-0000-000000000132"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("kebutuhan_informasi", $F{kebutuhan_informasi})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1007-0000-000000000135"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kebutuhan informasi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1007-0000-000000000134"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA[rekammedis.CentangRM022.baris("kebutuhan_informasi", $F{kebutuhan_informasi})]]></textFieldExpression></textField>
 		</band>
 
 		<!-- ================= DIAGNOSTIK DAN KONTROL ================= -->
 		<band height="48" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1008-0000-000000000134"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[DATA PEMERIKSAAN DIAGNOSTIK DAN KONTROL YANG AKAN DATANG]]></text></staticText>
-			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1008-0000-000000000135"/></line>
-			<staticText><reportElement x="3" y="25" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000137"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Laboratorium]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="25" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000136"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_laboratorium}==null?"":$F{diag_laboratorium})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1008-0000-000000000136"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[DATA PEMERIKSAAN DIAGNOSTIK DAN KONTROL YANG AKAN DATANG]]></text></staticText>
+			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1008-0000-000000000137"/></line>
+			<staticText><reportElement x="3" y="25" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000139"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Laboratorium]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="25" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000138"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_laboratorium}==null?"":$F{diag_laboratorium})]]></textFieldExpression></textField>
 		</band>
 
 		<band height="145" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000139"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Rontgen]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000138"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_rontgen}==null?"":$F{diag_rontgen})]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="22" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000141"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[EKG]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="22" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000140"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_ekg}==null?"":$F{diag_ekg})]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="43" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000143"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[USG]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="43" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000142"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_usg}==null?"":$F{diag_usg})]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="64" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000145"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Scanning]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="64" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000144"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_scanning}==null?"":$F{diag_scanning})]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="85" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000147"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Terapi medik]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="85" width="426" height="32" uuid="d1e2f3a4-0202-1008-0000-000000000146"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_terapi_medik}==null?"":$F{diag_terapi_medik})]]></textFieldExpression></textField>
-			<staticText><reportElement x="3" y="122" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000149"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kontrol berikutnya]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="122" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000148"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{tgl_kontrol}==null?"Tidak dijadwalkan":$F{tgl_kontrol})+"      Rencana rawat inap : "+($F{kontrol_rawat_inap}==null?"":$F{kontrol_rawat_inap})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="1" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000141"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Rontgen]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="1" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000140"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_rontgen}==null?"":$F{diag_rontgen})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="22" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000143"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[EKG]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="22" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000142"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_ekg}==null?"":$F{diag_ekg})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="43" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000145"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[USG]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="43" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000144"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_usg}==null?"":$F{diag_usg})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="64" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000147"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Scanning]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="64" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000146"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_scanning}==null?"":$F{diag_scanning})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="85" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000149"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Terapi medik]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="85" width="426" height="32" uuid="d1e2f3a4-0202-1008-0000-000000000148"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{diag_terapi_medik}==null?"":$F{diag_terapi_medik})]]></textFieldExpression></textField>
+			<staticText><reportElement x="3" y="122" width="135" height="15" uuid="d1e2f3a4-0202-1008-0000-000000000151"/><textElement><font fontName="Tahoma" size="10"/></textElement><text><![CDATA[Kontrol berikutnya]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="143" y="122" width="426" height="16" uuid="d1e2f3a4-0202-1008-0000-000000000150"/><textElement><font fontName="Tahoma" size="12"/></textElement><textFieldExpression><![CDATA[": "+($F{tgl_kontrol}==null?"Tidak dijadwalkan":$F{tgl_kontrol})+"      Rencana rawat inap : "+($F{kontrol_rawat_inap}==null?"":$F{kontrol_rawat_inap})]]></textFieldExpression></textField>
 		</band>
 
 		<!-- ================= DIAGNOSA KEPERAWATAN DAN TANDA TANGAN ================= -->
 		<band height="234" splitType="Prevent">
-			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1009-0000-000000000150"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[DIAGNOSA KEPERAWATAN]]></text></staticText>
-			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1009-0000-000000000151"/></line>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="25" width="18" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000152"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_oksigen})?"☑":"☐"]]></textFieldExpression></textField>
-			<staticText><reportElement x="32" y="25" width="460" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000153"/><textElement><font fontName="Tahoma" size="12"/></textElement><text><![CDATA[Gangguan pemenuhan kebutuhan oksigen]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="44" width="18" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000154"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_nutrisi})?"☑":"☐"]]></textFieldExpression></textField>
-			<staticText><reportElement x="32" y="44" width="460" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000155"/><textElement><font fontName="Tahoma" size="12"/></textElement><text><![CDATA[Gangguan pemenuhan kebutuhan nutrisi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="63" width="18" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000156"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_eliminasi})?"☑":"☐"]]></textFieldExpression></textField>
-			<staticText><reportElement x="32" y="63" width="460" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000157"/><textElement><font fontName="Tahoma" size="12"/></textElement><text><![CDATA[Gangguan pemenuhan kebutuhan eliminasi]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="82" width="18" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000158"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_integritas_kulit})?"☑":"☐"]]></textFieldExpression></textField>
-			<staticText><reportElement x="32" y="82" width="460" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000159"/><textElement><font fontName="Tahoma" size="12"/></textElement><text><![CDATA[Gangguan integritas kulit]]></text></staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="101" width="18" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000160"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_kurang_pengetahuan})?"☑":"☐"]]></textFieldExpression></textField>
-			<staticText><reportElement x="32" y="101" width="460" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000161"/><textElement><font fontName="Tahoma" size="12"/></textElement><text><![CDATA[Kurang pengetahuan tentang penyakit]]></text></staticText>
-			<staticText><reportElement x="330" y="134" width="235" height="18" uuid="d1e2f3a4-0202-1009-0000-000000000162"/><textElement textAlignment="Center"><font fontName="Tahoma" size="12" isBold="true"/></textElement><text><![CDATA[Perawat/Bidan yang mengkaji]]></text></staticText>
+			<staticText><reportElement x="3" y="1" width="400" height="18" uuid="d1e2f3a4-0202-1009-0000-000000000152"/><textElement><font fontName="Tahoma" size="13" isBold="true"/></textElement><text><![CDATA[DIAGNOSA KEPERAWATAN]]></text></staticText>
+			<line><reportElement x="0" y="21" width="569" height="1" uuid="d1e2f3a4-0202-1009-0000-000000000153"/></line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="25" width="18" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000154"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_oksigen})?"☑":"☐"]]></textFieldExpression></textField>
+			<staticText><reportElement x="32" y="25" width="460" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000155"/><textElement><font fontName="Tahoma" size="12"/></textElement><text><![CDATA[Gangguan pemenuhan kebutuhan oksigen]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="44" width="18" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000156"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_nutrisi})?"☑":"☐"]]></textFieldExpression></textField>
+			<staticText><reportElement x="32" y="44" width="460" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000157"/><textElement><font fontName="Tahoma" size="12"/></textElement><text><![CDATA[Gangguan pemenuhan kebutuhan nutrisi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="63" width="18" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000158"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_eliminasi})?"☑":"☐"]]></textFieldExpression></textField>
+			<staticText><reportElement x="32" y="63" width="460" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000159"/><textElement><font fontName="Tahoma" size="12"/></textElement><text><![CDATA[Gangguan pemenuhan kebutuhan eliminasi]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="82" width="18" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000160"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_integritas_kulit})?"☑":"☐"]]></textFieldExpression></textField>
+			<staticText><reportElement x="32" y="82" width="460" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000161"/><textElement><font fontName="Tahoma" size="12"/></textElement><text><![CDATA[Gangguan integritas kulit]]></text></staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="10" y="101" width="18" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000162"/><textElement><font fontName="DejaVu Sans" size="12"/></textElement><textFieldExpression><![CDATA["Ya".equals($F{dx_kurang_pengetahuan})?"☑":"☐"]]></textFieldExpression></textField>
+			<staticText><reportElement x="32" y="101" width="460" height="16" uuid="d1e2f3a4-0202-1009-0000-000000000163"/><textElement><font fontName="Tahoma" size="12"/></textElement><text><![CDATA[Kurang pengetahuan tentang penyakit]]></text></staticText>
+			<staticText><reportElement x="330" y="134" width="235" height="18" uuid="d1e2f3a4-0202-1009-0000-000000000164"/><textElement textAlignment="Center"><font fontName="Tahoma" size="12" isBold="true"/></textElement><text><![CDATA[Perawat/Bidan yang mengkaji]]></text></staticText>
 			<componentElement>
-				<reportElement x="425" y="152" width="46" height="46" uuid="d1e2f3a4-0202-1009-0000-000000000163"/>
+				<reportElement x="425" y="152" width="46" height="46" uuid="d1e2f3a4-0202-1009-0000-000000000165"/>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
 					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
 				</jr:QRCode>
 			</componentElement>
-			<line><reportElement x="360" y="204" width="175" height="1" uuid="d1e2f3a4-0202-1009-0000-000000000164"/></line>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="330" y="208" width="235" height="18" uuid="d1e2f3a4-0202-1009-0000-000000000165"/><textElement textAlignment="Center"><font fontName="Tahoma" size="12" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{nm_perawat}]]></textFieldExpression></textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="3" y="208" width="300" height="18" uuid="d1e2f3a4-0202-1009-0000-000000000166"/><textElement><font fontName="Tahoma" size="10"/></textElement><textFieldExpression><![CDATA["Tanggal asesmen : "+($F{tgl_asesmen}==null?"":$F{tgl_asesmen})]]></textFieldExpression></textField>
+			<line><reportElement x="360" y="204" width="175" height="1" uuid="d1e2f3a4-0202-1009-0000-000000000166"/></line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="330" y="208" width="235" height="18" uuid="d1e2f3a4-0202-1009-0000-000000000167"/><textElement textAlignment="Center"><font fontName="Tahoma" size="12" isBold="true"/></textElement><textFieldExpression><![CDATA[$F{nm_perawat}]]></textFieldExpression></textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="3" y="208" width="300" height="18" uuid="d1e2f3a4-0202-1009-0000-000000000168"/><textElement><font fontName="Tahoma" size="10"/></textElement><textFieldExpression><![CDATA["Tanggal asesmen : "+($F{tgl_asesmen}==null?"":$F{tgl_asesmen})]]></textFieldExpression></textField>
 		</band>
 
 	</detail>

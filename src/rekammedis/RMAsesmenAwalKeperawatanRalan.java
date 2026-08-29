@@ -1611,6 +1611,12 @@ public final class RMAsesmenAwalKeperawatanRalan extends javax.swing.JDialog {
         param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
         param.put("norawat", noRawat);
         param.put("finger", tandaTangan(nip, nama));
+        // Coretan skala nyeri dibaca ulang dari DB, bukan dari tabel di layar:
+        // kolomnya sengaja tidak ikut dimuat ke tabel karena base64-nya panjang
+        // dan tidak ada gunanya ditampilkan sebagai kolom.
+        param.put("gambarnyeri", KanvasNyeri.gambarCetak(Sequel.cariIsi(
+                "select nyeri_canvas_gambar from asesmen_awal_keperawatan_ralan where no_rawat=?",
+                noRawat)));
         Valid.MyReport("rptAsesmenAwalKeperawatanRalanRM02.jasper", "report",
                 "::[ Asesmen Awal Keperawatan Rawat Jalan ]::", param);
     }
