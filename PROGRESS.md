@@ -1655,6 +1655,7 @@ Supaya tidak menyimpan data menyesatkan: **sasaran** hanya disimpan kalau baris 
 
 ---
 
+<<<<<<< HEAD
 # Progress: Asuhan Gizi - Laporan "ASUPAN GIZI PASIEN" + Kolom Jam + Panel Ringkasan
 
 **Branch**: `feat/asuhan-gizi-cetak-rm` | **Tanggal**: 2026-08-27 | **Status**: selesai dev, menunggu pengujian langsung user
@@ -1779,10 +1780,98 @@ Formulir fisik mencetak tepat lima baris bernomor untuk masing-masing dari empat
 2. ✅ **`RMResumeKeperawatanKebidanan.java`** - GridBagLayout tulis tangan tanpa `.form`/GEN. `KOLOM_RM33` dan `nilaiRm33()` sama-sama dirakit dengan perulangan **berbentuk identik** atas konstanta `BLOK` - itulah yang menjamin urutan keduanya tidak bisa desinkron. Plus panel ringkasan HTML.
 3. ✅ **Menu**: item klik-kanan Rawat Inap (indeks 7, di bawah RM 21) + tombol menu utama di `initKhanzaLanjutan()`, keduanya **tanpa gerbang hak akses**.
 4. ✅ **Jasper `rptResumeKeperawatanKebidananRM33`** - 1 halaman F4 609×935 + QR tanda tangan. Disalin ke `report/` + `dist/report/` + `build/report/`.
+=======
+# Progress: Catatan Perawat / Bidan (RM 32)
+
+**Branch**: `feat/rm32-catatan-perawat-bidan` (dari `main`) | **Tanggal**: 2026-08-28 | **Status**: selesai dev, menunggu pengujian langsung user
+
+## ⚠️ Temuan Awal: modulnya SUDAH ADA — ini penyesuaian, bukan pembuatan
+
+User meminta "buat form ini", tapi pengecekan sebelum menulis kode menunjukkan seluruh modulnya sudah ada:
+
+| Komponen | Status |
+|---|---|
+| Tabel `catatan_keperawatan_ranap` | ✅ ada — PK `(tanggal, jam, no_rawat)`, `uraian`, `nip` |
+| `RMDataCatatanKeperawatanRanap.java` | ✅ ada, 1384 baris, **punya `.form`** (form warisan) |
+| Hak akses `akses.getcatatan_keperawatan_ranap()` | ✅ ada — modul ini **bergerbang**, beda dari RM 21/RM 33 |
+| `rptDataCatatanKeperawatanRanap` (daftar) | ✅ ada |
+| `rptFormulirCatatanKeperawatanRanap` (per pasien) | ✅ ada |
+
+Bentuk tabelnya bahkan **sudah benar**: PK tiga kolom = banyak baris per episode, persis buku catatan berbaris di kertas.
+
+Yang dicek dan memang bukan padanannya: `catatan_keperawatan_ralan` (rawat jalan — RM 32 punya Ruangan & Nomor bed jadi khusus ranap, **tidak disentuh**) dan `catatan_perawatan` (ditandatangani **dokter**, kolom `kd_dokter`).
+
+## Gap terhadap lembar fisik
+
+| Lembar fisik RM 32 | Sistem sebelumnya | Tindakan |
+|---|---|---|
+| Judul "CATATAN PERAWAT/BIDAN" + kode RM 32 | "CATATAN KEPERAWATAN", tanpa kode | laporan ditulis ulang |
+| F4 609×935 | A4 595×842 | laporan ditulis ulang |
+| Ruangan & Nomor (bed) | tidak ada | dari `kamar_inap`, tidak disimpan |
+| Kolom **Penggunaan ALKES / Pengobatan / Diet** | tidak ada kolomnya | `ALTER TABLE` + widget baru |
+| Kolom Catatan | `uraian` | tetap |
+| Kolom Tanda Tangan (perawat) | kolom "Petugas" berisi nama | nama + **QR per baris** |
+| Kolom Tanda Tangan Pasien/Keluarga | tidak ada | **canvas TTD di webapp** |
+
+## Keputusan User
+
+1. **"Nomor" = nomor tempat tidur / bed** → diambil otomatis dari `kamar_inap.kd_kamar`, tidak perlu diketik.
+2. **Tanda tangan perawat otomatis dari user login** → nama + QR atestasi.
+3. **Tanda tangan pasien diisi SETIAP baris.** ⚠️ Saya sempat mengangkat bahwa ini berarti pasien dipanggil setiap kali perawat menulis catatan — puluhan kali sehari — dan mengusulkan hanya baris tertentu. User menegaskan setiap baris; keputusan itu diikuti, dan alurnya dibuat sesingkat mungkin (perawat satu tombol, tablet cukup Refresh, tanpa login berulang).
+4. **Canvas TTD dibuat di webapps, bukan di Swing** — user menanyakan mana yang lebih baik; jawabannya di bawah.
+
+## Kenapa canvas TTD di webapps, bukan di aplikasi Swing
+
+1. Canvas di Swing berarti tanda tangan digambar pakai **mouse**. Tanda tangan bermouse tidak mirip tanda tangan asli siapa pun — nilainya sebagai bukti mendekati nol. Canvas di browser mendukung **sentuhan**.
+2. Pasien tidak punya — dan tidak boleh punya — akses ke aplikasi desktop yang berisi seluruh rekam medis rumah sakit.
+3. **Polanya sudah ada dan sudah dipakai produksi**: canvas tanda tangan dibangun waktu RM 04 di `persetujuantransferruang/pages/kamera.php`, lengkap dengan `touchstart/touchmove/touchend`.
+
+### Alur tanda tangan (pola rumah tangga SIMRS Khanza)
+
+Ada ~20 tabel `antri<modul>` di sistem ini. Polanya: satu tabel antrian berisi **satu baris** yang menyatakan record mana yang menunggu tanda tangan.
+
+```
+Perawat klik "Minta TTD Pasien"
+   → tulis (no_rawat, tanggal, jam) ke `antricatatanperawatbidan`
+Tablet di ruangan (halaman webapp sudah terbuka) tekan Refresh
+   → tampil identitas + isi catatan + kotak canvas
+Pasien tanda tangan pakai jari → Simpan
+   → JPEG ditulis ke pages/upload/, path masuk ke `ttd_pasien`, antrian dikosongkan
+Cetak → Jasper ambil gambar lewat URL http
+```
+
+Tiga kolom di tabel antrian, bukan cuma `no_rawat`: PK catatan adalah `(tanggal, jam, no_rawat)` — tanpa jam, tanda tangan bisa menempel ke baris catatan yang **salah** pada pasien yang sama.
+
+## ⚠️ Jebakan posisional (sama seperti kolom `jam` Asuhan Gizi)
+
+`simpan()` memakai `Sequel.menyimpantf("catatan_keperawatan_ranap","?,?,?,?,?","Data",5,...)` — **tanpa nama kolom, jadi posisional**. Kolom baru menempel di ujung (ordinal 6 & 7), jadi migrasi dan perubahan Java **wajib dikirim bersama**. Kalau salah satu saja sampai ke produksi, perawat tidak bisa menyimpan catatan sama sekali.
+
+## Dua gerbang yang dipasang sengaja
+
+1. `simpan()` mengirim **NULL** untuk `ttd_pasien` — yang mengisinya webapp.
+2. `ganti()` **tidak menyertakan** `ttd_pasien` di klausa SET. Kalau disertakan, perawat yang membetulkan salah ketik pada teks catatan akan **menghapus tanda tangan** yang sudah diberikan pasien.
+
+## BUG DITEMUKAN SAAT MENCETAK SUNGGUHAN
+
+Query cetak gagal: `Illegal mix of collations (utf8mb4_general_ci,COERCIBLE) and (latin1_swedish_ci,IMPLICIT) for operation 'ifnull'`.
+
+`sha1()` mengembalikan string ber-collation **koneksi** (utf8mb4 lewat JDBC) sedangkan kolom `nip` latin1. Diperbaiki dengan `convert(... using latin1)`.
+
+**Yang membuat ini berbahaya:** query yang sama berjalan **mulus di klien mysql** karena koneksinya latin1 — jadi menguji query lewat CLI tidak akan pernah menemukannya. Ketiga ekspresi diuji satu per satu dengan `set names utf8mb4` untuk memastikan yang mana yang bersalah.
+
+## Tiga hal di canvas yang mudah terlewat
+
+1. **Koordinat sentuhan diskalakan** terhadap ukuran tampil canvas — di HP canvas ditampilkan lebih kecil dari ukuran aslinya; tanpa penskalaan goresan meleset dari jari. `viewport user-scalable=no` dipasang karena tanpa itu kanvas ikut ter-zoom saat digores.
+2. **Kanvas kosong ditolak** — tanpa itu, menekan Simpan tanpa menggores menyimpan gambar putih polos sebagai "tanda tangan".
+3. **Nama berkas dari ketiga bagian kunci** — kalau hanya `no_rawat`, tanda tangan baris berikutnya akan menimpa yang sebelumnya.
+
+Isi catatan **ditampilkan sebelum** kotak tanda tangan: meminta orang menandatangani sesuatu yang tidak bisa dia baca bukan persetujuan.
+>>>>>>> feat/rm32-catatan-perawat-bidan
 
 ## Verifikasi yang Sudah Dijalankan
 
 - `ant jar` **BUILD SUCCESSFUL**.
+<<<<<<< HEAD
 - **Nama kolom migrasi == `KOLOM_RM33` == jumlah `nilaiRm33()`**: cocok 100% (26 = 25 + `no_rawat`). Dibaca lewat **refleksi dari kelas terkompilasi**, bukan dari teks sumber. Pemeriksanya **diadu dulu dengan migrasi RM 21** dan memang gagal keras di sana - jadi hasil "cocok" bukan lolos kosong.
 - **Jalur `simpan()`, `tampil()`, `ganti()` yang SEBENARNYA** dipanggil ke DB dalam transaksi lalu di-ROLLBACK. Method aplikasinya sendiri yang dipanggil, bukan query-nya disalin. `koneksiDB.condb()` mengembalikan `Connection` **singleton statis** sehingga form dan `Sequel` berbagi koneksi dan transaksi membungkus keduanya. Nol sisa data uji.
 - **Data uji sengaja setengah kosong** (pelajaran RM 04): satu blok penuh tidak diisi sama sekali → 15 kolom NULL sesudah simpan, 14 sesudah ganti.
@@ -1834,3 +1923,77 @@ Belum dikerjakan sama sekali - ini daftar kandidat beserta sumber datanya yang *
 2. **Jangan diam-diam.** Kalau nanti ada pra-isi, perawat harus tahu mana yang berasal dari sistem dan mana yang dia ketik sendiri.
 3. **Cek dulu isinya di PRODUKSI**, bukan di DB lokal `aik`. Beberapa tabel master di lokal berisi data uji-coba.
 4. Batas lima baris per blok tetap berlaku - kalau sumber otomatisnya mengembalikan lebih dari lima, harus diputuskan mana yang dipotong.
+=======
+- Migrasi diimport; kolom baru terbukti mendarat di **ordinal 6 dan 7**.
+- **Webapp dijalankan sungguhan lewat HTTP**, bukan dibaca saja: disalin ke `C:\xampp\htdocs\webapps\` (tempat webapp **benar-benar dilayani**; folder proyek hanya salinan sumber, md5 keduanya identik), login → halaman TTD menampilkan nama pasien, ruangan hasil JOIN `kamar_inap`, isi catatan, dan ALKES dengan benar.
+- **JPEG asli di-POST** ke `storeTtd.php`: berkas tertulis 3907 byte, path masuk kolom, antrian otomatis kosong, dan berkasnya terbukti bisa diambil lewat URL http (200, image/jpeg).
+- **3 gotcha JRXML nol pelanggaran**: 15 `textField`, 21 `staticText`, 3 band; 15 field dideklarasikan **dan** dipakai.
+- **Cetakan DILIHAT** dengan query milik aplikasi (diambil refleksi dari `sqlCetakRM32()`): F4, Ruangan RUANG DAHLIA dan Nomor DAH.K1.002 benar, QR perawat di tiap baris.
+- **Data uji sengaja setengah kosong**: satu baris tanpa ALKES, dua baris tanpa TTD pasien — semuanya tercetak benar tanpa teks hantu.
+- **Rantai penuh terbukti**: tanda tangan yang digambar di canvas lewat HTTP benar-benar muncul di kolom Tanda Tangan Pasien pada PDF.
+- Seluruh data uji dan berkas uji **dihapus** sesudahnya (0 baris, 0 berkas).
+
+## Belum Dikerjakan / Next Steps
+
+- ⏳ **Belum diuji langsung oleh user di `Aplikasi.bat`** dan di HP/tablet sungguhan.
+- ⏳ **Tautan pembuka webapp belum otomatis.** Tablet harus dibuka sekali ke `webapps/catatanperawatbidan/login.php?iyem=<token>`. RM 04 pun begitu. Kalau nanti perlu, bisa ditambahkan tombol di desktop yang membuka browser atau menampilkan QR tautannya.
+- ⏳ **Antrian hanya menampung SATU baris.** Kalau dua perawat menekan "Minta TTD" hampir bersamaan, permintaan kedua menimpa yang pertama. Ini bawaan pola `antri<modul>` yang dipakai seluruh webapp lain di sistem ini, jadi dibiarkan konsisten — tapi perlu diawasi kalau nanti dipakai di banyak ruangan sekaligus.
+- ⏳ Webapp perlu **disalin ke `htdocs` di server produksi**, tidak cukup di folder proyek.
+- ⏳ `graphify update .` belum dijalankan.
+
+## 📌 CATATAN: RM 32 menunggu tes user (2026-08-28)
+
+User: *"semua oke tinggal tes user dan kemungkinan ada penyesuaian, di-note saja jangan lakukan perubahan."*
+
+Status: **beku sampai ada hasil tes.** Tidak ada perubahan yang boleh dikerjakan atas inisiatif sendiri.
+
+### Sudah terbukti bekerja di tangan user (bukan hanya pengujian internal)
+
+Ketahuan dari isi tabel antrian saat memeriksa hal lain — user sedang mencoba modulnya:
+catatan untuk **PARAMITA RAMADANI** jam 18:50:12 oleh **RAHMI DEWI**, ALKES terisi.
+Berarti tiga hal ini sudah jalan di lapangan: kolom ALKES tersimpan, tombol **Minta TTD Pasien**
+memasukkan baris yang benar ke antrian, dan halaman tanda tangan menampilkan pasien +
+ruangan + isi catatan + kotak canvas.
+
+Yang **belum** dikonfirmasi user: menandatangani di HP/tablet sungguhan, dan mencetak lewat
+`JasperViewer`.
+
+### Kandidat penyesuaian yang sudah terlihat — JANGAN dikerjakan sebelum diminta
+
+1. **Nomor bed tampil sebagai kode mentah** `DAH.K1.002` (isi `kamar_inap.kd_kamar`). Di kertas
+   isian "Nomor" mungkin ditulis pendek saja (mis. `002`). Perlu ditanya ke petugas ruangan —
+   memotong kode sendiri berisiko salah karena format kode kamar bisa beragam.
+2. **Jam tersimpan sampai detik** (`18:50:12`) dan tercetak apa adanya. Di kertas biasanya cukup
+   jam:menit. Ini murni tampilan; datanya tidak perlu diubah.
+3. **Proporsi lebar kolom cetakan**: ALKES 140px vs Catatan 200px. Kalau di lapangan catatan
+   jauh lebih panjang daripada isian ALKES, proporsinya perlu digeser.
+4. **QR perawat per baris** memakan kolom selebar 82px. Kalau dirasa terlalu ramai, bisa
+   diganti nama saja — tapi itu menurunkan nilai pembuktiannya.
+5. **Antrian hanya satu baris.** Dua perawat menekan "Minta TTD" hampir bersamaan → permintaan
+   kedua menimpa yang pertama. Ini bawaan pola `antri<modul>` yang dipakai SELURUH webapp lain
+   di sistem ini, jadi dibiarkan konsisten. Perlu diawasi kalau nanti dipakai banyak ruangan
+   sekaligus.
+6. **Tautan pembuka webapp belum otomatis** — tablet dibuka manual sekali lewat halaman indeks
+   webapps. RM 04 pun begitu. Bisa ditambahkan tombol di desktop yang membuka browser atau
+   menampilkan QR tautannya, kalau nanti dirasa perlu.
+
+### Yang WAJIB diingat saat naik ke produksi
+
+- **Migrasi SQL dan perubahan Java harus naik BERSAMAAN.** `simpan()` posisional tanpa nama
+  kolom; salah satu saja yang duluan sampai → perawat tidak bisa menyimpan catatan sama sekali.
+- **Webapp harus disalin ke `htdocs` server**, tidak cukup ada di folder proyek. Yang perlu
+  disalin: `webapps/catatanperawatbidan/` (folder baru) **dan** `webapps/index.php` (yang
+  memuat tautannya).
+
+---
+
+## Status modul yang menunggu tes user (per 2026-08-28)
+
+| Modul | Branch | Status |
+|---|---|---|
+| RM 17-01 Ringkasan Masuk Keluar | sudah di `main` | menunggu tes |
+| RM 21 Asesmen Pendidikan Pasien | sudah di `main` | menunggu tes |
+| Asuhan Gizi | `feat/asuhan-gizi-cetak-rm` | menunggu tes, belum digabung |
+| RM 33 Resume Keperawatan/Kebidanan | `feat/rm33-resume-keperawatan` | menunggu tes, belum digabung |
+| RM 32 Catatan Perawat/Bidan | `feat/rm32-catatan-perawat-bidan` | sebagian sudah dicoba user, belum digabung |
+>>>>>>> feat/rm32-catatan-perawat-bidan

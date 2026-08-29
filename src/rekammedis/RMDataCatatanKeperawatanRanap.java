@@ -58,6 +58,15 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
     private volatile boolean ceksukses = false;
     private String dpjp="";
     private String TANGGALMUNDUR="yes";
+    /**
+     * [RM 32] Widget tambahan. Dideklarasikan di sini, BUKAN di blok GEN:
+     * form ini punya berkas .form, jadi apa pun yang ditulis di dalam
+     * initComponents() akan hilang begitu form dibuka lagi di Form Editor
+     * NetBeans. Seluruh perakitannya ada di {@link #initRM32()}.
+     */
+    private widget.Label LabelAlkes;
+    private widget.TextBox AlkesObatDiet;
+    private widget.Button BtnTtdPasien;
     /** Creates new form DlgRujuk
      * @param parent
      * @param modal */
@@ -68,8 +77,13 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
         this.setLocation(8,1);
         setSize(628,674);
 
+        // [RM 32] Dua kolom terakhir ditambahkan di UJUNG, bukan disisipkan di
+        // tengah: seluruh kode lama merujuk kolom lewat INDEKS ANGKA
+        // (getValueAt(...,8) untuk Uraian, dsb). Menyisipkan di tengah akan
+        // menggeser semuanya diam-diam.
         tabMode=new DefaultTableModel(null,new Object[]{
-            "No.Rawat","No.R.M.","Nama Pasien","Umur","JK","Tgl.Lahir","Tanggal","Jam","Uraian","NIP","Nama Petugas"
+            "No.Rawat","No.R.M.","Nama Pasien","Umur","JK","Tgl.Lahir","Tanggal","Jam","Uraian","NIP","Nama Petugas",
+            "ALKES / Pengobatan / Diet","TTD Pasien"
         }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -79,7 +93,7 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 11; i++) {
+        for (i = 0; i < 13; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(105);
@@ -103,9 +117,14 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
                 column.setPreferredWidth(90);
             }else if(i==10){
                 column.setPreferredWidth(160);
+            }else if(i==11){
+                column.setPreferredWidth(230);
+            }else if(i==12){
+                column.setPreferredWidth(110);
             }
         }
         tbObat.setDefaultRenderer(Object.class, new WarnaTable());
+        initRM32();
 
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));
         KdPetugas.setDocument(new batasInput((byte)20).getKata(KdPetugas));
@@ -979,13 +998,8 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
             }
             param.put("dpjp",dpjp);   
             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-            Valid.MyReportqry("rptFormulirCatatanKeperawatanRanap.jasper","report","::[ Formulir Catatan Keperawatan Rawat Inap ]::",
-                    "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
-                    "pasien.jk,pasien.tgl_lahir,catatan_keperawatan_ranap.tanggal,catatan_keperawatan_ranap.jam,catatan_keperawatan_ranap.uraian,"+
-                    "petugas.nama from catatan_keperawatan_ranap inner join reg_periksa on catatan_keperawatan_ranap.no_rawat=reg_periksa.no_rawat "+
-                    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                    "inner join petugas on catatan_keperawatan_ranap.nip=petugas.nip where reg_periksa.no_rawat='"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"' "+
-                    "order by catatan_keperawatan_ranap.tanggal,catatan_keperawatan_ranap.jam",param);
+            Valid.MyReportqry("rptFormulirCatatanKeperawatanRanap.jasper","report","::[ Catatan Perawat / Bidan (RM 32) ]::",
+                    sqlCetakRM32(tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()),param);
         }
     }//GEN-LAST:event_MnCatatanKeperawatanRawatInapActionPerformed
 
@@ -1093,7 +1107,9 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
                 ps=koneksi.prepareStatement(
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"+
                     "pasien.jk,pasien.tgl_lahir,catatan_keperawatan_ranap.tanggal,catatan_keperawatan_ranap.jam,catatan_keperawatan_ranap.uraian,"+
-                    "catatan_keperawatan_ranap.nip,petugas.nama from catatan_keperawatan_ranap inner join reg_periksa on catatan_keperawatan_ranap.no_rawat=reg_periksa.no_rawat "+
+                    "catatan_keperawatan_ranap.nip,petugas.nama,ifnull(catatan_keperawatan_ranap.alkes_pengobatan_diet,'') as alkes_pengobatan_diet,"+
+                    "ifnull(catatan_keperawatan_ranap.ttd_pasien,'') as ttd_pasien "+
+                    "from catatan_keperawatan_ranap inner join reg_periksa on catatan_keperawatan_ranap.no_rawat=reg_periksa.no_rawat "+
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join petugas on catatan_keperawatan_ranap.nip=petugas.nip where "+
                     "catatan_keperawatan_ranap.tanggal between ? and ? order by catatan_keperawatan_ranap.tanggal,catatan_keperawatan_ranap.jam");
@@ -1101,7 +1117,9 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
                 ps=koneksi.prepareStatement(
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"+
                     "pasien.jk,pasien.tgl_lahir,catatan_keperawatan_ranap.tanggal,catatan_keperawatan_ranap.jam,catatan_keperawatan_ranap.uraian,"+
-                    "catatan_keperawatan_ranap.nip,petugas.nama from catatan_keperawatan_ranap inner join reg_periksa on catatan_keperawatan_ranap.no_rawat=reg_periksa.no_rawat "+
+                    "catatan_keperawatan_ranap.nip,petugas.nama,ifnull(catatan_keperawatan_ranap.alkes_pengobatan_diet,'') as alkes_pengobatan_diet,"+
+                    "ifnull(catatan_keperawatan_ranap.ttd_pasien,'') as ttd_pasien "+
+                    "from catatan_keperawatan_ranap inner join reg_periksa on catatan_keperawatan_ranap.no_rawat=reg_periksa.no_rawat "+
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join petugas on catatan_keperawatan_ranap.nip=petugas.nip where "+
                     "catatan_keperawatan_ranap.tanggal between ? and ? and (reg_periksa.no_rawat like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or catatan_keperawatan_ranap.nip like ? or petugas.nama like ?) "+
@@ -1128,7 +1146,10 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
                         rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),
                         rs.getString("umurdaftar")+" "+rs.getString("sttsumur"),rs.getString("jk"),rs.getDate("tgl_lahir"),
                         rs.getString("tanggal"),rs.getString("jam"),rs.getString("uraian"),rs.getString("nip"),
-                        rs.getString("nama")
+                        rs.getString("nama"),rs.getString("alkes_pengobatan_diet"),
+                        // Yang ditampilkan di tabel adalah STATUS, bukan path berkasnya -
+                        // path panjang tidak berguna dilihat petugas.
+                        rs.getString("ttd_pasien").trim().isEmpty()?"Belum":"Sudah"
                     });
                 }
             } catch (Exception e) {
@@ -1149,9 +1170,10 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
     
     public void emptTeks() {
         Uraian.setText("");
+        AlkesObatDiet.setText("");
         Tanggal.setDate(new Date());
         Uraian.requestFocus();
-    } 
+    }
 
     private void getData() {
         if(tbObat.getSelectedRow()!= -1){
@@ -1163,7 +1185,8 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
             Menit.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString().substring(3,5));
             Detik.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString().substring(6,8));
             Uraian.setText(tbObat.getValueAt(tbObat.getSelectedRow(),8).toString());
-            Valid.SetTgl(Tanggal,tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());  
+            AlkesObatDiet.setText(tbObat.getValueAt(tbObat.getSelectedRow(),11)==null?"":tbObat.getValueAt(tbObat.getSelectedRow(),11).toString());
+            Valid.SetTgl(Tanggal,tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
         }
     }
     
@@ -1209,10 +1232,138 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
         runBackground(() ->tampil());
     }
     
+    /**
+     * [RM 32] Merakit baris "Penggunaan ALKES / Pengobatan / Diet" dan tombol
+     * permintaan tanda tangan pasien.
+     *
+     * <p>Dibangun di LUAR {@code initComponents()} karena form ini punya
+     * berkas {@code .form}. {@code FormInput} memakai layout {@code null}
+     * dengan {@code setBounds}, jadi widget baru ditempatkan dengan koordinat
+     * mutlak di y=127 - tepat di bawah kotak Uraian yang berakhir di y=123.
+     * Tinggi panel dinaikkan 154 -> 184 supaya baris baru ini kelihatan;
+     * angka 154 yang di dalam blok GEN sengaja tidak disentuh, yang diubah
+     * hanya salinan di {@link #isForm()} yang berada di luar GEN.</p>
+     */
+    private void initRM32(){
+        LabelAlkes=new widget.Label();
+        LabelAlkes.setText("ALKES/Obat/Diet :");
+        LabelAlkes.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        LabelAlkes.setBounds(0,127,105,23);
+        FormInput.add(LabelAlkes);
+
+        AlkesObatDiet=new widget.TextBox();
+        // WAJIB: constructor widget.TextBox diam-diam setSize(WIDTH,23) dengan
+        // WIDTH=1 (ImageObserver.WIDTH). Di layout null, setBounds sudah
+        // menentukan ukuran, tapi preferredSize tetap dipasang agar konsisten.
+        AlkesObatDiet.setPreferredSize(new Dimension(560,23));
+        AlkesObatDiet.setDocument(new batasInput((int)300).getKata(AlkesObatDiet));
+        AlkesObatDiet.setBounds(107,127,560,23);
+        FormInput.add(AlkesObatDiet);
+
+        BtnTtdPasien=new widget.Button();
+        BtnTtdPasien.setText("Minta TTD Pasien");
+        BtnTtdPasien.setToolTipText("Kirim baris catatan terpilih ke tablet ruangan untuk ditandatangani pasien/keluarga");
+        BtnTtdPasien.setBounds(671,127,118,23);
+        BtnTtdPasien.addActionListener(evt -> mintaTtdPasien());
+        FormInput.add(BtnTtdPasien);
+
+        PanelInput.setPreferredSize(new Dimension(192,184));
+        FormInput.setPreferredSize(new Dimension(100,255));
+    }
+
+    /**
+     * [RM 32] Menaruh baris catatan terpilih ke antrian tanda tangan.
+     *
+     * <p>Mengikuti pola rumah tangga SIMRS Khanza: satu tabel
+     * {@code antri<modul>} berisi SATU baris yang menyatakan record mana yang
+     * sedang menunggu tanda tangan. Tablet di ruangan yang sudah membuka
+     * halaman webapp menekan Refresh dan mengambilnya. Isinya selalu dihapus
+     * dulu supaya tidak ada dua permintaan menggantung sekaligus.</p>
+     *
+     * <p>Yang dikirim TIGA nilai, bukan sekadar no_rawat: PK catatan adalah
+     * (tanggal, jam, no_rawat), jadi webapp harus tahu BARIS mana - bukan
+     * cuma pasien mana.</p>
+     */
+    private void mintaTtdPasien(){
+        if(tbObat.getSelectedRow()<=-1){
+            JOptionPane.showMessageDialog(rootPane,"Silahkan pilih baris catatan terlebih dahulu..!!");
+            return;
+        }
+        String norawat=tbObat.getValueAt(tbObat.getSelectedRow(),0).toString();
+        String tgl=tbObat.getValueAt(tbObat.getSelectedRow(),6).toString();
+        String jam=tbObat.getValueAt(tbObat.getSelectedRow(),7).toString();
+        Sequel.queryu("delete from antricatatanperawatbidan");
+        if(Sequel.menyimpantf("antricatatanperawatbidan","?,?,?","Antrian TTD",3,new String[]{
+            norawat,tgl,jam
+        })==true){
+            JOptionPane.showMessageDialog(rootPane,
+                "Baris catatan sudah dikirim ke tablet ruangan.\n"+
+                "Silahkan tekan Refresh di halaman tanda tangan, lalu minta pasien/keluarga menandatangani.\n\n"+
+                "Pasien   : "+tbObat.getValueAt(tbObat.getSelectedRow(),2)+"\n"+
+                "Tanggal  : "+tgl+" "+jam);
+        }
+    }
+
+    /**
+     * [RM 32] Query cetak lembar "CATATAN PERAWAT/BIDAN".
+     *
+     * <p>RUANGAN dan NOMOR (bed) dirakit lewat subquery ke {@code kamar_inap},
+     * bukan dibaca dari kolom - keduanya memang tidak disimpan. Pasien yang
+     * pindah kamar punya BEBERAPA baris {@code kamar_inap}, jadi diambil baris
+     * TERAKHIR; kalau diambil baris pertama, lembar akan menyebut kamar yang
+     * sudah lama ditinggalkan pasien. Aturan yang sama dipakai di RM 33.</p>
+     *
+     * <p>Tanda tangan perawat menjadi QR PER BARIS, jadi teks atestasinya harus
+     * berupa FIELD (dirakit di SQL), bukan parameter - parameter nilainya sama
+     * untuk seluruh halaman, padahal tiap baris catatan bisa ditulis perawat
+     * yang berbeda.</p>
+     *
+     * <p>Tanda tangan pasien dirakit jadi URL http penuh ke berkas gambar hasil
+     * canvas di webapp, mengikuti pola yang dipakai RM 04 untuk menampilkan
+     * bukti transfer. Kalau belum ditandatangani nilainya NULL dan gambarnya
+     * dilewati ({@code onErrorType="Blank"}).</p>
+     */
+    private String sqlCetakRM32(String noRawat){
+        String prefixTtd="http://"+koneksiDB.HOSTHYBRIDWEB()+":"+koneksiDB.PORTWEB()+"/"
+                +koneksiDB.HYBRIDWEB()+"/catatanperawatbidan/";
+        String kamarTerakhir=
+                "(select ki.kd_kamar from kamar_inap ki where ki.no_rawat=catatan_keperawatan_ranap.no_rawat "+
+                "order by ki.tgl_masuk desc,ki.jam_masuk desc limit 1)";
+        return "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"+
+                "reg_periksa.tgl_registrasi,reg_periksa.jam_reg,pasien.jk,pasien.tgl_lahir,"+
+                "catatan_keperawatan_ranap.tanggal,catatan_keperawatan_ranap.jam,catatan_keperawatan_ranap.uraian,"+
+                "ifnull(catatan_keperawatan_ranap.alkes_pengobatan_diet,'') as alkes_pengobatan_diet,"+
+                "petugas.nama,"+
+                "ifnull((select bangsal.nm_bangsal from kamar_inap ki "+
+                "inner join kamar on ki.kd_kamar=kamar.kd_kamar "+
+                "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
+                "where ki.no_rawat=catatan_keperawatan_ranap.no_rawat "+
+                "order by ki.tgl_masuk desc,ki.jam_masuk desc limit 1),'') as ruangan,"+
+                "ifnull("+kamarTerakhir+",'') as nomor_bed,"+
+                // convert(... using latin1) WAJIB: sha1() mengembalikan string
+                // ber-collation koneksi (utf8mb4 lewat JDBC) sedangkan kolom
+                // `nip` latin1, dan ifnull() menolak mencampur keduanya dengan
+                // "Illegal mix of collations". Tidak terlihat kalau query
+                // dicoba lewat klien mysql yang koneksinya latin1 - hanya
+                // muncul saat dijalankan aplikasi.
+                "concat('Ditandatangani secara elektronik oleh ',petugas.nama,' | ID ',"+
+                "ifnull(convert((select sha1(sidikjari.sidikjari) from sidikjari "+
+                "inner join pegawai on pegawai.id=sidikjari.id "+
+                "where pegawai.nik=catatan_keperawatan_ranap.nip) using latin1),"+
+                "catatan_keperawatan_ranap.nip)) as ttd_perawat,"+
+                "concat('"+prefixTtd+"',nullif(catatan_keperawatan_ranap.ttd_pasien,'')) as ttd_pasien_url "+
+                "from catatan_keperawatan_ranap "+
+                "inner join reg_periksa on catatan_keperawatan_ranap.no_rawat=reg_periksa.no_rawat "+
+                "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                "inner join petugas on catatan_keperawatan_ranap.nip=petugas.nip "+
+                "where reg_periksa.no_rawat='"+noRawat+"' "+
+                "order by catatan_keperawatan_ranap.tanggal,catatan_keperawatan_ranap.jam";
+    }
+
     private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,154));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,184));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
@@ -1305,9 +1456,15 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
     }
 
     private void ganti() {
-        if(Sequel.mengedittf("catatan_keperawatan_ranap","tanggal=? and jam=? and no_rawat=?","no_rawat=?,tanggal=?,jam=?,uraian=?,nip=?",8,new String[]{
+        // [RM 32] `alkes_pengobatan_diet` ditambahkan ke klausa SET, TAPI
+        // `ttd_pasien` SENGAJA TIDAK. Klausa ini memakai nama kolom, jadi yang
+        // tidak disebut akan dibiarkan apa adanya - dan itu memang yang
+        // diinginkan: kalau ikut disebut, mengedit teks catatan akan MENGHAPUS
+        // tanda tangan yang sudah terlanjur diberikan pasien.
+        if(Sequel.mengedittf("catatan_keperawatan_ranap","tanggal=? and jam=? and no_rawat=?","no_rawat=?,tanggal=?,jam=?,uraian=?,nip=?,alkes_pengobatan_diet=?",9,new String[]{
             TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+""),Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),
-            Uraian.getText(),KdPetugas.getText(),tbObat.getValueAt(tbObat.getSelectedRow(),6).toString(),tbObat.getValueAt(tbObat.getSelectedRow(),7).toString(),
+            Uraian.getText(),KdPetugas.getText(),AlkesObatDiet.getText(),
+            tbObat.getValueAt(tbObat.getSelectedRow(),6).toString(),tbObat.getValueAt(tbObat.getSelectedRow(),7).toString(),
             tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
         })==true){
             tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),0);
@@ -1321,6 +1478,8 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
             tbObat.setValueAt(Uraian.getText(),tbObat.getSelectedRow(),8);
             tbObat.setValueAt(KdPetugas.getText(),tbObat.getSelectedRow(),9);
             tbObat.setValueAt(NmPetugas.getText(),tbObat.getSelectedRow(),10);
+            tbObat.setValueAt(AlkesObatDiet.getText(),tbObat.getSelectedRow(),11);
+            // kolom 12 (TTD Pasien) sengaja tidak disentuh - lihat catatan di atas
             emptTeks();
         }
     }
@@ -1338,12 +1497,22 @@ public final class RMDataCatatanKeperawatanRanap extends javax.swing.JDialog {
     }
 
     private void simpan() {
-        if(Sequel.menyimpantf("catatan_keperawatan_ranap","?,?,?,?,?","Data",5,new String[]{
-            Valid.SetTgl(Tanggal.getSelectedItem()+""),Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),TNoRw.getText(),Uraian.getText(),KdPetugas.getText()
+        // [RM 32] TUJUH tanda tanya, bukan lima. Sequel.menyimpantf merakit
+        // `insert into catatan_keperawatan_ranap values(...)` TANPA NAMA KOLOM,
+        // jadi POSISIONAL: urutan nilai di bawah WAJIB sama dengan urutan kolom
+        // tabel, dan kolom baru menempel di ujung (ADD COLUMN tanpa AFTER).
+        //   1 tanggal  2 jam  3 no_rawat  4 uraian  5 nip
+        //   6 alkes_pengobatan_diet   7 ttd_pasien
+        // ttd_pasien dikirim null: yang mengisinya adalah WEBAPP saat pasien
+        // menandatangani, bukan form ini.
+        if(Sequel.menyimpantf("catatan_keperawatan_ranap","?,?,?,?,?,?,?","Data",7,new String[]{
+            Valid.SetTgl(Tanggal.getSelectedItem()+""),Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),TNoRw.getText(),Uraian.getText(),KdPetugas.getText(),
+            AlkesObatDiet.getText(),null
         })==true){
             tabMode.addRow(new Object[]{
                 TNoRw.getText(),TNoRM.getText(),TPasien.getText(),Umur.getText(),JK.getText(),TglLahir.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+""),
-                Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),Uraian.getText(),KdPetugas.getText(),NmPetugas.getText()
+                Jam.getSelectedItem()+":"+Menit.getSelectedItem()+":"+Detik.getSelectedItem(),Uraian.getText(),KdPetugas.getText(),NmPetugas.getText(),
+                AlkesObatDiet.getText(),""
             });
             LCount.setText(""+tabMode.getRowCount());
             emptTeks();

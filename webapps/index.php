@@ -194,13 +194,24 @@
                                       </a>
                                     </td>
                                     <td width='25%' align='center'>
-                                      <a href='?aksi=Keluar'>                                                 
-                                         <img src='images/1360484978_application-pgp-signature.png'/><br>
-                                         Keluar                                               
+                                      <a target=_blank href=catatanperawatbidan/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">
+                                         <img src='images/6771569_education_learning_pencil_school_signature_icon.png'/><br>
+                                         Catatan Perawat/Bidan (RM 32)
                                       </a>
                                     </td>
                                 </tr>
-                            </table> 
+                                <tr width='100%' align='center'>
+                                    <td width='25%' align='center'>
+                                      <a href='?aksi=Keluar'>
+                                         <img src='images/1360484978_application-pgp-signature.png'/><br>
+                                         Keluar
+                                      </a>
+                                    </td>
+                                    <td width='25%' align='center'>&nbsp;</td>
+                                    <td width='25%' align='center'>&nbsp;</td>
+                                    <td width='25%' align='center'>&nbsp;</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>";		
            }else{
