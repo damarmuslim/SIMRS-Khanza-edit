@@ -2714,3 +2714,74 @@ pola yang membatasi ke tag sebenarnya.
 - ⏳ Ekspresi gabungan lain di `rptLembarTriasePacs` (mis. `$P{alamatrs}+", "+…`)
   belum dijaga null. Tidak masalah selama identitas RS terisi, tapi belum
   dibuktikan untuk semua kasus.
+
+# Progress: 1.645 baris WIP dipecah jadi enam commit sebelum perombakan UI
+
+Sebelum mulai menata ulang form Pengkajian Awal Keperawatan IGD, `git status`
+menunjukkan **1.645 baris tambahan yang belum di-commit** di tujuh berkas —
+hasil beberapa sesi sebelumnya yang menumpuk. Semuanya dipecah dulu jadi enam
+commit, karena satu commit gabungan berarti kalau layout berikutnya kacau,
+`git checkout` akan menarik kembali pekerjaan login dan Triase sekaligus.
+
+`ant compile` **BUILD SUCCESSFUL** sebelum commit pertama — jadi titik amannya
+memang bisa dikompilasi, bukan sekadar tersimpan.
+
+## Apa saja isinya
+
+| Commit | Isi |
+|---|---|
+| `3094d4b` | `.gitignore`: `.kilo/` dan `tmp_*.ps1` |
+| `7808ffb` | 13 token status/permukaan baru di `ThemeConfig` |
+| `3b2abb9` | Dialog login: kartu membulat + bayangan, tombol teal, sakelar mata sandi |
+| `587c03a` | Sub-tab PACS Triase IGD jadi tiga kolom (985 baris) |
+| `480b32c` | Draf kop `rptLembarTriasePacs.jrxml` |
+| `4fee634` | Rangka helper form Pengkajian Awal Keperawatan IGD (521 baris) |
+
+## Yang ketahuan justru saat memeriksa, bukan saat mengerjakan
+
+**`.kilo/` bukan folder setelan.** `du -sh .kilo` menggantung sampai harus
+dihentikan paksa. `git worktree list` menjelaskan sebabnya: **tiga worktree
+penuh repo ini** di dalamnya (`pie-plume`, `playful-eclipse`, `snow-icon`),
+semuanya menunjuk `1880ad6`.
+
+**Perubahan login akan HILANG.** Seluruh perombakan dialog login ditulis di
+dalam blok GEN `initComponents`, sedangkan `src/simrskhanza/frmUtama.form`
+**masih ada** (614 KB). Sekali `frmUtama` dibuka di Form Editor NetBeans,
+semuanya lenyap. Justru itu alasan commit `3b2abb9` tidak bisa ditunda.
+Penyelesaian permanennya sama seperti `RMPenilaianAwalKeperawatanIGD`: ganti
+nama `.form` → `.form.bak`. Belum dilakukan.
+
+**`.jasper` lembar Triase belum dikompilasi.** `.jrxml` bertanggal
+2026-08-30 10:51, ketiga `.jasper` (`report/`, `dist/`, `build/`) masih
+2026-08-29 23:28. Jadi tombol Cetak **masih mengeluarkan kop yang lama** —
+draf itu belum pernah dilihat di kertas sama sekali.
+
+**Identitas RS jadi hardcode.** Kop baru memakai `staticText` "PEMERINTAH
+KABUPATEN LAMPUNG TENGAH" / "RSUD DEMANG SEPULAU RAYA"; enam parameter
+`namars`/`alamatrs`/`kotars`/`propinsirs`/`kontakrs`/`emailrs` masih
+dideklarasikan tapi **nol pemakaian**. Ini sekaligus menutup sisa null-safety
+dari entri sebelumnya — tapi dengan cara yang perlu dikonfirmasi, bukan cara
+yang direncanakan.
+
+**Empat isian kehamilan hilang dari layar.** `Gravida`, `Para`, `Abortus`,
+`HPHT` hanya di-`add` ke `FormInput` di dalam GEN, jadi ikut terbuang oleh
+`FormInput.removeAll()` di `susunTigaKolomKep()`. Tidak ada data yang hilang —
+keempatnya memang **tidak pernah** masuk INSERT — dan `getText()` tetap
+mengembalikan string kosong, jadi tidak ada NPE.
+
+## Sisa
+
+- ⏳ `saranLevelDariTotal()` memetakan Total EWS → nomor PACS (`>=7`→1,
+  `>=4`→2, `>=2`→3, sisanya 4) dan menampilkannya sebagai badge "Saran
+  sistem". Javadoc `PacsLevel.java` menyatakan sebaliknya: "Total EWS … TIDAK
+  dipetakan ke PACS — sengaja tidak dihubungkan, sesuai keputusan pengguna".
+  Badge itu tidak menulis nilai apa pun, tapi ambang 7/4/2 murni tebakan,
+  tidak bersumber dari dokumen mana pun. **Menunggu keputusan user.**
+- ⏳ `widget/PanelWallpaper.java` (125 baris) di-commit tanpa satu pun
+  pemanggil — arah latar bergambar dibatalkan user. Kalau tidak jadi dipakai,
+  `git rm`; jangan dibiarkan tanpa keterangan.
+- ⏳ `TEXT_MUTED` di atas putih 4.02:1 dan `TEXT_FAINT` 2.64:1, keduanya di
+  bawah ambang WCAG AA 4.5:1. Perbaikannya (`#657387` dan `#737875`) ditunda
+  supaya tidak bercampur pekerjaan layout.
+- ⏳ Tampilan sub-tab PACS dan form Pengkajian **belum dilihat dengan mata**.
+  Baru terbukti `ant compile` lolos.
