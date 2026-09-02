@@ -88,6 +88,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         initKepTambahanHal3();
         initObatInfusTambahan();
         initKepTambahanHal4();
+        // [Layout 3-kolom gaya Triase] Restyle action bar + susun ulang
+        // FormInput jadi banner + 3 kartu kolom. WAJIB dipanggil PALING
+        // akhir (butuh field Dokter dari initKepTambahan & panelKepTigaDiag
+        // dari initKepTambahanHal3). Hanya menata ulang layout - komponen &
+        // logika data (tampil/getData/simpan/dst) tidak diubah.
+        initActionBarKep();
+        susunTigaKolomKep();
 
         // Header + width setup di bawah dulunya dideklarasikan 81 kolom
         // (sisa desain lama sebelum tampil() di-refactor jadi SELECT
@@ -2454,36 +2461,461 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     }
 
     private int tambahBarisKepJudul(widget.PanelBiasa panel,int row,String judul){
-        widget.Label lbl = new widget.Label();
-        lbl.setText(judul);
-        lbl.setFont(lbl.getFont().deriveFont(java.awt.Font.BOLD));
-        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        // [Layout 3-kolom] Judul section = strip gaya Triase (buatHeaderStripKep)
+        // menggantikan label bold biasa. Satu funnel ini otomatis berlaku utk
+        // SEMUA 25 judul section di panelKepAtas/Dua/Tiga/Diag/Obat/Empat.
         java.awt.GridBagConstraints c = kepConstraint(0,row);
-        c.gridwidth = 2;
-        panel.add(lbl,c);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0;
+        c.insets = new java.awt.Insets(row==0?0:10,5,3,5);
+        panel.add(buatHeaderStripKep(judul),c);
         return row+1;
     }
 
+    // Lebar maksimum isi 1 kartu kolom. 3 kolom x ~350px + border = ~1080px,
+    // jadi form muat penuh tanpa scroll horizontal. Dipakai
+    // tambahBarisKepField()/rapikanIsiKep()/sempitkanAlirKep().
+    private static final int LEBAR_ISI_KEP = 330;
+
     private int tambahBarisKepField(widget.PanelBiasa panel,int row,String label,java.awt.Component field){
-        widget.Label lbl = new widget.Label();
-        // Label kosong ("") dipakai di banyak baris (checkbox/panel yg
-        // teksnya sudah ada di komponennya sendiri) - kalau selalu
-        // ditambah " :" hasilnya tanda ":" nyangkut sendirian tanpa teks
-        // di depannya. Cuma tambahkan " :" kalau label-nya memang ada isi.
-        lbl.setText(label.isEmpty() ? "" : label+" :");
-        java.awt.GridBagConstraints c1 = kepConstraint(0,row);
-        panel.add(lbl,c1);
-        // fill=NONE/anchor=WEST (bukan HORIZONTAL) - field/panel FlowLayout
-        // duduk pas di lebar kontennya sendiri, rapat ke label, TIDAK
-        // melebar ikut lebar kolom 1 (yg ditentukan baris lain yg lebih
-        // lebar) - permintaan user supaya tidak ada "ruang kosong" di
-        // dalam field/dropdown yg sebenarnya sempit.
-        java.awt.GridBagConstraints c2 = kepConstraint(1,row);
-        c2.anchor = java.awt.GridBagConstraints.WEST;
-        c2.fill = java.awt.GridBagConstraints.NONE;
-        c2.weightx = 0;
-        panel.add(field,c2);
+        // [Layout 3-kolom] Label DI ATAS field (gaya hdrCellKep di Triase),
+        // bukan label kiri + field kanan seperti versi sebelumnya. Alasan:
+        // berdampingan, lebar 1 baris = lebar label + lebar field - beberapa
+        // baris mencapai ~950px sehingga 3 kolom tidak muat & muncul scroll
+        // horizontal. Ditumpuk, lebar baris = max(label, field) saja.
+        // Komponen 'field' tetap instance yg sama (reparent) - listener &
+        // logika data tidak disentuh.
+        widget.PanelBiasa baris = new widget.PanelBiasa();
+        baris.setOpaque(false);
+        baris.setLayout(new java.awt.BorderLayout(0,2));
+        if(!label.isEmpty()){
+            widget.Label lbl = new widget.Label();
+            lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            lbl.setFont(new java.awt.Font("Segoe UI",java.awt.Font.PLAIN,11));
+            lbl.setForeground(widget.ThemeConfig.TEXT_MUTED);
+            lbl.setText(label);
+            // Label panjang dibungkus HTML dgn lebar tetap supaya IKUT TURUN
+            // BARIS, tidak memaksa kartu kolom melebar.
+            if(lbl.getPreferredSize().width > LEBAR_ISI_KEP){
+                lbl.setText("<html><div style='width:"+LEBAR_ISI_KEP+"px'>"+escHtmlKep(label)+"</div></html>");
+            }
+            baris.add(lbl,java.awt.BorderLayout.NORTH);
+        }
+        // WEST (bukan CENTER) supaya field duduk pas di lebar kontennya dan
+        // TIDAK melebar mengikuti lebar kolom - permintaan user soal "ruang
+        // kosong" di dalam field/dropdown yg sebenarnya sempit.
+        baris.add(field,java.awt.BorderLayout.WEST);
+
+        java.awt.GridBagConstraints c = kepConstraint(0,row);
+        c.gridwidth = 2;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        c.insets = new java.awt.Insets(2,5,4,5);
+        panel.add(baris,c);
         return row+1;
+    }
+
+    /** Escape minimal utk teks label yg dibungkus HTML (lihat tambahBarisKepField). */
+    private String escHtmlKep(String s){
+        return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;");
+    }
+
+    // -------------------------------------------------------------------
+    // [Layout 3-kolom] Penyempit lebar (LAYOUT-ONLY). Dipanggil sekali dari
+    // susunTigaKolomKep() utk tiap kartu kolom, lalu turun rekursif ke semua
+    // sub-panel. Yg diubah HANYA layout manager / GridBagConstraints /
+    // preferredSize - komponen, urutan, isi, listener & logika data tidak
+    // disentuh sama sekali.
+    // -------------------------------------------------------------------
+
+    /** Turun rekursif: kecilkan komponen yg lebih lebar dari LEBAR_ISI_KEP. */
+    private void rapikanIsiKep(java.awt.Container wadah){
+        for(java.awt.Component k : wadah.getComponents()){
+            // Cuma JPanel (widget.PanelBiasa dst) yg ditelusuri isinya.
+            // JComboBox/JScrollPane juga punya child internal, tapi harus
+            // diperlakukan sbg 1 komponen utuh - kalau ditelusuri, lebarnya
+            // tak pernah ikut dikecilkan.
+            boolean wadahLain = (k instanceof javax.swing.JPanel)
+                    && ((java.awt.Container)k).getComponentCount()>0;
+            if(wadahLain){
+                rapikanIsiKep((java.awt.Container) k);
+            } else if(k.getPreferredSize().width > LEBAR_ISI_KEP){
+                // Komponen tunggal (TextBox/ComboBox/ScrollPane tabel) yg
+                // lebarnya warisan desain 1 kolom (dulu form selebar 870px).
+                k.setPreferredSize(new java.awt.Dimension(LEBAR_ISI_KEP, k.getPreferredSize().height));
+            }
+        }
+        if(wadah.getLayout() instanceof java.awt.FlowLayout){
+            sempitkanAlirKep(wadah);
+        } else if(wadah.getLayout() instanceof java.awt.GridBagLayout){
+            lipatDuaKolomKep(wadah);
+        }
+    }
+
+    /** Grup radio/cek ber-FlowLayout 1 baris: lebar MINIMUM-nya = lebar 1
+     *  baris penuh, jadi GridBagLayout tak bisa mengecilkannya. Diganti
+     *  GridLayout berkolom secukupnya supaya isinya turun baris. */
+    private void sempitkanAlirKep(java.awt.Container box){
+        if(box.getComponentCount()<2 || box.getPreferredSize().width<=LEBAR_ISI_KEP){ return; }
+        java.awt.FlowLayout alir = (java.awt.FlowLayout) box.getLayout();
+        int jarak = alir.getHgap();
+        int lebarMaks = 0;
+        for(java.awt.Component k : box.getComponents()){
+            lebarMaks = Math.max(lebarMaks, k.getPreferredSize().width);
+        }
+        if(lebarMaks<1){ return; }
+        int kolom = (LEBAR_ISI_KEP+jarak)/(lebarMaks+jarak);
+        if(kolom<1){ kolom = 1; }
+        if(kolom<box.getComponentCount()){
+            box.setLayout(new java.awt.GridLayout(0,kolom,jarak,2));
+        }
+    }
+
+    /** Panel grid "2 pasang label+field per baris" (gridx 0..3) dilipat jadi
+     *  1 pasang per baris (gridx 0..1) supaya muat di kartu 1/3 lebar. Hanya
+     *  GridBagConstraints yg dipetakan ulang; glue pengisi lama dibuang krn
+     *  kolom kanannya sudah tidak ada. */
+    private void lipatDuaKolomKep(java.awt.Container p){
+        java.awt.GridBagLayout gbl = (java.awt.GridBagLayout) p.getLayout();
+        boolean perlu = false;
+        for(java.awt.Component k : p.getComponents()){
+            if(!(k instanceof javax.swing.Box.Filler) && gbl.getConstraints(k).gridx>=2){ perlu = true; break; }
+        }
+        if(!perlu){ return; }
+        java.util.ArrayList<java.awt.Component> buang = new java.util.ArrayList<>();
+        for(java.awt.Component k : p.getComponents()){
+            if(k instanceof javax.swing.Box.Filler){ buang.add(k); continue; }
+            java.awt.GridBagConstraints c = gbl.getConstraints(k);
+            if(c.gridx<0 || c.gridy<0){ continue; }
+            c.gridy = c.gridy*2 + (c.gridx>=2 ? 1 : 0);
+            c.gridx = c.gridx%2;
+            c.insets = new java.awt.Insets(2,5,2,5);
+            gbl.setConstraints(k,c);
+        }
+        for(java.awt.Component k : buang){ p.remove(k); }
+        java.awt.GridBagConstraints cGlue = new java.awt.GridBagConstraints();
+        cGlue.gridx=2; cGlue.gridy=0; cGlue.weightx=1.0;
+        cGlue.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        p.add(javax.swing.Box.createHorizontalGlue(),cGlue);
+    }
+
+    // =====================================================================
+    // [Layout 3-kolom gaya Triase] Helper penataan (LAYOUT-ONLY).
+    // Semua method di bawah HANYA menata ulang penempatan komponen yg sudah
+    // ada (reparent) + styling via widget.ThemeConfig - meniru helper senama
+    // di RMTriaseIGD.java. Tidak ada logika data/CRUD/handler yg diubah.
+    // =====================================================================
+
+    /** Strip judul section: SURFACE_ALT + garis bawah, teks UPPERCASE. */
+    private widget.PanelBiasa buatHeaderStripKep(String judul){
+        widget.PanelBiasa strip = new widget.PanelBiasa();
+        strip.setOpaque(true);
+        strip.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        strip.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(0,10,0,10)));
+        strip.setLayout(new java.awt.BorderLayout());
+        strip.setPreferredSize(new java.awt.Dimension(10,32));
+        widget.Label l = new widget.Label();
+        l.setText(judul==null ? "" : judul.toUpperCase());
+        l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+        l.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        strip.add(l, java.awt.BorderLayout.CENTER);
+        return strip;
+    }
+
+    /** Kartu kolom putih (SURFACE) + divider kanan opsional + strut lebar min. */
+    private widget.PanelBiasa buatKolomKep(int lebar, boolean pemisahKanan){
+        widget.PanelBiasa kol = new widget.PanelBiasa();
+        kol.setOpaque(true);
+        kol.setBackground(widget.ThemeConfig.SURFACE);
+        kol.setLayout(new java.awt.GridBagLayout());
+        if(pemisahKanan){
+            kol.setBorder(javax.swing.BorderFactory.createMatteBorder(0,0,0,1, widget.ThemeConfig.BORDER_SOFT));
+        }
+        if(lebar > 0){
+            java.awt.GridBagConstraints cs = new java.awt.GridBagConstraints();
+            cs.gridx=0; cs.gridy=900; cs.gridwidth=java.awt.GridBagConstraints.REMAINDER;
+            kol.add(javax.swing.Box.createHorizontalStrut(lebar), cs);
+        }
+        return kol;
+    }
+
+    /** Tambah 1 komponen lebar-penuh, top-aligned, ke sebuah kartu kolom. */
+    private int tambahIsiKolomKep(widget.PanelBiasa kolom, int row, java.awt.Component komp){
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.gridy=row; c.gridwidth=java.awt.GridBagConstraints.REMAINDER;
+        c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor=java.awt.GridBagConstraints.NORTHWEST;
+        kolom.add(komp, c);
+        return row+1;
+    }
+
+    /** Tutup kartu kolom dgn glue (dorong isi ke atas). */
+    private void tutupKolomKep(widget.PanelBiasa kolom, int row){
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.gridy=row; c.gridwidth=java.awt.GridBagConstraints.REMAINDER;
+        c.weighty=1.0; c.fill=java.awt.GridBagConstraints.BOTH;
+        kolom.add(javax.swing.Box.createGlue(), c);
+    }
+
+    /** Baris "label di atas + area" (dipakai utk Keluhan Utama/scrollPane1). */
+    private widget.PanelBiasa barisAreaKep(String label, java.awt.Component isi){
+        widget.PanelBiasa p = new widget.PanelBiasa();
+        p.setOpaque(false);
+        p.setBorder(javax.swing.BorderFactory.createEmptyBorder(6,10,2,10));
+        p.setLayout(new java.awt.BorderLayout(0,3));
+        widget.Label l = new widget.Label();
+        l.setText(label);
+        l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        l.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        p.add(l, java.awt.BorderLayout.NORTH);
+        p.add(isi, java.awt.BorderLayout.CENTER);
+        return p;
+    }
+
+    /** Satu sel banner: label kecil di atas field (field dipaksa tinggi 30). */
+    private widget.PanelBiasa hdrCellKep(String label, java.awt.Component field, boolean wajib){
+        widget.PanelBiasa sel = new widget.PanelBiasa();
+        sel.setOpaque(false);
+        sel.setLayout(new java.awt.BorderLayout(0,3));
+        widget.Label l = new widget.Label();
+        l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        l.setText(wajib ? "<html>"+label+" <font color='#B3261E'>*</font></html>" : label);
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        l.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        sel.add(l, java.awt.BorderLayout.NORTH);
+        field.setPreferredSize(new java.awt.Dimension(0,30));
+        sel.add(field, java.awt.BorderLayout.CENTER);
+        return sel;
+    }
+
+    /** Pasangan [field ⌕] utk lookup Petugas/Dokter. */
+    private widget.PanelBiasa hdrLookupKep(widget.TextBox tf, widget.Button btn){
+        widget.PanelBiasa p = new widget.PanelBiasa();
+        p.setOpaque(false);
+        p.setLayout(new java.awt.BorderLayout(4,0));
+        p.add(tf, java.awt.BorderLayout.CENTER);
+        p.add(btn, java.awt.BorderLayout.EAST);
+        return p;
+    }
+
+    /** Isi label kartu identitas dari TextBox tersembunyi (display-only). */
+    private void sinkronKartuKep(){
+        if(lblKartuNama==null){ return; }
+        String nama = TPasien.getText()==null ? "" : TPasien.getText().trim();
+        lblKartuNama.setText(nama.isEmpty() ? "—" : nama);
+        lblKartuRM.setText("No. RM  " + (TNoRM.getText()==null ? "" : TNoRM.getText().trim()));
+        lblKartuRawat.setText("No. Rawat  " + (TNoRw.getText()==null ? "" : TNoRw.getText().trim()));
+    }
+
+    /** Banner pasien: kartu identitas (kiri) + grid field header (kanan). */
+    private widget.PanelBiasa buatBannerKep(){
+        // TextBox identitas jadi sumber data tersembunyi (spt banner Triase).
+        TNoRw.setVisible(false); TNoRM.setVisible(false); TPasien.setVisible(false);
+
+        widget.PanelBiasa banner = new widget.PanelBiasa();
+        banner.setOpaque(false);
+        banner.setLayout(new java.awt.GridBagLayout());
+
+        // ---- kartu identitas (kiri) ----
+        widget.PanelBiasa kartu = new widget.PanelBiasa();
+        kartu.setOpaque(true);
+        kartu.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
+        kartu.setLayout(new java.awt.GridBagLayout());
+        widget.Label judulKartu = new widget.Label();
+        judulKartu.setText("IDENTITAS PASIEN");
+        judulKartu.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judulKartu.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+        judulKartu.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lblKartuNama = new widget.Label();
+        lblKartuNama.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuNama.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        lblKartuNama.setForeground(widget.ThemeConfig.TEXT);
+        lblKartuRM = new widget.Label();
+        lblKartuRM.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuRM.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lblKartuRawat = new widget.Label();
+        lblKartuRawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuRawat.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        java.awt.GridBagConstraints k = new java.awt.GridBagConstraints();
+        k.gridx=0; k.gridy=0; k.anchor=java.awt.GridBagConstraints.WEST;
+        k.fill=java.awt.GridBagConstraints.HORIZONTAL; k.weightx=1.0;
+        kartu.add(judulKartu,k);
+        k.gridy=1; k.insets=new java.awt.Insets(8,0,0,0); kartu.add(lblKartuNama,k);
+        k.gridy=2; k.insets=new java.awt.Insets(6,0,0,0); kartu.add(lblKartuRM,k);
+        k.gridy=3; k.insets=new java.awt.Insets(2,0,0,0); kartu.add(lblKartuRawat,k);
+        k.gridy=4; k.weighty=1.0; k.fill=java.awt.GridBagConstraints.BOTH; k.insets=new java.awt.Insets(0,0,0,0);
+        kartu.add(javax.swing.Box.createGlue(),k);
+
+        javax.swing.event.DocumentListener sinkron = new javax.swing.event.DocumentListener(){
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e){ sinkronKartuKep(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e){ sinkronKartuKep(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e){ sinkronKartuKep(); }
+        };
+        TNoRw.getDocument().addDocumentListener(sinkron);
+        TNoRM.getDocument().addDocumentListener(sinkron);
+        TPasien.getDocument().addDocumentListener(sinkron);
+        sinkronKartuKep();
+
+        // ---- grid field header (kanan) ----
+        widget.PanelBiasa grid = new widget.PanelBiasa();
+        grid.setOpaque(false);
+        grid.setLayout(new java.awt.GridBagLayout());
+        BtnPetugas.setText("⌕"); BtnPetugas.setIcon(null);
+        BtnPetugas.setPreferredSize(new java.awt.Dimension(30,30));
+        BtnDokterKp.setText("⌕"); BtnDokterKp.setIcon(null);
+        BtnDokterKp.setPreferredSize(new java.awt.Dimension(30,30));
+        KdPetugas.setVisible(false); KdDokterKp.setVisible(false);
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.fill=java.awt.GridBagConstraints.HORIZONTAL; g.anchor=java.awt.GridBagConstraints.NORTH;
+        g.weightx=1.0/3.0;
+        // Sel "Tgl. Lahir" DIHILANGKAN dari banner (permintaan user) - field
+        // TglLahir sengaja tidak di-reparent ke mana pun supaya logika data
+        // (tampil()/getData()) yg mengisinya tetap jalan apa adanya, hanya
+        // tidak ikut ditampilkan.
+        g.gridy=0;
+        g.gridx=0; g.insets=new java.awt.Insets(0,0,0,12); grid.add(hdrCellKep("Tanggal", TglAsuhan, false),g);
+        g.gridx=1; grid.add(hdrCellKep("Petugas", hdrLookupKep(NmPetugas, BtnPetugas), false),g);
+        g.gridx=2; g.insets=new java.awt.Insets(0,0,0,0); grid.add(hdrCellKep("Dokter", hdrLookupKep(NmDokterKp, BtnDokterKp), false),g);
+        g.gridy=1;
+        g.gridx=0; g.insets=new java.awt.Insets(10,0,0,12); grid.add(hdrCellKep("J.K.", Jk, false),g);
+        g.gridx=1; g.insets=new java.awt.Insets(10,0,0,12); grid.add(hdrCellKep("Informasi didapat dari", Informasi, false),g);
+        g.gridx=2; g.insets=new java.awt.Insets(10,0,0,0); grid.add(javax.swing.Box.createHorizontalGlue(),g);
+
+        // ---- rakit banner: kartu (kiri, lebar tetap) + grid (kanan, fleksibel) ----
+        java.awt.Dimension dk = new java.awt.Dimension(240,10);
+        kartu.setMinimumSize(dk); kartu.setPreferredSize(dk);
+        java.awt.GridBagConstraints f = new java.awt.GridBagConstraints();
+        f.gridx=0; f.gridy=0; f.fill=java.awt.GridBagConstraints.BOTH; f.weighty=1.0;
+        f.insets=new java.awt.Insets(0,0,0,16);
+        banner.add(kartu,f);
+        f.gridx=1; f.weightx=1.0; f.insets=new java.awt.Insets(0,0,0,0);
+        banner.add(grid,f);
+        return banner;
+    }
+
+    /** Restyle action bar bawah (panelGlass8) gaya Triase - tombol tetap. */
+    private void initActionBarKep(){
+        java.awt.Color garis = new java.awt.Color(0xD8,0xDB,0xD6);
+        BtnSimpan.setText("Simpan");
+        BtnSimpan.setGlassColor(java.awt.Color.WHITE);
+        BtnSimpan.setForeground(widget.ThemeConfig.TEXT);
+        BtnSimpan.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        BtnSimpan.setBorder(javax.swing.BorderFactory.createLineBorder(garis));
+        BtnSimpan.setPreferredSize(new java.awt.Dimension(140,32));
+        widget.Button[] sekunder = { BtnBatal, BtnEdit, BtnHapus, BtnPrint, BtnAll };
+        for(widget.Button b : sekunder){
+            b.setGlassColor(java.awt.Color.WHITE);
+            b.setForeground(widget.ThemeConfig.TEXT);
+            b.setBorder(javax.swing.BorderFactory.createLineBorder(garis));
+            b.setPreferredSize(new java.awt.Dimension(96,32));
+        }
+        BtnKeluar.setGlassColor(java.awt.Color.WHITE);
+        BtnKeluar.setForeground(new java.awt.Color(0x8A,0x4A,0x46));
+        BtnKeluar.setBorder(javax.swing.BorderFactory.createLineBorder(garis));
+        BtnKeluar.setPreferredSize(new java.awt.Dimension(96,32));
+
+        widget.PanelBiasa kiri = new widget.PanelBiasa();
+        kiri.setOpaque(false);
+        kiri.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 8));
+        kiri.add(BtnSimpan); kiri.add(BtnBatal); kiri.add(BtnEdit);
+        kiri.add(BtnHapus); kiri.add(BtnPrint); kiri.add(BtnAll);
+        widget.PanelBiasa kanan = new widget.PanelBiasa();
+        kanan.setOpaque(false);
+        kanan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 8));
+        kanan.add(BtnKeluar);
+
+        panelGlass8.removeAll();
+        panelGlass8.setLayout(new java.awt.BorderLayout());
+        panelGlass8.setBorder(javax.swing.BorderFactory.createMatteBorder(1,0,0,0, widget.ThemeConfig.BORDER_SOFT));
+        panelGlass8.add(kiri, java.awt.BorderLayout.CENTER);
+        panelGlass8.add(kanan, java.awt.BorderLayout.EAST);
+        panelGlass8.revalidate();
+        panelGlass8.repaint();
+    }
+
+    /**
+     * Assembler utama: susun ulang FormInput jadi banner + 3 kartu kolom
+     * (ANAMNESA | PEMERIKSAAN | DIAGNOSIS & TINDAKAN). Reparent panel section
+     * yg sudah dibangun (panelKepAtas/Dua/Tiga/Diag/Obat/Empat + scrollPane1)
+     * - komponen tidak dibuat ulang, listener tetap. WAJIB dipanggil paling
+     * akhir di constructor.
+     */
+    private void susunTigaKolomKep(){
+        // Bangun banner dulu (mereparent field header) SEBELUM removeAll.
+        widget.PanelBiasa banner = buatBannerKep();
+
+        FormInput.removeAll();
+        FormInput.setLayout(new java.awt.GridBagLayout());
+        FormInput.setBackground(widget.ThemeConfig.BACKGROUND);
+        FormInput.setBorder(javax.swing.BorderFactory.createEmptyBorder(12,14,12,14));
+        // GEN memanggil FormInput.setPreferredSize(870,1203) - reset ke null
+        // supaya GridBagLayout yg menghitung ukuran (kalau tidak, lebar/tinggi
+        // terkunci & kolom kepotong / scroll salah).
+        FormInput.setPreferredSize(null);
+
+        // Panel section dibuat transparan supaya kartu putih kolom tembus.
+        widget.PanelBiasa[] seksi = { panelKepAtas, panelKepDua, panelKepTiga,
+            panelKepTigaDiag, panelKepObat, panelKepEmpat };
+        for(widget.PanelBiasa p : seksi){ if(p!=null){ p.setOpaque(false); } }
+
+        // Banner di baris 0, membentang 3 kolom.
+        java.awt.GridBagConstraints fb = new java.awt.GridBagConstraints();
+        fb.gridx=0; fb.gridy=0; fb.gridwidth=3; fb.weightx=1.0;
+        fb.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        fb.insets=new java.awt.Insets(0,0,12,0);
+        FormInput.add(banner, fb);
+
+        int lebarKolom = 340;
+        widget.PanelBiasa kol1 = buatKolomKep(lebarKolom, true);
+        widget.PanelBiasa kol2 = buatKolomKep(lebarKolom, true);
+        widget.PanelBiasa kol3 = buatKolomKep(lebarKolom, false);
+
+        // -- Kolom 1: ANAMNESA / RIWAYAT --
+        int r1 = 0;
+        r1 = tambahIsiKolomKep(kol1, r1, buatHeaderStripKep("I. RIWAYAT KESEHATAN PASIEN"));
+        scrollPane1.setPreferredSize(new java.awt.Dimension(300,110)); // dulu diatur via setBounds (null-layout)
+        r1 = tambahIsiKolomKep(kol1, r1, barisAreaKep("Keluhan Utama", scrollPane1));
+        r1 = tambahIsiKolomKep(kol1, r1, panelKepAtas);
+        tutupKolomKep(kol1, r1);
+
+        // -- Kolom 2: PEMERIKSAAN --
+        int r2 = 0;
+        r2 = tambahIsiKolomKep(kol2, r2, panelKepDua);
+        r2 = tambahIsiKolomKep(kol2, r2, panelKepTiga);
+        tutupKolomKep(kol2, r2);
+
+        // -- Kolom 3: DIAGNOSIS & TINDAKAN --
+        int r3 = 0;
+        if(panelKepTigaDiag!=null){ r3 = tambahIsiKolomKep(kol3, r3, panelKepTigaDiag); }
+        r3 = tambahIsiKolomKep(kol3, r3, panelKepObat);
+        r3 = tambahIsiKolomKep(kol3, r3, panelKepEmpat);
+        tutupKolomKep(kol3, r3);
+
+        // Pass finishing: sempitkan semua isi kartu ke <= LEBAR_ISI_KEP supaya
+        // 3 kolom muat tanpa scroll horizontal (lihat rapikanIsiKep()).
+        rapikanIsiKep(kol1);
+        rapikanIsiKep(kol2);
+        rapikanIsiKep(kol3);
+
+        // 3 kolom di baris 1 (kartu sama-tinggi via weighty + fill BOTH).
+        java.awt.GridBagConstraints fk = new java.awt.GridBagConstraints();
+        fk.gridy=1; fk.weighty=1.0; fk.fill=java.awt.GridBagConstraints.BOTH;
+        fk.anchor=java.awt.GridBagConstraints.NORTH;
+        fk.gridx=0; fk.weightx=0.30; FormInput.add(kol1, fk);
+        fk.gridx=1; fk.weightx=0.30; FormInput.add(kol2, fk);
+        fk.gridx=2; fk.weightx=0.40; FormInput.add(kol3, fk);
+
+        FormInput.revalidate();
+        FormInput.repaint();
     }
 
     /**
@@ -2611,54 +3043,24 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelKeadaanUmum.setLayout(new java.awt.GridBagLayout());
         int rowKU = 0;
 
-        widget.Label lblTdKep = new widget.Label(); lblTdKep.setText("Tekanan Darah (mmHg) :");
-        java.awt.GridBagConstraints cLblTdKep = kepConstraint(0,rowKU); cLblTdKep.anchor = java.awt.GridBagConstraints.EAST; cLblTdKep.fill = java.awt.GridBagConstraints.NONE;
-        panelKeadaanUmum.add(lblTdKep, cLblTdKep);
-        java.awt.GridBagConstraints cTdKep = kepConstraint(1,rowKU); cTdKep.anchor = java.awt.GridBagConstraints.WEST; cTdKep.fill = java.awt.GridBagConstraints.NONE; cTdKep.weightx = 0;
-        panelKeadaanUmum.add(TdKep, cTdKep);
-        widget.Label lblSuhuKep = new widget.Label(); lblSuhuKep.setText("Suhu (°C) :");
-        java.awt.GridBagConstraints cLblSuhuKep = kepConstraint(2,rowKU); cLblSuhuKep.anchor = java.awt.GridBagConstraints.EAST; cLblSuhuKep.fill = java.awt.GridBagConstraints.NONE; cLblSuhuKep.insets = new java.awt.Insets(3,20,3,5);
-        panelKeadaanUmum.add(lblSuhuKep, cLblSuhuKep);
-        java.awt.GridBagConstraints cSuhuKep = kepConstraint(3,rowKU); cSuhuKep.anchor = java.awt.GridBagConstraints.WEST; cSuhuKep.fill = java.awt.GridBagConstraints.NONE; cSuhuKep.weightx = 0;
-        panelKeadaanUmum.add(SuhuKep, cSuhuKep);
-        // Tinggi Badan digabung ke baris ke-1 (sejajar Tekanan Darah &
-        // Suhu) di gridx=4/5, bukan baris sendiri - supaya total cuma 3
-        // baris (permintaan user).
-        widget.Label lblTbKep = new widget.Label(); lblTbKep.setText("Tinggi Badan (Cm) :");
-        java.awt.GridBagConstraints cLblTbKep = kepConstraint(4,rowKU); cLblTbKep.anchor = java.awt.GridBagConstraints.EAST; cLblTbKep.fill = java.awt.GridBagConstraints.NONE; cLblTbKep.insets = new java.awt.Insets(3,20,3,5);
-        panelKeadaanUmum.add(lblTbKep, cLblTbKep);
-        java.awt.GridBagConstraints cTbKep = kepConstraint(5,rowKU); cTbKep.anchor = java.awt.GridBagConstraints.WEST; cTbKep.fill = java.awt.GridBagConstraints.NONE; cTbKep.weightx = 0;
-        panelKeadaanUmum.add(TbKep, cTbKep);
-        rowKU++;
+        // [Layout 3-kolom] Grid tanda vital dipadatkan dari 3 pasang
+        // label/field per baris (gridx 0..5, butuh ~840px) menjadi 1 pasang
+        // per baris, supaya muat di kartu Kolom 1 (ANAMNESA) tanpa memaksa
+        // scroll horizontal. Komponen field-nya SAMA (TdKep/NadiKep/...),
+        // hanya penempatannya yg berubah; label lokal lama (lblTdKep dst)
+        // digantikan label dari tambahBarisKepField() dgn teks yg sama.
+        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Tekanan Darah (mmHg)", TdKep);
+        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Frekuensi Nadi (x/menit)", NadiKep);
+        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Frekuensi Nafas (x/menit)", RrKep);
+        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Suhu (°C)", SuhuKep);
+        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "SpO2 (%)", SpoKep);
+        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Berat Badan (Kg)", BbKep);
+        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Tinggi Badan (Cm)", TbKep);
 
-        widget.Label lblSpoKep = new widget.Label(); lblSpoKep.setText("SpO2 (%) :");
-        java.awt.GridBagConstraints cLblSpoKep = kepConstraint(0,rowKU); cLblSpoKep.anchor = java.awt.GridBagConstraints.EAST; cLblSpoKep.fill = java.awt.GridBagConstraints.NONE;
-        panelKeadaanUmum.add(lblSpoKep, cLblSpoKep);
-        java.awt.GridBagConstraints cSpoKep = kepConstraint(1,rowKU); cSpoKep.anchor = java.awt.GridBagConstraints.WEST; cSpoKep.fill = java.awt.GridBagConstraints.NONE; cSpoKep.weightx = 0;
-        panelKeadaanUmum.add(SpoKep, cSpoKep);
-        widget.Label lblNadiKep = new widget.Label(); lblNadiKep.setText("Frekuensi Nadi (x/menit) :");
-        java.awt.GridBagConstraints cLblNadiKep = kepConstraint(2,rowKU); cLblNadiKep.anchor = java.awt.GridBagConstraints.EAST; cLblNadiKep.fill = java.awt.GridBagConstraints.NONE; cLblNadiKep.insets = new java.awt.Insets(3,20,3,5);
-        panelKeadaanUmum.add(lblNadiKep, cLblNadiKep);
-        java.awt.GridBagConstraints cNadiKep = kepConstraint(3,rowKU); cNadiKep.anchor = java.awt.GridBagConstraints.WEST; cNadiKep.fill = java.awt.GridBagConstraints.NONE; cNadiKep.weightx = 0;
-        panelKeadaanUmum.add(NadiKep, cNadiKep);
-        rowKU++;
-
-        widget.Label lblBbKep = new widget.Label(); lblBbKep.setText("Berat Badan (Kg) :");
-        java.awt.GridBagConstraints cLblBbKep = kepConstraint(0,rowKU); cLblBbKep.anchor = java.awt.GridBagConstraints.EAST; cLblBbKep.fill = java.awt.GridBagConstraints.NONE;
-        panelKeadaanUmum.add(lblBbKep, cLblBbKep);
-        java.awt.GridBagConstraints cBbKep = kepConstraint(1,rowKU); cBbKep.anchor = java.awt.GridBagConstraints.WEST; cBbKep.fill = java.awt.GridBagConstraints.NONE; cBbKep.weightx = 0;
-        panelKeadaanUmum.add(BbKep, cBbKep);
-        widget.Label lblRrKep = new widget.Label(); lblRrKep.setText("Frekuensi Nafas (x/menit) :");
-        java.awt.GridBagConstraints cLblRrKep = kepConstraint(2,rowKU); cLblRrKep.anchor = java.awt.GridBagConstraints.EAST; cLblRrKep.fill = java.awt.GridBagConstraints.NONE; cLblRrKep.insets = new java.awt.Insets(3,20,3,5);
-        panelKeadaanUmum.add(lblRrKep, cLblRrKep);
-        java.awt.GridBagConstraints cRrKep = kepConstraint(3,rowKU); cRrKep.anchor = java.awt.GridBagConstraints.WEST; cRrKep.fill = java.awt.GridBagConstraints.NONE; cRrKep.weightx = 0;
-        panelKeadaanUmum.add(RrKep, cRrKep);
-        rowKU++;
-
-        // Filler kolom paling kanan (gridx=6) menyerap sisa lebar baris
+        // Filler kolom paling kanan (gridx=2) menyerap sisa lebar baris
         // supaya kolom KEADAAN UMUM tetap rapat di kiri, bukan field yg
         // melebar. Tidak terlihat (Box glue, 0x0).
-        java.awt.GridBagConstraints cFillerKeadaanUmum = kepConstraint(6, 0);
+        java.awt.GridBagConstraints cFillerKeadaanUmum = kepConstraint(2, 0);
         cFillerKeadaanUmum.gridheight = rowKU;
         cFillerKeadaanUmum.weightx = 1.0;
         cFillerKeadaanUmum.fill = java.awt.GridBagConstraints.BOTH;
@@ -2729,19 +3131,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             lblKehamilan.setVisible(hamil);
             panelKehamilan.setVisible(hamil);
 
-            int tinggiLama = panelKepAtas.getHeight();
-            java.awt.Dimension ukuranBaru = panelKepAtas.getPreferredSize();
-            panelKepAtas.setSize(ukuranBaru.width, ukuranBaru.height);
+            // [Layout 3-kolom] Di GridBagLayout, tinggi kartu Kolom 1 reflow
+            // otomatis saat baris Kehamilan muncul/hilang - tak perlu lagi
+            // geser panelKepDua/Tiga/Empat/Obat manual atau resize FormInput
+            // (Y-math null-layout lama sudah dinonaktifkan).
             panelKepAtas.revalidate();
-            int delta = ukuranBaru.height - tinggiLama;
-            if (delta != 0) {
-                panelKepDua.setLocation(panelKepDua.getX(), panelKepDua.getY() + delta);
-                panelKepTiga.setLocation(panelKepTiga.getX(), panelKepTiga.getY() + delta);
-                panelKepEmpat.setLocation(panelKepEmpat.getX(), panelKepEmpat.getY() + delta);
-                panelKepObat.setLocation(panelKepObat.getX(), panelKepObat.getY() + delta);
-                java.awt.Dimension ukuranForm = FormInput.getPreferredSize();
-                FormInput.setPreferredSize(new java.awt.Dimension(ukuranForm.width, ukuranForm.height + delta));
-            }
             FormInput.revalidate();
             FormInput.repaint();
         });
@@ -2765,7 +3159,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // Urutan diatur ulang (bukan urutan deklarasi) supaya isi baris 1 =
         // Tenang/Cemas/Marah dan baris 2 = Takut/Sedih/Kecenderungan Bunuh
         // Diri, sesuai GridLayout(0,3) row-major.
-        panelKepAtas.add(panelChecklistKep(3, CekPsiTenang,CekPsiCemas,CekPsiMarah,CekPsiTakut,CekPsiSedih,CekPsiBunuhDiri), cPsi);
+        panelKepAtas.add(panelChecklistKep(2, CekPsiTenang,CekPsiCemas,CekPsiMarah,CekPsiTakut,CekPsiSedih,CekPsiBunuhDiri), cPsi); // [Layout 3-kolom] 3 -> 2 kolom checklist agar muat di kartu Kolom 1
         row++;
         RbMasalahPrilakuTidak = new widget.RadioButton(); RbMasalahPrilakuTidak.setText("Tidak");
         RbMasalahPrilakuYa = new widget.RadioButton(); RbMasalahPrilakuYa.setText("Ada, Sebutkan");
@@ -2946,7 +3340,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekCacatTunaRungu = new widget.CekBox(); CekCacatTunaRungu.setText("Tuna Rungu");
         CekCacatTunaWicara = new widget.CekBox(); CekCacatTunaWicara.setText("Tuna Wicara");
         row = tambahBarisKepField(panelKepAtas, row, "Cacat Tubuh / Disabilitas",
-            panelChecklistKep(5, CekCacatTidak,CekCacatTunaNetra,CekCacatTunaDaksa,CekCacatTunaRungu,CekCacatTunaWicara));
+            panelChecklistKep(2, CekCacatTidak,CekCacatTunaNetra,CekCacatTunaDaksa,CekCacatTunaRungu,CekCacatTunaWicara)); // [Layout 3-kolom] 5 -> 2 kolom checklist
 
         // -- Retire section/field lama yang tak ada padanan di foto fisik
         // RM 03-4/05/06 (setVisible(false), BUKAN dihapus - kolom DB tetap
@@ -3016,45 +3410,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         for(java.awt.Component c: retiredSectionV) c.setVisible(false);
         for(java.awt.Component c: retiredSectionVI) c.setVisible(false);
 
-        java.awt.Dimension ukuranKepAtas = panelKepAtas.getPreferredSize();
-        // [Reposisi] Geser SEMUA komponen lama (II. Pemeriksaan Fisik s/d
-        // Diagnosis Keperawatan/Rencana Lainnya, y asli 210-1203) turun
-        // sejauh tinggi panelKepAtas, supaya panelKepAtas bisa disisipkan
-        // PERSIS setelah I. Riwayat Kesehatan (y=70-210) - mengikuti urutan
-        // fisik formulir (Riwayat Alergi dst tepat setelah Keluhan Utama).
-        // Iterasi generik lewat FormInput.getComponents()+cek getY(), BUKAN
-        // daftar widget hardcode - pola sama seperti reposisi di RM 03-2.
-        geserKep1 = ukuranKepAtas.height + 20;
-        for(java.awt.Component c : FormInput.getComponents()){
-            if(c.getY() >= 210){
-                c.setLocation(c.getX(), c.getY() + geserKep1);
-            }
-        }
-        // panelKepAtas mulai setelah kotak "Keluhan Utama" (scrollPane1),
-        // bukan lagi y=210 tetap - supaya tidak tumpang tindih dgn box
-        // Keluhan Utama. Dihitung dari posisi/tinggi scrollPane1 yg
-        // SEBENARNYA (y=120, bukan y=90 - lihat setBounds di atas), bukan
-        // hardcode "90+143" lagi; formula lama itu basi & bikin
-        // panelKepAtas (border "RIWAYAT ALERGI") mulai 30px lebih awal dari
-        // ujung bawah kotak Keluhan Utama, jadi kepotong tumpang tindih.
-        int yMulaiKepAtas = scrollPane1.getY() + scrollPane1.getHeight() + 20;
-        FormInput.add(panelKepAtas);
-        // Lebar dipakai dari preferredSize GridBagLayout sendiri (bukan
-        // hardcode 840) - KEADAAN UMUM 2 kolom + panelKehamilan/panelAlergi
-        // butuh >840px, kalau dipaksa 840 GridBagLayout menyusutkan SEMUA
-        // kolom scr proporsional (weightx cuma ngatur kelebihan ruang,
-        // bukan defisit) -> field menyusut & row yg wrap ketimpa row
-        // bawahnya. lebarFormInput (di bawah) ikut disesuaikan supaya
-        // scrollInput bisa scroll horizontal sampai ke tepi panel ini.
-        panelKepAtas.setBounds(5, yMulaiKepAtas, ukuranKepAtas.width, ukuranKepAtas.height);
-        lebarFormInput = Math.max(870, 5 + ukuranKepAtas.width + 20);
-        // Semua konten lama di y>=210 sekarang disembunyikan/direparent ke
-        // section baru (lihat blok retired* & reparent Agama/StatusKehamilan
-        // dst di atas) - jadi panel berikutnya (panelKepDua/Tiga/dst) tidak
-        // perlu lagi mencadangkan ruang setinggi blok lama (dulu y=210-1203),
-        // cukup ditempel tepat setelah panelKepAtas.
-        yBawahLama = yMulaiKepAtas + ukuranKepAtas.height + 20;
-        FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahLama + 20));
+        // [Layout 3-kolom] Penempatan panelKepAtas ditangani susunTigaKolomKep()
+        // sbg kartu Kolom 1 (ANAMNESA/RIWAYAT). Y-math null-layout lama (geser
+        // komponen y>=210 via FormInput.getComponents(), setBounds,
+        // lebarFormInput, yBawahLama, FormInput.setPreferredSize) tidak dipakai
+        // lagi - GridBagLayout kartu yg mengatur posisi & tinggi otomatis.
     }
 
     /**
@@ -3210,20 +3570,14 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // ke sini dari section "V. SKALA NYERI" lama (dulu jadi diagram
         // background dekat field Provokes/Quality), supaya tampil sesuai
         // foto fisik RM 03-5. BUKAN diagram lokasi tubuh spt dugaan awal.
-        PanelWall.setPreferredSize(new java.awt.Dimension(360,145));
+        PanelWall.setPreferredSize(new java.awt.Dimension(320,140)); // [Layout 3-kolom] dari 360 -> muat di kartu Kolom 2
         java.awt.GridBagConstraints cSkalaNyeriGambar = kepConstraint(0,row); cSkalaNyeriGambar.gridwidth=2;
         panelKepDua.add(PanelWall, cSkalaNyeriGambar);
         row++;
 
-        java.awt.Dimension ukuranKepDua = panelKepDua.getPreferredSize();
-        // [Reposisi] panelKepDua (Halaman 2) ditempel tepat setelah
-        // panelKepAtas (yBawahLama - lihat initKepTambahan()), krn konten
-        // lama di antaranya sudah disembunyikan/direparent semua.
-        int yBawahDua = yBawahLama;
-        FormInput.add(panelKepDua);
-        panelKepDua.setBounds(5, yBawahDua, ukuranKepDua.width, ukuranKepDua.height);
-        lebarFormInput = Math.max(lebarFormInput, 5 + ukuranKepDua.width + 20);
-        FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahDua + ukuranKepDua.height + 20));
+        // [Layout 3-kolom] panelKepDua (Gizi Dewasa/Anak + Asesmen Nyeri)
+        // ditempatkan di kartu Kolom 2 (PEMERIKSAAN) oleh susunTigaKolomKep()
+        // - Y-math null-layout lama dinonaktifkan.
     }
 
     /**
@@ -3380,13 +3734,26 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelTime.add(RbTimeTerusMenerus); panelTime.add(RbTimeHilangTimbul); panelTime.add(RbTimeKurang30); panelTime.add(RbTimeLebih30);
         row = tambahBarisKepField(panelKepTiga, row, "Time (Nyeri Berlangsung)", panelTime);
 
+        // [Layout 3-kolom] SPLIT panelKepTiga: FLACC/PQRST (di atas) tetap di
+        // Kolom 2, section Diagnosis..Obgyn (di bawah) pindah ke Kolom 3.
+        // Trik reparent tanpa mengubah 170 baris kode di bawah: simpan panel
+        // FLACC ke variabel lokal, lalu arahkan field panelKepTiga ke panel
+        // BARU supaya blok Diagnosis tetap ditulis ke "panelKepTiga" apa
+        // adanya. Di akhir method hasilnya dipindah ke field panelKepTigaDiag
+        // & panelKepTiga dikembalikan ke panel FLACC (lihat ekor method).
+        // Reset counter 'row' krn panel baru mulai dari baris 0.
+        widget.PanelBiasa panelKepTigaFlacc = panelKepTiga;
+        panelKepTiga = new widget.PanelBiasa();
+        panelKepTiga.setLayout(new java.awt.GridBagLayout());
+        row = 0;
+
         // -- I. Diagnosis Keperawatan --
         // Scroll8/tbMasalahKeperawatan (mekanisme checklist+master table
         // lama, dipertahankan apa adanya - lihat Keputusan Arsitektur #2 di
         // PROGRESS.md) direparent dari posisi lama (blok terpisah jauh di
         // atas, y asli 1020) ke sini, sesuai urutan foto fisik RM 03-6.
         row = tambahBarisKepJudul(panelKepTiga, row, "I. DIAGNOSIS KEPERAWATAN");
-        Scroll8.setPreferredSize(new java.awt.Dimension(400,140));
+        Scroll8.setPreferredSize(new java.awt.Dimension(320,140)); // [Layout 3-kolom] dari 400 -> muat di kartu Kolom 3
         widget.PanelBiasa panelCariMasalah = new widget.PanelBiasa();
         panelCariMasalah.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelCariMasalah.add(label12); panelCariMasalah.add(TCariMasalah);
@@ -3429,7 +3796,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // initKepTambahan()) direparent dari posisi lama ke sini, sesuai
         // urutan foto fisik RM 03-6.
         row = tambahBarisKepJudul(panelKepTiga, row, "III. TINDAKAN KEPERAWATAN MANDIRI");
-        TabRencanaKeperawatan.setPreferredSize(new java.awt.Dimension(420,143));
+        TabRencanaKeperawatan.setPreferredSize(new java.awt.Dimension(320,143)); // [Layout 3-kolom] dari 420 -> muat di kartu Kolom 3
         // Kontrol "Key Word"/cari/ceklis-semua/tambah (label13/TCariRencana/
         // BtnCariRencana/BtnAllRencana/BtnTambahRencana) TIDAK diikutkan -
         // itu semua cuma dipakai utk tab checklist "Rencana Keperawatan"
@@ -3557,13 +3924,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelKepTiga.add(panelChecklistKep(2, CekObgynMembantuPartus,CekObgynPeriksaGinekologi,CekObgynDopplerCtgUsg,CekObgynPasangTampon), cObgyn);
         row++;
 
-        java.awt.Dimension ukuranKepTiga = panelKepTiga.getPreferredSize();
-        java.awt.Dimension ukuranKepDua3 = panelKepDua.getPreferredSize();
-        int yBawahTiga = yBawahLama + ukuranKepDua3.height + 10;
-        FormInput.add(panelKepTiga);
-        panelKepTiga.setBounds(5, yBawahTiga, ukuranKepTiga.width, ukuranKepTiga.height);
-        lebarFormInput = Math.max(lebarFormInput, 5 + ukuranKepTiga.width + 20);
-        FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahTiga + ukuranKepTiga.height + 20));
+        // [Layout 3-kolom] Selesai membangun blok Diagnosis: pindahkan panel
+        // hasil ke field Kolom 3 (panelKepTigaDiag) & kembalikan panelKepTiga
+        // ke panel FLACC/PQRST (Kolom 2). Penempatan kedua panel ditangani
+        // susunTigaKolomKep() - Y-math null-layout lama dinonaktifkan.
+        panelKepTigaDiag = panelKepTiga;
+        panelKepTiga = panelKepTigaFlacc;
     }
 
     /**
@@ -3965,15 +4331,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // header "Petugas" dipakai langsung sbg Perawat/Bidan di
         // nilaiKep(). Tidak ada lagi baris input di section ini.
 
-        java.awt.Dimension ukuranKepEmpat = panelKepEmpat.getPreferredSize();
-        java.awt.Dimension ukuranKepDua4 = panelKepDua.getPreferredSize();
-        java.awt.Dimension ukuranKepTiga4 = panelKepTiga.getPreferredSize();
-        java.awt.Dimension ukuranObatInfus4 = panelKepObat.getPreferredSize();
-        int yBawahEmpat = yBawahLama + ukuranKepDua4.height + 10 + ukuranKepTiga4.height + 10 + ukuranObatInfus4.height + 10;
-        FormInput.add(panelKepEmpat);
-        panelKepEmpat.setBounds(5, yBawahEmpat, ukuranKepEmpat.width, ukuranKepEmpat.height);
-        lebarFormInput = Math.max(lebarFormInput, 5 + ukuranKepEmpat.width + 20);
-        FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahEmpat + ukuranKepEmpat.height + 20));
+        // [Layout 3-kolom] panelKepEmpat (Kondisi Pasien Pindah/Pulang +
+        // Pendidikan Kesehatan Pulang) ditempatkan di kartu Kolom 3 oleh
+        // susunTigaKolomKep() - Y-math null-layout lama dinonaktifkan.
     }
 
     /**
@@ -3999,7 +4359,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         tbObatInfus.setModel(tabModeObatInfus);
         widget.ScrollPane scrollObatInfus = new widget.ScrollPane();
         scrollObatInfus.setViewportView(tbObatInfus);
-        scrollObatInfus.setPreferredSize(new java.awt.Dimension(800,120));
+        scrollObatInfus.setPreferredSize(new java.awt.Dimension(320,120)); // [Layout 3-kolom] dipersempit dari 800 agar muat di kartu Kolom 3 (tabel scroll horizontal internal)
         java.awt.GridBagConstraints cTabelObat = kepConstraint(0,row); cTabelObat.gridwidth=2;
         panelKepObat.add(scrollObatInfus, cTabelObat);
         row++;
@@ -4173,14 +4533,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelObatTombol.add(BtnTambahObat); panelObatTombol.add(BtnHapusObat);
         row = tambahBarisKepField(panelKepObat, row, "", panelObatTombol);
 
-        java.awt.Dimension ukuranKepObat = panelKepObat.getPreferredSize();
-        java.awt.Dimension ukuranKepDuaO = panelKepDua.getPreferredSize();
-        java.awt.Dimension ukuranKepTigaO = panelKepTiga.getPreferredSize();
-        int yBawahObat = yBawahLama + ukuranKepDuaO.height + 10 + ukuranKepTigaO.height + 10;
-        FormInput.add(panelKepObat);
-        panelKepObat.setBounds(5, yBawahObat, ukuranKepObat.width, ukuranKepObat.height);
-        lebarFormInput = Math.max(lebarFormInput, 5 + ukuranKepObat.width + 20);
-        FormInput.setPreferredSize(new java.awt.Dimension(lebarFormInput, yBawahObat + ukuranKepObat.height + 20));
+        // [Layout 3-kolom] panelKepObat (Pemberian Obat/Infus) ditempatkan di
+        // kartu Kolom 3 oleh susunTigaKolomKep() - Y-math null-layout lama
+        // dinonaktifkan.
     }
 
     /**
@@ -5490,6 +5845,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private int geserKep1;
     private int yBawahLama;
     private int lebarFormInput = 870;
+    // [Layout 3-kolom] Panel Diagnosis..Obgyn dipecah dari panelKepTiga
+    // (FLACC/PQRST) supaya bisa ditaruh di kartu Kolom 3 - lihat
+    // initKepTambahanHal3() & susunTigaKolomKep().
+    private widget.PanelBiasa panelKepTigaDiag;
+    // Label kartu identitas pada banner atas (buatBannerKep/sinkronKartuKep).
+    private widget.Label lblKartuNama, lblKartuRM, lblKartuRawat;
 
     // -- Riwayat Alergi --
     private widget.RadioButton RbAlergiTidak, RbAlergiYa;
