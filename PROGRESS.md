@@ -2895,3 +2895,117 @@ sudah jalan sejak RM 03-4. Pemeriksaan sebelumnya berhenti di
 Konsekuensinya untuk rencana: kontingensi prompt soal kolom DB yang belum ada
 **tidak berlaku**, dan baris kehamilan bersyarat di Bagian E **sudah selesai** —
 tinggal digayakan, bukan dibangun.
+
+
+---
+
+# Progress: rail navigasi bagian dipasang di kiri tab Input Pengkajian (Sesi 2 dari 6)
+
+Tanggal: 2026-09-02. Berkas: `src/rekammedis/RMPenilaianAwalKeperawatanIGD.java`
+(262 baris berubah).
+
+Bagian C dari prompt restrukturisasi. Zona kiri 300px yang di Sesi 1 masih
+`setVisible(false)` sekarang berisi kartu progres + satu baris per bagian,
+bisa diklik untuk melompat ke bagian itu.
+
+## Yang dibangun
+
+Kelas dalam `SeksiKep` menyimpan satu bagian: judulnya, strip header-nya,
+panel induknya, dan urutan bangunnya. Daftarnya `seksiKep`, diisi otomatis.
+
+`isiRailKep()` menyusun rail: kartu progres di `gridy=0`, lalu satu
+`buatBarisRailKep(i)` per bagian, ditutup pengisi vertikal (`weighty=1.0`)
+supaya baris-barisnya menempel ke atas — bukan melayang di tengah, gotcha
+`GridBagLayout` dua sumbu yang sudah tercatat di CLAUDE.md.
+
+Satu baris rail = `widget.PanelBiasa` dengan bilah aksen 3px di WEST + label
+HTML membungkus di CENTER + `MouseAdapter` untuk klik dan hover.
+`sorotSeksiKep(i)` memindah sorotan; `kePosisiSeksiKep(i)` menggulung
+`FormInput` ke strip bagian itu **plus 220px konteks** di bawahnya
+(`TINGGI_KONTEKS_KEP`), supaya isinya ikut kelihatan dan bukan cuma judulnya
+menempel di tepi atas.
+
+## Pendaftaran lewat satu corong, bukan ditulis tangan 26 kali
+
+Semua judul bagian melewati `tambahBarisKepJudul()` (`:2467`), jadi
+pendaftarannya ditempel di situ — tiga baris. Konsekuensinya: bagian baru yang
+ditambahkan nanti otomatis muncul di rail tanpa menyentuh kode rail.
+
+Ada tepat **satu** judul yang dibuat di luar corong: strip
+`"I. RIWAYAT KESEHATAN PASIEN"` di `susunTigaKolomKep():3242`, karena induknya
+kartu kolom dan bukan panel section. Itu didaftarkan tangan di indeks 0.
+Sudah diperiksa: `buatHeaderStripKep(` hanya punya **dua** titik pemanggilan di
+seluruh berkas (`:2476` corong, `:3242` manual), jadi tidak ada bagian yang
+lolos tanpa terdaftar. 25 lewat corong + 1 manual = **26 baris rail**.
+
+## Urutan bangun bukan urutan mata, jadi diurutkan ulang
+
+`urutkanSeksiKep()` memberi peringkat pada panel induk mengikuti urutan visual
+(kiri ke kanan, atas ke bawah) lalu `Collections.sort` menurut (peringkat
+induk, urutan bangun). Ini bukan kerapian kosmetik: `panelKepObat` dibangun
+**paling akhir** (`initObatInfusTambahan()` di `:89`) tapi tampil di **tengah**
+Kolom 3. Tanpa pengurutan, rail akan menunjukkan "Pemberian Obat / Infus"
+sebagai bagian terakhir sementara mata melihat masih ada dua bagian di
+bawahnya.
+
+Peringkatnya dipetakan lewat `IdentityHashMap`, bukan nama field, karena
+`panelKepTiga` **ditukar di tengah pembangunan**: di `:4111` objek lamanya
+disimpan sebagai `panelKepTigaFlacc`, `panelKepTiga` diisi objek baru, lalu di
+`:4297-4298` objek baru itu jadi `panelKepTigaDiag` dan `panelKepTiga`
+dipulihkan. Satu nama field menunjuk ke dua objek berbeda pada dua waktu
+berbeda. Identitas objek yang benar; nama field akan salah.
+
+Entri yang stripnya disembunyikan, atau yang induknya tidak ada di daftar
+visual, dibuang dari daftar — supaya rail tidak pernah punya baris menuju
+bagian yang tidak tampil.
+
+## Urutan pemanggilan sudah diperiksa
+
+Risiko nyatanya: kalau `urutkanSeksiKep()` jalan sebelum bagian-bagiannya
+terdaftar, pengurutan bekerja atas daftar setengah kosong dan salah
+diam-diam. Konstruktor `:86-90` memanggil kelima `initKepTambahan*` (tempat
+seluruh 25 `tambahBarisKepJudul` berada) **sebelum** `susunTigaKolomKep()` di
+`:100`, dan pengurutannya ada di `:3280` di dalam method itu. Daftar sudah
+lengkap saat diurutkan.
+
+## Dua hal yang SENGAJA belum dikerjakan di sesi ini
+
+**Kartu progres hanya menulis "Bagian N dari 26".** Prompt meminta "0/17 wajib
+terisi", tapi penanda field wajib itu Bagian E (Sesi 5). Menampilkan angka
+wajib sekarang berarti mengarangnya, dan angka karangan di kartu progres lebih
+buruk daripada tidak ada angka sama sekali.
+
+**Sakelar "semua bagian / satu bagian" ditunda ke Sesi 3.** Isolasi per-bagian
+butuh wadah per-bagian sungguhan dari Bagian D. Dikerjakan sekarang,
+satu-satunya cara adalah menyembunyikan baris berdasar `gridy`, dan Bagian D
+langsung membuangnya lagi. Jadi ditunda, bukan dilewat.
+
+## Keputusan yang menghadang Sesi 3: 11 bagian yang mana?
+
+Prompt Bagian D dan E menganggap form ini punya **11 bagian**. Kodenya punya
+**25** judul (`RIWAYAT ALERGI`, `KEADAAN UMUM`, `STATUS KEHAMILAN`, ...
+`PEMBERIAN OBAT / INFUS`). Rail dibangun mengikuti yang **nyata** — 26 baris —
+bukan pengelompokan 11 yang saya karang sendiri.
+
+Alasannya: nama kesebelas bagian itu adalah kontrak untuk Sesi 3, 4, dan 5
+sekaligus. Header strip, navigasi maju/mundur, "tandai tidak relevan", dan
+lencana status semuanya digantung di situ. Kalau pengelompokannya saya karang
+dan ternyata salah, tiga sesi harus dibongkar. Label di tangkapan layar
+"Keadaan Umum, Antropometri &" memang menunjukkan maksudnya penggabungan dari
+25 ini, tapi nama lengkap kesebelasnya tidak ada di kode dan tidak bisa
+disimpulkan dari sana. **Butuh keputusan user sebelum Sesi 3 mulai.**
+
+## Verifikasi
+
+`ant compile` -> **BUILD SUCCESSFUL**.
+
+Yang bisa dibuktikan tanpa layar sudah dibuktikan: jumlah titik pemanggilan
+`buatHeaderStripKep(`, dan urutan pemanggilan konstruktor terhadap
+pengurutan.
+
+Yang **belum** dibuktikan dan hanya bisa dari melihat: apakah lebar 300px
+cukup untuk judul terpanjang (`PENGKAJIAN SPIRITUAL, KEPERCAYAAN, FUNGSIONAL
+DAN BUDAYA`), dan apakah `scrollRectToVisible` benar-benar mendarat di tempat
+yang dimaksud. `FormInput` bersarang di `scrollSeksiKep`, dan target gulungnya
+dihitung lewat `SwingUtilities.convertRectangle` dari induk strip — dua lapis
+konversi koordinat yang tidak bisa dibuktikan dari teks sumber.

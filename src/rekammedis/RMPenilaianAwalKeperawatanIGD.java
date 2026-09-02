@@ -2473,7 +2473,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         c.fill = java.awt.GridBagConstraints.HORIZONTAL;
         c.weightx = 1.0;
         c.insets = new java.awt.Insets(row==0?0:10,5,3,5);
-        panel.add(buatHeaderStripKep(judul),c);
+        widget.PanelBiasa strip = buatHeaderStripKep(judul);
+        panel.add(strip,c);
+        // [Bagian C] Satu funnel ini juga jadi tempat pendaftaran rail
+        // navigasi - daftar bagian ikut benar dgn sendirinya kalau nanti ada
+        // section ditambah/dipindah, tanpa daftar judul kedua yg bisa basi.
+        seksiKep.add(new SeksiKep(judul, strip, panel, seksiKep.size()));
         return row+1;
     }
 
@@ -2937,12 +2942,217 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     }
 
     /**
+     * [Bagian C] Urutkan seksiKep mengikuti urutan tampil, lalu buang bagian
+     * yg strip-nya disembunyikan (section lama yg dipensiunkan).
+     *
+     * @param urutInduk panel section dalam urutan tampil kiri->kanan/atas->bawah
+     */
+    private void urutkanSeksiKep(final widget.PanelBiasa[] urutInduk){
+        final java.util.Map<widget.PanelBiasa,Integer> peringkat = new java.util.IdentityHashMap<>();
+        for(int i=0;i<urutInduk.length;i++){
+            if(urutInduk[i]!=null){ peringkat.put(urutInduk[i], i); }
+        }
+        java.util.Iterator<SeksiKep> it = seksiKep.iterator();
+        while(it.hasNext()){
+            SeksiKep s = it.next();
+            if(!s.strip.isVisible() || !peringkat.containsKey(s.induk)){ it.remove(); }
+        }
+        java.util.Collections.sort(seksiKep, new java.util.Comparator<SeksiKep>(){
+            @Override public int compare(SeksiKep a, SeksiKep b){
+                int pa = peringkat.get(a.induk), pb = peringkat.get(b.induk);
+                return pa!=pb ? Integer.compare(pa,pb) : Integer.compare(a.urutBangun,b.urutBangun);
+            }
+        });
+    }
+
+    /** [Bagian C] Isi rail: kartu progres di atas + satu baris tiap bagian. */
+    private void isiRailKep(){
+        railKep.removeAll();
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor=java.awt.GridBagConstraints.NORTH;
+
+        c.gridy=0; c.insets=new java.awt.Insets(12,12,10,12);
+        railKep.add(buatKartuProgresKep(), c);
+
+        c.insets=new java.awt.Insets(0,8,0,8);
+        int gy = 1;
+        for(int i=0;i<seksiKep.size();i++){
+            c.gridy=gy++;
+            railKep.add(buatBarisRailKep(i), c);
+        }
+        // Pengisi vertikal - tanpa ini GridBagLayout menengahkan seluruh
+        // daftar saat rail lebih tinggi dari isinya.
+        c.gridy=gy; c.weighty=1.0; c.fill=java.awt.GridBagConstraints.BOTH;
+        c.insets=new java.awt.Insets(0,0,0,0);
+        railKep.add(javax.swing.Box.createGlue(), c);
+
+        if(!seksiKep.isEmpty()){ sorotSeksiKep(0); }
+    }
+
+    /**
+     * [Bagian C] Kartu progres di kepala rail.
+     *
+     * Sengaja HANYA menampilkan posisi bagian ("Bagian 3 dari 26"), bukan
+     * hitungan isian wajib. Hitungan wajib adalah Bagian E (Sesi 5); menaruh
+     * angka "0/17" sekarang berarti memasang angka yg belum dihitung apa pun -
+     * lebih menyesatkan daripada tidak ada. Kartu ini yg nanti diisi.
+     */
+    private widget.PanelBiasa buatKartuProgresKep(){
+        widget.PanelBiasa kartu = new widget.PanelBiasa();
+        kartu.setOpaque(true);
+        kartu.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
+        kartu.setLayout(new java.awt.GridBagLayout());
+
+        widget.Label judul = new widget.Label();
+        judul.setText("BAGIAN AKTIF");
+        judul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+        judul.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        lblProgresJudulKep = new widget.Label();
+        lblProgresJudulKep.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblProgresJudulKep.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        lblProgresJudulKep.setForeground(widget.ThemeConfig.TEXT);
+        lblProgresJudulKep.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        lblProgresHitungKep = new widget.Label();
+        lblProgresHitungKep.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblProgresHitungKep.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        lblProgresHitungKep.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.gridy=0; c.weightx=1.0; c.anchor=java.awt.GridBagConstraints.WEST;
+        c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        kartu.add(judul,c);
+        c.gridy=1; c.insets=new java.awt.Insets(6,0,0,0); kartu.add(lblProgresJudulKep,c);
+        c.gridy=2; c.insets=new java.awt.Insets(4,0,0,0); kartu.add(lblProgresHitungKep,c);
+        return kartu;
+    }
+
+    /**
+     * [Bagian C] Satu baris rail = panel yg bisa diklik (bukan widget.Button).
+     *
+     * Dipilih panel + MouseListener supaya keadaan aktif/hover dan batang
+     * aksen kiri sepenuhnya dikendalikan di sini; widget.Button melukis
+     * latarnya sendiri lewat glass color dan sulit diberi batang aksen.
+     */
+    private widget.PanelBiasa buatBarisRailKep(final int idx){
+        final SeksiKep s = seksiKep.get(idx);
+        widget.PanelBiasa baris = new widget.PanelBiasa();
+        baris.setOpaque(true);
+        baris.setBackground(widget.ThemeConfig.SURFACE);
+        baris.setLayout(new java.awt.BorderLayout(0,0));
+        baris.setBorder(javax.swing.BorderFactory.createEmptyBorder(1,0,1,0));
+        baris.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+
+        // Batang aksen kiri 3px - penanda bagian aktif tanpa mengandalkan
+        // warna latar saja (pembeda tetap terbaca di layar berkontras rendah).
+        widget.PanelBiasa aksen = new widget.PanelBiasa();
+        aksen.setOpaque(true);
+        aksen.setBackground(widget.ThemeConfig.SURFACE);
+        aksen.setPreferredSize(new java.awt.Dimension(3,10));
+
+        widget.Label lbl = new widget.Label();
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbl.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        lbl.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+        lbl.setBorder(javax.swing.BorderFactory.createEmptyBorder(7,9,7,9));
+        // Judul dibungkus <div width> supaya MEMBUNGKUS, bukan terpotong -
+        // judul terpanjang di sini 49 karakter ("SKRINING RESIKO PASIEN JATUH
+        // (GET UP AND GO TEST)") dan di mockup judul semacam itu kepotong.
+        lbl.setText("<html><div style='width:"+LEBAR_TEKS_RAIL_KEP+"px'>"
+                + (idx+1) + ". " + escHtmlKep(judulRingkasKep(s.judul)) + "</div></html>");
+
+        baris.add(aksen, java.awt.BorderLayout.WEST);
+        baris.add(lbl, java.awt.BorderLayout.CENTER);
+        s.baris = baris; s.lblJudul = lbl; s.aksen = aksen;
+
+        baris.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override public void mouseClicked(java.awt.event.MouseEvent e){
+                sorotSeksiKep(idx);
+                kePosisiSeksiKep(idx);
+            }
+            @Override public void mouseEntered(java.awt.event.MouseEvent e){
+                if(idx!=seksiAktifKep){ s.baris.setBackground(widget.ThemeConfig.SURFACE_ALT); }
+            }
+            @Override public void mouseExited(java.awt.event.MouseEvent e){
+                if(idx!=seksiAktifKep){ s.baris.setBackground(widget.ThemeConfig.SURFACE); }
+            }
+        });
+        return baris;
+    }
+
+    /** Lebar teks judul di rail (300px rail - aksen - padding - scrollbar). */
+    private static final int LEBAR_TEKS_RAIL_KEP = 255;
+
+    /**
+     * Buang penomoran romawi di depan judul section ("I. DIAGNOSIS
+     * KEPERAWATAN" -> "DIAGNOSIS KEPERAWATAN"). Rail sudah menomori sendiri
+     * 1..N, jadi dua penomoran berdampingan justru membingungkan.
+     */
+    private String judulRingkasKep(String judul){
+        if(judul==null){ return ""; }
+        return judul.replaceFirst("^\\s*(?:I|II|III|IV|V|VI|VII|VIII|IX|X)\\.\\s*", "").trim();
+    }
+
+    /** [Bagian C] Pindahkan sorotan rail ke bagian ke-idx (tidak menggulung). */
+    private void sorotSeksiKep(int idx){
+        if(idx<0 || idx>=seksiKep.size()){ return; }
+        seksiAktifKep = idx;
+        for(int i=0;i<seksiKep.size();i++){
+            SeksiKep s = seksiKep.get(i);
+            if(s.baris==null){ continue; }
+            boolean aktif = (i==idx);
+            s.baris.setBackground(aktif ? widget.ThemeConfig.SURFACE_ALT : widget.ThemeConfig.SURFACE);
+            s.aksen.setBackground(aktif ? widget.ThemeConfig.PRIMARY : widget.ThemeConfig.SURFACE);
+            s.lblJudul.setForeground(aktif ? widget.ThemeConfig.TEXT : widget.ThemeConfig.TEXT_NORMAL);
+            s.lblJudul.setFont(new java.awt.Font("Segoe UI",
+                    aktif ? java.awt.Font.BOLD : java.awt.Font.PLAIN, 11));
+        }
+        if(lblProgresJudulKep!=null){
+            SeksiKep s = seksiKep.get(idx);
+            lblProgresJudulKep.setText("<html><div style='width:"+LEBAR_TEKS_RAIL_KEP+"px'>"
+                    + escHtmlKep(judulRingkasKep(s.judul)) + "</div></html>");
+            lblProgresHitungKep.setText("Bagian " + (idx+1) + " dari " + seksiKep.size());
+        }
+        railKep.revalidate();
+        railKep.repaint();
+    }
+
+    /**
+     * [Bagian C] Gulung panel seksi sampai header bagian ke-idx terlihat.
+     *
+     * Ditambah TINGGI_KONTEKS_KEP di bawah strip supaya yg tampil bukan cuma
+     * judulnya, melainkan judul + beberapa baris pertama isinya. Kalau hanya
+     * strip yg dijadikan sasaran, klik rail terasa tidak berpindah ke mana2
+     * ketika bagian itu sudah mepet ke bawah layar.
+     */
+    private void kePosisiSeksiKep(int idx){
+        if(idx<0 || idx>=seksiKep.size() || scrollSeksiKep==null){ return; }
+        SeksiKep s = seksiKep.get(idx);
+        java.awt.Container induk = s.strip.getParent();
+        if(induk==null){ return; }
+        java.awt.Rectangle r = javax.swing.SwingUtilities.convertRectangle(
+                induk, s.strip.getBounds(), FormInput);
+        r.height = Math.min(r.height + TINGGI_KONTEKS_KEP, Math.max(1, FormInput.getHeight() - r.y));
+        FormInput.scrollRectToVisible(r);
+    }
+
+    /** Ruang isi yg diikutkan saat menggulung ke sebuah bagian. */
+    private static final int TINGGI_KONTEKS_KEP = 220;
+
+    /**
      * [Bagian A] Rangka layar 4 zona. Dipanggil SESUDAH susunTigaKolomKep()
      * karena memakai FormInput yg sudah tersusun.
      *
      *   internalFrame2 (BorderLayout)
      *     NORTH  barPasienKep   <- hasil buatBannerKep(), tidak lagi menggulung
-     *     WEST   scrollRailKep  <- navigasi bagian (kosong, Sesi 2)
+     *     WEST   scrollRailKep  <- navigasi bagian (isiRailKep)
      *     CENTER scrollSeksiKep <- FormInput
      *   panelGlass8 sudah menempati PAGE_END internalFrame1 (action bar).
      *
@@ -2965,9 +3175,6 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             javax.swing.BorderFactory.createEmptyBorder(12,14,12,14)));
 
         // -- zona WEST: rail navigasi bagian --
-        // Sengaja DIBUAT lengkap tapi setVisible(false): isinya baru ada di
-        // Sesi 2, dan strip 300px kosong sekarang cuma menyempitkan tiga kolom
-        // yg ada tanpa memberi apa pun. Rangka 4 zona tetap terpasang.
         railKep = new widget.PanelBiasa();
         railKep.setOpaque(true);
         railKep.setBackground(widget.ThemeConfig.SURFACE);
@@ -2977,7 +3184,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         scrollRailKep.setBorder(javax.swing.BorderFactory.createMatteBorder(0,0,0,1, widget.ThemeConfig.BORDER_SOFT));
         scrollRailKep.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollRailKep.setPreferredSize(new java.awt.Dimension(300,10));
-        scrollRailKep.setVisible(false);
+        scrollRailKep.getVerticalScrollBar().setUnitIncrement(16);
+        scrollRailKep.getViewport().setBackground(widget.ThemeConfig.SURFACE);
 
         // -- zona CENTER: panel seksi --
         scrollSeksiKep = new widget.ScrollPane();
@@ -2991,6 +3199,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         internalFrame2.add(barPasienKep, java.awt.BorderLayout.NORTH);
         internalFrame2.add(scrollRailKep, java.awt.BorderLayout.WEST);
         internalFrame2.add(scrollSeksiKep, java.awt.BorderLayout.CENTER);
+        // Isi rail SESUDAH scrollSeksiKep ada - kePosisiSeksiKep() memakainya.
+        isiRailKep();
         internalFrame2.revalidate();
         internalFrame2.repaint();
     }
@@ -3026,7 +3236,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
         // -- Kolom 1: ANAMNESA / RIWAYAT --
         int r1 = 0;
-        r1 = tambahIsiKolomKep(kol1, r1, buatHeaderStripKep("I. RIWAYAT KESEHATAN PASIEN"));
+        // Strip ini dibuat langsung di sini (bukan lewat tambahBarisKepJudul),
+        // jadi pendaftaran rail-nya harus manual. Induknya kol1 - satu2nya
+        // entri seksiKep yg induknya kartu kolom, bukan panel section.
+        widget.PanelBiasa stripRiwayat = buatHeaderStripKep("I. RIWAYAT KESEHATAN PASIEN");
+        r1 = tambahIsiKolomKep(kol1, r1, stripRiwayat);
+        seksiKep.add(0, new SeksiKep("I. RIWAYAT KESEHATAN PASIEN", stripRiwayat, kol1, -1));
         scrollPane1.setPreferredSize(new java.awt.Dimension(300,110)); // dulu diatur via setBounds (null-layout)
         r1 = tambahIsiKolomKep(kol1, r1, barisAreaKep("Keluhan Utama", scrollPane1));
         r1 = tambahIsiKolomKep(kol1, r1, panelKepAtas);
@@ -3058,6 +3273,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         fk.gridx=0; fk.weightx=0.30; FormInput.add(kol1, fk);
         fk.gridx=1; fk.weightx=0.30; FormInput.add(kol2, fk);
         fk.gridx=2; fk.weightx=0.40; FormInput.add(kol3, fk);
+
+        // [Bagian C] Urutkan daftar bagian mengikuti urutan MATA (kiri->kanan,
+        // atas->bawah), bukan urutan bangun. Keduanya berbeda: panelKepObat
+        // dibangun paling akhir tapi tampil di tengah Kolom 3.
+        urutkanSeksiKep(new widget.PanelBiasa[]{ kol1, panelKepAtas,
+            panelKepDua, panelKepTiga, panelKepTigaDiag, panelKepObat, panelKepEmpat });
 
         FormInput.revalidate();
         FormInput.repaint();
@@ -6005,6 +6226,33 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     // bagian, masih kosong & disembunyikan sampai Sesi 2.
     private widget.PanelBiasa barPasienKep, railKep;
     private widget.ScrollPane scrollRailKep, scrollSeksiKep;
+
+    /**
+     * [Bagian C] Satu entri navigasi bagian.
+     *
+     * `strip` = header strip yg dihasilkan tambahBarisKepJudul(), dipakai
+     * sebagai sasaran scroll. `induk` = panel section tempat strip itu
+     * ditanam; dicatat lewat IDENTITAS objek, bukan nama field, karena
+     * `panelKepTiga` ditukar di tengah initKepTambahanHal3() (isi FLACC
+     * dipisah dari isi Diagnosis..Obgyn yg jadi panelKepTigaDiag).
+     */
+    private static final class SeksiKep {
+        final String judul;
+        final widget.PanelBiasa strip;
+        final widget.PanelBiasa induk;
+        final int urutBangun;
+        widget.PanelBiasa baris;
+        widget.Label lblJudul;
+        widget.PanelBiasa aksen;
+        SeksiKep(String judul, widget.PanelBiasa strip, widget.PanelBiasa induk, int urutBangun){
+            this.judul = judul; this.strip = strip; this.induk = induk; this.urutBangun = urutBangun;
+        }
+    }
+    /** Daftar bagian, diisi tambahBarisKepJudul() saat section dibangun. */
+    private final java.util.List<SeksiKep> seksiKep = new java.util.ArrayList<>();
+    /** Index bagian yg sedang disorot di rail, -1 = belum ada. */
+    private int seksiAktifKep = -1;
+    private widget.Label lblProgresJudulKep, lblProgresHitungKep;
 
     // -- Riwayat Alergi --
     private widget.RadioButton RbAlergiTidak, RbAlergiYa;
