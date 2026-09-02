@@ -2505,9 +2505,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             lbl.setForeground(widget.ThemeConfig.TEXT_MUTED);
             lbl.setText(label);
             // Label panjang dibungkus HTML dgn lebar tetap supaya IKUT TURUN
-            // BARIS, tidak memaksa kartu kolom melebar.
+            // BARIS, tidak memaksa kartu kolom melebar. Lewat htmlLebarKep()
+            // supaya satuannya piksel perangkat - versi lama menulis 'px'
+            // langsung sehingga label yg melewati 330px justru DILEBARKAN
+            // jadi 429px, kebalikan dari maksudnya.
             if(lbl.getPreferredSize().width > LEBAR_ISI_KEP){
-                lbl.setText("<html><div style='width:"+LEBAR_ISI_KEP+"px'>"+escHtmlKep(label)+"</div></html>");
+                lbl.setText(htmlLebarKep(LEBAR_ISI_KEP, label));
             }
             baris.add(lbl,java.awt.BorderLayout.NORTH);
         }
@@ -2529,6 +2532,26 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     /** Escape minimal utk teks label yg dibungkus HTML (lihat tambahBarisKepField). */
     private String escHtmlKep(String s){
         return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;");
+    }
+
+    /**
+     * Bungkus teks jadi label HTML berlebar TETAP, satuannya PIKSEL PERANGKAT.
+     *
+     * Satuan CSS yg dipakai 'pt', BUKAN 'px' - dan itu bukan salah tulis.
+     * Mesin HTML Swing memetakan 1px = 1.3pt (konstanta lengthMapping di
+     * javax.swing.text.html.CSS.LengthUnit), sementara 1pt = 1 piksel.
+     * Jadi "width:255px" melahirkan label selebar 331px, 30% lebih lebar
+     * dari yg diminta, sedangkan "width:255pt" tepat 255px. Terukur:
+     * 180px->233, 200px->260, 255px->331, 330px->429; 180pt->180,
+     * 255pt->255, 330pt->330 - kelipatan 1,3 yg persis di tiap sampel.
+     *
+     * Ini pernah membuat SELURUH baris rail 352px dan kartu progres 357px
+     * di zona rail yg cuma 300px dgn HORIZONTAL_SCROLLBAR_NEVER, jadi
+     * judul bagian terpotong di kanan. Semua pembungkus HTML berlebar
+     * tetap di form ini WAJIB lewat method ini, jangan tulis 'px' lagi.
+     */
+    private String htmlLebarKep(int lebarPx, String teks){
+        return "<html><div style='width:"+lebarPx+"pt'>"+escHtmlKep(teks)+"</div></html>";
     }
 
     // -------------------------------------------------------------------
@@ -2556,10 +2579,127 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                 k.setPreferredSize(new java.awt.Dimension(LEBAR_ISI_KEP, k.getPreferredSize().height));
             }
         }
+        // Bukan rantai else-if: sempitkanAlirKep() MENGGANTI FlowLayout jadi
+        // GridLayout, jadi panel yg baru diubahnya harus ikut diperiksa lagi
+        // di cabang GridLayout - kalau tidak, checklist yg asalnya FlowLayout
+        // tak pernah kena pelukChipGridKep() dan chipnya tetap melar.
         if(wadah.getLayout() instanceof java.awt.FlowLayout){
             sempitkanAlirKep(wadah);
+        }
+        if(wadah.getLayout() instanceof java.awt.GridLayout){
+            sempitkanGridKep(wadah);
         } else if(wadah.getLayout() instanceof java.awt.GridBagLayout){
             lipatDuaKolomKep(wadah);
+            pelukChipGbcKep(wadah);
+        }
+    }
+
+    /**
+     * Versi GridBagLayout dari pelukChipGridKep(): buang fill=HORIZONTAL dari
+     * tiap chip supaya pil-nya memeluk teks, bukan melar selebar kolom sel.
+     *
+     * Perlu terpisah karena tidak semua grup pilihan lahir dari
+     * panelChecklistKep() yg ber-GridLayout - sebagian ditempel langsung ke
+     * panel GridBag lewat kepConstraint(), yg fill-nya HORIZONTAL. Di render
+     * PNG kedua sisa gejalanya masih kelihatan: tiga pilihan "Penurunan BB 6
+     * Bulan Terakhir" sama lebar semua (ikut chip terlebar), padahal chip di
+     * checklist sebelahnya sudah memeluk teksnya masing-masing.
+     *
+     * getConstraints() memulangkan KLONA, jadi wajib setConstraints() lagi.
+     * Yg diubah cuma fill & anchor - gridx/gridy/insets/weight dibiarkan,
+     * jadi posisi & jarak antar baris tidak bergeser sedikit pun.
+     */
+    private void pelukChipGbcKep(java.awt.Container p){
+        java.awt.GridBagLayout gbl = (java.awt.GridBagLayout) p.getLayout();
+        for(java.awt.Component k : p.getComponents()){
+            if(!(k instanceof javax.swing.JToggleButton)){ continue; }
+            java.awt.GridBagConstraints c = gbl.getConstraints(k);
+            if(c.fill==java.awt.GridBagConstraints.NONE
+                    && c.anchor==java.awt.GridBagConstraints.WEST){ continue; }
+            c.fill = java.awt.GridBagConstraints.NONE;
+            c.anchor = java.awt.GridBagConstraints.WEST;
+            gbl.setConstraints(k, c);
+        }
+    }
+
+    /** Panel checklist ber-GridLayout (panelChecklistKep) jumlah kolomnya
+     *  dipatok saat dibangun. Sesudah chip dipasang tiap pilihan tumbuh ~16px
+     *  karena padding pil, jadi panel yg tadinya pas bisa jebol dari
+     *  LEBAR_ISI_KEP dan melebarkan kartu kolomnya. Kolomnya dihitung ulang
+     *  dari chip TERLEBAR - alasan yg sama seperti sempitkanAlirKep(). Hanya
+     *  boleh MENGURANGI kolom: menambah kolom akan mengubah pengelompokan
+     *  visual yg disengaja saat panelnya dibangun. */
+    private void sempitkanGridKep(java.awt.Container box){
+        if(box.getComponentCount()<2){ return; }
+        java.awt.GridLayout grid = (java.awt.GridLayout) box.getLayout();
+        int jarak = grid.getHgap();
+        int lebarMaks = 0;
+        for(java.awt.Component k : box.getComponents()){
+            lebarMaks = Math.max(lebarMaks, k.getPreferredSize().width);
+        }
+        if(lebarMaks<1){ return; }
+        int kolom = (LEBAR_ISI_KEP+jarak)/(lebarMaks+jarak);
+        if(kolom<1){ kolom = 1; }
+        if(grid.getColumns()>0 && kolom<grid.getColumns()){
+            box.setLayout(new java.awt.GridLayout(0,kolom,jarak,grid.getVgap()));
+            grid = (java.awt.GridLayout) box.getLayout();
+        }
+        pelukChipGridKep(box, grid.getColumns()>0 ? grid.getColumns() : kolom,
+                jarak, grid.getVgap());
+    }
+
+    /**
+     * Bikin chip MEMELUK teksnya, bukan melar selebar sel grid.
+     *
+     * Ini temuan dari render PNG pertama, bukan dari angka: GridLayout selalu
+     * memberi semua sel ukuran yg SAMA dan mengisinya penuh, jadi tiap pil
+     * jadi persegi panjang selebar kolom - checklist "Manajemen Jalan Nafas"
+     * dst. tergambar sebagai garis kotak sepanjang ~570px, dan pasangan
+     * "Ya"/"Tidak" jadi sama lebar walau teksnya beda panjang. Sebagai radio
+     * button biasa itu tak kelihatan (latarnya transparan); begitu diberi
+     * latar + garis pil, melarnya langsung terlihat salah.
+     *
+     * GridLayout ditukar GridBagLayout dgn kolom SAMA BANYAK, tiap sel
+     * anchor=WEST fill=NONE, plus satu kolom pengisi berbobot di kanan supaya
+     * sisa ruang dibuang ke sana, bukan dibagi ke chip. Urutan komponen,
+     * jumlah kolom, listener, dan nama variabel tidak berubah - murni layout.
+     *
+     * Panel CAMPURAN (chip + kotak teks "Sebutkan", mis. "Riwayat Alergi:
+     * Tidak / Ya, Sebutkan") ikut dikonversi, tapi yg bukan chip tetap
+     * fill=HORIZONTAL weightx=1 supaya kotak teksnya masih melar seperti dulu.
+     * Versi pertama method ini menolak panel campuran sama sekali, dan
+     * render ketiga membuktikan itu salah: 28 chip di 12 panel campuran masih
+     * melar sementara tetangganya sudah memeluk teks.
+     */
+    private void pelukChipGridKep(java.awt.Container box, int kolom, int hgap, int vgap){
+        if(kolom<1 || box.getComponentCount()<1){ return; }
+        boolean adaChip = false, adaLain = false;
+        for(java.awt.Component k : box.getComponents()){
+            if(k instanceof javax.swing.JToggleButton){ adaChip = true; } else { adaLain = true; }
+        }
+        if(!adaChip){ return; }
+        java.awt.Component[] anak = box.getComponents();
+        box.removeAll();
+        box.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.anchor = java.awt.GridBagConstraints.WEST;
+        for(int i=0;i<anak.length;i++){
+            boolean chip = anak[i] instanceof javax.swing.JToggleButton;
+            c.gridx = i % kolom;
+            c.gridy = i / kolom;
+            c.insets = new java.awt.Insets(0, 0, vgap, c.gridx==kolom-1 ? 0 : hgap);
+            c.fill = chip ? java.awt.GridBagConstraints.NONE
+                          : java.awt.GridBagConstraints.HORIZONTAL;
+            c.weightx = chip ? 0.0 : 1.0;
+            box.add(anak[i], c);
+        }
+        // Kolom pengisi HANYA kalau tak ada anak lain yg menuntut sisa ruang -
+        // kalau ada kotak teks, dialah yg harus dapat sisanya, bukan glue.
+        if(!adaLain){
+            c.gridx = kolom; c.gridy = 0; c.weightx = 1.0;
+            c.fill = java.awt.GridBagConstraints.NONE;
+            c.insets = new java.awt.Insets(0,0,0,0);
+            box.add(javax.swing.Box.createHorizontalGlue(), c);
         }
     }
 
@@ -2634,6 +2774,143 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         l.setForeground(widget.ThemeConfig.TEXT_MUTED);
         strip.add(l, java.awt.BorderLayout.CENTER);
         return strip;
+    }
+
+    // -------------------------------------------------------------------
+    // [Bagian D] Pilihan radio/checkbox digayakan jadi CHIP (pil). Dipasang
+    // REKURSIF dari kartu kolom, bukan satu-satu per widget: form ini punya
+    // seratusan titik radio/checkbox, dan cara rekursif otomatis ikut benar
+    // kalau nanti ada pilihan ditambah/dipindah. Yg diubah HANYA
+    // opaque/warna/border/font - ButtonGroup, teks, isSelected, dan seluruh
+    // listener data TIDAK disentuh.
+    // -------------------------------------------------------------------
+
+    /** Latar chip terpilih: PRIMARY dilarutkan ~10% ke putih. */
+    private static final java.awt.Color CHIP_PILIH_BG_KEP = new java.awt.Color(0xE6,0xF2,0xF3);
+
+    /** Latar chip saat kursor di atasnya. */
+    private static final java.awt.Color CHIP_HOVER_BG_KEP = new java.awt.Color(0xEE,0xF1,0xEC);
+
+    /**
+     * Latar induk terdekat yg benar-benar opaque. Dipakai BorderChipKep utk
+     * menutup 4 sudut: kartu kolom (SURFACE) dan strip (SURFACE_ALT) berbeda
+     * warna, jadi warnanya tidak boleh dipatok satu nilai.
+     */
+    private static java.awt.Color latarEfektifKep(java.awt.Component c){
+        java.awt.Container p = c.getParent();
+        while(p!=null){
+            if(p.isOpaque() && p.getBackground()!=null){ return p.getBackground(); }
+            p = p.getParent();
+        }
+        return widget.ThemeConfig.SURFACE;
+    }
+
+    /**
+     * Border pil bersudut membulat utk JCheckBox/JRadioButton. Keduanya tidak
+     * punya properti arc (FlatLaf hanya menyediakannya utk button/textfield),
+     * dan setOpaque(true) melukis latar KOTAK penuh - jadi sudut yg menyembul
+     * di luar pil ditimpa balik pakai warna latar induk. Isi pil TIDAK boleh
+     * dilukis di sini: paintBorder() jalan SESUDAH paintComponent(), jadi
+     * fill apa pun akan menutupi teks dan tanda centangnya.
+     */
+    private static final class BorderChipKep implements javax.swing.border.Border {
+        private java.awt.Color garis = widget.ThemeConfig.BORDER_SOFT;
+        void setGaris(java.awt.Color c){ garis = c; }
+        @Override public java.awt.Insets getBorderInsets(java.awt.Component c){
+            return new java.awt.Insets(3,8,3,8);
+        }
+        @Override public boolean isBorderOpaque(){ return false; }
+        @Override public void paintBorder(java.awt.Component c, java.awt.Graphics g,
+                                          int x, int y, int w, int h){
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+            g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
+                    java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            java.awt.geom.RoundRectangle2D pil =
+                new java.awt.geom.RoundRectangle2D.Float(x, y, w-1f, h-1f, h, h);
+            java.awt.geom.Area sudut = new java.awt.geom.Area(new java.awt.Rectangle(x,y,w,h));
+            sudut.subtract(new java.awt.geom.Area(pil));
+            g2.setColor(latarEfektifKep(c));
+            g2.fill(sudut);
+            g2.setColor(garis);
+            g2.draw(pil);
+            g2.dispose();
+        }
+    }
+
+    /**
+     * Turun rekursif dan gayakan tiap JRadioButton/JCheckBox jadi chip.
+     * Hanya JPanel yg ditelusuri - sama seperti rapikanIsiKep(), supaya isi
+     * internal JComboBox/JScrollPane/JTable tidak ikut disentuh.
+     */
+    private void gayaChipKep(java.awt.Container wadah){
+        for(java.awt.Component k : wadah.getComponents()){
+            if(k instanceof javax.swing.JRadioButton || k instanceof javax.swing.JCheckBox){
+                pasangChipKep((javax.swing.JToggleButton) k);
+            } else if(k instanceof javax.swing.JPanel){
+                gayaChipKep((java.awt.Container) k);
+            }
+        }
+    }
+
+    /** Pasang gaya chip + pemantau status pada satu radio/checkbox. */
+    private void pasangChipKep(final javax.swing.JToggleButton t){
+        // Penanda supaya aman dipanggil dua kali (mis. kalau nanti section
+        // disusun ulang) - tanpa ini, tiap pemanggilan menambah 1 listener.
+        if(Boolean.TRUE.equals(t.getClientProperty("chipKep"))){ return; }
+        t.putClientProperty("chipKep", Boolean.TRUE);
+        t.setOpaque(true);
+        t.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        final BorderChipKep bd = new BorderChipKep();
+        t.setBorder(bd);
+        warnaiChipKep(t, bd, false);
+        // itemStateChanged, bukan actionPerformed: pilihan di ButtonGroup yg
+        // TER-DESELEKSI tidak pernah memancarkan action, jadi chip lamanya
+        // akan tertinggal menyala kalau dipantau lewat action.
+        t.addItemListener(new java.awt.event.ItemListener(){
+            @Override public void itemStateChanged(java.awt.event.ItemEvent e){
+                warnaiChipKep(t, bd, false);
+            }
+        });
+        t.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override public void mouseEntered(java.awt.event.MouseEvent e){ warnaiChipKep(t,bd,true); }
+            @Override public void mouseExited(java.awt.event.MouseEvent e){ warnaiChipKep(t,bd,false); }
+        });
+    }
+
+    /**
+     * Tiga status chip, semuanya pakai token palet yg sudah ada (tidak ada
+     * warna baru - lihat larangan "JANGAN bikin palet warna kedua").
+     *
+     * Garis diam memakai BORDER (#D9E1E7), BUKAN BORDER_SOFT (#E4E6E2):
+     * di atas latar chip SURFACE_ALT (#F7F8F5) BORDER_SOFT praktis lenyap
+     * (rasio ~1,1:1) sehingga pil-nya tak kelihatan sama sekali di render
+     * pertama - chip-nya terbaca seperti radio button biasa.
+     *
+     * Terpilih ditandai TIGA hal sekaligus supaya tidak bergantung pada satu
+     * kanal saja: latar bernada PRIMARY, garis PRIMARY, dan teks PRIMARY.
+     * Font DIBIARKAN PLAIN, tidak di-BOLD-kan: chip di sini tidak dipaksa
+     * selebar sel (lihat pelukChipGridKep), jadi mem-BOLD-kan akan mengubah
+     * lebarnya dan seluruh baris bergeser tiap kali diklik.
+     *
+     * Teks yg TIDAK terpilih tetap TEXT_NORMAL (11,99:1), tidak diredupkan ke
+     * TEXT_MUTED - ini nama pilihan klinis yg harus terbaca, bukan hiasan,
+     * dan TEXT_MUTED cuma 4,02:1 di atas putih.
+     */
+    private void warnaiChipKep(javax.swing.JToggleButton t, BorderChipKep bd, boolean hover){
+        if(t.isSelected()){
+            t.setForeground(widget.ThemeConfig.PRIMARY);
+            t.setBackground(CHIP_PILIH_BG_KEP);
+            bd.setGaris(widget.ThemeConfig.PRIMARY);
+        } else if(hover){
+            t.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+            t.setBackground(CHIP_HOVER_BG_KEP);
+            bd.setGaris(widget.ThemeConfig.PRIMARY);
+        } else {
+            t.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+            t.setBackground(widget.ThemeConfig.SURFACE_ALT);
+            bd.setGaris(widget.ThemeConfig.BORDER);
+        }
+        t.repaint();
     }
 
     /** Kartu kolom putih (SURFACE) + divider kanan opsional + strut lebar min. */
@@ -3065,8 +3342,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // Judul dibungkus <div width> supaya MEMBUNGKUS, bukan terpotong -
         // judul terpanjang di sini 49 karakter ("SKRINING RESIKO PASIEN JATUH
         // (GET UP AND GO TEST)") dan di mockup judul semacam itu kepotong.
-        lbl.setText("<html><div style='width:"+LEBAR_TEKS_RAIL_KEP+"px'>"
-                + (idx+1) + ". " + escHtmlKep(judulRingkasKep(s.judul)) + "</div></html>");
+        lbl.setText(htmlLebarKep(LEBAR_TEKS_RAIL_KEP, (idx+1) + ". " + judulRingkasKep(s.judul)));
 
         baris.add(aksen, java.awt.BorderLayout.WEST);
         baris.add(lbl, java.awt.BorderLayout.CENTER);
@@ -3087,8 +3363,24 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         return baris;
     }
 
-    /** Lebar teks judul di rail (300px rail - aksen - padding - scrollbar). */
-    private static final int LEBAR_TEKS_RAIL_KEP = 255;
+    /**
+     * Lebar teks judul di rail, dalam piksel perangkat (lihat htmlLebarKep).
+     *
+     * Anggarannya dihitung dari yg PALING SEMPIT antara baris & kartu progres,
+     * supaya satu konstanta aman dipakai keduanya:
+     *
+     *   zona scrollRailKep .............................. 300
+     *   - matte border kanan 1px ........................  -1
+     *   - scrollbar vertikal (pasti muncul, 26 baris) ...  -17
+     *   = lebar viewport railKep ........................ 282
+     *
+     *   kartu progres: -24 (insets 12+12) -2 (line border) -24 (padding 12+12) = 232
+     *   baris bagian : -16 (insets 8+8)   -3 (batang aksen) -18 (padding 9+9)  = 245
+     *
+     * Diambil 228, empat piksel di bawah angka kartu, sebagai jaga-jaga kalau
+     * scrollbar LAF ternyata lebih lebar dari 17px. railKep jadi 254+24=278px.
+     */
+    private static final int LEBAR_TEKS_RAIL_KEP = 228;
 
     /**
      * Buang penomoran romawi di depan judul section ("I. DIAGNOSIS
@@ -3116,8 +3408,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         }
         if(lblProgresJudulKep!=null){
             SeksiKep s = seksiKep.get(idx);
-            lblProgresJudulKep.setText("<html><div style='width:"+LEBAR_TEKS_RAIL_KEP+"px'>"
-                    + escHtmlKep(judulRingkasKep(s.judul)) + "</div></html>");
+            lblProgresJudulKep.setText(htmlLebarKep(LEBAR_TEKS_RAIL_KEP, judulRingkasKep(s.judul)));
             lblProgresHitungKep.setText("Bagian " + (idx+1) + " dari " + seksiKep.size());
         }
         railKep.revalidate();
@@ -3259,6 +3550,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         r3 = tambahIsiKolomKep(kol3, r3, panelKepObat);
         r3 = tambahIsiKolomKep(kol3, r3, panelKepEmpat);
         tutupKolomKep(kol3, r3);
+
+        // [Bagian D] Chip dipasang SEBELUM rapikanIsiKep(): tiap chip tumbuh
+        // ~16px karena padding pil, jadi kalau penyempitan jalan lebih dulu
+        // lebarnya dihitung dari ukuran pra-chip dan kartu kolom jebol.
+        gayaChipKep(kol1);
+        gayaChipKep(kol2);
+        gayaChipKep(kol3);
 
         // Pass finishing: sempitkan semua isi kartu ke <= LEBAR_ISI_KEP supaya
         // 3 kolom muat tanpa scroll horizontal (lihat rapikanIsiKep()).

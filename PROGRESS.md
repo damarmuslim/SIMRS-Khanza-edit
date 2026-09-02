@@ -3009,3 +3009,175 @@ DAN BUDAYA`), dan apakah `scrollRectToVisible` benar-benar mendarat di tempat
 yang dimaksud. `FormInput` bersarang di `scrollSeksiKep`, dan target gulungnya
 dihitung lewat `SwingUtilities.convertRectangle` dari induk strip — dua lapis
 konversi koordinat yang tidak bisa dibuktikan dari teks sumber.
+
+
+---
+
+# Progress: pilihan jadi chip, dan satuan CSS 'px' yang membocorkan lebar 30% (Sesi 3a dari 6)
+
+Tanggal: 2026-09-02. Berkas: `src/rekammedis/RMPenilaianAwalKeperawatanIGD.java`
+(306 baris masuk, 8 keluar).
+
+Sebagian Bagian D dari prompt restrukturisasi: **semua 146 radio/checkbox di
+tab Input Pengkajian sekarang bergaya chip pil**. Sisa Bagian D (helper
+`barisPengkajian()`, kolom label 232px, grid 4-kolom tanda vital/GCS, satu
+bagian per layar) masih tertahan menunggu keputusan pengelompokan 11 bagian —
+lihat bagian terakhir catatan ini.
+
+Sesi ini juga menutup **dua cacat yang lolos dari Sesi 1 dan 2**, dan keduanya
+tidak ketahuan dari cek angka biasa.
+
+## Cacat 1: 1px CSS bukan 1 piksel, tapi 1,3 piksel
+
+Baris rail hasil Sesi 2 diukur **352px** dan kartu progres **357px**, di zona
+rail yang lebarnya cuma 300px dengan `HORIZONTAL_SCROLLBAR_NEVER`. Artinya
+judul bagian terpotong di kanan tanpa cara menggulung ke sana. Padahal
+`LEBAR_TEKS_RAIL_KEP` sudah disetel 255.
+
+Sebabnya bukan salah hitung anggaran, tapi satuan: mesin HTML Swing memetakan
+**1px = 1,3pt** (konstanta `lengthMapping` di
+`javax.swing.text.html.CSS.LengthUnit`), sementara **1pt = 1 piksel**. Jadi
+`<div style='width:255px'>` melahirkan label 331px. Terukur linier sempurna di
+tiap sampel:
+
+```
+180px -> 233    180pt -> 180
+200px -> 260    200pt -> 200
+255px -> 331    255pt -> 255
+330px -> 429    330pt -> 330
+```
+
+Tiga tempat kena. Yang paling merusak justru bukan di rail, melainkan di
+`tambahBarisKepField():2509`: kodenya berbunyi "kalau label lebih lebar dari
+`LEBAR_ISI_KEP` (330), bungkus HTML supaya turun baris" — dan pembungkusnya
+menulis `330px`, yaitu **429 piksel**. Jadi label yang melewati 330px justru
+**DILEBARKAN**, persis kebalikan dari maksud kodenya.
+
+Perbaikannya satu helper `htmlLebarKep(int, String)` yang selalu memakai `pt`,
+dengan alasannya ditulis panjang di javadoc-nya supaya `px` tidak kembali
+diam-diam. `LEBAR_TEKS_RAIL_KEP` diturunkan 255 → 228, kali ini dari anggaran
+yang dihitung eksplisit dan ditulis di komentar: 300 − 1 (matte border) − 17
+(scrollbar vertikal, pasti muncul untuk 26 baris) = 282 lebar viewport; kartu
+progres menyisakan 232 setelah insets+border+padding, baris bagian menyisakan
+245. Diambil 228 supaya satu konstanta aman untuk keduanya.
+
+Hasil: baris rail terlebar **254px**, tidak ada satu pun yang melewati 300.
+
+## Cacat 2: chip melar selebar sel — hanya ketahuan dari MELIHAT
+
+Chip dipasang di 146 toggle: `setOpaque(true)` + `BorderChipKep` yang melukis
+garis pil dan menutup sudut kotak sisa `setOpaque` dengan warna latar induk
+efektif. Statusnya dipantau lewat `itemStateChanged`, bukan `actionPerformed`,
+karena pilihan yang **ter-deseleksi** di sebuah `ButtonGroup` tidak pernah
+memancarkan action — kalau dipantau lewat action, chip lama tertinggal menyala.
+
+Cek refleksi melaporkan 146/146 terpasang, 0 terlewat. Angkanya bersih. Tapi
+render PNG-nya salah: `GridLayout` memberi semua sel ukuran yang **sama** dan
+mengisinya penuh, jadi tiap pil jadi persegi panjang selebar kolom — checklist
+"Manajemen Jalan Nafas" dan kawan-kawan tergambar sebagai kotak sepanjang
+~570px, dan pasangan "Ya"/"Tidak" jadi sama lebar walau teksnya beda panjang.
+Sebagai radio button biasa itu tak pernah terlihat, karena latarnya transparan.
+Begitu diberi latar dan garis, melarnya langsung terbaca salah.
+
+Ini persis pola yang sudah tercatat di CLAUDE.md: "Render lalu LIHAT hasilnya".
+Cek numerik yang ada sama sekali tidak bisa menangkapnya — pertanyaannya
+"apakah chip terpasang", bukan "apakah chip seukuran teksnya".
+
+Dua penyempit ditambahkan, keduanya murni layout:
+
+- `pelukChipGridKep()` — `GridLayout` ditukar `GridBagLayout` dengan kolom
+  sama banyak, tiap chip `anchor=WEST fill=NONE`, plus satu kolom pengisi
+  berbobot di kanan supaya sisa ruang dibuang ke sana. Panel **campuran**
+  (chip + kotak teks "Sebutkan") ikut dikonversi, tapi yang bukan chip tetap
+  `fill=HORIZONTAL weightx=1` supaya kotak teksnya masih melar. Versi pertama
+  method ini menolak panel campuran, dan render berikutnya membuktikan itu
+  salah: 28 chip di 12 panel campuran masih melar sementara tetangganya sudah
+  memeluk teks.
+- `pelukChipGbcKep()` — untuk grup yang tidak lahir dari `panelChecklistKep()`
+  melainkan ditempel langsung ke panel `GridBag` lewat `kepConstraint()`, yang
+  `fill`-nya HORIZONTAL. `getConstraints()` memulangkan klona, jadi wajib
+  `setConstraints()` lagi. Hanya `fill` dan `anchor` yang diubah; gridx/gridy/
+  insets/weight dibiarkan supaya tidak ada baris yang bergeser.
+
+Rantai `else if` di `rapikanIsiKep()` juga dibetulkan jadi dua `if` terpisah:
+`sempitkanAlirKep()` **mengganti** FlowLayout jadi GridLayout, jadi panel yang
+baru diubahnya harus diperiksa lagi di cabang GridLayout — kalau tidak,
+checklist yang asalnya FlowLayout tak pernah kena peluk.
+
+Hasil terukur: **0 dari 146 chip melar** (lebar nyata > preferred + 2px).
+
+Warna garis diam juga diganti `BORDER_SOFT` → `BORDER`. `BORDER_SOFT`
+(`#E4E6E2`) di atas latar chip `SURFACE_ALT` (`#F7F8F5`) rasionya ~1,1:1 —
+praktis lenyap, chip-nya terbaca seperti radio button biasa. Terpilih ditandai
+tiga kanal sekaligus (latar bernada PRIMARY, garis PRIMARY, teks PRIMARY);
+font dibiarkan PLAIN, tidak di-BOLD-kan, karena chip sekarang memeluk teksnya
+sehingga mem-BOLD-kan akan mengubah lebarnya dan menggeser seluruh baris tiap
+kali diklik. Tidak ada warna baru — semua dari token `ThemeConfig` yang ada.
+
+## Alat: dialog dirender ke PNG tanpa pernah ditampilkan
+
+`pack()` membuat peer dan menata isi tanpa `setVisible(true)`, lalu
+`contentPane.printAll(Graphics2D)` menggambarnya ke `BufferedImage`. Itu yang
+menemukan Cacat 2. Harness refleksinya sendiri berjalan lewat
+`java -cp "tmp-cek;build/classes;dist/SIMRS_Khanza_Edit.jar"` — jar `dist`
+dipakai karena MANIFEST `Class-Path`-nya menyusun 282 jar `dist/lib/` dalam
+urutan yang dideklarasikan proyek. Classpath wildcard `Lib/*` gagal: ada empat
+`commons-codec` yang bentrok (`NoSuchMethodError` di `EnkripsiAES.decrypt`) dan
+Jackson yang bentrok (`NoSuchFieldError: USE_DEFAULTS` di `new ObjectMapper()`).
+
+## Koreksi catatan Sesi 2
+
+Entri Sesi 2 dan pesan commit `b45344b` menyebut alasan `urutkanSeksiKep()`
+sebagai: "`panelKepObat` dibangun paling akhir tapi tampil di tengah Kolom 3".
+**Itu salah.** `initObatInfusTambahan()` di `:89` berjalan **sebelum**
+`initKepTambahanHal4()` di `:90`, jadi obat terdaftar di `bangun#22` dan dua
+bagian hal4 di `#23`/`#24`. Harness menunjukkan `bangun#` naik monoton
+−1,0,1,…,24, artinya **pengurutannya no-op hari ini**. Mesinnya tetap benar dan
+tetap berguna sebagai jaring (ia memang menaruh entri manual `kol1` di depan,
+dan akan menyelamatkan urutan kalau nanti ada panel yang dibangun di luar
+urutan visualnya), tapi ia tidak sedang memperbaiki bug urutan yang nyata.
+
+## Yang sengaja TIDAK dikerjakan
+
+**Kolom 3 masih 606px** sehingga `FormInput` minta 1316px; ditambah rail 300px
+jadi ~1616px, dan scrollbar horizontal memang terlihat di render pada dialog
+1600px. Biangnya sudah dilacak sampai ke panel: `panelKepEmpat` 604px, isinya
+"Diet | Lain-lain" 602px, "Masuk Rumah Sakit, di Ruang | Petugas yang
+Menerima" 469px, "Dipulangkan/Meninggal/Death On Arrival" 406px, "Dirujuk ke
+RS | Alasan Dirujuk" 403px — semuanya baris `GridBag` yang menaruh label dan
+field berdampingan.
+
+Tidak diperbaiki sekarang **karena Bagian D membuang tata letak 3 kolomnya**:
+begitu satu bagian mengisi satu layar penuh (~1300px), 604px tidak lagi
+masalah. Menyempitkannya ke 330px sekarang berarti mengerjakan sesuatu yang
+akan dihapus di sesi berikutnya.
+
+`TitledBorder bersarang` yang diminta dihapus prompt: **sudah tidak ada**.
+Seluruh berkas hanya punya dua `createTitledBorder`, keduanya di dalam blok
+GEN — `internalFrame1:579` yang justru border **terluar** pembawa judul form
+`"::[ Pengkajian Awal Keperawatan IGD ]::"` (jadi bukan "bersarang"), dan
+`scrollPane6:2407` di `FormMasalahRencana`, panel yang memang tidak pernah
+diisi data dan disembunyikan. Refactor 3 kolom sebelumnya sudah menggantikan
+semua TitledBorder bersarang dengan strip header.
+
+## Masih menunggu keputusan
+
+Bagian D tidak bisa lanjut tanpa satu jawaban: **pengelompokan 11 bagian**.
+Prompt meminta rail berisi 11 baris; bagian nyata di form ada **25** (26 baris
+rail termasuk satu yang didaftarkan manual). Kolom label 232px dan grid
+4-kolom tanda vital hanya masuk kalau satu bagian mengisi satu layar penuh,
+dan itu satu perubahan yang sama dengan pengelompokannya.
+
+Usulan pengelompokan 11 (bisa ditolak, tinggal pakai 26 kartu apa adanya):
+
+1. Riwayat Kesehatan Pasien
+2. Riwayat Alergi
+3. Keadaan Umum + Antropometri + Tanda Vital
+4. Status Kehamilan
+5. Asesmen Psikologis + Status Sosial dan Ekonomis
+6. Skrining Geriatri + Skrining Resiko Jatuh
+7. Pengkajian Spiritual, Kepercayaan, Fungsional dan Budaya
+8. Skrining Gizi (MST dewasa + anak)
+9. Asesmen Nyeri (+ FLACC + PQRST)
+10. Diagnosis & Tindakan Keperawatan (I–IX)
+11. Kondisi Pindah/Pulang + Pendidikan Kesehatan + Pemberian Obat/Infus

@@ -23,6 +23,16 @@ graphify-out/
 # ikut riwayat.
 tmp_*.ps1
 
+# Harness refleksi + render offscreen untuk memeriksa layout form (CekMelar,
+# CekKolom3, FotoKep, dan PNG hasilnya). Dijalankan lewat
+# `java -cp "tmp-cek;build/classes;dist/SIMRS_Khanza_Edit.jar" <Kelas>` -
+# jar dist dipakai karena MANIFEST Class-Path-nya menyusun 282 jar dist/lib/
+# dalam urutan yang dideklarasikan proyek. Tidak ikut riwayat (bukan kode
+# produk, dan PNG-nya bisa memuat data pasien), tapi TIDAK dihapus: alat
+# "render lalu LIHAT hasilnya" ini dipakai ulang di setiap sesi layout.
+# Letaknya di akar, bukan di src/, supaya ant tidak ikut mengkompilasinya.
+tmp-cek/
+
 # Keluaran cetak PDF (Valid.MyReportPDF menulis ./report/<nama laporan>.pdf).
 # Berisi DATA PASIEN dan ditimpa setiap kali tombol Cetak > PDF ditekan, jadi
 # tidak boleh ikut ter-commit. Ditambahkan saat RM 02-2 diberi pilihan keluaran
