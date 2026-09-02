@@ -2763,11 +2763,27 @@ dideklarasikan tapi **nol pemakaian**. Ini sekaligus menutup sisa null-safety
 dari entri sebelumnya — tapi dengan cara yang perlu dikonfirmasi, bukan cara
 yang direncanakan.
 
-**Empat isian kehamilan hilang dari layar.** `Gravida`, `Para`, `Abortus`,
-`HPHT` hanya di-`add` ke `FormInput` di dalam GEN, jadi ikut terbuang oleh
-`FormInput.removeAll()` di `susunTigaKolomKep()`. Tidak ada data yang hilang —
-keempatnya memang **tidak pernah** masuk INSERT — dan `getText()` tetap
-mengembalikan string kosong, jadi tidak ada NPE.
+**~~Empat isian kehamilan hilang dari layar.~~ TEMUAN INI SALAH — dicabut
+2026-09-02.** Klaim sebelumnya: `Gravida`/`Para`/`Abortus`/`HPHT` ikut terbuang
+oleh `FormInput.removeAll()` dan "tidak pernah masuk INSERT". Keduanya tidak
+benar. Yang sebenarnya:
+
+- Keempatnya **direparent** ke `panelKehamilan` di `initKepTambahan()`
+  (`:3246`–`:3255`) → `panelKepAtas` → kartu Kolom 1. Ada di layar.
+- `initKepTambahan()` berjalan **sebelum** `susunTigaKolomKep()`, jadi
+  `removeAll()` justru sudah tidak memegang keempatnya lagi.
+- Keempatnya **tersimpan**: `:7726` mengirim
+  `Gravida.getText(),Para.getText(),Abortus.getText(),HPHT.getText()` ke
+  `menyimpantf`, dibaca ulang di `:6776`–`:6779` dari kolom `gravida`/`para`/
+  `abortus`/`hpht`, dan ikut ringkasan HTML `:7183`.
+- Baris kondisional "cuma tampil kalau Status Kehamilan = Hamil" **sudah ada**
+  (`:3274`), sudah dicatat sendiri sebagai poin 25 di entri RM 03-4 (baris 417
+  berkas ini). Pemeriksaan sebelumnya hanya melihat `FormInput.add(Gravida)` di
+  blok GEN dan berhenti di situ.
+
+Akibat untuk rencana: butir prompt "kalau kolom DB 4 field ini belum ada,
+laporkan saja" **tidak berlaku** — kolomnya ada dan jalurnya lengkap. Baris
+kehamilan bersyarat di Bagian E juga **sudah selesai**, tinggal digayakan.
 
 ## Sisa
 
@@ -2785,3 +2801,97 @@ mengembalikan string kosong, jadi tidak ada NPE.
   supaya tidak bercampur pekerjaan layout.
 - ⏳ Tampilan sub-tab PACS dan form Pengkajian **belum dilihat dengan mata**.
   Baru terbukti `ant compile` lolos.
+
+
+---
+
+# Progress: bar pasien dipatok di atas, rangka 4 zona dipasang (Sesi 1 dari 6)
+
+Tanggal: 2026-09-02 · `src/rekammedis/RMPenilaianAwalKeperawatanIGD.java`
+
+Sesi 1 dari rencana enam sesi perombakan UI tab **Input Pengkajian** (Bagian A
+rangka layar + Bagian B bar pasien). Layout saja — skema DB, query,
+`simpan()`/`tampil()`/`getData()`, dan template Jasper tidak disentuh satu baris
+pun. Tidak ada field ditambah atau dihapus, tidak ada nama variabel komponen
+yang berubah.
+
+## Yang berubah
+
+**Rangka 4 zona (`susunRangkaKep()`, baru).** `internalFrame2` jadi
+`BorderLayout`: bar pasien di `NORTH`, rail navigasi di `WEST`, panel seksi di
+`CENTER`; action bar (`panelGlass8`) sudah lebih dulu menempati `PAGE_END`
+`internalFrame1`. Sebelumnya bar pasien berada **di dalam** `FormInput`,
+sehingga identitas pasien ikut hilang ke atas begitu form digulung — persis
+saat pengisian, momen identitas paling perlu terlihat. Sekarang hanya panel
+seksi yang menggulung.
+
+`scrollInput` bawaan GEN ditinggalkan sebagai field tak terpakai, **bukan
+dihapus** — ia hanya dirujuk di dalam blok GEN, dan blok GEN tidak boleh
+disunting tangan.
+
+**Rail dibuat tapi disembunyikan.** `railKep` + `scrollRailKep` sudah lengkap
+(lebar 300, `HORIZONTAL_SCROLLBAR_NEVER`, garis pemisah kanan) tapi
+`setVisible(false)`. Isinya baru dibangun Sesi 2; kalau ditampilkan sekarang,
+strip 300px kosong itu hanya menyempitkan tiga kolom yang sudah ada tanpa
+memberi apa pun. Rangka empat zonanya sendiri sudah terpasang dan teruji
+compile.
+
+**Bar pasien (Bagian B).** Kartu identitas 240 → 300px; nama pasien BOLD 13 →
+15; tinggi seragam field & tombol lookup 30 → 32px lewat konstanta
+`TINGGI_FIELD_KEP`; `Jk`/`NmPetugas`/`NmDokterKp` diberi latar `SURFACE_ALT`
+karena ketiganya `setEditable(false)` — supaya tidak terbaca sebagai isian yang
+lupa diisi.
+
+**Baris turunan "Laki-laki · 36 Th".** Bukan field baru: dihitung dari `Jk` dan
+`TglLahir` yang memang sudah diisi `tampil()`. `jkPanjangKep()` menerima **baik**
+bentuk mentah `'L'`/`'P'` **maupun** `"Laki-Laki"`/`"Perempuan"` — bentuk yang
+sama pernah membuat seluruh pasien tercetak "P" di laporan Jasper.
+`DocumentListener` sinkron kartu diperluas ke `Jk` dan `TglLahir`, kalau tidak
+baris ini tetap kosong sampai form dibuka ulang.
+
+## Penyimpangan yang disengaja dari mockup
+
+Screenshot acuan meredupkan **seluruh** baris "No. RM" dan "No. Rawat". Di sini
+hanya **keterangannya** yang `TEXT_MUTED`; **nomornya** tetap `TEXT` (11,99:1)
+dan monospace `Consolas`. Alasannya: `TEXT_FAINT` cuma 2,64:1 di atas putih dan
+2,41:1 di atas `SURFACE_ALT`, di bawah ambang WCAG AA — dan justru dua nomor
+inilah yang paling tidak boleh salah dibaca. Hirarki visual tetap terbaca dari
+perbedaan warna keterangan vs nomor.
+
+## "Fixed 1600×900" tidak diterapkan
+
+Prompt meminta kanvas tetap 1600×900. Form ini `setResizable(false)` (`:568`)
+dan ukurannya **ditentukan pemanggil**, bukan dirinya sendiri — kelima
+pemanggil memakai pola `form.setSize(internalFrame1.getWidth()-20,
+internalFrame1.getHeight()-20)`: `DlgIGD:9345`, `DlgKasirRalan:11982`,
+`DlgRawatJalan:8045`, `DlgReg:12741`, `frmUtama:18888`. Memaksa 1600×900 berarti
+menyunting lima berkas pemanggil, sementara prompt sendiri membatasi
+"ubah HANYA file form itu". Jadi rangkanya dibuat **luwes** — `BorderLayout` +
+scroll di zona tengah — supaya benar di ukuran apa pun yang diberikan induknya,
+termasuk di layar 1366×768 yang lebih kecil dari 1600. **Menunggu keputusan
+user** kalau memang ingin dipaksa.
+
+## Verifikasi
+
+`ant compile` → **BUILD SUCCESSFUL**. Belum dilihat dengan mata — form ini
+butuh koneksi DB dan induk `internalFrame1` untuk tampil.
+
+Satu hal yang khusus perlu dilihat: latar `SURFACE_ALT` pada `Jk`/`NmPetugas`/
+`NmDokterKp`. `widget.TextBox` mewarisi `usu.widget.glass.TextBoxGlass` dari
+pustaka luar, dan belum ada preseden `setBackground()` pada `widget.TextBox` di
+seluruh proyek ini — semua pemakaian `SURFACE_ALT` yang ada menempel di panel
+atau label. Kalau kelas glass itu melukis latarnya sendiri, tint-nya akan
+diabaikan diam-diam.
+
+## Temuan: satu catatan sesi lalu ternyata salah
+
+Entri sebelumnya menulis "empat isian kehamilan hilang dari layar" dan
+"tidak pernah masuk INSERT". **Dua-duanya salah** dan sudah dicabut di entri
+itu. `Gravida`/`Para`/`Abortus`/`HPHT` direparent ke `panelKehamilan` (`:3246`),
+tersimpan lewat `:7726`, dibaca ulang di `:6776`, dan baris kondisionalnya
+sudah jalan sejak RM 03-4. Pemeriksaan sebelumnya berhenti di
+`FormInput.add(Gravida)` di blok GEN tanpa mengikuti reparent-nya.
+
+Konsekuensinya untuk rencana: kontingensi prompt soal kolom DB yang belum ada
+**tidak berlaku**, dan baris kehamilan bersyarat di Bagian E **sudah selesai** —
+tinggal digayakan, bukan dibangun.

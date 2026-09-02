@@ -89,12 +89,16 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         initObatInfusTambahan();
         initKepTambahanHal4();
         // [Layout 3-kolom gaya Triase] Restyle action bar + susun ulang
-        // FormInput jadi banner + 3 kartu kolom. WAJIB dipanggil PALING
-        // akhir (butuh field Dokter dari initKepTambahan & panelKepTigaDiag
-        // dari initKepTambahanHal3). Hanya menata ulang layout - komponen &
-        // logika data (tampil/getData/simpan/dst) tidak diubah.
+        // FormInput jadi 3 kartu kolom, lalu rakit rangka 4 zona (bar pasien
+        // atas / rail kiri / panel seksi tengah / action bar bawah). WAJIB
+        // dipanggil PALING akhir (butuh field Dokter dari initKepTambahan &
+        // panelKepTigaDiag dari initKepTambahanHal3), dan susunRangkaKep()
+        // sesudah susunTigaKolomKep() karena memakai FormInput yg sudah
+        // tersusun. Hanya menata ulang layout - komponen & logika data
+        // (tampil/getData/simpan/dst) tidak diubah.
         initActionBarKep();
         susunTigaKolomKep();
+        susunRangkaKep();
 
         // Header + width setup di bawah dulunya dideklarasikan 81 kolom
         // (sisa desain lama sebelum tampil() di-refactor jadi SELECT
@@ -2678,7 +2682,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         return p;
     }
 
-    /** Satu sel banner: label kecil di atas field (field dipaksa tinggi 30). */
+    /** Satu sel banner: label kecil di atas field (field dipaksa tinggi 32). */
     private widget.PanelBiasa hdrCellKep(String label, java.awt.Component field, boolean wajib){
         widget.PanelBiasa sel = new widget.PanelBiasa();
         sel.setOpaque(false);
@@ -2689,9 +2693,23 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
         l.setForeground(widget.ThemeConfig.TEXT_MUTED);
         sel.add(l, java.awt.BorderLayout.NORTH);
-        field.setPreferredSize(new java.awt.Dimension(0,30));
+        field.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_KEP));
         sel.add(field, java.awt.BorderLayout.CENTER);
         return sel;
+    }
+
+    /** Tinggi seragam field & tombol di bar pasien (Bagian B). */
+    private static final int TINGGI_FIELD_KEP = 32;
+
+    /**
+     * Tandai field yg memang read-only supaya tidak terlihat seperti isian yg
+     * lupa diisi. Hanya menyentuh warna latar - `setEditable` tetap seperti
+     * aslinya, tidak diubah di sini.
+     */
+    private void tandaiReadOnlyKep(javax.swing.JComponent c){
+        if(c==null){ return; }
+        c.setOpaque(true);
+        c.setBackground(widget.ThemeConfig.SURFACE_ALT);
     }
 
     /** Pasangan [field ⌕] utk lookup Petugas/Dokter. */
@@ -2709,8 +2727,68 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         if(lblKartuNama==null){ return; }
         String nama = TPasien.getText()==null ? "" : TPasien.getText().trim();
         lblKartuNama.setText(nama.isEmpty() ? "—" : nama);
-        lblKartuRM.setText("No. RM  " + (TNoRM.getText()==null ? "" : TNoRM.getText().trim()));
-        lblKartuRawat.setText("No. Rawat  " + (TNoRw.getText()==null ? "" : TNoRw.getText().trim()));
+        lblKartuRM.setText(barisNomorKep("No. RM", TNoRM.getText()));
+        lblKartuRawat.setText(barisNomorKep("No. Rawat", TNoRw.getText()));
+        if(lblKartuInfo!=null){
+            String jk = jkPanjangKep(Jk.getText());
+            String umur = umurDariTglLahirKep(TglLahir.getText());
+            String isi = jk;
+            if(!umur.isEmpty()){ isi = isi.isEmpty() ? umur : isi+" · "+umur; }
+            lblKartuInfo.setText(isi.isEmpty() ? " " : isi);
+        }
+    }
+
+    /**
+     * Satu baris "keterangan + nomor" di kartu identitas.
+     *
+     * Keteranganlah yg diredupkan (TEXT_MUTED), NOMORnya tetap TEXT dan
+     * monospace. Screenshot acuan meredupkan seluruh baris, tapi TEXT_FAINT
+     * hanya 2,64:1 di atas putih / 2,41:1 di atas SURFACE_ALT - di bawah
+     * ambang WCAG AA, dan justru dua nomor inilah yg paling tidak boleh
+     * salah dibaca. Hirarki visual tetap dapat lewat perbedaan warna
+     * keterangan vs nomor.
+     */
+    private String barisNomorKep(String keterangan, String nomor){
+        String n = nomor==null ? "" : nomor.trim();
+        return "<html><font color='"+hexKep(widget.ThemeConfig.TEXT_MUTED)+"'>"+escHtmlKep(keterangan)
+                +"</font>&nbsp;&nbsp;<font face='Consolas' color='"+hexKep(widget.ThemeConfig.TEXT)+"'>"
+                +(n.isEmpty() ? "&mdash;" : escHtmlKep(n))+"</font></html>";
+    }
+
+    /** Color -> "#RRGGBB" utk dipakai di dalam teks HTML label. */
+    private String hexKep(java.awt.Color c){
+        return String.format("#%02X%02X%02X", c.getRed(), c.getGreen(), c.getBlue());
+    }
+
+    /**
+     * Terima BAIK bentuk mentah 'L'/'P' MAUPUN "Laki-Laki"/"Perempuan".
+     * Kolom `pasien.jk` memang enum 'L','P', tapi beberapa jalur di proyek ini
+     * sudah memanjangkannya lebih dulu - pernah membuat seluruh pasien
+     * tercetak "P" pada laporan Jasper.
+     */
+    private String jkPanjangKep(String jk){
+        String s = jk==null ? "" : jk.trim();
+        if(s.isEmpty()){ return ""; }
+        char awal = Character.toUpperCase(s.charAt(0));
+        if(awal=='L'){ return "Laki-laki"; }
+        if(awal=='P'){ return "Perempuan"; }
+        return s;
+    }
+
+    /** Umur dari "yyyy-MM-dd" (isi TglLahir). String kosong kalau tak terbaca. */
+    private String umurDariTglLahirKep(String tgl){
+        String s = tgl==null ? "" : tgl.trim();
+        if(s.length()<10 || s.startsWith("0000")){ return ""; }
+        try{
+            java.util.Calendar lahir = java.util.Calendar.getInstance();
+            lahir.setTime(new java.text.SimpleDateFormat("yyyy-MM-dd").parse(s.substring(0,10)));
+            java.util.Calendar kini = java.util.Calendar.getInstance();
+            int th = kini.get(java.util.Calendar.YEAR) - lahir.get(java.util.Calendar.YEAR);
+            if(kini.get(java.util.Calendar.DAY_OF_YEAR) < lahir.get(java.util.Calendar.DAY_OF_YEAR)){ th--; }
+            return th<0 ? "" : th+" Th";
+        }catch(java.text.ParseException e){
+            return "";
+        }
     }
 
     /** Banner pasien: kartu identitas (kiri) + grid field header (kanan). */
@@ -2737,8 +2815,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         judulKartu.setForeground(widget.ThemeConfig.TEXT_MUTED);
         lblKartuNama = new widget.Label();
         lblKartuNama.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lblKartuNama.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        lblKartuNama.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 15));
         lblKartuNama.setForeground(widget.ThemeConfig.TEXT);
+        lblKartuInfo = new widget.Label();
+        lblKartuInfo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuInfo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+        lblKartuInfo.setForeground(widget.ThemeConfig.TEXT_MUTED);
         lblKartuRM = new widget.Label();
         lblKartuRM.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblKartuRM.setForeground(widget.ThemeConfig.TEXT_MUTED);
@@ -2750,9 +2832,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         k.fill=java.awt.GridBagConstraints.HORIZONTAL; k.weightx=1.0;
         kartu.add(judulKartu,k);
         k.gridy=1; k.insets=new java.awt.Insets(8,0,0,0); kartu.add(lblKartuNama,k);
-        k.gridy=2; k.insets=new java.awt.Insets(6,0,0,0); kartu.add(lblKartuRM,k);
-        k.gridy=3; k.insets=new java.awt.Insets(2,0,0,0); kartu.add(lblKartuRawat,k);
-        k.gridy=4; k.weighty=1.0; k.fill=java.awt.GridBagConstraints.BOTH; k.insets=new java.awt.Insets(0,0,0,0);
+        k.gridy=2; k.insets=new java.awt.Insets(1,0,0,0); kartu.add(lblKartuInfo,k);
+        k.gridy=3; k.insets=new java.awt.Insets(8,0,0,0); kartu.add(lblKartuRM,k);
+        k.gridy=4; k.insets=new java.awt.Insets(2,0,0,0); kartu.add(lblKartuRawat,k);
+        k.gridy=5; k.weighty=1.0; k.fill=java.awt.GridBagConstraints.BOTH; k.insets=new java.awt.Insets(0,0,0,0);
         kartu.add(javax.swing.Box.createGlue(),k);
 
         javax.swing.event.DocumentListener sinkron = new javax.swing.event.DocumentListener(){
@@ -2763,6 +2846,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         TNoRw.getDocument().addDocumentListener(sinkron);
         TNoRM.getDocument().addDocumentListener(sinkron);
         TPasien.getDocument().addDocumentListener(sinkron);
+        // Jk & TglLahir ikut memicu sinkron krn baris "Laki-laki - 36 Th"
+        // diturunkan dari keduanya; tanpa ini baris itu tetap kosong sampai
+        // form dibuka ulang.
+        Jk.getDocument().addDocumentListener(sinkron);
+        TglLahir.getDocument().addDocumentListener(sinkron);
         sinkronKartuKep();
 
         // ---- grid field header (kanan) ----
@@ -2770,10 +2858,16 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         grid.setOpaque(false);
         grid.setLayout(new java.awt.GridBagLayout());
         BtnPetugas.setText("⌕"); BtnPetugas.setIcon(null);
-        BtnPetugas.setPreferredSize(new java.awt.Dimension(30,30));
+        BtnPetugas.setPreferredSize(new java.awt.Dimension(TINGGI_FIELD_KEP,TINGGI_FIELD_KEP));
         BtnDokterKp.setText("⌕"); BtnDokterKp.setIcon(null);
-        BtnDokterKp.setPreferredSize(new java.awt.Dimension(30,30));
+        BtnDokterKp.setPreferredSize(new java.awt.Dimension(TINGGI_FIELD_KEP,TINGGI_FIELD_KEP));
         KdPetugas.setVisible(false); KdDokterKp.setVisible(false);
+        // Field yg memang tak bisa diketik diberi latar SURFACE_ALT. NmPetugas
+        // & NmDokterKp ikut karena keduanya setEditable(false) - nilainya
+        // hanya boleh datang dari DlgCariPetugas/DlgCariDokter.
+        tandaiReadOnlyKep(Jk);
+        tandaiReadOnlyKep(NmPetugas);
+        tandaiReadOnlyKep(NmDokterKp);
         java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
         g.fill=java.awt.GridBagConstraints.HORIZONTAL; g.anchor=java.awt.GridBagConstraints.NORTH;
         g.weightx=1.0/3.0;
@@ -2791,7 +2885,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         g.gridx=2; g.insets=new java.awt.Insets(10,0,0,0); grid.add(javax.swing.Box.createHorizontalGlue(),g);
 
         // ---- rakit banner: kartu (kiri, lebar tetap) + grid (kanan, fleksibel) ----
-        java.awt.Dimension dk = new java.awt.Dimension(240,10);
+        java.awt.Dimension dk = new java.awt.Dimension(300,10);
         kartu.setMinimumSize(dk); kartu.setPreferredSize(dk);
         java.awt.GridBagConstraints f = new java.awt.GridBagConstraints();
         f.gridx=0; f.gridy=0; f.fill=java.awt.GridBagConstraints.BOTH; f.weighty=1.0;
@@ -2843,16 +2937,74 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     }
 
     /**
-     * Assembler utama: susun ulang FormInput jadi banner + 3 kartu kolom
+     * [Bagian A] Rangka layar 4 zona. Dipanggil SESUDAH susunTigaKolomKep()
+     * karena memakai FormInput yg sudah tersusun.
+     *
+     *   internalFrame2 (BorderLayout)
+     *     NORTH  barPasienKep   <- hasil buatBannerKep(), tidak lagi menggulung
+     *     WEST   scrollRailKep  <- navigasi bagian (kosong, Sesi 2)
+     *     CENTER scrollSeksiKep <- FormInput
+     *   panelGlass8 sudah menempati PAGE_END internalFrame1 (action bar).
+     *
+     * Yg berubah dari sebelumnya: bar pasien dulu berada DI DALAM FormInput
+     * sehingga ikut hilang ke atas begitu form digulung - identitas pasien
+     * lepas dari pandangan justru saat pengisian. Sekarang dipatok di NORTH,
+     * hanya panel seksi yg menggulung.
+     *
+     * `scrollInput` bawaan GEN ditinggalkan sebagai field tak terpakai
+     * (dirujuk hanya di dalam blok GEN), bukan dihapus - blok GEN tidak boleh
+     * disunting tangan.
+     */
+    private void susunRangkaKep(){
+        // -- zona NORTH: bar pasien --
+        barPasienKep = buatBannerKep();
+        barPasienKep.setOpaque(true);
+        barPasienKep.setBackground(widget.ThemeConfig.SURFACE);
+        barPasienKep.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(12,14,12,14)));
+
+        // -- zona WEST: rail navigasi bagian --
+        // Sengaja DIBUAT lengkap tapi setVisible(false): isinya baru ada di
+        // Sesi 2, dan strip 300px kosong sekarang cuma menyempitkan tiga kolom
+        // yg ada tanpa memberi apa pun. Rangka 4 zona tetap terpasang.
+        railKep = new widget.PanelBiasa();
+        railKep.setOpaque(true);
+        railKep.setBackground(widget.ThemeConfig.SURFACE);
+        railKep.setLayout(new java.awt.GridBagLayout());
+        scrollRailKep = new widget.ScrollPane();
+        scrollRailKep.setViewportView(railKep);
+        scrollRailKep.setBorder(javax.swing.BorderFactory.createMatteBorder(0,0,0,1, widget.ThemeConfig.BORDER_SOFT));
+        scrollRailKep.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollRailKep.setPreferredSize(new java.awt.Dimension(300,10));
+        scrollRailKep.setVisible(false);
+
+        // -- zona CENTER: panel seksi --
+        scrollSeksiKep = new widget.ScrollPane();
+        scrollSeksiKep.setViewportView(FormInput);
+        scrollSeksiKep.setBorder(null);
+        scrollSeksiKep.getVerticalScrollBar().setUnitIncrement(16);
+        scrollSeksiKep.getViewport().setBackground(widget.ThemeConfig.BACKGROUND);
+
+        internalFrame2.removeAll();
+        internalFrame2.setLayout(new java.awt.BorderLayout());
+        internalFrame2.add(barPasienKep, java.awt.BorderLayout.NORTH);
+        internalFrame2.add(scrollRailKep, java.awt.BorderLayout.WEST);
+        internalFrame2.add(scrollSeksiKep, java.awt.BorderLayout.CENTER);
+        internalFrame2.revalidate();
+        internalFrame2.repaint();
+    }
+
+    /**
+     * Assembler utama: susun ulang FormInput jadi 3 kartu kolom
      * (ANAMNESA | PEMERIKSAAN | DIAGNOSIS & TINDAKAN). Reparent panel section
      * yg sudah dibangun (panelKepAtas/Dua/Tiga/Diag/Obat/Empat + scrollPane1)
-     * - komponen tidak dibuat ulang, listener tetap. WAJIB dipanggil paling
-     * akhir di constructor.
+     * - komponen tidak dibuat ulang, listener tetap.
+     *
+     * Bar pasien TIDAK lagi dirakit di sini; ia jadi zona NORTH milik
+     * susunRangkaKep() yg dipanggil sesudah method ini.
      */
     private void susunTigaKolomKep(){
-        // Bangun banner dulu (mereparent field header) SEBELUM removeAll.
-        widget.PanelBiasa banner = buatBannerKep();
-
         FormInput.removeAll();
         FormInput.setLayout(new java.awt.GridBagLayout());
         FormInput.setBackground(widget.ThemeConfig.BACKGROUND);
@@ -2866,13 +3018,6 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         widget.PanelBiasa[] seksi = { panelKepAtas, panelKepDua, panelKepTiga,
             panelKepTigaDiag, panelKepObat, panelKepEmpat };
         for(widget.PanelBiasa p : seksi){ if(p!=null){ p.setOpaque(false); } }
-
-        // Banner di baris 0, membentang 3 kolom.
-        java.awt.GridBagConstraints fb = new java.awt.GridBagConstraints();
-        fb.gridx=0; fb.gridy=0; fb.gridwidth=3; fb.weightx=1.0;
-        fb.fill=java.awt.GridBagConstraints.HORIZONTAL;
-        fb.insets=new java.awt.Insets(0,0,12,0);
-        FormInput.add(banner, fb);
 
         int lebarKolom = 340;
         widget.PanelBiasa kol1 = buatKolomKep(lebarKolom, true);
@@ -2906,9 +3051,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         rapikanIsiKep(kol2);
         rapikanIsiKep(kol3);
 
-        // 3 kolom di baris 1 (kartu sama-tinggi via weighty + fill BOTH).
+        // 3 kolom sejajar (kartu sama-tinggi via weighty + fill BOTH).
         java.awt.GridBagConstraints fk = new java.awt.GridBagConstraints();
-        fk.gridy=1; fk.weighty=1.0; fk.fill=java.awt.GridBagConstraints.BOTH;
+        fk.gridy=0; fk.weighty=1.0; fk.fill=java.awt.GridBagConstraints.BOTH;
         fk.anchor=java.awt.GridBagConstraints.NORTH;
         fk.gridx=0; fk.weightx=0.30; FormInput.add(kol1, fk);
         fk.gridx=1; fk.weightx=0.30; FormInput.add(kol2, fk);
@@ -5851,6 +5996,15 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private widget.PanelBiasa panelKepTigaDiag;
     // Label kartu identitas pada banner atas (buatBannerKep/sinkronKartuKep).
     private widget.Label lblKartuNama, lblKartuRM, lblKartuRawat;
+    // Baris turunan "Laki-laki - 36 Th" di kartu identitas. Bukan field baru:
+    // isinya dihitung dari Jk + TglLahir yg memang sudah diisi tampil().
+    private widget.Label lblKartuInfo;
+    // [Bagian A] Tiga zona rangka layar yg dirakit susunRangkaKep().
+    // barPasienKep = hasil buatBannerKep() yg dipindah ke NORTH internalFrame2
+    // (dulu ikut menggulung di dalam FormInput); railKep = tempat navigasi
+    // bagian, masih kosong & disembunyikan sampai Sesi 2.
+    private widget.PanelBiasa barPasienKep, railKep;
+    private widget.ScrollPane scrollRailKep, scrollSeksiKep;
 
     // -- Riwayat Alergi --
     private widget.RadioButton RbAlergiTidak, RbAlergiYa;
