@@ -3181,3 +3181,190 @@ Usulan pengelompokan 11 (bisa ditolak, tinggal pakai 26 kartu apa adanya):
 9. Asesmen Nyeri (+ FLACC + PQRST)
 10. Diagnosis & Tindakan Keperawatan (I–IX)
 11. Kondisi Pindah/Pulang + Pendidikan Kesehatan + Pemberian Obat/Infus
+
+---
+
+# Progress: 26 bagian jadi 11 halaman, satu bagian satu layar (Sesi 3b dari 6)
+
+Tanggal: 2026-09-02. Berkas: `src/rekammedis/RMPenilaianAwalKeperawatanIGD.java`
+(763 baris masuk, 270 keluar).
+
+Inti Bagian D dari prompt restrukturisasi: **tab Input Pengkajian sekarang
+menampilkan satu kelompok bagian per layar**, dipilih dari rail kiri hasil
+Sesi 2, dengan tombol "Semua bagian" untuk kembali ke tampilan bertumpuk.
+Pengelompokan yang dipakai persis usulan 11 yang sudah tertulis di akhir
+catatan Sesi 3a — jadi ini konfirmasi, bukan desain baru. Satu-satunya
+penyimpangan: di kelompok 11 urutannya **Pemberian Obat/Infus → Kondisi
+Pindah/Pulang → Pendidikan Kesehatan**, bukan seperti tertulis di usulan
+(Kondisi, Pendidikan, Obat). Alasannya urutan kertas RM: tabel obat/infus
+diisi selama pasien masih di IGD, blok kondisi pindah/pulang diisi terakhir.
+
+Yang tidak berubah: nol field ditambah atau dihapus, nol nama variabel
+diganti, nol query disentuh, nol baris di `.jrxml`. Semua yang dikerjakan di
+sesi ini adalah pemindahan komponen yang sudah ada ke induk baru.
+
+## Satu "bagian" di form ini bukan container, jadi dipecah setelah jadi
+
+Yang tampak sebagai 26 "bagian" berbingkai sebenarnya hanya **strip header di
+baris ke-N sebuah GridBagLayout raksasa**, diikuti baris-baris isi sampai
+strip berikutnya. Tidak ada `JPanel` per bagian yang bisa dipindahkan.
+
+Karena itu pemecahannya dilakukan **sesudah** form terbangun, bukan dengan
+membongkar 26 pemanggilan pembangun: `pecahSeksiKep()` menelusuri anak-anak
+tiap panel induk, memotong tiap kali menemukan strip header, dan memindahkan
+potongannya ke panel baru; `kelompokkanHalamanKep()` menyatukan potongan itu
+jadi 11 kartu `HalamanKep` menurut tabel `GRUP_HALAMAN_KEP`; `susunHalamanKep()`
+menumpuk kartunya di `FormInput`. Konsekuensinya pembangun bagian tidak perlu
+tahu ada halaman — dan kalau nanti ada bagian baru ditambahkan dengan strip
+header, dia otomatis ikut terpecah.
+
+Pemeriksaan yang menyertainya: `CekIsiHalaman` menghitung **anak yang
+tertinggal** di enam panel seksi asli. Nol tertinggal artinya nol komponen
+hilang dari UI — ini pengganti pemeriksaan mata untuk "apakah ada field yang
+lenyap saat dipindah", yang mustahil dilihat dari 11 gambar.
+
+## Kartu tidak boleh melayang: GridBag menengahkan kalau tak ada yang berbobot
+
+Halaman 3 (tanda vital) pertama kali dirender dengan isinya **terpusat di
+x=537 dalam kolom 143px**. Sebabnya aturan lama proyek ini: GridBagLayout
+menengahkan seluruh gridnya pada kedua sumbu kalau tidak ada kolom yang
+`weightx`-nya > 0. Di panel bagian aslinya selalu ada satu komponen lebar yang
+membawa bobot; begitu dipecah, panel yang cuma berisi satu baris kehilangan
+satu-satunya komponen berbobot itu.
+
+`pasangGlueKananKep()` memasang satu kolom kosong `weightx=1.0` di kanan
+**setiap** sub-panel halaman, jadi seluruh isi terpatok ke kiri. Dipasang
+untuk semua panel, bukan hanya yang terbukti melayang, karena panel mana yang
+kebetulan masih punya komponen berbobot bisa berubah begitu isinya diubah —
+dan gejalanya (isi geser ke tengah) tidak pernah muncul sebagai error.
+
+## Grid 4 kolom tanda vital ditulis ulang, bukan didapat gratis
+
+Asumsi awal saya: begitu anggaran lebar halaman naik jadi 1188px, grid tanda
+vital otomatis jadi 4 kolom karena barisnya melebar. Salah. Sesi refactor
+3-kolom sebelumnya sudah menulis ulang pembangunnya jadi **satu pasang
+label+field per baris** — jumlah kolomnya dipatok di kode, bukan dihitung dari
+lebar. Jadi `tambahBarisKepField` dipecah jadi `tambahSelKepField` /
+`buatSelKepField`, dan tanda vital (`TdKep`, `NadiKep`, `RrKep`, `SuhuKep`,
+`SpoKep`, `BbKep`, `TbKep`) disusun lewat konstanta `KOLOM_VITAL_KEP = 4`.
+Konstanta, supaya kalau anggaran lebar berubah lagi hanya satu angka yang
+diubah dan bukan tujuh pemanggilan.
+
+## Blok lebar dipatok DUA arah, bukan cuma dikecilkan
+
+`rapikanIsiKep()` awalnya hanya **mengecilkan** komponen yang lebih lebar dari
+anggaran halaman. Itu cukup selama semua blok lebar memang kebesaran. Setelah
+pemecahan, kebalikannya yang jadi masalah: tiga blok dipatok mati di **320px**
+di kode lama (`TabRencanaKeperawatan`, `scrollObatInfus`, `Scroll8`) sehingga
+tampak sebagai kotak kurus di halaman selebar 1188px.
+
+Dua perubahan yang saling melengkapi:
+
+1. Cabang blok lebar di `rapikanIsiKep` sekarang **memaksa lebar = anggaran**,
+   naik maupun turun.
+2. Tiga patokan 320px itu diubah jadi **patokan tinggi saja** (`(lebar
+   sekarang, 143/120/140)`). Kalau angka lebarnya dibiarkan, akan ada dua
+   sumber kebenaran untuk lebar yang sama, dan yang di dalam GEN-lah yang
+   menang saat form dibuka ulang di Form Editor.
+
+`PanelWall.setPreferredSize(320,140)` **dibiarkan**: selnya
+`fill=HORIZONTAL gridwidth=2`, jadi 320 di situ berfungsi sebagai minimum dan
+gambarnya tetap melebar ke ~750px. Komentarnya ditulis ulang supaya angka itu
+tidak dikira patokan mati seperti tiga yang lain.
+
+## JTabbedPane: satu cabang yang terlewat, ketahuan dari gambar
+
+"Rencana Keperawatan Lainnya" tetap 320px walau kedua perubahan di atas sudah
+masuk. `TabRencanaKeperawatan` adalah `JTabbedPane` bertab tunggal: **bukan
+`JPanel`** (jadi tidak ditelusuri), **bukan `JScrollPane`** (jadi tidak
+dipatok), dan **tidak lebih lebar dari anggaran** (jadi tidak dikecilkan) —
+lolos dari ketiga cabang `rapikanIsiKep`. Sekarang `JTabbedPane` ikut di cabang
+blok lebar. Isinya sengaja tidak ditelusuri, jadi `scrollPane5` di dalamnya
+tetap diurus oleh tabbed pane-nya sendiri.
+
+## Tabel diagnosis: sempit salah, dan perbaikannya melahirkan cacat kedua
+
+`tbMasalahKeperawatan` (halaman 10) memakai `AUTO_RESIZE_OFF`. Dengan mode itu
+lebar tabel = **jumlah lebar kolomnya** (20 + 0 + 350 = 370px). Begitu scroll
+pane-nya dilebarkan ke 1188px, sisa ~820px jadi **bilah header gelap tanpa
+kolom di bawahnya** — terlihat jelas di render halaman 10. Diubah ke
+`AUTO_RESIZE_LAST_COLUMN`.
+
+Render ulang menunjukkan cacat **baru**: kolom centang "P" ikut melar jadi
+~430px. Sebabnya nama modenya menipu. Begitu `autoResizeMode` bukan `OFF` dan
+tidak ada kolom yang digeser manual, `JTable.doLayout()` memanggil
+`setWidthsFromPreferredWidths` yang membagi kelebihan lebar ke **SEMUA** kolom
+yang batas atasnya masih longgar; `AUTO_RESIZE_LAST_COLUMN` hanya berlaku saat
+kolom digeser dengan mouse. Perbaikannya `setMinWidth(20)` **dan**
+`setMaxWidth(20)` pada kolom 0 — `setPreferredWidth` saja tidak mengunci
+apa pun. Komentar yang tadinya memuji `AUTO_RESIZE_LAST_COLUMN` sekaligus
+dikoreksi, karena kalau dibiarkan dia akan menyesatkan orang berikutnya ke
+kesimpulan yang sama.
+
+Model tabel, isi, dan kolom mana yang editable tidak disentuh.
+
+## Alat ukurnya sendiri bohong: "0 melar" untuk 10 dari 11 halaman
+
+`CekMelar` (harness pengukur chip melar dari Sesi 3a) melaporkan **0 chip
+melar** dan itu tidak berarti apa-apa: dia mengukur di mode satu halaman, di
+mana 10 dari 11 kartu `setVisible(false)`, dan GridBagLayout **tidak menata
+komponen yang tidak tampil sama sekali** — lebar nyatanya 0, sehingga uji
+"nyata > preferred+2" tidak mungkin menyala. Alat itu justru paling buta pada
+halaman yang belum pernah ditata.
+
+Diperbaiki dua hal: harness sekarang **pindah ke mode "Semua bagian" dulu**
+lewat refleksi, dan dia **mencetak jumlah chip yang lebarnya masih 0** supaya
+kebutaan yang sama tidak bisa kambuh tanpa kelihatan. Hasil jujurnya: 146 chip
+terukur, 0 belum ditata, 0 melar. `ModernStyle.pasang()` juga ditambahkan —
+tanpa font dan border FlatLaf, yang diukur bukan tampilan yang sebenarnya.
+
+Pelajaran yang layak dicatat: harness yang melaporkan "aman" wajib bisa
+membuktikan **berapa banyak yang benar-benar dia periksa**.
+
+## Komentar yang menyebut method yang sudah tidak ada
+
+Tujuh komentar masih menyebut `susunTigaKolomKep()` dan "kartu Kolom" — sisa
+refactor 3-kolom yang method-nya sudah dihapus. Ditulis ulang supaya menyebut
+mekanisme yang benar-benar berjalan (`buatHalamanKep()`, `pecahSeksiKep()`,
+`susunHalamanKep()`). Yang **sengaja dibiarkan**: javadoc historis yang
+menjelaskan kenapa tata letak 3 kolom dibuang, dan dua penanda asal
+`[Layout 3-kolom]` — ketiganya tidak menyatakan sesuatu yang salah.
+
+## Verifikasi
+
+`ant compile` = BUILD SUCCESSFUL di tiap putaran. Selain itu:
+
+- **11 halaman dirender ke PNG lalu DILIHAT satu per satu** (`FotoHalaman`,
+  tanpa pernah `setVisible(true)`). Kartu 1257px di halaman 1–7 dan 1240px di
+  halaman 8–11; tinggi 203 / 117 / 171 / 115 / 434 / 447 / 457 / 728 / 876 /
+  1787 / 853.
+- Mode "Semua bagian": `FormInput` 1268×6332 — 11 kartu bertumpuk dengan
+  **hanya** scrollbar vertikal, nol scrollbar horizontal.
+- `CekBlokKep`: 3 scroll pane, ketiganya preferred 1188 dengan tinggi
+  110 / 140 / 120 — bukti patokan tinggi-saja dan pelebaran dua arah bekerja.
+- `CekMelar`: 146 chip, 0 belum ditata, 0 melar.
+- `CekIsiHalaman`: nol anak tertinggal di enam panel seksi asli.
+
+**Keempat cacat yang ditutup di sesi ini tidak satupun terlihat dari `ant
+compile` atau dari harness angka.** Semuanya ketahuan dari melihat gambar
+hasil render, lalu dibuktikan lewat dump refleksi yang menyasar satu komponen.
+Urutan itu (lihat → dump → perbaiki → render ulang) sekarang jadi urutan baku
+untuk sisa Bagian D.
+
+## Yang sengaja ditunda ke Sesi 3c
+
+Semuanya kosmetik, dan semuanya akan dibangun ulang wholesale oleh helper
+`barisPengkajian(JPanel, String, boolean, JComponent)` + kolom label 232px yang
+memang jadwalnya Sesi 3c. Memperbaikinya sekarang berarti mengerjakan baris
+yang sama dua kali:
+
+- **Tepi kanan kotak pembungkus baris masih rata-rata gerigi** — 1187 vs 1108
+  di halaman 8, 1100 vs 970 di halaman 9, 1078 di halaman 6.
+- **Label masih di ATAS kontrol** di sebagian sel, sedangkan mockup meminta
+  label di kiri dengan kolom lebar tetap.
+- Lebar `TextBox` per field belum diseragamkan.
+- Checklist di halaman lebar masih 2 kolom dan terasa longgar —
+  `sempitkanGridKep()` memang sengaja hanya boleh **mengurangi** kolom.
+
+Satu hal yang bukan cacat: garis diagonal ~20px di header tabel pada PNG.
+Itu artefak `printAll` offscreen, tidak muncul di layar sungguhan.

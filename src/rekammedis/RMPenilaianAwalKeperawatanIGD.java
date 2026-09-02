@@ -88,16 +88,16 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         initKepTambahanHal3();
         initObatInfusTambahan();
         initKepTambahanHal4();
-        // [Layout 3-kolom gaya Triase] Restyle action bar + susun ulang
-        // FormInput jadi 3 kartu kolom, lalu rakit rangka 4 zona (bar pasien
-        // atas / rail kiri / panel seksi tengah / action bar bawah). WAJIB
+        // [Bagian A/C/D] Restyle action bar + susun ulang FormInput jadi
+        // tumpukan kartu HALAMAN, lalu rakit rangka 4 zona (bar pasien atas /
+        // rail kiri / panel halaman tengah / action bar bawah). WAJIB
         // dipanggil PALING akhir (butuh field Dokter dari initKepTambahan &
         // panelKepTigaDiag dari initKepTambahanHal3), dan susunRangkaKep()
-        // sesudah susunTigaKolomKep() karena memakai FormInput yg sudah
+        // sesudah susunHalamanKep() karena memakai FormInput yg sudah
         // tersusun. Hanya menata ulang layout - komponen & logika data
         // (tampil/getData/simpan/dst) tidak diubah.
         initActionBarKep();
-        susunTigaKolomKep();
+        susunHalamanKep();
         susunRangkaKep();
 
         // Header + width setup di bawah dulunya dideklarasikan 81 kolom
@@ -158,11 +158,25 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
         //tbObat.setDefaultRenderer(Object.class, new WarnaTable(panelJudul.getBackground(),tbObat.getBackground()));
         tbMasalahKeperawatan.setPreferredScrollableViewportSize(new Dimension(500,500));
-        tbMasalahKeperawatan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        // [Bagian D] Bukan OFF: dgn OFF lebar tabel = jumlah lebar kolomnya
+        // (20+0+350 = 370px), jadi begitu scroll pane-nya dilebarkan ke selebar
+        // halaman, sisa ~820px jadi bilah header gelap tanpa kolom di bawahnya
+        // (kelihatan di render hal-10). Kolom yg menyerap sisa lebar ditentukan
+        // oleh batas min/max di bawah, bukan oleh nama mode ini. Model, isi &
+        // editable tidak berubah sama sekali.
+        tbMasalahKeperawatan.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         
         for (i = 0; i < 3; i++) {
             TableColumn column = tbMasalahKeperawatan.getColumnModel().getColumn(i);
             if(i==0){
+                // min=max=20 WAJIB, bukan cuma preferred. Begitu autoResizeMode
+                // bukan OFF, JTable.doLayout() membagi kelebihan lebar ke SEMUA
+                // kolom yg batas atasnya masih longgar (setWidthsFromPreferredWidths),
+                // bukan cuma ke kolom terakhir - nama AUTO_RESIZE_LAST_COLUMN
+                // hanya berlaku saat kolom digeser manual. Tanpa pagar ini kolom
+                // centang "P" ikut melar jadi 430px (kelihatan di render hal-10).
+                column.setMinWidth(20);
+                column.setMaxWidth(20);
                 column.setPreferredWidth(20);
             }else if(i==1){
                 column.setMinWidth(0);
@@ -2482,19 +2496,64 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         return row+1;
     }
 
-    // Lebar maksimum isi 1 kartu kolom. 3 kolom x ~350px + border = ~1080px,
-    // jadi form muat penuh tanpa scroll horizontal. Dipakai
-    // tambahBarisKepField()/rapikanIsiKep()/sempitkanAlirKep().
+    /**
+     * Anggaran lebar SAAT PANEL DIBANGUN - dipakai tambahBarisKepField() utk
+     * memutuskan sebuah label perlu dibungkus HTML supaya turun baris.
+     *
+     * Sejak Bagian D ini bukan lagi anggaran tata letak akhirnya: halaman
+     * satu-bagian-per-layar memakai LEBAR_HALAMAN_KEP (~1240px), diteruskan
+     * sbg parameter `budget` ke rapikanIsiKep() dan kawan-kawannya. Angka 330
+     * tetap dipertahankan di sini karena tambahBarisKepField() berjalan jauh
+     * SEBELUM tata letak dipilih, dan label yg terbungkus di 330px tidak
+     * merusak apa pun di halaman yg lebih lebar - cuma turun baris lebih awal
+     * dari perlunya. Perbaikan sebenarnya (kolom label 232px) adalah pekerjaan
+     * barisPengkajian() di sesi berikutnya.
+     */
     private static final int LEBAR_ISI_KEP = 330;
 
     private int tambahBarisKepField(widget.PanelBiasa panel,int row,String label,java.awt.Component field){
-        // [Layout 3-kolom] Label DI ATAS field (gaya hdrCellKep di Triase),
-        // bukan label kiri + field kanan seperti versi sebelumnya. Alasan:
-        // berdampingan, lebar 1 baris = lebar label + lebar field - beberapa
-        // baris mencapai ~950px sehingga 3 kolom tidak muat & muncul scroll
-        // horizontal. Ditumpuk, lebar baris = max(label, field) saja.
-        // Komponen 'field' tetap instance yg sama (reparent) - listener &
-        // logika data tidak disentuh.
+        java.awt.GridBagConstraints c = kepConstraint(0,row);
+        c.gridwidth = 2;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        c.insets = new java.awt.Insets(2,5,4,5);
+        panel.add(buatSelKepField(label,field),c);
+        return row+1;
+    }
+
+    /**
+     * Jumlah kolom grid tanda vital / GCS di halaman satu-bagian-per-layar.
+     * Empat sesuai mockup Bagian D: 4 x (sel ~145px + insets 10) = ~620px, masih
+     * separuh dari lebar halaman 1240px, jadi label terpanjang ("Frekuensi Nafas
+     * (x/menit)", 129px) tetap satu baris tanpa dibungkus HTML.
+     */
+    private static final int KOLOM_VITAL_KEP = 4;
+
+    /**
+     * [Bagian D] Sel field di GRID 4 KOLOM - dipakai tanda vital & GCS.
+     *
+     * Bedanya dari tambahBarisKepField() cuma dua: gridx mengikuti nomor kolom
+     * (tiap sel gridwidth 2, jadi kolom 0-1, 2-3, 4-5, 6-7), dan weightx=0.
+     * Bobot 0 itu penting - kalau tiap sel berbobot, sisa lebar halaman dibagi
+     * rata ke keempat kolom dan gridnya merenggang selebar 1188px, bukan grid
+     * rapat spt di mockup. Sisa lebar diserap satu kolom pengisi di kanan
+     * panelnya sendiri.
+     */
+    private void tambahSelKepField(widget.PanelBiasa panel,int kol,int row,String label,java.awt.Component field){
+        java.awt.GridBagConstraints c = kepConstraint(kol*2,row);
+        c.gridwidth = 2;
+        c.weightx = 0.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        c.insets = new java.awt.Insets(2,5,4,5);
+        panel.add(buatSelKepField(label,field),c);
+    }
+
+    /** Sel "label kecil di atas, field di bawah" - badan bersama
+     *  tambahBarisKepField() (1 sel per baris) dan tambahSelKepField()
+     *  (4 sel per baris). */
+    private widget.PanelBiasa buatSelKepField(String label,java.awt.Component field){
         widget.PanelBiasa baris = new widget.PanelBiasa();
         baris.setOpaque(false);
         baris.setLayout(new java.awt.BorderLayout(0,2));
@@ -2518,15 +2577,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // TIDAK melebar mengikuti lebar kolom - permintaan user soal "ruang
         // kosong" di dalam field/dropdown yg sebenarnya sempit.
         baris.add(field,java.awt.BorderLayout.WEST);
-
-        java.awt.GridBagConstraints c = kepConstraint(0,row);
-        c.gridwidth = 2;
-        c.weightx = 1.0;
-        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        c.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        c.insets = new java.awt.Insets(2,5,4,5);
-        panel.add(baris,c);
-        return row+1;
+        return baris;
     }
 
     /** Escape minimal utk teks label yg dibungkus HTML (lihat tambahBarisKepField). */
@@ -2555,15 +2606,24 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     }
 
     // -------------------------------------------------------------------
-    // [Layout 3-kolom] Penyempit lebar (LAYOUT-ONLY). Dipanggil sekali dari
-    // susunTigaKolomKep() utk tiap kartu kolom, lalu turun rekursif ke semua
-    // sub-panel. Yg diubah HANYA layout manager / GridBagConstraints /
-    // preferredSize - komponen, urutan, isi, listener & logika data tidak
-    // disentuh sama sekali.
+    // Penyesuai lebar isi (LAYOUT-ONLY). Dipanggil sekali dari
+    // buatHalamanKep() utk tiap KARTU HALAMAN, lalu turun rekursif ke semua
+    // sub-panel. (Sebelum Bagian D pemanggilnya susunTigaKolomKep() dgn
+    // anggaran 330px per kartu kolom; method itu sudah dihapus.) Yg diubah
+    // HANYA layout manager / GridBagConstraints / preferredSize - komponen,
+    // urutan, isi, listener & logika data tidak disentuh sama sekali.
     // -------------------------------------------------------------------
 
-    /** Turun rekursif: kecilkan komponen yg lebih lebar dari LEBAR_ISI_KEP. */
-    private void rapikanIsiKep(java.awt.Container wadah){
+    /**
+     * Turun rekursif: sesuaikan isi wadah ke anggaran lebar `budget` piksel.
+     *
+     * `budget` jadi PARAMETER, bukan lagi konstanta LEBAR_ISI_KEP, karena
+     * Bagian D mengubah anggarannya: tata letak 3 kolom memberi tiap kartu
+     * cuma 330px, sedangkan satu-bagian-per-layar memberi ~1240px. Angka yg
+     * sama tidak bisa melayani keduanya - dgn 330 di halaman selebar layar,
+     * checklist tetap menumpuk 2 kolom sempit dan sisa 900px dibiarkan kosong.
+     */
+    private void rapikanIsiKep(java.awt.Container wadah, int budget){
         for(java.awt.Component k : wadah.getComponents()){
             // Cuma JPanel (widget.PanelBiasa dst) yg ditelusuri isinya.
             // JComboBox/JScrollPane juga punya child internal, tapi harus
@@ -2572,11 +2632,32 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             boolean wadahLain = (k instanceof javax.swing.JPanel)
                     && ((java.awt.Container)k).getComponentCount()>0;
             if(wadahLain){
-                rapikanIsiKep((java.awt.Container) k);
-            } else if(k.getPreferredSize().width > LEBAR_ISI_KEP){
+                rapikanIsiKep((java.awt.Container) k, budget);
+            } else if(k instanceof javax.swing.JScrollPane
+                    || k instanceof javax.swing.JTabbedPane){
+                // [Bagian D] Blok lebar dipatok PERSIS selebar anggaran, dua
+                // arah - dikecilkan kalau kebesaran, DILEBARKAN kalau kekecilan.
+                // Di form ini semua JScrollPane memang blok lebar; render mode
+                // "Semua bagian" menghitungnya: cuma 3, yaitu area Keluhan Utama
+                // + tabel MASALAH KEPERAWATAN + tabel obat/infus. Tanpa aturan
+                // ini tabel MASALAH KEPERAWATAN tetap 320px di halaman 1240px
+                // (ada scrollbar horizontal di dalam kotak 320px itu, padahal
+                // ruang di sebelahnya kosong 900px) - kelihatan di render
+                // hal-10, tidak kelihatan dari angka mana pun.
+                //
+                // JTabbedPane ikut di sini karena TabRencanaKeperawatan (satu
+                // tab, isinya area teks Rencana) juga blok lebar, tapi BUKAN
+                // JPanel dan BUKAN JScrollPane: tanpa cabang ini dia lolos dari
+                // ketiga cabang dan bertahan di 320px - terlihat di render
+                // hal-10 sbg kotak teks kurus di seksi TINDAKAN KEPERAWATAN
+                // MANDIRI padahal seksi di atasnya sudah selebar halaman.
+                // Isinya tidak ditelusuri (JTabbedPane bukan JPanel), jadi
+                // scrollPane5 di dalamnya tetap diatur oleh tabbed pane-nya.
+                k.setPreferredSize(new java.awt.Dimension(budget, k.getPreferredSize().height));
+            } else if(k.getPreferredSize().width > budget){
                 // Komponen tunggal (TextBox/ComboBox/ScrollPane tabel) yg
                 // lebarnya warisan desain 1 kolom (dulu form selebar 870px).
-                k.setPreferredSize(new java.awt.Dimension(LEBAR_ISI_KEP, k.getPreferredSize().height));
+                k.setPreferredSize(new java.awt.Dimension(budget, k.getPreferredSize().height));
             }
         }
         // Bukan rantai else-if: sempitkanAlirKep() MENGGANTI FlowLayout jadi
@@ -2584,15 +2665,31 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // di cabang GridLayout - kalau tidak, checklist yg asalnya FlowLayout
         // tak pernah kena pelukChipGridKep() dan chipnya tetap melar.
         if(wadah.getLayout() instanceof java.awt.FlowLayout){
-            sempitkanAlirKep(wadah);
+            sempitkanAlirKep(wadah, budget);
         }
         if(wadah.getLayout() instanceof java.awt.GridLayout){
-            sempitkanGridKep(wadah);
+            sempitkanGridKep(wadah, budget);
         } else if(wadah.getLayout() instanceof java.awt.GridBagLayout){
-            lipatDuaKolomKep(wadah);
+            // Pelipatan HANYA utk anggaran sempit. Panel spt panelKeadaanUmum
+            // dan panelKpVital aslinya ditulis 2 pasang label+field per baris
+            // (gridx 0..3) - itu justru grid 4 kolom yg diminta Bagian D utk
+            // tanda vital/GCS. Dilipat cuma karena kartu 330px tak memuatnya;
+            // di halaman selebar layar melipatnya berarti membuang desain
+            // aslinya lalu memasangnya kembali dgn kode baru.
+            if(budget < LEBAR_LIPAT_KEP){
+                lipatDuaKolomKep(wadah);
+            }
             pelukChipGbcKep(wadah);
         }
     }
+
+    /**
+     * Batas anggaran di mana baris "2 pasang label+field" masih dilipat jadi
+     * 1 pasang. Satu pasang label+field terlebar di form ini ~300px, jadi 2
+     * pasang butuh ~620px; 700 memberi kelonggaran tanpa menyentuh kasus
+     * kartu 330px.
+     */
+    private static final int LEBAR_LIPAT_KEP = 700;
 
     /**
      * Versi GridBagLayout dari pelukChipGridKep(): buang fill=HORIZONTAL dari
@@ -2624,12 +2721,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
     /** Panel checklist ber-GridLayout (panelChecklistKep) jumlah kolomnya
      *  dipatok saat dibangun. Sesudah chip dipasang tiap pilihan tumbuh ~16px
-     *  karena padding pil, jadi panel yg tadinya pas bisa jebol dari
-     *  LEBAR_ISI_KEP dan melebarkan kartu kolomnya. Kolomnya dihitung ulang
-     *  dari chip TERLEBAR - alasan yg sama seperti sempitkanAlirKep(). Hanya
-     *  boleh MENGURANGI kolom: menambah kolom akan mengubah pengelompokan
-     *  visual yg disengaja saat panelnya dibangun. */
-    private void sempitkanGridKep(java.awt.Container box){
+     *  karena padding pil, jadi panel yg tadinya pas bisa jebol dari anggaran
+     *  `budget` dan melebarkan wadahnya. Kolomnya dihitung ulang dari chip
+     *  TERLEBAR - alasan yg sama seperti sempitkanAlirKep(). Hanya boleh
+     *  MENGURANGI kolom: menambah kolom akan mengubah pengelompokan visual yg
+     *  disengaja saat panelnya dibangun. */
+    private void sempitkanGridKep(java.awt.Container box, int budget){
         if(box.getComponentCount()<2){ return; }
         java.awt.GridLayout grid = (java.awt.GridLayout) box.getLayout();
         int jarak = grid.getHgap();
@@ -2638,7 +2735,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             lebarMaks = Math.max(lebarMaks, k.getPreferredSize().width);
         }
         if(lebarMaks<1){ return; }
-        int kolom = (LEBAR_ISI_KEP+jarak)/(lebarMaks+jarak);
+        int kolom = (budget+jarak)/(lebarMaks+jarak);
         if(kolom<1){ kolom = 1; }
         if(grid.getColumns()>0 && kolom<grid.getColumns()){
             box.setLayout(new java.awt.GridLayout(0,kolom,jarak,grid.getVgap()));
@@ -2706,8 +2803,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     /** Grup radio/cek ber-FlowLayout 1 baris: lebar MINIMUM-nya = lebar 1
      *  baris penuh, jadi GridBagLayout tak bisa mengecilkannya. Diganti
      *  GridLayout berkolom secukupnya supaya isinya turun baris. */
-    private void sempitkanAlirKep(java.awt.Container box){
-        if(box.getComponentCount()<2 || box.getPreferredSize().width<=LEBAR_ISI_KEP){ return; }
+    private void sempitkanAlirKep(java.awt.Container box, int budget){
+        if(box.getComponentCount()<2 || box.getPreferredSize().width<=budget){ return; }
         java.awt.FlowLayout alir = (java.awt.FlowLayout) box.getLayout();
         int jarak = alir.getHgap();
         int lebarMaks = 0;
@@ -2715,7 +2812,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             lebarMaks = Math.max(lebarMaks, k.getPreferredSize().width);
         }
         if(lebarMaks<1){ return; }
-        int kolom = (LEBAR_ISI_KEP+jarak)/(lebarMaks+jarak);
+        int kolom = (budget+jarak)/(lebarMaks+jarak);
         if(kolom<1){ kolom = 1; }
         if(kolom<box.getComponentCount()){
             box.setLayout(new java.awt.GridLayout(0,kolom,jarak,2));
@@ -2911,41 +3008,6 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             bd.setGaris(widget.ThemeConfig.BORDER);
         }
         t.repaint();
-    }
-
-    /** Kartu kolom putih (SURFACE) + divider kanan opsional + strut lebar min. */
-    private widget.PanelBiasa buatKolomKep(int lebar, boolean pemisahKanan){
-        widget.PanelBiasa kol = new widget.PanelBiasa();
-        kol.setOpaque(true);
-        kol.setBackground(widget.ThemeConfig.SURFACE);
-        kol.setLayout(new java.awt.GridBagLayout());
-        if(pemisahKanan){
-            kol.setBorder(javax.swing.BorderFactory.createMatteBorder(0,0,0,1, widget.ThemeConfig.BORDER_SOFT));
-        }
-        if(lebar > 0){
-            java.awt.GridBagConstraints cs = new java.awt.GridBagConstraints();
-            cs.gridx=0; cs.gridy=900; cs.gridwidth=java.awt.GridBagConstraints.REMAINDER;
-            kol.add(javax.swing.Box.createHorizontalStrut(lebar), cs);
-        }
-        return kol;
-    }
-
-    /** Tambah 1 komponen lebar-penuh, top-aligned, ke sebuah kartu kolom. */
-    private int tambahIsiKolomKep(widget.PanelBiasa kolom, int row, java.awt.Component komp){
-        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
-        c.gridx=0; c.gridy=row; c.gridwidth=java.awt.GridBagConstraints.REMAINDER;
-        c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
-        c.anchor=java.awt.GridBagConstraints.NORTHWEST;
-        kolom.add(komp, c);
-        return row+1;
-    }
-
-    /** Tutup kartu kolom dgn glue (dorong isi ke atas). */
-    private void tutupKolomKep(widget.PanelBiasa kolom, int row){
-        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
-        c.gridx=0; c.gridy=row; c.gridwidth=java.awt.GridBagConstraints.REMAINDER;
-        c.weighty=1.0; c.fill=java.awt.GridBagConstraints.BOTH;
-        kolom.add(javax.swing.Box.createGlue(), c);
     }
 
     /** Baris "label di atas + area" (dipakai utk Keluhan Utama/scrollPane1). */
@@ -3219,30 +3281,220 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     }
 
     /**
-     * [Bagian C] Urutkan seksiKep mengikuti urutan tampil, lalu buang bagian
-     * yg strip-nya disembunyikan (section lama yg dipensiunkan).
+     * [Bagian D] Pengelompokan 25 bagian nyata jadi 11 HALAMAN.
      *
-     * @param urutInduk panel section dalam urutan tampil kiri->kanan/atas->bawah
+     * Elemen [0] = judul halaman, sisanya = judul bagian PERSIS seperti yg
+     * didaftarkan tambahBarisKepJudul(). Dicocokkan lewat TEKS JUDUL, bukan
+     * lewat field panel, karena satu halaman menarik isi dari beberapa panel
+     * fisik: "ASESMEN NYERI" dibangun di panelKepDua sementara FLACC & PQRST
+     * di panelKepTiga, padahal ketiganya satu halaman.
+     *
+     * Bagian yg TIDAK tercantum di sini tidak hilang - ia dapat halamannya
+     * sendiri di ujung daftar. Jadi judul yg salah tulis muncul sebagai
+     * halaman ke-12 dst, bukan sebagai isian yg lenyap diam-diam.
+     *
+     * Tabel ini memang DIMAKSUDKAN utk diubah: pengelompokan adalah keputusan
+     * klinis, bukan keputusan teknis. Menukar anggota atau urutan halaman
+     * cukup di tabel ini - rail, strip, dan navigasinya ikut sendiri.
      */
-    private void urutkanSeksiKep(final widget.PanelBiasa[] urutInduk){
-        final java.util.Map<widget.PanelBiasa,Integer> peringkat = new java.util.IdentityHashMap<>();
-        for(int i=0;i<urutInduk.length;i++){
-            if(urutInduk[i]!=null){ peringkat.put(urutInduk[i], i); }
-        }
-        java.util.Iterator<SeksiKep> it = seksiKep.iterator();
-        while(it.hasNext()){
-            SeksiKep s = it.next();
-            if(!s.strip.isVisible() || !peringkat.containsKey(s.induk)){ it.remove(); }
-        }
-        java.util.Collections.sort(seksiKep, new java.util.Comparator<SeksiKep>(){
-            @Override public int compare(SeksiKep a, SeksiKep b){
-                int pa = peringkat.get(a.induk), pb = peringkat.get(b.induk);
-                return pa!=pb ? Integer.compare(pa,pb) : Integer.compare(a.urutBangun,b.urutBangun);
-            }
-        });
+    private static final String[][] GRUP_HALAMAN_KEP = {
+        { "Riwayat Kesehatan Pasien", "I. RIWAYAT KESEHATAN PASIEN" },
+        { "Riwayat Alergi", "RIWAYAT ALERGI" },
+        { "Keadaan Umum & Tanda Vital", "KEADAAN UMUM" },
+        { "Status Kehamilan", "STATUS KEHAMILAN" },
+        { "Psikologis, Sosial & Ekonomi", "ASESMEN PSIKOLOGIS", "STATUS SOSIAL DAN EKONOMIS" },
+        { "Skrining Geriatri & Resiko Jatuh", "SKRINING GERIATRI",
+          "SKRINING RESIKO PASIEN JATUH (GET UP AND GO TEST)" },
+        { "Spiritual, Fungsional & Budaya",
+          "PENGKAJIAN SPIRITUAL, KEPERCAYAAN, FUNGSIONAL DAN BUDAYA" },
+        { "Skrining Gizi", "SKRINING GIZI DEWASA (MST)", "SKRINING GIZI ANAK (USIA 0-14 TAHUN)" },
+        { "Asesmen Nyeri", "ASESMEN NYERI",
+          "FLACC (Face, Legs, Activity, Cry, Consolability) - Bayi/Anak <3 Tahun", "PQRST" },
+        { "Diagnosis & Tindakan Keperawatan", "I. DIAGNOSIS KEPERAWATAN",
+          "II. INTERVENSI KEPERAWATAN", "III. TINDAKAN KEPERAWATAN MANDIRI",
+          "IV. KARDIOPULMONAL", "V. TINDAKAN PENUNJANG", "VI. TINDAKAN KOLABORASI",
+          "VII. TRAUMA / BEDAH", "VIII. THT / MATA", "IX. TINDAKAN OBGYN" },
+        { "Pemberian Obat & Pemulangan", "PEMBERIAN OBAT / INFUS",
+          "KONDISI PASIEN SAAT PINDAH / PULANG DARI IGD",
+          "Pendidikan Kesehatan Pasien Pulang" },
+    };
+
+    /**
+     * Kunci pencocokan judul: dirapatkan spasinya lalu dibesarkan hurufnya,
+     * supaya beda kapital/spasi antara tabel di atas dan pemanggil
+     * tambahBarisKepJudul() tidak diam-diam menjatuhkan satu bagian.
+     */
+    private static String kunciJudulKep(String judul){
+        return judul==null ? "" : judul.trim().replaceAll("\\s+"," ").toUpperCase();
     }
 
-    /** [Bagian C] Isi rail: kartu progres di atas + satu baris tiap bagian. */
+    /**
+     * [Bagian D] Pecah 6 panel section raksasa jadi satu panel PER BAGIAN.
+     *
+     * Sebuah "bagian" di form ini bukan container: ia cuma strip judul di
+     * baris ke-N sebuah GridBagLayout besar, diikuti baris-baris isi sampai
+     * strip berikutnya. Tanpa container sendiri, "satu bagian per layar" tidak
+     * mungkin - tidak ada yg bisa di-setVisible(false).
+     *
+     * Dipecah SESUDAH panel dibangun (post-hoc), bukan dgn menyunting 25
+     * pemanggil tambahBarisKepJudul() + 22 .add() langsung: pola yg sama
+     * dipakai rapikanIsiKep() dan gayaChipKep(), dan biayanya nol perubahan di
+     * kode pembangun - tidak ada komponen yg dibuat ulang, jadi seluruh
+     * listener, ButtonGroup, dan ikatan simpan/tampil tetap utuh.
+     */
+    private void pecahSeksiKep(){
+        java.util.IdentityHashMap<java.awt.Component,SeksiKep> petaStrip =
+                new java.util.IdentityHashMap<>();
+        java.util.List<java.awt.Container> induk = new java.util.ArrayList<>();
+        for(SeksiKep s : seksiKep){
+            if(s.panel!=null || s.strip==null){ continue; }
+            java.awt.Container p = s.strip.getParent();
+            if(p==null || !(p.getLayout() instanceof java.awt.GridBagLayout)){ continue; }
+            petaStrip.put(s.strip, s);
+            // Induk dikumpulkan dari strip.getParent() yg NYATA, bukan dari
+            // s.induk: field panelKepTiga ditukar di tengah
+            // initKepTambahanHal3() (isi Diagnosis..Obgyn berakhir sbg
+            // panelKepTigaDiag), jadi s.induk utk sembilan bagian itu menunjuk
+            // objek yg namanya sudah berpindah.
+            boolean ada = false;
+            for(java.awt.Container q : induk){ if(q==p){ ada=true; break; } }
+            if(!ada){ induk.add(p); }
+        }
+        for(java.awt.Container p : induk){ pecahSatuIndukKep(p, petaStrip); }
+    }
+
+    /**
+     * Pecah SATU panel induk: sapu anaknya urut (gridy,gridx), buka sub-panel
+     * baru tiap kali ketemu strip terdaftar, lalu tempel ulang tiap anak ke
+     * sub-panel yg sedang terbuka DENGAN CONSTRAINTS ASLINYA.
+     *
+     * gridy TIDAK dinomori ulang. GridBagLayout memampatkan baris kosong jadi
+     * tinggi nol, jadi baris 7..12 di sub-panel baru berperilaku sama dgn
+     * 0..5 - sementara menomori ulang berarti menebak ulang gridwidth dan
+     * pasangan gridx tiap baris.
+     *
+     * Anak yg muncul SEBELUM strip pertama (pengantar) ditinggal di panel
+     * aslinya; hari ini tidak ada satu pun (sudah dihitung: keenam panel
+     * langsung dibuka strip), tapi kalau nanti ada, ia tetap tampil lewat
+     * panel asli itu, bukan hilang.
+     */
+    private void pecahSatuIndukKep(java.awt.Container p,
+            java.util.IdentityHashMap<java.awt.Component,SeksiKep> petaStrip){
+        java.awt.GridBagLayout gbl = (java.awt.GridBagLayout) p.getLayout();
+        java.util.List<java.awt.Component> anak = new java.util.ArrayList<>();
+        final java.util.IdentityHashMap<java.awt.Component,java.awt.GridBagConstraints> batas =
+                new java.util.IdentityHashMap<>();
+        for(java.awt.Component k : p.getComponents()){
+            anak.add(k);
+            // getConstraints() memulangkan KLONA - aman disimpan lalu dipakai
+            // lagi sesudah removeAll().
+            batas.put(k, gbl.getConstraints(k));
+        }
+        java.util.Collections.sort(anak, new java.util.Comparator<java.awt.Component>(){
+            @Override public int compare(java.awt.Component a, java.awt.Component b){
+                java.awt.GridBagConstraints ca = batas.get(a), cb = batas.get(b);
+                return ca.gridy!=cb.gridy ? Integer.compare(ca.gridy, cb.gridy)
+                                          : Integer.compare(ca.gridx, cb.gridx);
+            }
+        });
+        p.removeAll();
+        widget.PanelBiasa tujuan = null;
+        java.util.List<widget.PanelBiasa> baru = new java.util.ArrayList<>();
+        for(java.awt.Component k : anak){
+            SeksiKep s = petaStrip.get(k);
+            if(s!=null){
+                tujuan = new widget.PanelBiasa();
+                tujuan.setOpaque(false);
+                tujuan.setLayout(new java.awt.GridBagLayout());
+                s.panel = tujuan;
+                baru.add(tujuan);
+            }
+            (tujuan==null ? p : tujuan).add(k, batas.get(k));
+        }
+        for(widget.PanelBiasa q : baru){ pasangGlueKananKep(q); }
+    }
+
+    /**
+     * Pasang satu kolom pengisi berbobot di kanan panel bagian.
+     *
+     * WAJIB, bukan hiasan: GridBagLayout MENENGAHKAN seluruh gridnya kalau tak
+     * ada satu pun kolom berbobot - aturan yg sudah tercatat di CLAUDE.md. Di
+     * tata letak 3 kolom lama itu tak pernah terlihat karena lebar kartu hampir
+     * sama dgn lebar preferred isinya; di halaman 1240px selisihnya ~1000px dan
+     * isinya melayang di TENGAH dgn gutter kosong di kedua sisi. Render halaman
+     * "Keadaan Umum & Tanda Vital" memperlihatkannya telanjang: panelKeadaanUmum
+     * yg lebarnya 143px duduk di x=537, bukan x=0.
+     *
+     * Kenapa baru muncul sekarang: baris dari tambahBarisKepJudul() dan
+     * tambahBarisKepField() memang berbobot (weightx=1), jadi biasanya selalu
+     * ada yg menahan grid di kiri. Tapi buatHalamanKep() MENYEMBUNYIKAN strip
+     * 32px pada halaman berisi satu bagian, dan GridBagLayout mengabaikan
+     * komponen tak tampil SEPENUHNYA - bobotnya ikut hilang. Begitu sisa baris
+     * di bagian itu cuma wrapper ber-weightx=0 (spt cKeadaanUmum), bobot total
+     * kolomnya jadi 0 dan gridnya ditengahkan.
+     *
+     * Pengisinya ditaruh SESUDAH kolom terpakai terkanan supaya tidak menabrak
+     * sel mana pun. Baris ber-gridwidth REMAINDER ikut membentang sampai kolom
+     * ini - itu memang yg diminta Bagian D (strip judul & baris isian selebar
+     * halaman), bukan efek samping.
+     */
+    private void pasangGlueKananKep(widget.PanelBiasa panel){
+        java.awt.GridBagLayout gbl = (java.awt.GridBagLayout) panel.getLayout();
+        int kolom = 1;
+        for(java.awt.Component k : panel.getComponents()){
+            java.awt.GridBagConstraints c = gbl.getConstraints(k);
+            // gridwidth 0 = REMAINDER, -1 = RELATIVE: dua-duanya "sampai ujung
+            // baris", jadi dihitung 1 kolom saja - kalau tidak, kolom pengisi
+            // malah bergeser ke kanan tanpa alasan.
+            int lebar = c.gridwidth>0 ? c.gridwidth : 1;
+            kolom = Math.max(kolom, Math.max(0, c.gridx) + lebar);
+        }
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx = kolom; c.gridy = 0;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(0,0,0,0);
+        panel.add(javax.swing.Box.createHorizontalGlue(), c);
+    }
+
+    /**
+     * [Bagian D] Susun halamanKep dari seksiKep mengikuti GRUP_HALAMAN_KEP.
+     *
+     * Menggantikan urutkanSeksiKep() yg dulu MENEBAK urutan tampil dari urutan
+     * panel + urutan bangun. Tebakannya benar tapi tidak perlu lagi: urutan
+     * halaman sekarang tertulis eksplisit di tabel, dan itu satu-satunya
+     * sumbernya. (Catatan Sesi 2 sempat menyebut urutkanSeksiKep() memperbaiki
+     * bug urutan nyata - itu salah, urutan bangun ternyata sudah monoton dan
+     * pengurutannya no-op; lihat koreksi di entri Sesi 3a PROGRESS.md.)
+     *
+     * Penyaringan strip yg disembunyikan (section lama yg dipensiunkan) pindah
+     * ke sini, dan HARUS jalan sebelum buatHalamanKep() menyembunyikan strip
+     * halaman berisi satu bagian - kalau tidak, penyaring ikut menelan bagian
+     * yg baru saja disembunyikan karena alasan tampilan.
+     */
+    private void kelompokkanHalamanKep(){
+        halamanKep.clear();
+        java.util.Map<String,SeksiKep> perJudul = new java.util.LinkedHashMap<>();
+        for(SeksiKep s : seksiKep){
+            if(s.panel==null || s.strip==null || !s.strip.isVisible()){ continue; }
+            perJudul.put(kunciJudulKep(s.judul), s);
+        }
+        for(String[] grup : GRUP_HALAMAN_KEP){
+            HalamanKep h = new HalamanKep(grup[0]);
+            for(int i=1;i<grup.length;i++){
+                SeksiKep s = perJudul.remove(kunciJudulKep(grup[i]));
+                if(s!=null){ h.anggota.add(s); }
+            }
+            if(!h.anggota.isEmpty()){ halamanKep.add(h); }
+        }
+        for(SeksiKep s : perJudul.values()){
+            HalamanKep h = new HalamanKep(judulRingkasKep(s.judul));
+            h.anggota.add(s);
+            halamanKep.add(h);
+        }
+    }
+
+    /** [Bagian C] Isi rail: kartu progres + sakelar mode + satu baris tiap halaman. */
     private void isiRailKep(){
         railKep.removeAll();
         java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
@@ -3252,9 +3504,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         c.gridy=0; c.insets=new java.awt.Insets(12,12,10,12);
         railKep.add(buatKartuProgresKep(), c);
 
+        c.gridy=1; c.insets=new java.awt.Insets(0,10,10,10);
+        railKep.add(buatToggleModeKep(), c);
+
         c.insets=new java.awt.Insets(0,8,0,8);
-        int gy = 1;
-        for(int i=0;i<seksiKep.size();i++){
+        int gy = 2;
+        for(int i=0;i<halamanKep.size();i++){
             c.gridy=gy++;
             railKep.add(buatBarisRailKep(i), c);
         }
@@ -3264,13 +3519,61 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         c.insets=new java.awt.Insets(0,0,0,0);
         railKep.add(javax.swing.Box.createGlue(), c);
 
-        if(!seksiKep.isEmpty()){ sorotSeksiKep(0); }
+        if(!halamanKep.isEmpty()){
+            halamanAktifKep = 0;
+            terapkanModeHalamanKep();
+            sorotHalamanKep(0);
+        }
+    }
+
+    /**
+     * [Bagian C] Sakelar "Satu bagian" / "Semua bagian" di kepala rail.
+     *
+     * Dua widget.RadioButton dalam satu ButtonGroup, digayakan lewat
+     * gayaChipKep() yg sudah ada - bukan dua widget.Button - supaya "yg sedang
+     * aktif" terbaca dari chip terpilih dan tidak perlu kode pewarnaan kedua.
+     */
+    private widget.PanelBiasa buatToggleModeKep(){
+        widget.PanelBiasa p = new widget.PanelBiasa();
+        p.setOpaque(false);
+        p.setLayout(new java.awt.GridBagLayout());
+
+        rbSatuHalamanKep = new widget.RadioButton();
+        rbSatuHalamanKep.setText("Satu bagian");
+        rbSemuaHalamanKep = new widget.RadioButton();
+        rbSemuaHalamanKep.setText("Semua bagian");
+        bgModeHalamanKep = new javax.swing.ButtonGroup();
+        bgModeHalamanKep.add(rbSatuHalamanKep);
+        bgModeHalamanKep.add(rbSemuaHalamanKep);
+        rbSatuHalamanKep.setSelected(satuHalamanKep);
+        rbSemuaHalamanKep.setSelected(!satuHalamanKep);
+
+        java.awt.event.ActionListener ubah = new java.awt.event.ActionListener(){
+            @Override public void actionPerformed(java.awt.event.ActionEvent e){
+                satuHalamanKep = rbSatuHalamanKep.isSelected();
+                terapkanModeHalamanKep();
+                keHalamanKep(Math.max(0, halamanAktifKep));
+            }
+        };
+        rbSatuHalamanKep.addActionListener(ubah);
+        rbSemuaHalamanKep.addActionListener(ubah);
+
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.gridy=0; c.anchor=java.awt.GridBagConstraints.WEST;
+        p.add(rbSatuHalamanKep, c);
+        c.gridx=1; c.insets=new java.awt.Insets(0,4,0,0);
+        p.add(rbSemuaHalamanKep, c);
+        c.gridx=2; c.weightx=1.0; c.insets=new java.awt.Insets(0,0,0,0);
+        c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        p.add(javax.swing.Box.createGlue(), c);
+        gayaChipKep(p);
+        return p;
     }
 
     /**
      * [Bagian C] Kartu progres di kepala rail.
      *
-     * Sengaja HANYA menampilkan posisi bagian ("Bagian 3 dari 26"), bukan
+     * Sengaja HANYA menampilkan posisi halaman ("Bagian 3 dari 11"), bukan
      * hitungan isian wajib. Hitungan wajib adalah Bagian E (Sesi 5); menaruh
      * angka "0/17" sekarang berarti memasang angka yg belum dihitung apa pun -
      * lebih menyesatkan daripada tidak ada. Kartu ini yg nanti diisi.
@@ -3318,7 +3621,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      * latarnya sendiri lewat glass color dan sulit diberi batang aksen.
      */
     private widget.PanelBiasa buatBarisRailKep(final int idx){
-        final SeksiKep s = seksiKep.get(idx);
+        final HalamanKep h = halamanKep.get(idx);
         widget.PanelBiasa baris = new widget.PanelBiasa();
         baris.setOpaque(true);
         baris.setBackground(widget.ThemeConfig.SURFACE);
@@ -3340,24 +3643,25 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         lbl.setForeground(widget.ThemeConfig.TEXT_NORMAL);
         lbl.setBorder(javax.swing.BorderFactory.createEmptyBorder(7,9,7,9));
         // Judul dibungkus <div width> supaya MEMBUNGKUS, bukan terpotong -
-        // judul terpanjang di sini 49 karakter ("SKRINING RESIKO PASIEN JATUH
-        // (GET UP AND GO TEST)") dan di mockup judul semacam itu kepotong.
-        lbl.setText(htmlLebarKep(LEBAR_TEKS_RAIL_KEP, (idx+1) + ". " + judulRingkasKep(s.judul)));
+        // judul halaman terpanjang "Skrining Geriatri & Resiko Jatuh" masih
+        // 31 karakter, tapi judul sisa (bagian di luar GRUP_HALAMAN_KEP)
+        // memakai judul aslinya yg bisa 49 karakter.
+        lbl.setText(htmlLebarKep(LEBAR_TEKS_RAIL_KEP, (idx+1) + ". " + h.judul));
 
         baris.add(aksen, java.awt.BorderLayout.WEST);
         baris.add(lbl, java.awt.BorderLayout.CENTER);
-        s.baris = baris; s.lblJudul = lbl; s.aksen = aksen;
+        h.baris = baris; h.lblJudul = lbl; h.aksen = aksen;
 
         baris.addMouseListener(new java.awt.event.MouseAdapter(){
             @Override public void mouseClicked(java.awt.event.MouseEvent e){
-                sorotSeksiKep(idx);
-                kePosisiSeksiKep(idx);
+                sorotHalamanKep(idx);
+                keHalamanKep(idx);
             }
             @Override public void mouseEntered(java.awt.event.MouseEvent e){
-                if(idx!=seksiAktifKep){ s.baris.setBackground(widget.ThemeConfig.SURFACE_ALT); }
+                if(idx!=halamanAktifKep){ h.baris.setBackground(widget.ThemeConfig.SURFACE_ALT); }
             }
             @Override public void mouseExited(java.awt.event.MouseEvent e){
-                if(idx!=seksiAktifKep){ s.baris.setBackground(widget.ThemeConfig.SURFACE); }
+                if(idx!=halamanAktifKep){ h.baris.setBackground(widget.ThemeConfig.SURFACE); }
             }
         });
         return baris;
@@ -3371,7 +3675,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      *
      *   zona scrollRailKep .............................. 300
      *   - matte border kanan 1px ........................  -1
-     *   - scrollbar vertikal (pasti muncul, 26 baris) ...  -17
+     *   - scrollbar vertikal (dianggarkan, 17px) ........  -17
      *   = lebar viewport railKep ........................ 282
      *
      *   kartu progres: -24 (insets 12+12) -2 (line border) -24 (padding 12+12) = 232
@@ -3379,6 +3683,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      *
      * Diambil 228, empat piksel di bawah angka kartu, sebagai jaga-jaga kalau
      * scrollbar LAF ternyata lebih lebar dari 17px. railKep jadi 254+24=278px.
+     *
+     * Sejak rail berisi 11 baris halaman (dulu 26 baris bagian) scrollbar-nya
+     * belum pasti muncul, jadi anggaran ini justru makin longgar. Angkanya
+     * tetap 228: melebarkannya cuma menambah reflow tanpa menambah keterbacaan,
+     * dan scrollbar bisa kembali begitu Bagian E menambah lencana status.
      */
     private static final int LEBAR_TEKS_RAIL_KEP = 228;
 
@@ -3392,58 +3701,76 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         return judul.replaceFirst("^\\s*(?:I|II|III|IV|V|VI|VII|VIII|IX|X)\\.\\s*", "").trim();
     }
 
-    /** [Bagian C] Pindahkan sorotan rail ke bagian ke-idx (tidak menggulung). */
-    private void sorotSeksiKep(int idx){
-        if(idx<0 || idx>=seksiKep.size()){ return; }
-        seksiAktifKep = idx;
-        for(int i=0;i<seksiKep.size();i++){
-            SeksiKep s = seksiKep.get(i);
-            if(s.baris==null){ continue; }
+    /** [Bagian C] Pindahkan sorotan rail ke halaman ke-idx (tidak menggulung). */
+    private void sorotHalamanKep(int idx){
+        if(idx<0 || idx>=halamanKep.size()){ return; }
+        halamanAktifKep = idx;
+        for(int i=0;i<halamanKep.size();i++){
+            HalamanKep h = halamanKep.get(i);
+            if(h.baris==null){ continue; }
             boolean aktif = (i==idx);
-            s.baris.setBackground(aktif ? widget.ThemeConfig.SURFACE_ALT : widget.ThemeConfig.SURFACE);
-            s.aksen.setBackground(aktif ? widget.ThemeConfig.PRIMARY : widget.ThemeConfig.SURFACE);
-            s.lblJudul.setForeground(aktif ? widget.ThemeConfig.TEXT : widget.ThemeConfig.TEXT_NORMAL);
-            s.lblJudul.setFont(new java.awt.Font("Segoe UI",
+            h.baris.setBackground(aktif ? widget.ThemeConfig.SURFACE_ALT : widget.ThemeConfig.SURFACE);
+            h.aksen.setBackground(aktif ? widget.ThemeConfig.PRIMARY : widget.ThemeConfig.SURFACE);
+            h.lblJudul.setForeground(aktif ? widget.ThemeConfig.TEXT : widget.ThemeConfig.TEXT_NORMAL);
+            h.lblJudul.setFont(new java.awt.Font("Segoe UI",
                     aktif ? java.awt.Font.BOLD : java.awt.Font.PLAIN, 11));
         }
         if(lblProgresJudulKep!=null){
-            SeksiKep s = seksiKep.get(idx);
-            lblProgresJudulKep.setText(htmlLebarKep(LEBAR_TEKS_RAIL_KEP, judulRingkasKep(s.judul)));
-            lblProgresHitungKep.setText("Bagian " + (idx+1) + " dari " + seksiKep.size());
+            HalamanKep h = halamanKep.get(idx);
+            lblProgresJudulKep.setText(htmlLebarKep(LEBAR_TEKS_RAIL_KEP, h.judul));
+            lblProgresHitungKep.setText("Bagian " + (idx+1) + " dari " + halamanKep.size());
         }
         railKep.revalidate();
         railKep.repaint();
     }
 
     /**
-     * [Bagian C] Gulung panel seksi sampai header bagian ke-idx terlihat.
+     * [Bagian D] Terapkan mode tampil: satu halaman saja, atau semua ditumpuk.
      *
-     * Ditambah TINGGI_KONTEKS_KEP di bawah strip supaya yg tampil bukan cuma
-     * judulnya, melainkan judul + beberapa baris pertama isinya. Kalau hanya
-     * strip yg dijadikan sasaran, klik rail terasa tidak berpindah ke mana2
-     * ketika bagian itu sudah mepet ke bawah layar.
+     * setVisible, bukan CardLayout - prompt mengizinkan keduanya, dan mode
+     * "Semua bagian" menuntut halaman TETAP bertumpuk & bisa digulung, yg
+     * justru tidak bisa dilakukan CardLayout (ia hanya menampilkan satu kartu).
+     * Satu mekanisme melayani dua mode; dua mekanisme berarti dua jalur bug.
      */
-    private void kePosisiSeksiKep(int idx){
-        if(idx<0 || idx>=seksiKep.size() || scrollSeksiKep==null){ return; }
-        SeksiKep s = seksiKep.get(idx);
-        java.awt.Container induk = s.strip.getParent();
-        if(induk==null){ return; }
+    private void terapkanModeHalamanKep(){
+        int aktif = Math.max(0, halamanAktifKep);
+        for(int i=0;i<halamanKep.size();i++){
+            HalamanKep h = halamanKep.get(i);
+            if(h.panel!=null){ h.panel.setVisible(!satuHalamanKep || i==aktif); }
+        }
+        if(FormInput!=null){ FormInput.revalidate(); FormInput.repaint(); }
+    }
+
+    /**
+     * [Bagian C] Tampilkan halaman ke-idx.
+     *
+     * Mode "Satu bagian": tidak ada yg perlu digulung - halaman lain memang
+     * disembunyikan, jadi cukup memunculkan yg dituju lalu mengembalikan
+     * gulungan ke atas. Mode "Semua bagian": gulung sampai kartu halamannya
+     * terlihat.
+     */
+    private void keHalamanKep(int idx){
+        if(idx<0 || idx>=halamanKep.size() || scrollSeksiKep==null){ return; }
+        HalamanKep h = halamanKep.get(idx);
+        if(h.panel==null){ return; }
+        if(satuHalamanKep){
+            terapkanModeHalamanKep();
+            scrollSeksiKep.getVerticalScrollBar().setValue(0);
+            return;
+        }
         java.awt.Rectangle r = javax.swing.SwingUtilities.convertRectangle(
-                induk, s.strip.getBounds(), FormInput);
-        r.height = Math.min(r.height + TINGGI_KONTEKS_KEP, Math.max(1, FormInput.getHeight() - r.y));
+                h.panel.getParent(), h.panel.getBounds(), FormInput);
+        r.height = Math.min(r.height, Math.max(1, FormInput.getHeight() - r.y));
         FormInput.scrollRectToVisible(r);
     }
 
-    /** Ruang isi yg diikutkan saat menggulung ke sebuah bagian. */
-    private static final int TINGGI_KONTEKS_KEP = 220;
-
     /**
-     * [Bagian A] Rangka layar 4 zona. Dipanggil SESUDAH susunTigaKolomKep()
+     * [Bagian A] Rangka layar 4 zona. Dipanggil SESUDAH susunHalamanKep()
      * karena memakai FormInput yg sudah tersusun.
      *
      *   internalFrame2 (BorderLayout)
      *     NORTH  barPasienKep   <- hasil buatBannerKep(), tidak lagi menggulung
-     *     WEST   scrollRailKep  <- navigasi bagian (isiRailKep)
+     *     WEST   scrollRailKep  <- navigasi halaman (isiRailKep)
      *     CENTER scrollSeksiKep <- FormInput
      *   panelGlass8 sudah menempati PAGE_END internalFrame1 (action bar).
      *
@@ -3490,96 +3817,202 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         internalFrame2.add(barPasienKep, java.awt.BorderLayout.NORTH);
         internalFrame2.add(scrollRailKep, java.awt.BorderLayout.WEST);
         internalFrame2.add(scrollSeksiKep, java.awt.BorderLayout.CENTER);
-        // Isi rail SESUDAH scrollSeksiKep ada - kePosisiSeksiKep() memakainya.
+        // Isi rail SESUDAH scrollSeksiKep ada - keHalamanKep() memakainya.
         isiRailKep();
         internalFrame2.revalidate();
         internalFrame2.repaint();
     }
 
     /**
-     * Assembler utama: susun ulang FormInput jadi 3 kartu kolom
-     * (ANAMNESA | PEMERIKSAAN | DIAGNOSIS & TINDAKAN). Reparent panel section
-     * yg sudah dibangun (panelKepAtas/Dua/Tiga/Diag/Obat/Empat + scrollPane1)
-     * - komponen tidak dibuat ulang, listener tetap.
+     * Assembler utama [Bagian D]: susun ulang FormInput jadi tumpukan HALAMAN,
+     * satu halaman per kelompok bagian (lihat GRUP_HALAMAN_KEP).
      *
-     * Bar pasien TIDAK lagi dirakit di sini; ia jadi zona NORTH milik
-     * susunRangkaKep() yg dipanggil sesudah method ini.
+     * Menggantikan susunTigaKolomKep(), tata letak 3 kartu kolom hasil Sesi
+     * 1-2. Tiga kolom DIBUANG, bukan disempurnakan: prompt Bagian D meminta
+     * satu bagian mengisi satu layar, dan itu berlawanan arah dgn memecah
+     * layar jadi tiga kartu 330px. Efek sampingnya dua masalah Sesi 3a ikut
+     * lenyap tanpa kode tambahan - Kolom 3 yg 606px (biang scrollbar
+     * horizontal) dan pelipatan baris tanda vital jadi 2 kolom sempit.
+     *
+     * Reparent, bukan bangun ulang: panel section yg sudah ada dipecah per
+     * bagian oleh pecahSeksiKep() lalu ditempel ke kartu halaman. Tidak ada
+     * komponen yg dibuat ulang, jadi listener, ButtonGroup, dan ikatan
+     * simpan/tampil tetap apa adanya.
+     *
+     * Bar pasien TIDAK dirakit di sini; ia zona NORTH milik susunRangkaKep()
+     * yg dipanggil sesudah method ini.
      */
-    private void susunTigaKolomKep(){
+    private void susunHalamanKep(){
         FormInput.removeAll();
         FormInput.setLayout(new java.awt.GridBagLayout());
         FormInput.setBackground(widget.ThemeConfig.BACKGROUND);
         FormInput.setBorder(javax.swing.BorderFactory.createEmptyBorder(12,14,12,14));
         // GEN memanggil FormInput.setPreferredSize(870,1203) - reset ke null
         // supaya GridBagLayout yg menghitung ukuran (kalau tidak, lebar/tinggi
-        // terkunci & kolom kepotong / scroll salah).
+        // terkunci & halaman kepotong / scroll salah).
         FormInput.setPreferredSize(null);
 
-        // Panel section dibuat transparan supaya kartu putih kolom tembus.
+        // Panel section dibuat transparan supaya kartu halaman putih tembus.
         widget.PanelBiasa[] seksi = { panelKepAtas, panelKepDua, panelKepTiga,
             panelKepTigaDiag, panelKepObat, panelKepEmpat };
         for(widget.PanelBiasa p : seksi){ if(p!=null){ p.setOpaque(false); } }
 
-        int lebarKolom = 340;
-        widget.PanelBiasa kol1 = buatKolomKep(lebarKolom, true);
-        widget.PanelBiasa kol2 = buatKolomKep(lebarKolom, true);
-        widget.PanelBiasa kol3 = buatKolomKep(lebarKolom, false);
+        daftarkanRiwayatKep();
+        pecahSeksiKep();
+        kelompokkanHalamanKep();
 
-        // -- Kolom 1: ANAMNESA / RIWAYAT --
-        int r1 = 0;
-        // Strip ini dibuat langsung di sini (bukan lewat tambahBarisKepJudul),
-        // jadi pendaftaran rail-nya harus manual. Induknya kol1 - satu2nya
-        // entri seksiKep yg induknya kartu kolom, bukan panel section.
-        widget.PanelBiasa stripRiwayat = buatHeaderStripKep("I. RIWAYAT KESEHATAN PASIEN");
-        r1 = tambahIsiKolomKep(kol1, r1, stripRiwayat);
-        seksiKep.add(0, new SeksiKep("I. RIWAYAT KESEHATAN PASIEN", stripRiwayat, kol1, -1));
-        scrollPane1.setPreferredSize(new java.awt.Dimension(300,110)); // dulu diatur via setBounds (null-layout)
-        r1 = tambahIsiKolomKep(kol1, r1, barisAreaKep("Keluhan Utama", scrollPane1));
-        r1 = tambahIsiKolomKep(kol1, r1, panelKepAtas);
-        tutupKolomKep(kol1, r1);
-
-        // -- Kolom 2: PEMERIKSAAN --
-        int r2 = 0;
-        r2 = tambahIsiKolomKep(kol2, r2, panelKepDua);
-        r2 = tambahIsiKolomKep(kol2, r2, panelKepTiga);
-        tutupKolomKep(kol2, r2);
-
-        // -- Kolom 3: DIAGNOSIS & TINDAKAN --
-        int r3 = 0;
-        if(panelKepTigaDiag!=null){ r3 = tambahIsiKolomKep(kol3, r3, panelKepTigaDiag); }
-        r3 = tambahIsiKolomKep(kol3, r3, panelKepObat);
-        r3 = tambahIsiKolomKep(kol3, r3, panelKepEmpat);
-        tutupKolomKep(kol3, r3);
-
-        // [Bagian D] Chip dipasang SEBELUM rapikanIsiKep(): tiap chip tumbuh
-        // ~16px karena padding pil, jadi kalau penyempitan jalan lebih dulu
-        // lebarnya dihitung dari ukuran pra-chip dan kartu kolom jebol.
-        gayaChipKep(kol1);
-        gayaChipKep(kol2);
-        gayaChipKep(kol3);
-
-        // Pass finishing: sempitkan semua isi kartu ke <= LEBAR_ISI_KEP supaya
-        // 3 kolom muat tanpa scroll horizontal (lihat rapikanIsiKep()).
-        rapikanIsiKep(kol1);
-        rapikanIsiKep(kol2);
-        rapikanIsiKep(kol3);
-
-        // 3 kolom sejajar (kartu sama-tinggi via weighty + fill BOTH).
-        java.awt.GridBagConstraints fk = new java.awt.GridBagConstraints();
-        fk.gridy=0; fk.weighty=1.0; fk.fill=java.awt.GridBagConstraints.BOTH;
-        fk.anchor=java.awt.GridBagConstraints.NORTH;
-        fk.gridx=0; fk.weightx=0.30; FormInput.add(kol1, fk);
-        fk.gridx=1; fk.weightx=0.30; FormInput.add(kol2, fk);
-        fk.gridx=2; fk.weightx=0.40; FormInput.add(kol3, fk);
-
-        // [Bagian C] Urutkan daftar bagian mengikuti urutan MATA (kiri->kanan,
-        // atas->bawah), bukan urutan bangun. Keduanya berbeda: panelKepObat
-        // dibangun paling akhir tapi tampil di tengah Kolom 3.
-        urutkanSeksiKep(new widget.PanelBiasa[]{ kol1, panelKepAtas,
-            panelKepDua, panelKepTiga, panelKepTigaDiag, panelKepObat, panelKepEmpat });
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor=java.awt.GridBagConstraints.NORTH;
+        int gy = 0;
+        for(int i=0;i<halamanKep.size();i++){
+            HalamanKep h = halamanKep.get(i);
+            buatHalamanKep(h, i);
+            c.gridy=gy++; c.insets=new java.awt.Insets(i==0?0:12,0,0,0);
+            FormInput.add(h.panel, c);
+        }
+        // Glue vertikal (aturan CLAUDE.md): tanpa ini GridBagLayout
+        // menengahkan kartu halaman saat isinya lebih pendek dari layar.
+        c.gridy=gy; c.weighty=1.0; c.fill=java.awt.GridBagConstraints.BOTH;
+        c.insets=new java.awt.Insets(0,0,0,0);
+        FormInput.add(javax.swing.Box.createGlue(), c);
 
         FormInput.revalidate();
         FormInput.repaint();
+    }
+    /**
+     * Bagian "I. RIWAYAT KESEHATAN PASIEN" tidak lahir dari
+     * tambahBarisKepJudul(): isinya scrollPane1 (Keluhan Utama) bawaan GEN yg
+     * tidak pernah masuk panel section mana pun. Jadi panelnya dirakit di sini
+     * dan didaftarkan lengkap dgn `panel` terisi - pecahSeksiKep() otomatis
+     * melewatinya karena syaratnya `panel==null`.
+     */
+    private void daftarkanRiwayatKep(){
+        final String judul = "I. RIWAYAT KESEHATAN PASIEN";
+        for(SeksiKep s : seksiKep){
+            if(kunciJudulKep(judul).equals(kunciJudulKep(s.judul))){ return; }
+        }
+        widget.PanelBiasa isi = new widget.PanelBiasa();
+        isi.setOpaque(false);
+        isi.setLayout(new java.awt.GridBagLayout());
+        widget.PanelBiasa strip = buatHeaderStripKep(judul);
+        java.awt.GridBagConstraints c = kepConstraint(0,0);
+        c.gridwidth=java.awt.GridBagConstraints.REMAINDER;
+        c.weightx=1.0; c.insets=new java.awt.Insets(0,5,3,5);
+        isi.add(strip, c);
+        // Yg dipatok di sini cuma TINGGI kotak Keluhan Utama (110px = 3 baris).
+        // Lebarnya sengaja tidak: rapikanIsiKep() melebarkan semua JScrollPane
+        // ke anggaran halaman, dan angka lebar kedua di sini hanya akan bisa
+        // berbeda dari anggaran itu tanpa ketahuan.
+        scrollPane1.setPreferredSize(new java.awt.Dimension(
+                scrollPane1.getPreferredSize().width, 110));
+        c.gridy=1; c.insets=new java.awt.Insets(0,0,0,0);
+        isi.add(barisAreaKep("Keluhan Utama", scrollPane1), c);
+        SeksiKep s = new SeksiKep(judul, strip, isi, -1);
+        s.panel = isi;
+        seksiKep.add(0, s);
+    }
+
+    /**
+     * Lebar kartu halaman, dalam piksel perangkat.
+     *
+     *   dialog ..................................... 1600
+     *   - insets dialog (~8+8) ..................... -16
+     *   - zona rail scrollRailKep .................. -300
+     *   - scrollbar vertikal scrollSeksiKep ........ -17
+     *   - border FormInput (14+14) ................. -28
+     *   = ruang tersedia utk kartu ................. 1239
+     *
+     * Diambil 1230, sembilan piksel di bawahnya. Angka ini juga jadi anggaran
+     * rapikanIsiKep() (dikurangi border kartu + insets bagian), jadi ia yg
+     * menentukan checklist boleh melebar berapa kolom.
+     */
+    private static final int LEBAR_HALAMAN_KEP = 1230;
+    /**
+     * [Bagian D] Rakit satu kartu halaman: strip judul 52px + panel bagian.
+     *
+     * @param idx index halaman, dipakai utk teks "Bagian i dari N" di strip
+     */
+    private void buatHalamanKep(HalamanKep h, int idx){
+        widget.PanelBiasa kartu = new widget.PanelBiasa();
+        kartu.setOpaque(true);
+        kartu.setBackground(widget.ThemeConfig.SURFACE);
+        kartu.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT));
+        kartu.setLayout(new java.awt.GridBagLayout());
+
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.gridy=0; c.weightx=1.0;
+        c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor=java.awt.GridBagConstraints.NORTHWEST;
+        kartu.add(buatStripHalamanKep(h.judul, idx), c);
+
+        int gy = 1;
+        for(SeksiKep s : h.anggota){
+            c.gridy=gy++; c.insets=new java.awt.Insets(0,10,0,10);
+            kartu.add(s.panel, c);
+            // Halaman berisi SATU bagian: strip 32px-nya cuma mengulang judul
+            // yg sudah tertulis besar di strip halaman 52px. Disembunyikan,
+            // bukan dibuang - prompt melarang menghapus komponen, dan komponen
+            // invisible tidak menempati baris GridBagLayout sama sekali
+            // (insets-nya ikut lenyap, jadi tidak ada celah tertinggal).
+            if(h.anggota.size()==1){ s.strip.setVisible(false); }
+        }
+        c.gridy=gy; c.insets=new java.awt.Insets(0,0,10,0);
+        kartu.add(javax.swing.Box.createVerticalStrut(1), c);
+
+        // Strut lebar minimum di baris terpisah (gridy 900): tanpa ini kartu
+        // menciut ke lebar isi terpendek, mis. halaman Riwayat Alergi yg cuma
+        // "Tidak | Ya | Sebutkan".
+        java.awt.GridBagConstraints cs = new java.awt.GridBagConstraints();
+        cs.gridx=0; cs.gridy=900; cs.gridwidth=java.awt.GridBagConstraints.REMAINDER;
+        kartu.add(javax.swing.Box.createHorizontalStrut(LEBAR_HALAMAN_KEP-2), cs);
+
+        h.panel = kartu;
+        // Chip dipasang SEBELUM rapikanIsiKep(): tiap chip tumbuh ~16px karena
+        // padding pil, jadi kalau penyempitan jalan lebih dulu lebarnya
+        // dihitung dari ukuran pra-chip dan kartu jebol.
+        gayaChipKep(kartu);
+        rapikanIsiKep(kartu, LEBAR_HALAMAN_KEP - 42);
+    }
+    /**
+     * [Bagian D] Strip kepala halaman 52px: batang aksen + judul + posisi.
+     *
+     * Beda dari buatHeaderStripKep() yg 32px: judulnya 13pt BOLD warna TEXT dan
+     * TIDAK di-UPPERCASE. Strip 32px menandai satu bagian di dalam halaman,
+     * strip ini menandai halamannya - dua tingkat yg harus terbaca berbeda,
+     * kalau ukurannya sama hierarkinya hilang.
+     */
+    private widget.PanelBiasa buatStripHalamanKep(String judul, int idx){
+        widget.PanelBiasa strip = new widget.PanelBiasa();
+        strip.setOpaque(true);
+        strip.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        strip.setBorder(javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT));
+        strip.setLayout(new java.awt.BorderLayout(0,0));
+        strip.setPreferredSize(new java.awt.Dimension(10,52));
+
+        widget.PanelBiasa aksen = new widget.PanelBiasa();
+        aksen.setOpaque(true);
+        aksen.setBackground(widget.ThemeConfig.PRIMARY);
+        aksen.setPreferredSize(new java.awt.Dimension(4,10));
+
+        widget.Label l = new widget.Label();
+        l.setText(judul==null ? "" : judul);
+        l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        l.setForeground(widget.ThemeConfig.TEXT);
+        l.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,12,0,12));
+
+        widget.Label posisi = new widget.Label();
+        posisi.setText("Bagian " + (idx+1) + " dari " + halamanKep.size());
+        posisi.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        posisi.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        posisi.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        posisi.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,12,0,14));
+
+        strip.add(aksen, java.awt.BorderLayout.WEST);
+        strip.add(l, java.awt.BorderLayout.CENTER);
+        strip.add(posisi, java.awt.BorderLayout.EAST);
+        return strip;
     }
 
     /**
@@ -3705,26 +4138,28 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
         widget.PanelBiasa panelKeadaanUmum = new widget.PanelBiasa();
         panelKeadaanUmum.setLayout(new java.awt.GridBagLayout());
-        int rowKU = 0;
 
-        // [Layout 3-kolom] Grid tanda vital dipadatkan dari 3 pasang
-        // label/field per baris (gridx 0..5, butuh ~840px) menjadi 1 pasang
-        // per baris, supaya muat di kartu Kolom 1 (ANAMNESA) tanpa memaksa
-        // scroll horizontal. Komponen field-nya SAMA (TdKep/NadiKep/...),
-        // hanya penempatannya yg berubah; label lokal lama (lblTdKep dst)
-        // digantikan label dari tambahBarisKepField() dgn teks yg sama.
-        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Tekanan Darah (mmHg)", TdKep);
-        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Frekuensi Nadi (x/menit)", NadiKep);
-        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Frekuensi Nafas (x/menit)", RrKep);
-        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Suhu (°C)", SuhuKep);
-        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "SpO2 (%)", SpoKep);
-        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Berat Badan (Kg)", BbKep);
-        rowKU = tambahBarisKepField(panelKeadaanUmum, rowKU, "Tinggi Badan (Cm)", TbKep);
+        // [Bagian D] GRID 4 KOLOM, permintaan eksplisit prompt utk tanda vital.
+        // Versi tata letak 3 kolom menumpuknya 1 pasang per baris supaya muat
+        // di kartu 330px; di halaman selebar layar itu jadi satu kolom kurus
+        // 143px dgn ~1000px kosong di sebelahnya (terlihat di render hal-03).
+        // Komponen field-nya SAMA (TdKep/NadiKep/...), hanya penempatannya yg
+        // berubah - tidak ada field ditambah/dihapus.
+        String[] labelVitalKep = { "Tekanan Darah (mmHg)", "Frekuensi Nadi (x/menit)",
+            "Frekuensi Nafas (x/menit)", "Suhu (°C)", "SpO2 (%)", "Berat Badan (Kg)",
+            "Tinggi Badan (Cm)" };
+        java.awt.Component[] isiVitalKep = { TdKep, NadiKep, RrKep, SuhuKep, SpoKep, BbKep, TbKep };
+        for(int i=0;i<isiVitalKep.length;i++){
+            tambahSelKepField(panelKeadaanUmum, i%KOLOM_VITAL_KEP, i/KOLOM_VITAL_KEP,
+                    labelVitalKep[i], isiVitalKep[i]);
+        }
+        int rowKU = (isiVitalKep.length + KOLOM_VITAL_KEP - 1) / KOLOM_VITAL_KEP;
 
-        // Filler kolom paling kanan (gridx=2) menyerap sisa lebar baris
-        // supaya kolom KEADAAN UMUM tetap rapat di kiri, bukan field yg
-        // melebar. Tidak terlihat (Box glue, 0x0).
-        java.awt.GridBagConstraints cFillerKeadaanUmum = kepConstraint(2, 0);
+        // Filler kolom paling kanan (sesudah 4 sel x gridwidth 2 = kolom 8)
+        // menyerap sisa lebar baris supaya grid tanda vital tetap RAPAT di kiri,
+        // bukan keempat kolomnya yg merenggang selebar halaman. Tidak terlihat
+        // (Box glue, 0x0).
+        java.awt.GridBagConstraints cFillerKeadaanUmum = kepConstraint(KOLOM_VITAL_KEP*2, 0);
         cFillerKeadaanUmum.gridheight = rowKU;
         cFillerKeadaanUmum.weightx = 1.0;
         cFillerKeadaanUmum.fill = java.awt.GridBagConstraints.BOTH;
@@ -3795,11 +4230,16 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             lblKehamilan.setVisible(hamil);
             panelKehamilan.setVisible(hamil);
 
-            // [Layout 3-kolom] Di GridBagLayout, tinggi kartu Kolom 1 reflow
+            // [Bagian D] Di GridBagLayout, tinggi kartu halaman reflow
             // otomatis saat baris Kehamilan muncul/hilang - tak perlu lagi
             // geser panelKepDua/Tiga/Empat/Obat manual atau resize FormInput
             // (Y-math null-layout lama sudah dinonaktifkan).
-            panelKepAtas.revalidate();
+            //
+            // Yg direvalidasi induk NYATA lblKehamilan, bukan panelKepAtas:
+            // pecahSeksiKep() memindahkan baris ini ke sub-panel bagian
+            // "STATUS KEHAMILAN", jadi panelKepAtas sudah bukan induknya lagi
+            // dan revalidate ke sana tidak menyentuh apa pun.
+            if(lblKehamilan.getParent()!=null){ lblKehamilan.getParent().revalidate(); }
             FormInput.revalidate();
             FormInput.repaint();
         });
@@ -3823,7 +4263,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // Urutan diatur ulang (bukan urutan deklarasi) supaya isi baris 1 =
         // Tenang/Cemas/Marah dan baris 2 = Takut/Sedih/Kecenderungan Bunuh
         // Diri, sesuai GridLayout(0,3) row-major.
-        panelKepAtas.add(panelChecklistKep(2, CekPsiTenang,CekPsiCemas,CekPsiMarah,CekPsiTakut,CekPsiSedih,CekPsiBunuhDiri), cPsi); // [Layout 3-kolom] 3 -> 2 kolom checklist agar muat di kartu Kolom 1
+        // 2 kolom (bukan 3): sisa penyempitan Sesi 1-2. Dibiarkan 2 kolom di
+        // halaman selebar layar - sempitkanGridKep() sengaja cuma boleh
+        // MENGURANGI jumlah kolom, menambahnya berarti menimpa pengelompokan
+        // visual yg dipilih di sini.
+        panelKepAtas.add(panelChecklistKep(2, CekPsiTenang,CekPsiCemas,CekPsiMarah,CekPsiTakut,CekPsiSedih,CekPsiBunuhDiri), cPsi);
         row++;
         RbMasalahPrilakuTidak = new widget.RadioButton(); RbMasalahPrilakuTidak.setText("Tidak");
         RbMasalahPrilakuYa = new widget.RadioButton(); RbMasalahPrilakuYa.setText("Ada, Sebutkan");
@@ -4004,7 +4448,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekCacatTunaRungu = new widget.CekBox(); CekCacatTunaRungu.setText("Tuna Rungu");
         CekCacatTunaWicara = new widget.CekBox(); CekCacatTunaWicara.setText("Tuna Wicara");
         row = tambahBarisKepField(panelKepAtas, row, "Cacat Tubuh / Disabilitas",
-            panelChecklistKep(2, CekCacatTidak,CekCacatTunaNetra,CekCacatTunaDaksa,CekCacatTunaRungu,CekCacatTunaWicara)); // [Layout 3-kolom] 5 -> 2 kolom checklist
+            panelChecklistKep(2, CekCacatTidak,CekCacatTunaNetra,CekCacatTunaDaksa,CekCacatTunaRungu,CekCacatTunaWicara)); // 2 kolom (dari 5) - alasan sama spt checklist psikologis
 
         // -- Retire section/field lama yang tak ada padanan di foto fisik
         // RM 03-4/05/06 (setVisible(false), BUKAN dihapus - kolom DB tetap
@@ -4074,11 +4518,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         for(java.awt.Component c: retiredSectionV) c.setVisible(false);
         for(java.awt.Component c: retiredSectionVI) c.setVisible(false);
 
-        // [Layout 3-kolom] Penempatan panelKepAtas ditangani susunTigaKolomKep()
-        // sbg kartu Kolom 1 (ANAMNESA/RIWAYAT). Y-math null-layout lama (geser
-        // komponen y>=210 via FormInput.getComponents(), setBounds,
-        // lebarFormInput, yBawahLama, FormInput.setPreferredSize) tidak dipakai
-        // lagi - GridBagLayout kartu yg mengatur posisi & tinggi otomatis.
+        // Penempatan panelKepAtas ditangani susunHalamanKep(): isinya dipecah
+        // per seksi oleh pecahSeksiKep(), lalu tiap seksi masuk ke kartu
+        // halamannya sendiri. Y-math null-layout lama (geser komponen y>=210 via
+        // FormInput.getComponents(), setBounds, lebarFormInput, yBawahLama,
+        // FormInput.setPreferredSize) tidak dipakai lagi - GridBagLayout kartu
+        // yg mengatur posisi & tinggi otomatis.
     }
 
     /**
@@ -4234,14 +4679,17 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // ke sini dari section "V. SKALA NYERI" lama (dulu jadi diagram
         // background dekat field Provokes/Quality), supaya tampil sesuai
         // foto fisik RM 03-5. BUKAN diagram lokasi tubuh spt dugaan awal.
-        PanelWall.setPreferredSize(new java.awt.Dimension(320,140)); // [Layout 3-kolom] dari 360 -> muat di kartu Kolom 2
+        // 320x140 di sini cuma UKURAN MINIMUM: selnya fill=HORIZONTAL gridwidth=2,
+        // jadi lebar nyatanya mengikuti kolom halaman (~750px) dan gambarnya
+        // diskalakan ke situ. Angka aslinya 360, dipersempit di Sesi 1-2.
+        PanelWall.setPreferredSize(new java.awt.Dimension(320,140));
         java.awt.GridBagConstraints cSkalaNyeriGambar = kepConstraint(0,row); cSkalaNyeriGambar.gridwidth=2;
         panelKepDua.add(PanelWall, cSkalaNyeriGambar);
         row++;
 
-        // [Layout 3-kolom] panelKepDua (Gizi Dewasa/Anak + Asesmen Nyeri)
-        // ditempatkan di kartu Kolom 2 (PEMERIKSAAN) oleh susunTigaKolomKep()
-        // - Y-math null-layout lama dinonaktifkan.
+        // panelKepDua (Gizi Dewasa/Anak + Asesmen Nyeri) dipecah per seksi oleh
+        // pecahSeksiKep() lalu ditempatkan susunHalamanKep() - Y-math
+        // null-layout lama dinonaktifkan.
     }
 
     /**
@@ -4398,8 +4846,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelTime.add(RbTimeTerusMenerus); panelTime.add(RbTimeHilangTimbul); panelTime.add(RbTimeKurang30); panelTime.add(RbTimeLebih30);
         row = tambahBarisKepField(panelKepTiga, row, "Time (Nyeri Berlangsung)", panelTime);
 
-        // [Layout 3-kolom] SPLIT panelKepTiga: FLACC/PQRST (di atas) tetap di
-        // Kolom 2, section Diagnosis..Obgyn (di bawah) pindah ke Kolom 3.
+        // SPLIT panelKepTiga: FLACC/PQRST (di atas) tetap bersama Asesmen Nyeri,
+        // section Diagnosis..Obgyn (di bawah) jadi blok tersendiri - dulu supaya
+        // muat di dua kartu kolom berbeda, sekarang supaya jadi dua halaman.
         // Trik reparent tanpa mengubah 170 baris kode di bawah: simpan panel
         // FLACC ke variabel lokal, lalu arahkan field panelKepTiga ke panel
         // BARU supaya blok Diagnosis tetap ditulis ke "panelKepTiga" apa
@@ -4417,7 +4866,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // PROGRESS.md) direparent dari posisi lama (blok terpisah jauh di
         // atas, y asli 1020) ke sini, sesuai urutan foto fisik RM 03-6.
         row = tambahBarisKepJudul(panelKepTiga, row, "I. DIAGNOSIS KEPERAWATAN");
-        Scroll8.setPreferredSize(new java.awt.Dimension(320,140)); // [Layout 3-kolom] dari 400 -> muat di kartu Kolom 3
+        // Tinggi saja (140px). Lebarnya diserahkan ke rapikanIsiKep() yg
+        // melebarkan blok lebar ke anggaran halaman; angka lebar 320 sisa Sesi
+        // 1-2 sudah tidak berlaku lagi.
+        Scroll8.setPreferredSize(new java.awt.Dimension(
+                Scroll8.getPreferredSize().width, 140));
         widget.PanelBiasa panelCariMasalah = new widget.PanelBiasa();
         panelCariMasalah.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelCariMasalah.add(label12); panelCariMasalah.add(TCariMasalah);
@@ -4460,7 +4913,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // initKepTambahan()) direparent dari posisi lama ke sini, sesuai
         // urutan foto fisik RM 03-6.
         row = tambahBarisKepJudul(panelKepTiga, row, "III. TINDAKAN KEPERAWATAN MANDIRI");
-        TabRencanaKeperawatan.setPreferredSize(new java.awt.Dimension(320,143)); // [Layout 3-kolom] dari 420 -> muat di kartu Kolom 3
+        // Yg dipatok cuma TINGGI (143px). Lebarnya diserahkan ke rapikanIsiKep()
+        // yg melebarkan blok lebar ke anggaran halaman - angka lebar kedua di
+        // sini hanya akan bisa berbeda dari anggaran itu tanpa ketahuan, spt yg
+        // sudah terjadi: 320px sisa tata letak 3 kolom masih terpasang di
+        // halaman 1240px.
+        TabRencanaKeperawatan.setPreferredSize(new java.awt.Dimension(
+                TabRencanaKeperawatan.getPreferredSize().width, 143));
         // Kontrol "Key Word"/cari/ceklis-semua/tambah (label13/TCariRencana/
         // BtnCariRencana/BtnAllRencana/BtnTambahRencana) TIDAK diikutkan -
         // itu semua cuma dipakai utk tab checklist "Rencana Keperawatan"
@@ -4588,10 +5047,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelKepTiga.add(panelChecklistKep(2, CekObgynMembantuPartus,CekObgynPeriksaGinekologi,CekObgynDopplerCtgUsg,CekObgynPasangTampon), cObgyn);
         row++;
 
-        // [Layout 3-kolom] Selesai membangun blok Diagnosis: pindahkan panel
-        // hasil ke field Kolom 3 (panelKepTigaDiag) & kembalikan panelKepTiga
-        // ke panel FLACC/PQRST (Kolom 2). Penempatan kedua panel ditangani
-        // susunTigaKolomKep() - Y-math null-layout lama dinonaktifkan.
+        // Selesai membangun blok Diagnosis: pindahkan panel hasil ke field
+        // panelKepTigaDiag & kembalikan panelKepTiga ke panel FLACC/PQRST.
+        // Keduanya dipecah per seksi oleh pecahSeksiKep() lalu ditempatkan
+        // susunHalamanKep() - Y-math null-layout lama dinonaktifkan.
         panelKepTigaDiag = panelKepTiga;
         panelKepTiga = panelKepTigaFlacc;
     }
@@ -4995,9 +5454,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // header "Petugas" dipakai langsung sbg Perawat/Bidan di
         // nilaiKep(). Tidak ada lagi baris input di section ini.
 
-        // [Layout 3-kolom] panelKepEmpat (Kondisi Pasien Pindah/Pulang +
-        // Pendidikan Kesehatan Pulang) ditempatkan di kartu Kolom 3 oleh
-        // susunTigaKolomKep() - Y-math null-layout lama dinonaktifkan.
+        // panelKepEmpat (Kondisi Pasien Pindah/Pulang + Pendidikan Kesehatan
+        // Pulang) dipecah per seksi oleh pecahSeksiKep() lalu ditempatkan
+        // susunHalamanKep() - Y-math null-layout lama dinonaktifkan.
     }
 
     /**
@@ -5023,7 +5482,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         tbObatInfus.setModel(tabModeObatInfus);
         widget.ScrollPane scrollObatInfus = new widget.ScrollPane();
         scrollObatInfus.setViewportView(tbObatInfus);
-        scrollObatInfus.setPreferredSize(new java.awt.Dimension(320,120)); // [Layout 3-kolom] dipersempit dari 800 agar muat di kartu Kolom 3 (tabel scroll horizontal internal)
+        // Tinggi saja (120px = ~4 baris). Lebarnya diserahkan ke rapikanIsiKep():
+        // pin 320px sisa tata letak 3 kolom membuat tabel 6 kolom ini punya
+        // scrollbar horizontal sendiri di dalam halaman selebar 1240px.
+        scrollObatInfus.setPreferredSize(new java.awt.Dimension(
+                scrollObatInfus.getPreferredSize().width, 120));
         java.awt.GridBagConstraints cTabelObat = kepConstraint(0,row); cTabelObat.gridwidth=2;
         panelKepObat.add(scrollObatInfus, cTabelObat);
         row++;
@@ -5197,9 +5660,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelObatTombol.add(BtnTambahObat); panelObatTombol.add(BtnHapusObat);
         row = tambahBarisKepField(panelKepObat, row, "", panelObatTombol);
 
-        // [Layout 3-kolom] panelKepObat (Pemberian Obat/Infus) ditempatkan di
-        // kartu Kolom 3 oleh susunTigaKolomKep() - Y-math null-layout lama
-        // dinonaktifkan.
+        // panelKepObat (Pemberian Obat/Infus) jadi seksi tersendiri lewat
+        // pecahSeksiKep() lalu ditempatkan susunHalamanKep() - Y-math
+        // null-layout lama dinonaktifkan.
     }
 
     /**
@@ -6509,9 +6972,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private int geserKep1;
     private int yBawahLama;
     private int lebarFormInput = 870;
-    // [Layout 3-kolom] Panel Diagnosis..Obgyn dipecah dari panelKepTiga
-    // (FLACC/PQRST) supaya bisa ditaruh di kartu Kolom 3 - lihat
-    // initKepTambahanHal3() & susunTigaKolomKep().
+    // Panel Diagnosis..Obgyn dipecah dari panelKepTiga (FLACC/PQRST) supaya
+    // bisa jadi seksi/halaman sendiri - lihat initKepTambahanHal3() &
+    // susunHalamanKep().
     private widget.PanelBiasa panelKepTigaDiag;
     // Label kartu identitas pada banner atas (buatBannerKep/sinkronKartuKep).
     private widget.Label lblKartuNama, lblKartuRM, lblKartuRawat;
@@ -6529,27 +6992,57 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      * [Bagian C] Satu entri navigasi bagian.
      *
      * `strip` = header strip yg dihasilkan tambahBarisKepJudul(), dipakai
-     * sebagai sasaran scroll. `induk` = panel section tempat strip itu
-     * ditanam; dicatat lewat IDENTITAS objek, bukan nama field, karena
-     * `panelKepTiga` ditukar di tengah initKepTambahanHal3() (isi FLACC
+     * sebagai penanda batas bagian. `induk` = panel section tempat strip itu
+     * ditanam SAAT DIBANGUN; dicatat lewat IDENTITAS objek, bukan nama field,
+     * karena `panelKepTiga` ditukar di tengah initKepTambahanHal3() (isi FLACC
      * dipisah dari isi Diagnosis..Obgyn yg jadi panelKepTigaDiag).
+     *
+     * `panel` = sub-panel berisi HANYA bagian ini, hasil pecahSeksiKep(). Ini
+     * yg ditempel ke kartu halaman; `induk` sesudah itu tinggal jadi catatan
+     * asal-usul. null berarti bagian itu belum/tidak dipecah, dan
+     * kelompokkanHalamanKep() melewatinya.
      */
     private static final class SeksiKep {
         final String judul;
         final widget.PanelBiasa strip;
         final widget.PanelBiasa induk;
         final int urutBangun;
-        widget.PanelBiasa baris;
-        widget.Label lblJudul;
-        widget.PanelBiasa aksen;
+        widget.PanelBiasa panel;
         SeksiKep(String judul, widget.PanelBiasa strip, widget.PanelBiasa induk, int urutBangun){
             this.judul = judul; this.strip = strip; this.induk = induk; this.urutBangun = urutBangun;
         }
     }
     /** Daftar bagian, diisi tambahBarisKepJudul() saat section dibangun. */
     private final java.util.List<SeksiKep> seksiKep = new java.util.ArrayList<>();
-    /** Index bagian yg sedang disorot di rail, -1 = belum ada. */
-    private int seksiAktifKep = -1;
+
+    /**
+     * [Bagian D] Satu halaman = satu kartu di FormInput + satu baris di rail.
+     *
+     * Berisi satu bagian atau beberapa bagian sekerabat (lihat
+     * GRUP_HALAMAN_KEP). `panel` kartunya, `baris`/`lblJudul`/`aksen` widget
+     * baris rail-nya - ketiganya dipegang supaya sorotHalamanKep() bisa
+     * mewarnai ulang tanpa mencari-cari di dalam hierarki.
+     */
+    private static final class HalamanKep {
+        final String judul;
+        final java.util.List<SeksiKep> anggota = new java.util.ArrayList<>();
+        widget.PanelBiasa panel;
+        widget.PanelBiasa baris;
+        widget.Label lblJudul;
+        widget.PanelBiasa aksen;
+        HalamanKep(String judul){ this.judul = judul; }
+    }
+    /** Daftar halaman, disusun kelompokkanHalamanKep() dari GRUP_HALAMAN_KEP. */
+    private final java.util.List<HalamanKep> halamanKep = new java.util.ArrayList<>();
+    /** Index halaman yg sedang disorot di rail, -1 = belum ada. */
+    private int halamanAktifKep = -1;
+    /**
+     * true = tampilkan satu halaman saja (default, sesuai prompt "satu bagian
+     * per layar"); false = semua halaman bertumpuk & bisa digulung.
+     */
+    private boolean satuHalamanKep = true;
+    private widget.RadioButton rbSatuHalamanKep, rbSemuaHalamanKep;
+    private javax.swing.ButtonGroup bgModeHalamanKep;
     private widget.Label lblProgresJudulKep, lblProgresHitungKep;
 
     // -- Riwayat Alergi --
