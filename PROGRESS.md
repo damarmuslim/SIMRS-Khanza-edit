@@ -3368,3 +3368,148 @@ yang sama dua kali:
 
 Satu hal yang bukan cacat: garis diagonal ~20px di header tabel pada PNG.
 Itu artefak `printAll` offscreen, tidak muncul di layar sungguhan.
+
+# Sesi 3c — Bagian D ditutup: helper baris, chip yang akhirnya terlukis, dan kotak bawaan PanelBiasa
+
+Sesi ini menyelesaikan empat cacat kosmetik yang sengaja ditunda dari Sesi 3b,
+lalu menutup dua butir gaya Bagian D yang belum dikerjakan — dan di jalan
+menemukan dua cacat yang lebih dalam dari keduanya. Nol field ditambah/dihapus,
+nol nama variabel diganti, nol query dan nol baris `.jrxml` disentuh.
+
+## Cacat yang ditutup (empat warisan Sesi 3b)
+
+- **Tepi kanan gerigi** → `gridwidth = REMAINDER` pada pembungkus baris, bukan
+  `2`. `gridwidth=2` hanya merentang kolom 0–1, sedangkan strip header memakai
+  seluruh kolom; itu sebabnya tepi kanan baris berhenti di 1108 sementara
+  header sampai 1187. Sekarang `CekBarisKep` melaporkan **0 gerigi**.
+- **Label di atas kontrol** → semua baris lewat satu helper dengan kolom label
+  tetap 232px, label rata KIRI 12,5px.
+- **Lebar `TextBox` tidak seragam** → dipatok lewat `rapikanIsiKep()`.
+- **Checklist 2 kolom di halaman lebar** → `aturKolomGridKep()` sekarang
+  bekerja **dua arah** (menambah kolom kalau anggaran lebar, bukan hanya
+  mengurangi).
+
+## Dua butir gaya Bagian D yang diselesaikan
+
+- **Mini-label sel grid 10,5pt** (`buatSelKepField`). Warnanya **DIBIARKAN
+  `TEXT_MUTED`**, bukan `TEXT_FAINT` yang diminta prompt: `TEXT_FAINT` cuma
+  2,64:1 di atas putih, dan usul penggantinya (`#737875`) masih menunggu
+  keputusan user di PROGRESS.md. Angka tanda vital tidak boleh jadi yang
+  pertama membayar keputusan yang belum diambil.
+- **Sub-judul dalam bagian** (`buatHeaderStripKep`) diubah dari batang 32px
+  berlatar `SURFACE_ALT` menjadi **teks 10,5pt bold uppercase `TEXT_MUTED` +
+  garis 1px `#ECEEEA` memanjang ke kanan**, sesuai butir D4. Alasannya bukan
+  selera: halaman 10 memuat sembilan bagian, jadi versi batang berlatar
+  menghasilkan **sepuluh** batang `SURFACE_ALT` sewarna dalam satu layar
+  (1 strip halaman + 9 strip bagian) — dua tingkat hierarki tercetak sama,
+  dan strip halaman kehilangan artinya.
+
+## Cacat 1: `widget.PanelBiasa` memasang kotak tanpa diminta
+
+Constructor **tanpa argumen** `widget.PanelBiasa` diam-diam memasang
+`LineBorder(new Color(239,244,234))` (`src/widget/PanelBiasa.java:38`);
+constructor `PanelBiasa(LayoutManager)` tidak. Form ini memanggil versi
+tanpa argumen di ~40 tempat, jadi kotak samar itu ikut di hampir setiap
+pembungkus baris, di batang aksen 4px, dan di sub-panel hasil
+`pecahSatuIndukKep()` — termasuk panel yang justru dibuat untuk membongkar
+`TitledBorder` bersarang.
+
+Diperbaiki dengan **satu sapuan rekursif** `buangKotakBawaanKep()` di dalam
+`rapikanIsiKep()`, bukan 40 suntingan di titik pemanggilan: panel baru yang
+ditambahkan nanti otomatis ikut bersih, dan tidak ada 40 tempat yang bisa
+terlewat satu. Sapuan itu **dikunci ke WARNA** `#EFF4EA`, bukan ke tipe
+border, supaya border yang memang disengaja tetap hidup: kartu
+`BORDER_SOFT #E4E6E2`, chip `#D8DBD6`/`PRIMARY`, pemisah baris `#F2F3F0`,
+garis sub-judul `#ECEEEA`. Konsekuensinya dicatat di komentar: `#EFF4EA`
+sekarang **haram dipakai sebagai warna border yang disengaja** di form ini.
+
+## Cacat 2: 146 chip tidak pernah melukis pil-nya
+
+Ini yang paling menipu di sesi ini. Semua radio/checkbox sudah dapat
+`BorderChipKep`, penanda `clientProperty("chipKep")` terpasang di 146 komponen,
+`CekMelar` melaporkan 146 chip dengan 0 melar — dan pil-nya **tidak ada** di
+render. Sebabnya `BasicRadioButtonUI.installDefaults()` memasang
+`borderPainted=false` untuk radio **dan** checkbox, sementara
+`AbstractButton.paintBorder()` melewati border begitu flag itu false.
+
+Yang membuatnya sulit dilihat: `setBorder()` tetap mengubah **insets**, jadi
+chip memakan ruang 8px kiri/kanan seperti pil sungguhan. Lebar nyata = lebar
+preferred (keduanya sudah ikut insets), sehingga `CekMelar` tidak mungkin
+menyala; penanda `chipKep` juga tetap `TRUE` karena `pasangChipKep()` memang
+jalan. Gejalanya hanya "kok radio ini kelihatan biasa" di gambar.
+
+Efek sampingnya: **alasan yang dicatat di Sesi 3b ternyata salah sasaran.**
+Sesi 3b mengganti garis pil dari `BORDER_SOFT` ke `BORDER` dengan alasan
+"pil-nya tidak kelihatan" — padahal warna apa pun tidak akan kelihatan selama
+flag-nya false. Javadoc-nya ditulis ulang supaya tidak menyesatkan sesi
+berikutnya ke kesimpulan yang sama.
+
+Sesudah `setBorderPainted(true)`, ketiga kandidat warna diukur ulang
+(`CekChip`, di atas latar chip `#F7F8F5`): `BORDER_SOFT` 1,18:1 · `BORDER`
+1,24:1 · usul prompt `#D8DBD6` 1,31:1 — ketiganya bisikan. Dipakai
+`TEXT_FAINT` (2,55:1). **Masih di bawah 3:1** yang diminta WCAG 1.4.11 untuk
+batas komponen, dan itu disengaja: satu-satunya token palet yang lolos 3:1
+adalah `TEXT_MUTED` (~3,9:1), tapi garis sekelam itu di 146 chip mengembalikan
+kesan "form penuh kotak" yang justru sedang dibongkar. Untungnya mengunci ke
+`TEXT_FAINT` berarti keputusan kontras yang masih menggantung
+(`TEXT_FAINT` → `#737875`) otomatis menaikkan pil ini ke ~3,3:1 tanpa
+menyentuh berkas ini lagi.
+
+## Tiga penyimpangan dari Bagian D — disengaja, dicatat di kode
+
+1. **`TextArea` tidak dipatok 640px.** Angka itu berasal dari panel form
+   ~940px di mockup, sedangkan zona form di sini ~1240px. Mematoknya
+   menyisakan ~600px kosong di kanan tiap area teks.
+2. **Padding baris 7px, bukan 10px** (prompt menyebut 7px sebagai nilai
+   compact). 105 baris × 3px × 2 sisi menambah ~216px gulungan di bagian 10
+   saja.
+3. **Mini-label `TEXT_MUTED`, bukan `TEXT_FAINT`** — alasan kontras di atas.
+
+Catatan penting untuk sesi berikutnya: **PNG mockup tidak ada di disk.**
+Rujukan kesetiaan tampilan adalah teks Bagian D yang tersalin di catatan
+sesi, bukan gambar.
+
+## Verifikasi
+
+- `ant compile` **BUILD SUCCESSFUL** (empat kali; sesudah tiap perubahan).
+- 11 halaman dirender ke PNG dan **dilihat satu per satu**, semuanya.
+- `CekBarisKep`: **111 baris terukur, 0 gerigi**, 6 baris berlebar 0 —
+  keenamnya dijelaskan, bukan cacat: lima strip bagian yang **sengaja**
+  disembunyikan `buatHalamanKep()` saat satu halaman memuat tepat satu bagian,
+  dan satu baris `Gravida / Para / Abortus / HPHT` yang digerbangi
+  `StatusKehamilan` lewat `setVisible(hamil)`.
+- `CekChip` (**baru**): 146 toggle, 146 sudah chip, 0 terlewat, border
+  `BorderChipKep` masih terpasang di 146, **`borderPainted=false` = 0**,
+  insets kiri < 8px = 0.
+- `CekStrip` (**baru**): 21 strip sub-judul tampil, **0 garis menimpa teks** —
+  ditulis khusus untuk membantah dugaan dari PNG bahwa garis sub-judul
+  mencoret judul "III. TINDAKAN KEPERAWATAN MANDIRI". Tiap label menerima
+  tepat selebar `FontMetrics`-nya dan tiap garis mulai 10px sesudah teks;
+  kesan mencoret itu artefak gambar yang diperkecil.
+- `CekKartu` (**baru**): 11 kartu, strip kepala **1238×52 di y=1** dengan
+  `MatteBorder insets=0,0,1,0` — seragam di kesebelasnya. Ditulis untuk
+  menyelesaikan keraguan dari PNG halaman 1 (judulnya seperti lebih tinggi dan
+  garis bawahnya seperti hilang) dengan angka; ternyata tidak ada bedanya.
+- `CekMelar`: 146 chip, 0 belum ditata, 0 melar.
+- `CekBlokKep`: 3 scroll pane, ketiganya preferred 1188 (tinggi 110/140/120).
+- `CekIsiHalaman`: **nol** anak tertinggal di keenam panel seksi asli.
+- Kartu 1240px; tinggi 201 / 103 / 163 / 103 / 334 / 443 / 329 / 642 / 785 /
+  1668 / 784. Mode "Semua bagian" `FormInput` **1268×5699** — hanya scrollbar
+  vertikal, nol horizontal. (Sesi 3b: 6332. Turun walaupun label naik ke
+  12,5px, karena strip bagian berlatar 32px diganti garis tipis.)
+
+Dua cacat terberat di sesi ini — kotak bawaan `PanelBiasa` dan
+`borderPainted=false` — **tidak satupun terlihat dari `ant compile`, dan
+keduanya lolos dari harness angka yang sudah ada.** Yang menangkapnya: melihat
+gambar, lalu menulis harness yang menyasar **penyebab** (border apa yang masih
+terpasang, flag apa yang mematikannya), bukan gejala (lebar). Urutan
+lihat → dump → perbaiki → render ulang tetap berlaku, dengan satu tambahan:
+kalau harness melaporkan "aman" sementara gambar berkata lain, **harness-nya
+yang salah sasaran.**
+
+## Yang belum dikerjakan (Sesi 4)
+
+Bagian D butir 8/9/11 masih memakai gaya lama "label :" rata kanan — grid
+FLACC di halaman 9, baris input obat dan blok GCS/kondisi pulang di halaman
+11. Kondisi pulang belum jadi grid 4 kolom D7. Semuanya sudah jadwal Sesi 4
+bersama Bagian F (tabel obat/infus + panel tombol Tambah/Hapus).

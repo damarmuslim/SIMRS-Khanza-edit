@@ -2497,29 +2497,249 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     }
 
     /**
-     * Anggaran lebar SAAT PANEL DIBANGUN - dipakai tambahBarisKepField() utk
-     * memutuskan sebuah label perlu dibungkus HTML supaya turun baris.
-     *
-     * Sejak Bagian D ini bukan lagi anggaran tata letak akhirnya: halaman
-     * satu-bagian-per-layar memakai LEBAR_HALAMAN_KEP (~1240px), diteruskan
-     * sbg parameter `budget` ke rapikanIsiKep() dan kawan-kawannya. Angka 330
-     * tetap dipertahankan di sini karena tambahBarisKepField() berjalan jauh
-     * SEBELUM tata letak dipilih, dan label yg terbungkus di 330px tidak
-     * merusak apa pun di halaman yg lebih lebar - cuma turun baris lebih awal
-     * dari perlunya. Perbaikan sebenarnya (kolom label 232px) adalah pekerjaan
-     * barisPengkajian() di sesi berikutnya.
+     * Anggaran lebar SAAT PANEL DIBANGUN utk memutuskan sebuah label perlu
+     * dibungkus HTML supaya turun baris. Sejak Sesi 3c angka ini HANYA melayani
+     * sel grid 4-kolom (buatSelKepField); baris biasa punya kolom label sendiri
+     * yg lebarnya tetap, LEBAR_LABEL_KEP.
      */
     private static final int LEBAR_ISI_KEP = 330;
 
+    /**
+     * [Bagian D] Lebar KOLOM LABEL baris pengkajian - angka dari mockup.
+     *
+     * DIPATOK, bukan dihitung dari label terpanjang: satu baris = satu panel
+     * pembungkus sendiri, jadi label antar baris cuma bisa sejajar kalau
+     * kolomnya sama lebar di SEMUA pembungkus. Kalau dihitung dari isi, tiap
+     * bagian akan punya kolom label berbeda lebar dan barisnya kembali tidak
+     * lurus - persisnya gejala yg mau dihilangkan sesi ini.
+     */
+    private static final int LEBAR_LABEL_KEP = 232;
+
+    /**
+     * Lebar MINIMUM kontrol satu-baris (TextBox/ComboBox/Tanggal/Jam).
+     *
+     * Cuma MENAIKKAN, tidak pernah menurunkan: kontrol yg memang lebar tidak
+     * boleh ikut dikecilkan. Perlu karena lebar kotak teks per field masih
+     * warisan setBounds() form lama - ada yg 85px, ada yg 300px di baris
+     * berurutan, dan itu terbaca sebagai kolom kontrol bergerigi di render
+     * Sesi 3b.
+     */
+    private static final int LEBAR_KONTROL_KEP = 260;
+
+    /**
+     * Batas ATAS lebar kontrol per tipe - angka dari Bagian D butir 5
+     * (TextBox 360px, ComboBox 280px).
+     *
+     * Perlu batas atas, bukan cuma batas bawah LEBAR_KONTROL_KEP: lebar warisan
+     * setBounds() form lama ada yg 85px dan ada yg 300-an px di baris
+     * berurutan, jadi kolom kontrol dijepit dari DUA sisi supaya ujung kanan
+     * kotak teks sejajar, bukan cuma ujung kirinya.
+     */
+    private static final int MAKS_TEXTBOX_KEP = 360;
+    private static final int MAKS_COMBO_KEP = 280;
+
+    /**
+     * [Bagian D butir 3] Garis pemisah antar baris pengkajian: SATU garis bawah
+     * 1px, bukan kotak.
+     *
+     * Kotak penuh yg terlihat mengelilingi tiap baris di render Sesi 3c bukan
+     * dipasang di sini - itu warisan konstruktor widget.PanelBiasa, yg diam-diam
+     * memasang LineBorder(239,244,234) pada SETIAP PanelBiasa tanpa argumen
+     * (lihat src/widget/PanelBiasa.java:38). Efeknya 105 kotak bersarang di
+     * dalam kartu halaman yg juga berkotak - persis "TitledBorder bersarang" yg
+     * dilarang prompt, cuma tanpa judul. Border baris DIGANTI, bukan ditambah.
+     */
+    private static final java.awt.Color PEMISAH_BARIS_KEP = new java.awt.Color(0xF2,0xF3,0xF0);
+
+    /**
+     * Padding vertikal di dalam pembungkus baris.
+     *
+     * Prompt memberi dua angka: 10px normal, 7px "bila mode rapat". Dipakai yg
+     * RAPAT untuk seluruh form ini - bukan penyimpangan, tapi karena form ini
+     * memang mode rapat: 105 baris terpakai, dan bagian 10 (Diagnosis &
+     * Tindakan) saja sudah 36 baris / 1592px tinggi kartu. Selisih 3px x 2 sisi
+     * x 36 baris = 216px tambahan scroll di satu bagian, tanpa satu pun baris
+     * baru yg terbaca lebih jelas.
+     */
+    private static final int PADDING_BARIS_KEP = 7;
+
+    /**
+     * Penanda tipe pembungkus baris pengkajian.
+     *
+     * Perlu tipe sendiri (bukan sekadar widget.PanelBiasa) supaya
+     * rapikanIsiKep() bisa MENGURANGI anggaran lebar isi sebesar kolom label
+     * saat turun ke dalam baris. Tanpa itu checklist di dalam baris ditata
+     * selebar anggaran halaman penuh, padahal ruang yg tersisa di kanan label
+     * ~232px lebih sempit - dan kartu halamannya ikut jebol melebar.
+     */
+    private static class BarisKep extends widget.PanelBiasa {
+        private static final long serialVersionUID = -1L;
+        /** Baris berlabel memakan 232px di kiri; baris tanpa label tidak. Dibawa
+         *  sbg keadaan, bukan ditebak dari jumlah anak, supaya rapikanIsiKep()
+         *  tidak mengecilkan checklist selebar-halaman yg justru harus penuh. */
+        private boolean berlabel;
+    }
+
     private int tambahBarisKepField(widget.PanelBiasa panel,int row,String label,java.awt.Component field){
+        // wajib=false di 71 pemanggil: daftar 17 field wajib + progresnya adalah
+        // Bagian E (Sesi 5). Bendera itu sudah diterima helper sekarang supaya
+        // penandanya tidak perlu membongkar baris lagi nanti.
+        barisPengkajian(panel,row,label,false,field);
+        return row+1;
+    }
+
+    /**
+     * [Bagian D] Satu BARIS pengkajian: label di KIRI dalam kolom tetap
+     * LEBAR_LABEL_KEP, kontrol di kanannya. Memulangkan pembungkusnya supaya
+     * baris bersyarat (Gravida/Para/Abortus/HPHT) bisa disembunyikan sebagai
+     * SATU komponen.
+     *
+     * Beda dari signature di prompt (`barisPengkajian(JPanel, String, boolean,
+     * JComponent)`) dalam satu hal yg disengaja: ada parameter `row`.
+     * Penghitung baris yg sama juga menempatkan strip judul bagian
+     * (tambahBarisKepJudul) dan sebelas baris yg ditulis manual lewat
+     * kepConstraint(); kalau helper ini menghitung gridy-nya sendiri, urutan
+     * baris punya DUA sumber kebenaran yg bisa diam-diam bergeser satu sama
+     * lain. Tipe host/kontrol juga mengikuti tipe yg sudah dipakai 71
+     * pemanggilnya, bukan JPanel/JComponent.
+     */
+    private widget.PanelBiasa barisPengkajian(widget.PanelBiasa host,int row,String label,
+            boolean wajib,java.awt.Component kontrol){
         java.awt.GridBagConstraints c = kepConstraint(0,row);
-        c.gridwidth = 2;
+        // REMAINDER, bukan 2: dgn gridwidth=2 baris cuma membentang sampai kolom
+        // 1, dan lebar kolom 0-1 ditentukan baris TERLEBAR di panel itu -
+        // hasilnya tepi kanan bergerigi PER BAGIAN. Terukur sesudah Sesi 3b:
+        // baris SKRINING GIZI DEWASA 850px vs SKRINING GIZI ANAK 771px, di panel
+        // yg dua-duanya 1218px, sementara strip judulnya (yg memang REMAINDER)
+        // 1206px. Dgn REMAINDER baris ikut sampai kolom pengisi
+        // pasangGlueKananKep(), jadi tepi kanannya sama dgn strip judulnya.
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         c.weightx = 1.0;
         c.fill = java.awt.GridBagConstraints.HORIZONTAL;
         c.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        c.insets = new java.awt.Insets(2,5,4,5);
-        panel.add(buatSelKepField(label,field),c);
-        return row+1;
+        // Nol di atas-bawah: jarak vertikal antar baris seluruhnya diurus
+        // PADDING_BARIS_KEP di DALAM pembungkusnya. Kalau dibagi dua tempat,
+        // garis pemisah baris jadi melayang di tengah celah, bukan menempel
+        // sebagai batas antar baris seperti di mockup.
+        c.insets = new java.awt.Insets(0,5,0,5);
+        widget.PanelBiasa baris = buatBarisKepField(label,wajib,kontrol);
+        host.add(baris,c);
+        return baris;
+    }
+
+    /**
+     * Badan baris: [label 232px][kontrol]. Label rata KIRI dan rata ATAS - kalau
+     * labelnya turun dua baris, kontrolnya tetap sejajar baris pertama label,
+     * tidak ikut turun ke tengah.
+     *
+     * Label KOSONG tidak berarti kolom label kosong selebar 232px: kontrolnya
+     * dipasang di gridx 0 membentang dua kolom, jadi baris tanpa label (daftar
+     * centang tindakan di panelKepTiga, dsb) tetap mulai dari tepi kiri seperti
+     * sebelum sesi ini, tidak menjorok 232px.
+     */
+    private widget.PanelBiasa buatBarisKepField(String label,boolean wajib,java.awt.Component kontrol){
+        BarisKep baris = new BarisKep();
+        baris.setOpaque(false);
+        // setBorder MENGGANTI kotak LineBorder bawaan konstruktor PanelBiasa
+        // (lihat PEMISAH_BARIS_KEP) dgn garis bawah + padding vertikal.
+        baris.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createMatteBorder(0,0,1,0, PEMISAH_BARIS_KEP),
+            javax.swing.BorderFactory.createEmptyBorder(
+                    PADDING_BARIS_KEP,0,PADDING_BARIS_KEP,0)));
+        baris.setLayout(new java.awt.GridBagLayout());
+        boolean adaLabel = label!=null && !label.isEmpty();
+        baris.berlabel = adaLabel;
+        if(adaLabel){
+            java.awt.GridBagConstraints cl = new java.awt.GridBagConstraints();
+            cl.gridx = 0; cl.gridy = 0;
+            cl.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            cl.fill = java.awt.GridBagConstraints.NONE;
+            cl.weightx = 0.0;
+            cl.insets = new java.awt.Insets(3,0,0,10);
+            baris.add(labelBarisKep(label,wajib),cl);
+        }
+        java.awt.GridBagConstraints ck = new java.awt.GridBagConstraints();
+        ck.gridx = adaLabel ? 1 : 0;
+        ck.gridy = 0;
+        ck.gridwidth = adaLabel ? 1 : 2;
+        ck.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        ck.fill = java.awt.GridBagConstraints.NONE;
+        // Bobot ditaruh di kolom KONTROL, bukan kolom label: sisa lebar baris
+        // dibuang ke kanan kontrol (kolomnya melebar, kontrolnya sendiri
+        // fill=NONE jadi tetap sebesar isinya), sehingga kolom label tidak
+        // pernah ikut melar dan 232px-nya sama di semua baris.
+        ck.weightx = 1.0;
+        seragamkanKontrolKep(kontrol);
+        baris.add(kontrol,ck);
+        return baris;
+    }
+
+    /**
+     * Label kolom kiri: SELALU dibungkus HTML berlebar tetap, lalu preferredSize
+     * dan minimumSize-nya dipatok 232px.
+     *
+     * Dua-duanya perlu, bukan salah satu. HTML berlebar tetap yg membuat label
+     * panjang TURUN BARIS di dalam kolomnya (tanpa itu label 400px mendorong
+     * kontrol ke kanan dan baris itu sendiri yg jadi tidak lurus); patokan
+     * ukuran yg membuat label PENDEK tetap memakan 232px penuh, sehingga
+     * kontrol di semua baris mulai di x yg sama. Satuannya 'pt' lewat
+     * htmlLebarKep() - Swing memetakan 1 px CSS = 1,3 pt sedangkan 1 pt = 1
+     * piksel perangkat, jadi 'px' selalu melebar 30%.
+     */
+    private widget.Label labelBarisKep(String teks,boolean wajib){
+        widget.Label lbl = new widget.Label();
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbl.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        // 12,5pt: angka dari Bagian D butir 3, dan sekaligus yg membedakan label
+        // BARIS (12,5) dari mini-label sel grid 4 kolom (10,5) - hierarki itu
+        // hilang selama keduanya 11pt seperti sebelum sesi ini. deriveFont(float)
+        // wajib: konstruktor Font hanya menerima ukuran bulat.
+        lbl.setFont(new java.awt.Font("Segoe UI",
+                wajib ? java.awt.Font.BOLD : java.awt.Font.PLAIN,12).deriveFont(12.5f));
+        // Field wajib ditegaskan TIGA cara sekaligus (bold, TEXT_NORMAL, bintang
+        // DANGER) - bukan berlebihan: bintang sendirian 4px lebar dan hilang di
+        // antara 105 baris, sedangkan warna sendirian tidak terbaca oleh yg buta
+        // warna.
+        lbl.setForeground(wajib ? widget.ThemeConfig.TEXT_NORMAL : widget.ThemeConfig.TEXT_MUTED);
+        lbl.setText(htmlLabelKep(teks,wajib));
+        int tinggi = Math.max(19, lbl.getPreferredSize().height);
+        lbl.setPreferredSize(new java.awt.Dimension(LEBAR_LABEL_KEP,tinggi));
+        lbl.setMinimumSize(new java.awt.Dimension(LEBAR_LABEL_KEP,tinggi));
+        return lbl;
+    }
+
+    /**
+     * Label wajib dapat bintang berwarna DANGER di ujung teksnya - satu penanda
+     * saja, tanpa teks tambahan, supaya tidak ada yg terlihat seperti field
+     * baru. Belum ada pemanggil dgn wajib=true: daftar 17 field wajibnya
+     * Bagian E.
+     */
+    private String htmlLabelKep(String teks,boolean wajib){
+        String bintang = wajib
+                ? " <span style='color:#" + String.format("%06x",
+                        widget.ThemeConfig.DANGER.getRGB() & 0xFFFFFF) + "'>*</span>"
+                : "";
+        return "<html><div style='width:" + LEBAR_LABEL_KEP + "pt'>"
+                + escHtmlKep(teks) + bintang + "</div></html>";
+    }
+
+    /**
+     * Lebar kontrol satu-baris dijepit ke rentang [LEBAR_KONTROL_KEP, batas
+     * atas per tipe] - Bagian D butir 5.
+     *
+     * Hanya widget teks/pilihan tunggal. Panel checklist, tabel, dan area teks
+     * sengaja TIDAK disentuh: lebar mereka memang isinya sendiri, dan itu sudah
+     * diurus rapikanIsiKep().
+     */
+    private void seragamkanKontrolKep(java.awt.Component k){
+        if(!(k instanceof widget.TextBox || k instanceof widget.ComboBox
+                || k instanceof widget.Tanggal || k instanceof widget.Jam)){ return; }
+        int maks = (k instanceof widget.TextBox) ? MAKS_TEXTBOX_KEP : MAKS_COMBO_KEP;
+        java.awt.Dimension d = k.getPreferredSize();
+        int lebar = Math.max(LEBAR_KONTROL_KEP, Math.min(maks, d.width));
+        if(lebar != d.width){
+            k.setPreferredSize(new java.awt.Dimension(lebar,Math.max(23,d.height)));
+        }
     }
 
     /**
@@ -2550,9 +2770,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panel.add(buatSelKepField(label,field),c);
     }
 
-    /** Sel "label kecil di atas, field di bawah" - badan bersama
-     *  tambahBarisKepField() (1 sel per baris) dan tambahSelKepField()
-     *  (4 sel per baris). */
+    /** Sel "label kecil di ATAS, field di bawah" - sejak Sesi 3c badan ini
+     *  HANYA melayani grid 4 kolom (tambahSelKepField). Baris biasa pindah ke
+     *  buatBarisKepField(): label di kiri dalam kolom 232px. Sengaja tidak
+     *  disatukan - 4 x (232 + kontrol) tidak mungkin masuk ke lebar halaman,
+     *  jadi sel grid memang harus menumpuk label di atas kontrolnya. */
     private widget.PanelBiasa buatSelKepField(String label,java.awt.Component field){
         widget.PanelBiasa baris = new widget.PanelBiasa();
         baris.setOpaque(false);
@@ -2560,7 +2782,14 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         if(!label.isEmpty()){
             widget.Label lbl = new widget.Label();
             lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-            lbl.setFont(new java.awt.Font("Segoe UI",java.awt.Font.PLAIN,11));
+            // 10,5pt sesuai Bagian D butir 7 - mini-label, sengaja lebih kecil
+            // dari label baris (12,5) supaya sel grid tidak terbaca sebagai
+            // baris penuh. Warna DIBIARKAN TEXT_MUTED, bukan TEXT_FAINT yg
+            // diminta prompt: TEXT_FAINT cuma 2,64:1 di atas putih (audit
+            // kontras Sesi Triase), dan usul penggantinya masih menunggu
+            // keputusan user. Angka tanda vital tidak boleh jadi yg pertama
+            // membayar keputusan itu.
+            lbl.setFont(new java.awt.Font("Segoe UI",java.awt.Font.PLAIN,11).deriveFont(10.5f));
             lbl.setForeground(widget.ThemeConfig.TEXT_MUTED);
             lbl.setText(label);
             // Label panjang dibungkus HTML dgn lebar tetap supaya IKUT TURUN
@@ -2615,6 +2844,40 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     // -------------------------------------------------------------------
 
     /**
+     * Warna kotak yg dipasang DIAM-DIAM oleh konstruktor tanpa argumen
+     * widget.PanelBiasa() - lihat src/widget/PanelBiasa.java:38.
+     */
+    private static final java.awt.Color KOTAK_BAWAAN_KEP = new java.awt.Color(239,244,234);
+
+    /**
+     * Buang kotak bawaan konstruktor widget.PanelBiasa() dari satu komponen.
+     *
+     * Kenapa disapu rekursif dan bukan diperbaiki di ~40 tempat pemanggilan:
+     * setiap `new widget.PanelBiasa()` di form ini - pembungkus grup radio
+     * (panelAlergi, panelGeri1..3, panelJatuh*, panelSholat, dst), panel
+     * checklist, sel grid, panel bagian hasil pecahSatuIndukKep(), sampai
+     * batang aksen 4px - langsung membawa LineBorder(239,244,234) tanpa
+     * satu baris kode pun memintanya. Hasilnya kotak bersarang tiga sampai
+     * empat tingkat di dalam kartu halaman yg juga berkotak: persis
+     * "TitledBorder bersarang" yg dilarang prompt, cuma tanpa judul.
+     *
+     * Penyapuan diikat ke WARNA, bukan ke tipe border, supaya border yg
+     * memang dipasang sengaja tidak ikut terbuang: kartu halaman pakai
+     * BORDER_SOFT (0xE4E6E2), chip pakai 0xD8DBD6/PRIMARY, pemisah baris
+     * pakai MatteBorder 0xF2F3F0, garis sub-judul 0xECEEEA - tidak ada satu
+     * pun yg 0xEFF4EA. Kalau kelak ada border sengaja berwarna sama, dia akan
+     * hilang tanpa error, jadi angka ini jangan dipakai untuk apa pun yg lain.
+     */
+    private void buangKotakBawaanKep(java.awt.Component k){
+        if(!(k instanceof javax.swing.JComponent)){ return; }
+        javax.swing.border.Border b = ((javax.swing.JComponent)k).getBorder();
+        if(b instanceof javax.swing.border.LineBorder
+                && KOTAK_BAWAAN_KEP.equals(((javax.swing.border.LineBorder)b).getLineColor())){
+            ((javax.swing.JComponent)k).setBorder(null);
+        }
+    }
+
+    /**
      * Turun rekursif: sesuaikan isi wadah ke anggaran lebar `budget` piksel.
      *
      * `budget` jadi PARAMETER, bukan lagi konstanta LEBAR_ISI_KEP, karena
@@ -2624,7 +2887,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      * checklist tetap menumpuk 2 kolom sempit dan sisa 900px dibiarkan kosong.
      */
     private void rapikanIsiKep(java.awt.Container wadah, int budget){
+        buangKotakBawaanKep(wadah);
         for(java.awt.Component k : wadah.getComponents()){
+            // Dipanggil utk SETIAP anak, di luar rantai if di bawah: kotak
+            // bawaan PanelBiasa menempel pada panel berisi maupun panel kosong
+            // (mis. batang aksen 4px), dan keduanya harus bersih.
+            buangKotakBawaanKep(k);
             // Cuma JPanel (widget.PanelBiasa dst) yg ditelusuri isinya.
             // JComboBox/JScrollPane juga punya child internal, tapi harus
             // diperlakukan sbg 1 komponen utuh - kalau ditelusuri, lebarnya
@@ -2632,7 +2900,17 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             boolean wadahLain = (k instanceof javax.swing.JPanel)
                     && ((java.awt.Container)k).getComponentCount()>0;
             if(wadahLain){
-                rapikanIsiKep((java.awt.Container) k, budget);
+                // [Bagian D] Anggaran DIKURANGI kolom label begitu masuk ke
+                // pembungkus baris BERLABEL: ruang yg benar-benar tersisa utk
+                // kontrol = budget - 232 - jarak. Kalau tetap budget penuh,
+                // checklist di dalam baris ditata selebar halaman, lalu barisnya
+                // jadi (232 + selebar halaman) dan kartunya jebol melebar -
+                // gejalanya scrollbar horizontal muncul kembali, bukan error.
+                // Baris TANPA label tidak dikurangi: kontrolnya memang mulai
+                // dari tepi kiri dan harus boleh memakai lebar penuh.
+                boolean barisBerlabel = (k instanceof BarisKep) && ((BarisKep)k).berlabel;
+                rapikanIsiKep((java.awt.Container) k,
+                        barisBerlabel ? budget - LEBAR_LABEL_KEP - 10 : budget);
             } else if(k instanceof javax.swing.JScrollPane
                     || k instanceof javax.swing.JTabbedPane){
                 // [Bagian D] Blok lebar dipatok PERSIS selebar anggaran, dua
@@ -2668,7 +2946,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             sempitkanAlirKep(wadah, budget);
         }
         if(wadah.getLayout() instanceof java.awt.GridLayout){
-            sempitkanGridKep(wadah, budget);
+            aturKolomGridKep(wadah, budget);
         } else if(wadah.getLayout() instanceof java.awt.GridBagLayout){
             // Pelipatan HANYA utk anggaran sempit. Panel spt panelKeadaanUmum
             // dan panelKpVital aslinya ditulis 2 pasang label+field per baris
@@ -2720,13 +2998,23 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     }
 
     /** Panel checklist ber-GridLayout (panelChecklistKep) jumlah kolomnya
-     *  dipatok saat dibangun. Sesudah chip dipasang tiap pilihan tumbuh ~16px
-     *  karena padding pil, jadi panel yg tadinya pas bisa jebol dari anggaran
-     *  `budget` dan melebarkan wadahnya. Kolomnya dihitung ulang dari chip
-     *  TERLEBAR - alasan yg sama seperti sempitkanAlirKep(). Hanya boleh
-     *  MENGURANGI kolom: menambah kolom akan mengubah pengelompokan visual yg
-     *  disengaja saat panelnya dibangun. */
-    private void sempitkanGridKep(java.awt.Container box, int budget){
+     *  dipatok saat dibangun - angka yg dipilih untuk kartu 330px. Kolomnya
+     *  dihitung ulang di sini dari chip TERLEBAR + anggaran nyata, alasan yg
+     *  sama seperti sempitkanAlirKep(): sesudah chip dipasang tiap pilihan
+     *  tumbuh ~16px karena padding pil.
+     *
+     *  [Sesi 3c] Sekarang boleh MENAMBAH kolom, tidak cuma mengurangi. Larangan
+     *  lamanya ("menambah kolom mengubah pengelompokan visual yg disengaja")
+     *  ternyata melindungi pengelompokan yg tidak pernah ada: angka kolom di
+     *  seluruh pemanggil panelChecklistKep() dipilih supaya muat di kartu 330px,
+     *  bukan karena pilihan ke-1 dan ke-2 sebaris punya arti. Akibatnya di
+     *  halaman selebar 1188px, ASESMEN PSIKOLOGIS terender 2 kolom dgn ~800px
+     *  kosong di kanannya - terlihat di render halaman 5, dan mockup memintanya
+     *  mengalir selebar baris.
+     *
+     *  Dibatasi jumlah anaknya sendiri supaya tidak pernah ada kolom kosong di
+     *  kanan yg menggeser kolom pengisi pelukChipGbcKep(). */
+    private void aturKolomGridKep(java.awt.Container box, int budget){
         if(box.getComponentCount()<2){ return; }
         java.awt.GridLayout grid = (java.awt.GridLayout) box.getLayout();
         int jarak = grid.getHgap();
@@ -2737,7 +3025,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         if(lebarMaks<1){ return; }
         int kolom = (budget+jarak)/(lebarMaks+jarak);
         if(kolom<1){ kolom = 1; }
-        if(grid.getColumns()>0 && kolom<grid.getColumns()){
+        if(kolom>box.getComponentCount()){ kolom = box.getComponentCount(); }
+        if(grid.getColumns()>0 && kolom!=grid.getColumns()){
             box.setLayout(new java.awt.GridLayout(0,kolom,jarak,grid.getVgap()));
             grid = (java.awt.GridLayout) box.getLayout();
         }
@@ -2854,22 +3143,56 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     // di RMTriaseIGD.java. Tidak ada logika data/CRUD/handler yg diubah.
     // =====================================================================
 
-    /** Strip judul section: SURFACE_ALT + garis bawah, teks UPPERCASE. */
+    /** Garis tipis di kanan sub-judul, angka dari Bagian D butir 4. */
+    private static final java.awt.Color GARIS_SUBJUDUL_KEP = new java.awt.Color(0xEC,0xEE,0xEA);
+
+    /**
+     * Sub-judul di DALAM satu halaman (mis. "PQRST", "FLACC"): teks 10,5pt BOLD
+     * UPPERCASE TEXT_MUTED + garis 1px memanjang ke kanan - Bagian D butir 4.
+     *
+     * Sebelumnya berupa batang terisi SURFACE_ALT setinggi 32px. Batang itu
+     * dibuang, bukan sekadar diperkecil fontnya: strip halaman 52px (
+     * buatStripHalamanKep) JUGA batang SURFACE_ALT, jadi halaman seperti
+     * "Diagnosis & Tindakan" yg memuat sembilan bagian menampilkan sepuluh
+     * batang berwarna sama bertumpuk - dua tingkat hierarki yg terbaca satu
+     * tingkat. Dengan gaya garis, batang tinggal satu per halaman dan sub-judul
+     * membaca sebagai pemisah, bukan sebagai kepala halaman kedua.
+     *
+     * Strip ini hanya tampil kalau satu halaman memuat lebih dari satu bagian;
+     * lihat buatHalamanKep(). Objeknya tetap widget.PanelBiasa dan tetap dipakai
+     * sbg penanda identitas oleh pecahSeksiKep()/kelompokkanHalamanKep().
+     */
     private widget.PanelBiasa buatHeaderStripKep(String judul){
         widget.PanelBiasa strip = new widget.PanelBiasa();
-        strip.setOpaque(true);
-        strip.setBackground(widget.ThemeConfig.SURFACE_ALT);
-        strip.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT),
-            javax.swing.BorderFactory.createEmptyBorder(0,10,0,10)));
-        strip.setLayout(new java.awt.BorderLayout());
-        strip.setPreferredSize(new java.awt.Dimension(10,32));
+        strip.setOpaque(false);
+        // setBorder MENGGANTI LineBorder bawaan konstruktor PanelBiasa
+        // (src/widget/PanelBiasa.java:38) - tanpa ini sub-judulnya berkotak.
+        // Kanan 0 supaya garisnya benar2 sampai tepi kartu.
+        strip.setBorder(javax.swing.BorderFactory.createEmptyBorder(10,10,6,0));
+        strip.setLayout(new java.awt.GridBagLayout());
+
         widget.Label l = new widget.Label();
         l.setText(judul==null ? "" : judul.toUpperCase());
         l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11).deriveFont(10.5f));
         l.setForeground(widget.ThemeConfig.TEXT_MUTED);
-        strip.add(l, java.awt.BorderLayout.CENTER);
+
+        // JPanel biasa, bukan PanelBiasa: yg dibutuhkan cuma satu persegi 1px
+        // berwarna, sedangkan PanelBiasa membawa border bawaan + cache gradien.
+        javax.swing.JPanel garis = new javax.swing.JPanel();
+        garis.setOpaque(true);
+        garis.setBackground(GARIS_SUBJUDUL_KEP);
+        garis.setPreferredSize(new java.awt.Dimension(10,1));
+
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.gridy=0; c.anchor=java.awt.GridBagConstraints.WEST;
+        strip.add(l, c);
+        // fill HORIZONTAL + anchor CENTER: garis melebar ke kanan tapi tingginya
+        // tetap 1px dan duduk di tengah tinggi teks, bukan setinggi barisnya.
+        c.gridx=1; c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor=java.awt.GridBagConstraints.CENTER;
+        c.insets=new java.awt.Insets(0,10,0,0);
+        strip.add(garis, c);
         return strip;
     }
 
@@ -2956,6 +3279,18 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         if(Boolean.TRUE.equals(t.getClientProperty("chipKep"))){ return; }
         t.putClientProperty("chipKep", Boolean.TRUE);
         t.setOpaque(true);
+        // WAJIB. BasicRadioButtonUI.installDefaults() memasang
+        // borderPainted=false utk radio DAN checkbox (BasicCheckBoxUI
+        // turunannya), dan AbstractButton.paintBorder() diam2 melewati
+        // border kalau flag itu false. Akibatnya setBorder(BorderChipKep) di
+        // bawah tetap MENGUBAH insets - jadi chip memakan ruang 8px kiri/kanan
+        // seperti pil - tapi pil-nya TIDAK PERNAH dilukis. Gejalanya di render:
+        // radio button biasa yg spasinya agak lega, tanpa error, dan tanpa ada
+        // yg bisa ditangkap CekMelar (lebar nyata = lebar preferred, keduanya
+        // sudah ikut insets) maupun penanda clientProperty "chipKep".
+        // Dipasang SESUDAH UI terpasang supaya LookAndFeel.installProperty
+        // menganggapnya nilai dari aplikasi dan tidak menimpanya lagi.
+        t.setBorderPainted(true);
         t.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
         final BorderChipKep bd = new BorderChipKep();
         t.setBorder(bd);
@@ -2978,10 +3313,26 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      * Tiga status chip, semuanya pakai token palet yg sudah ada (tidak ada
      * warna baru - lihat larangan "JANGAN bikin palet warna kedua").
      *
-     * Garis diam memakai BORDER (#D9E1E7), BUKAN BORDER_SOFT (#E4E6E2):
-     * di atas latar chip SURFACE_ALT (#F7F8F5) BORDER_SOFT praktis lenyap
-     * (rasio ~1,1:1) sehingga pil-nya tak kelihatan sama sekali di render
-     * pertama - chip-nya terbaca seperti radio button biasa.
+     * Garis diam memakai TEXT_FAINT (#9AA19C) = 2,55:1 di atas latar chip
+     * SURFACE_ALT (#F7F8F5).
+     *
+     * Sejarahnya perlu ditulis karena pernah menyesatkan: Sesi 3b mengganti
+     * BORDER_SOFT (#E4E6E2, 1,18:1) jadi BORDER (#D9E1E7, 1,24:1) dgn alasan
+     * "pil-nya tak kelihatan". Alasan itu SALAH sasaran - pil-nya tak
+     * kelihatan bukan karena warnanya, tapi karena borderPainted=false
+     * (lihat pasangChipKep) membuatnya tidak pernah dilukis sama sekali.
+     * Angka warna apa pun akan tetap tak terlihat. Sesudah flag itu
+     * diperbaiki, ketiga nilai diukur ulang lewat CekChip: #D9E1E7 dan usul
+     * prompt #D8DBD6 (1,31:1) sama2 cuma bisikan, sedangkan TEXT_FAINT
+     * terbaca sebagai pil lembut di render.
+     *
+     * 2,55:1 MASIH di bawah 3:1 yg diminta WCAG 1.4.11 utk batas komponen,
+     * dan itu disengaja: satu-satunya token palet yg lolos 3:1 adalah
+     * TEXT_MUTED (~3,9:1), tapi garis sekelam itu di 146 chip mengembalikan
+     * kesan "form penuh kotak" yg justru sedang dibongkar. Yg dibeli dgn
+     * mengunci ke TEXT_FAINT: keputusan kontras yg masih menggantung di
+     * PROGRESS.md (usul TEXT_FAINT -> #737875) otomatis menaikkan pil ini ke
+     * ~3,3:1 tanpa perlu menyentuh berkas ini lagi.
      *
      * Terpilih ditandai TIGA hal sekaligus supaya tidak bergantung pada satu
      * kanal saja: latar bernada PRIMARY, garis PRIMARY, dan teks PRIMARY.
@@ -3005,7 +3356,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         } else {
             t.setForeground(widget.ThemeConfig.TEXT_NORMAL);
             t.setBackground(widget.ThemeConfig.SURFACE_ALT);
-            bd.setGaris(widget.ThemeConfig.BORDER);
+            bd.setGaris(widget.ThemeConfig.TEXT_FAINT);
         }
         t.repaint();
     }
@@ -3906,7 +4257,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // berbeda dari anggaran itu tanpa ketahuan.
         scrollPane1.setPreferredSize(new java.awt.Dimension(
                 scrollPane1.getPreferredSize().width, 110));
-        c.gridy=1; c.insets=new java.awt.Insets(0,0,0,0);
+        // insets kiri/kanan 5, sama dgn kepConstraint(): sepuluh blok yg ditempel
+        // sbg sub-panel utuh dulunya insets 0, jadi tepi kanannya 1217 sementara
+        // semua baris lain 1212. Selisihnya cuma 5px, tapi itu tetap tepi yg
+        // tidak lurus - dan 5px inilah yg tersisa setelah gerigi 100-400px
+        // diperbaiki lewat REMAINDER. Atas/bawah tetap 0 supaya jarak vertikal
+        // blok tidak berubah.
+        c.gridy=1; c.insets=new java.awt.Insets(0,5,0,5);
         isi.add(barisAreaKep("Keluhan Utama", scrollPane1), c);
         SeksiKep s = new SeksiKep(judul, strip, isi, -1);
         s.panel = isi;
@@ -4173,7 +4530,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints cKeadaanUmum = kepConstraint(0, row);
         cKeadaanUmum.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cKeadaanUmum.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cKeadaanUmum.insets = new java.awt.Insets(0,0,0,0);
+        cKeadaanUmum.insets = new java.awt.Insets(0,5,0,5);
         panelKepAtas.add(panelKeadaanUmum, cKeadaanUmum);
         row++;
 
@@ -4207,16 +4564,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelKehamilan.add(lblPara); panelKehamilan.add(Para);
         panelKehamilan.add(lblAbortus); panelKehamilan.add(Abortus);
         panelKehamilan.add(lblHPHT); panelKehamilan.add(HPHT);
-        // Ditulis manual (bukan lewat tambahBarisKepField) supaya label-nya
-        // punya referensi (lblKehamilan) - dipakai toggle show/hide di bawah.
-        widget.Label lblKehamilan = new widget.Label(); lblKehamilan.setText("Gravida / Para / Abortus / HPHT :");
-        java.awt.GridBagConstraints cLblKehamilan = kepConstraint(0,row);
-        panelKepAtas.add(lblKehamilan, cLblKehamilan);
-        java.awt.GridBagConstraints cKehamilan = kepConstraint(1,row);
-        cKehamilan.anchor = java.awt.GridBagConstraints.WEST;
-        cKehamilan.fill = java.awt.GridBagConstraints.NONE;
-        cKehamilan.weightx = 0;
-        panelKepAtas.add(panelKehamilan, cKehamilan);
+        // Lewat helper juga, tapi pembungkusnya DISIMPAN: hanya dgn begitu label
+        // + isiannya bisa disembunyikan sebagai SATU komponen. Sebelum sesi ini
+        // label dan panelnya ditempel manual di dua kolom terpisah lalu
+        // disembunyikan berdua - dan karena tidak lewat helper, baris ini satu-
+        // satunya di halamannya yg labelnya tidak ikut kolom 232px.
+        final widget.PanelBiasa barisKehamilan = barisPengkajian(panelKepAtas, row,
+                "Gravida / Para / Abortus / HPHT", false, panelKehamilan);
         row++;
 
         // Baris Gravida/Para/Abortus/HPHT cuma tampil kalau Status Kehamilan
@@ -4226,20 +4580,19 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // kalau tidak, baris2 di bawahnya akan tertimpa/ada celah.
         StatusKehamilan.addActionListener((java.awt.event.ActionEvent e) -> {
             boolean hamil = "Hamil".equals(StatusKehamilan.getSelectedItem());
-            if (lblKehamilan.isVisible() == hamil) return;
-            lblKehamilan.setVisible(hamil);
-            panelKehamilan.setVisible(hamil);
+            if (barisKehamilan.isVisible() == hamil) return;
+            barisKehamilan.setVisible(hamil);
 
             // [Bagian D] Di GridBagLayout, tinggi kartu halaman reflow
             // otomatis saat baris Kehamilan muncul/hilang - tak perlu lagi
             // geser panelKepDua/Tiga/Empat/Obat manual atau resize FormInput
             // (Y-math null-layout lama sudah dinonaktifkan).
             //
-            // Yg direvalidasi induk NYATA lblKehamilan, bukan panelKepAtas:
+            // Yg direvalidasi induk NYATA barisKehamilan, bukan panelKepAtas:
             // pecahSeksiKep() memindahkan baris ini ke sub-panel bagian
             // "STATUS KEHAMILAN", jadi panelKepAtas sudah bukan induknya lagi
             // dan revalidate ke sana tidak menyentuh apa pun.
-            if(lblKehamilan.getParent()!=null){ lblKehamilan.getParent().revalidate(); }
+            if(barisKehamilan.getParent()!=null){ barisKehamilan.getParent().revalidate(); }
             FormInput.revalidate();
             FormInput.repaint();
         });
@@ -4248,8 +4601,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // Obat belum dibuat di titik ini (baru dibuat di initKepTambahanHal2/
         // 3/4 & initObatInfusTambahan(), dipanggil setelah method ini).
         boolean hamilAwal = "Hamil".equals(StatusKehamilan.getSelectedItem());
-        lblKehamilan.setVisible(hamilAwal);
-        panelKehamilan.setVisible(hamilAwal);
+        barisKehamilan.setVisible(hamilAwal);
 
         // -- Asesmen Psikologis --
         row = tambahBarisKepJudul(panelKepAtas, row, "ASESMEN PSIKOLOGIS");
@@ -4259,14 +4611,22 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekPsiSedih = new widget.CekBox(); CekPsiSedih.setText("Sedih");
         CekPsiMarah = new widget.CekBox(); CekPsiMarah.setText("Marah");
         CekPsiBunuhDiri = new widget.CekBox(); CekPsiBunuhDiri.setText("Kecenderungan Bunuh Diri");
-        java.awt.GridBagConstraints cPsi = kepConstraint(0,row); cPsi.gridwidth=2;
+        // gridwidth REMAINDER, bukan 2, di SEBELAS blok yg ditempel langsung ke
+        // panel induk tanpa lewat barisPengkajian(): dgn 2 mereka cuma membentang
+        // sampai kolom 1 dan tepi kanannya ditentukan baris terlebar di panel yg
+        // sama, jadi ikut bergerigi. Alasan lengkapnya di javadoc
+        // barisPengkajian(). Dua pengecualian yg TIDAK diubah: cKpMasukRs dan
+        // cKpDirujuk - keduanya di dalam sub-panel 2 kolom sendiri, di situ
+        // gridwidth 2 memang berarti "pakai kedua kolom sub-panel ini".
+        java.awt.GridBagConstraints cPsi = kepConstraint(0,row); cPsi.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         // Urutan diatur ulang (bukan urutan deklarasi) supaya isi baris 1 =
         // Tenang/Cemas/Marah dan baris 2 = Takut/Sedih/Kecenderungan Bunuh
         // Diri, sesuai GridLayout(0,3) row-major.
-        // 2 kolom (bukan 3): sisa penyempitan Sesi 1-2. Dibiarkan 2 kolom di
-        // halaman selebar layar - sempitkanGridKep() sengaja cuma boleh
-        // MENGURANGI jumlah kolom, menambahnya berarti menimpa pengelompokan
-        // visual yg dipilih di sini.
+        // Angka 2 di sini cuma titik awal: sejak Sesi 3c aturKolomGridKep()
+        // menghitung ulang jumlah kolom dari anggaran lebar halaman yg nyata,
+        // dua arah. Di halaman 1188px checklist ini jadi satu baris penuh -
+        // pengelompokan "baris 1 / baris 2" di komentar atas cuma berlaku di
+        // anggaran sempit.
         panelKepAtas.add(panelChecklistKep(2, CekPsiTenang,CekPsiCemas,CekPsiMarah,CekPsiTakut,CekPsiSedih,CekPsiBunuhDiri), cPsi);
         row++;
         RbMasalahPrilakuTidak = new widget.RadioButton(); RbMasalahPrilakuTidak.setText("Tidak");
@@ -4683,7 +5043,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // jadi lebar nyatanya mengikuti kolom halaman (~750px) dan gambarnya
         // diskalakan ke situ. Angka aslinya 360, dipersempit di Sesi 1-2.
         PanelWall.setPreferredSize(new java.awt.Dimension(320,140));
-        java.awt.GridBagConstraints cSkalaNyeriGambar = kepConstraint(0,row); cSkalaNyeriGambar.gridwidth=2;
+        java.awt.GridBagConstraints cSkalaNyeriGambar = kepConstraint(0,row); cSkalaNyeriGambar.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepDua.add(PanelWall, cSkalaNyeriGambar);
         row++;
 
@@ -4778,7 +5138,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints cFlaccPanel = kepConstraint(0, row);
         cFlaccPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cFlaccPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cFlaccPanel.insets = new java.awt.Insets(0,0,0,0);
+        cFlaccPanel.insets = new java.awt.Insets(0,5,0,5);
         panelKepTiga.add(panelFlacc, cFlaccPanel);
         row++;
 
@@ -4875,10 +5235,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelCariMasalah.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelCariMasalah.add(label12); panelCariMasalah.add(TCariMasalah);
         panelCariMasalah.add(BtnCariMasalah); panelCariMasalah.add(BtnAllMasalah); panelCariMasalah.add(BtnTambahMasalah);
-        java.awt.GridBagConstraints cMasalah = kepConstraint(0,row); cMasalah.gridwidth=2;
+        java.awt.GridBagConstraints cMasalah = kepConstraint(0,row); cMasalah.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepTiga.add(Scroll8, cMasalah);
         row++;
-        java.awt.GridBagConstraints cMasalahCari = kepConstraint(0,row); cMasalahCari.gridwidth=2;
+        java.awt.GridBagConstraints cMasalahCari = kepConstraint(0,row); cMasalahCari.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepTiga.add(panelCariMasalah, cMasalahCari);
         row++;
 
@@ -4897,7 +5257,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekIntervManajemenSensasiPerifer = new widget.CekBox(); CekIntervManajemenSensasiPerifer.setText("Manajemen Sensasi Perifer");
         CekIntervMonitoringKardiovaskuler = new widget.CekBox(); CekIntervMonitoringKardiovaskuler.setText("Monitoring Status Kardiovaskuler");
         CekIntervPencegahanPenekananLuka = new widget.CekBox(); CekIntervPencegahanPenekananLuka.setText("Pencegahan Penekanan pada Luka");
-        java.awt.GridBagConstraints cInterv = kepConstraint(0,row); cInterv.gridwidth=2;
+        java.awt.GridBagConstraints cInterv = kepConstraint(0,row); cInterv.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepTiga.add(panelChecklistKep(2, CekIntervManajemenJalanNafas,CekIntervSuctioningJalanNafas,CekIntervManajemenAsamBasa,
             CekIntervManajemenSyok,CekIntervManajemenNyeri,CekIntervManajemenCairan,CekIntervMonitoringCairan,
             CekIntervManajemenLingkungan,CekIntervPendidikanKesehatan,CekIntervFeverTreatment,
@@ -4925,7 +5285,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // itu semua cuma dipakai utk tab checklist "Rencana Keperawatan"
         // lama (tbRencanaKeperawatan) yg sudah dipensiunkan, jadi kalau
         // ikut ditampilkan tidak berfungsi sama sekali (permintaan user).
-        java.awt.GridBagConstraints cRencana = kepConstraint(0,row); cRencana.gridwidth=2;
+        java.awt.GridBagConstraints cRencana = kepConstraint(0,row); cRencana.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepTiga.add(TabRencanaKeperawatan, cRencana);
         row++;
 
@@ -5022,7 +5382,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekTraumaJahitLuka = new widget.CekBox(); CekTraumaJahitLuka.setText("Jahit Luka");
         CekTraumaBalutanSpalk = new widget.CekBox(); CekTraumaBalutanSpalk.setText("Balutan / Spalk");
         CekTraumaSelangDadaWsd = new widget.CekBox(); CekTraumaSelangDadaWsd.setText("Selang Dada / WSD");
-        java.awt.GridBagConstraints cTrauma = kepConstraint(0,row); cTrauma.gridwidth=2;
+        java.awt.GridBagConstraints cTrauma = kepConstraint(0,row); cTrauma.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepTiga.add(panelChecklistKep(2, CekTraumaCervicalCollar,CekTraumaImmobilisasiTulangBelakang,CekTraumaGips,
             CekTraumaPerawatanLuka,CekTraumaJahitLuka,CekTraumaBalutanSpalk,CekTraumaSelangDadaWsd), cTrauma);
         row++;
@@ -5033,7 +5393,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         row = tambahBarisKepJudul(panelKepTiga, row, "VIII. THT / MATA");
         CekThtIrigasiMataTelinga = new widget.CekBox(); CekThtIrigasiMataTelinga.setText("Irigasi Mata / Irigasi Telinga");
         CekThtAmbilKorpusAlienum = new widget.CekBox(); CekThtAmbilKorpusAlienum.setText("Ambil Korpus Alienum di Telinga/Hidung/Mata");
-        java.awt.GridBagConstraints cTht = kepConstraint(0,row); cTht.gridwidth=2;
+        java.awt.GridBagConstraints cTht = kepConstraint(0,row); cTht.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepTiga.add(panelChecklistKep(2, CekThtIrigasiMataTelinga,CekThtAmbilKorpusAlienum), cTht);
         row++;
 
@@ -5043,7 +5403,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         CekObgynPeriksaGinekologi = new widget.CekBox(); CekObgynPeriksaGinekologi.setText("Periksa Ginekologi");
         CekObgynDopplerCtgUsg = new widget.CekBox(); CekObgynDopplerCtgUsg.setText("Doppler, CTG, USG");
         CekObgynPasangTampon = new widget.CekBox(); CekObgynPasangTampon.setText("Pasang Tampon");
-        java.awt.GridBagConstraints cObgyn = kepConstraint(0,row); cObgyn.gridwidth=2;
+        java.awt.GridBagConstraints cObgyn = kepConstraint(0,row); cObgyn.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepTiga.add(panelChecklistKep(2, CekObgynMembantuPartus,CekObgynPeriksaGinekologi,CekObgynDopplerCtgUsg,CekObgynPasangTampon), cObgyn);
         row++;
 
@@ -5241,7 +5601,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints cKpVitalPanel = kepConstraint(0, row);
         cKpVitalPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cKpVitalPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cKpVitalPanel.insets = new java.awt.Insets(0,0,0,0);
+        cKpVitalPanel.insets = new java.awt.Insets(0,5,0,5);
         panelKepEmpat.add(panelKpVital, cKpVitalPanel);
         row++;
 
@@ -5312,7 +5672,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints cKpMasukPetugasPanel = kepConstraint(0, row);
         cKpMasukPetugasPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cKpMasukPetugasPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cKpMasukPetugasPanel.insets = new java.awt.Insets(0,0,0,0);
+        cKpMasukPetugasPanel.insets = new java.awt.Insets(0,5,0,5);
         panelKepEmpat.add(panelKpMasukPetugas, cKpMasukPetugasPanel);
         row++;
 
@@ -5365,7 +5725,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints cKpDirujukAlasanPanel = kepConstraint(0, row);
         cKpDirujukAlasanPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cKpDirujukAlasanPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cKpDirujukAlasanPanel.insets = new java.awt.Insets(0,0,0,0);
+        cKpDirujukAlasanPanel.insets = new java.awt.Insets(0,5,0,5);
         panelKepEmpat.add(panelKpDirujukAlasan, cKpDirujukAlasanPanel);
         row++;
 
@@ -5408,14 +5768,14 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints cKpAkhirPanel = kepConstraint(0, row);
         cKpAkhirPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cKpAkhirPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cKpAkhirPanel.insets = new java.awt.Insets(0,0,0,0);
+        cKpAkhirPanel.insets = new java.awt.Insets(0,5,0,5);
         panelKepEmpat.add(panelKpAkhir, cKpAkhirPanel);
         row++;
 
         row = tambahBarisKepJudul(panelKepEmpat, row, "Pendidikan Kesehatan Pasien Pulang");
         CekKpEdukasiMakanObat = new widget.CekBox(); CekKpEdukasiMakanObat.setText("Makan/Minum Obat Teratur");
         CekKpEdukasiLuka = new widget.CekBox(); CekKpEdukasiLuka.setText("Jaga Kebersihan Luka");
-        java.awt.GridBagConstraints cKpEdu = kepConstraint(0,row); cKpEdu.gridwidth=2;
+        java.awt.GridBagConstraints cKpEdu = kepConstraint(0,row); cKpEdu.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepEmpat.add(panelChecklistKep(2, CekKpEdukasiMakanObat,CekKpEdukasiLuka), cKpEdu);
         row++;
         // Diet & Lain-lain disejajarkan 1 baris (permintaan user).
@@ -5445,7 +5805,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints cKpEdukasiDietLainPanel = kepConstraint(0, row);
         cKpEdukasiDietLainPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cKpEdukasiDietLainPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cKpEdukasiDietLainPanel.insets = new java.awt.Insets(0,0,0,0);
+        cKpEdukasiDietLainPanel.insets = new java.awt.Insets(0,5,0,5);
         panelKepEmpat.add(panelKpEdukasiDietLain, cKpEdukasiDietLainPanel);
         row++;
 
@@ -5487,7 +5847,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // scrollbar horizontal sendiri di dalam halaman selebar 1240px.
         scrollObatInfus.setPreferredSize(new java.awt.Dimension(
                 scrollObatInfus.getPreferredSize().width, 120));
-        java.awt.GridBagConstraints cTabelObat = kepConstraint(0,row); cTabelObat.gridwidth=2;
+        java.awt.GridBagConstraints cTabelObat = kepConstraint(0,row); cTabelObat.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepObat.add(scrollObatInfus, cTabelObat);
         row++;
 
@@ -5565,7 +5925,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints cObatBarisPanel = kepConstraint(0, row);
         cObatBarisPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cObatBarisPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cObatBarisPanel.insets = new java.awt.Insets(0,0,0,0);
+        cObatBarisPanel.insets = new java.awt.Insets(0,5,0,5);
         panelKepObat.add(panelObatBaris, cObatBarisPanel);
         row++;
 
@@ -5638,7 +5998,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints cObatPetugasPanel = kepConstraint(0, row);
         cObatPetugasPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cObatPetugasPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cObatPetugasPanel.insets = new java.awt.Insets(0,0,0,0);
+        cObatPetugasPanel.insets = new java.awt.Insets(0,5,0,5);
         panelKepObat.add(panelObatPetugas, cObatPetugasPanel);
         row++;
 
