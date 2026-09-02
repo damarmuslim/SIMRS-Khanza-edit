@@ -39,6 +39,28 @@ public final class ThemeConfig {
     public static final Color TABLE_SELECTION_BG   = new Color(0x3A, 0x51, 0x68);
     public static final Color TABLE_SELECTION_TEXT = Color.WHITE;
 
+    // ---------- STATUS & PERMUKAAN TAMBAHAN ----------
+    // Dipakai sub-tab PACS form Triase IGD (indikator skor EWS 0-3, banner
+    // total, kartu Level Triage, pembungkus Keputusan). Ditambahkan ke sini
+    // (Single Source of Truth), BUKAN kelas warna terpisah, sesuai keputusan
+    // "SATU tema dari ThemeConfig" - lihat javadoc applyGlobalTheme().
+    // ACCENT & TEXT sengaja jadi ALIAS ke PRIMARY/TEXT_NORMAL supaya kode
+    // pemanggil terbaca sesuai spec desain tanpa memecah nilai warnanya
+    // (aksen app tetap teal 0x087E8B, bukan 0x0D7A70 dari draf spec).
+    public static final Color ACCENT       = PRIMARY;
+    public static final Color TEXT         = TEXT_NORMAL;
+    public static final Color BORDER_SOFT  = new Color(0xE4, 0xE6, 0xE2);
+    public static final Color SURFACE_ALT  = new Color(0xF7, 0xF8, 0xF5);
+    public static final Color TEXT_FAINT   = new Color(0x9A, 0xA1, 0x9C);
+    public static final Color OK           = new Color(0x1A, 0x6B, 0x4C);
+    public static final Color OK_BG        = new Color(0xE3, 0xF4, 0xEC);
+    public static final Color WARN         = new Color(0xA1, 0x5C, 0x00);
+    public static final Color WARN_BG      = new Color(0xFD, 0xF1, 0xDC);
+    public static final Color DANGER       = new Color(0xB3, 0x26, 0x1E);
+    public static final Color DANGER_BG    = new Color(0xFB, 0xEC, 0xEB);
+    public static final Color PACS3        = new Color(0x6B, 0x7A, 0x12);
+    public static final Color PACS3_BG     = new Color(0xF5, 0xF7, 0xE2);
+
     // ---------- FONT ----------
     public static final String FONT_FAMILY = "Segoe UI";
     public static final Font FONT_NORMAL = new Font(FONT_FAMILY, Font.PLAIN, 12);
