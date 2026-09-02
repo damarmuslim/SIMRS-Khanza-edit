@@ -79,6 +79,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         widget.IconStyle.pasang(this);
         initHeaderTambahan();
         initPatientBanner();
+        initActionBar();
         this.setLocation(8,1);
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Rawat","No.RM","Nama Pasien","Tgl.Kunjungan","Cara Masuk","Transportasi",
@@ -3015,6 +3016,10 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                 getData();
                 muatUntukEdit();
             } catch (java.lang.NullPointerException e) {
+                // DIAGNOSTIK sementara: NPE di sini dulu ditelan diam-diam -
+                // munculkan supaya "data triase tidak tampil" bisa dilacak.
+                System.out.println("[DIAG tbTriaseMouseClicked] "+e);
+                e.printStackTrace();
             }
         }
 }//GEN-LAST:event_tbTriaseMouseClicked
@@ -4235,6 +4240,9 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     // direparent ulang oleh initPatientBanner() (lihat method itu). Bukan
     // rename/hapus variabel UI - cuma perubahan scope, teks/isi tidak berubah.
     private widget.Label lblTerpasang, lblIdentitasPengantar, lblNamaPengantar, lblTelpPengantar;
+    // [Bagian B] Label kartu "IDENTITAS PASIEN" - cerminan read-only dari
+    // TNoRw/TNoRM/TPasien (yg sekarang setVisible(false)). Bukan sumber data.
+    private widget.Label lblKartuNama, lblKartuJK, lblKartuRM, lblKartuRawat;
 
     // =====================================================================
     // [PACS] Field baru - Patient's Acuity Categorization Scale (formulir
@@ -4254,6 +4262,31 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     private javax.swing.ButtonGroup bgLevelPacs;
     private widget.RadioButton RbPacsResusitasi, RbPacsNonResusitasi, RbPacsPoliKlinik, RbPacsDOA;
     private javax.swing.ButtonGroup bgKeputusanPacs;
+
+    // =====================================================================
+    // [PACS - modernisasi tampilan sub-tab, UI-only] Komponen visual baru.
+    // TIDAK terikat ke DB: semuanya cuma "cermin" komponen lama di atas yang
+    // sekarang di-setVisible(false). Nilai yang disimpan/dimuat tetap dibaca
+    // dari komponen lama (PacsKesadaran, CmbSkor*Pacs, RbPacs*, LblTotalSkorPacs).
+    // =====================================================================
+    private widget.Label[][] selSkorPacs;                 // [6 parameter][4 skor] sel indikator 0-3
+    private javax.swing.JToggleButton tblAvpuA, tblAvpuV, tblAvpuP, tblAvpuU;
+    private javax.swing.ButtonGroup bgAvpuPacs;
+    private widget.PanelBiasa bannerTotalPacs;            // banner "TOTAL SKOR EWS"
+    private widget.Label lblBannerTafsirPacs, lblBannerSatuanPacs;
+    private widget.PanelBiasa[] kartuLevelPacs;           // 4 kartu Level Triage
+    private widget.PanelBiasa[] kartuStripPacs;           // strip warna 4px tiap kartu
+    private widget.Label[] kartuJudulPacs, kartuDescPacs;
+    private widget.Label lblSaranLevelPacs;               // badge "Saran sistem: PACS n"
+    private widget.PanelBiasa[] bungkusKeputusanPacs;     // 4 pembungkus radio Keputusan
+    private widget.Label lblRingkasanPacs;                // ringkasan pilihan di action bar bawah
+    private widget.PanelBiasa barisMekanismePacs;         // pembungkus (label+panel) Mekanisme Trauma - ikut disembunyikan
+    private final java.awt.Color[] warnaLevelPacs = {
+        widget.ThemeConfig.DANGER, widget.ThemeConfig.WARN, widget.ThemeConfig.PACS3, widget.ThemeConfig.OK
+    };
+    private final java.awt.Color[] warnaLevelBgPacs = {
+        widget.ThemeConfig.DANGER_BG, widget.ThemeConfig.WARN_BG, widget.ThemeConfig.PACS3_BG, widget.ThemeConfig.OK_BG
+    };
     // (Pukul Keputusan & Tanggal/Jam Triase dihapus - nilainya diturunkan dari
     // TanggalKunjungan saat simpan, tidak perlu widget input sendiri lagi)
     // (Petugas PACS dihapus - dipakai bersama dengan Dokter/Petugas tab Sekunder:
@@ -4281,138 +4314,291 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
      * Dipanggil sekali dari constructor, setelah initComponents().
      */
     private void initHeaderTambahan(){
+        // [Modernisasi header - Bagian B] initHeaderTambahan() sekarang HANYA
+        // membuat objek widget-nya; SELURUH penataan tata letak pindah ke
+        // initPatientBanner() (GridBagLayout, bukan setBounds absolut lagi).
+        // "Sudah Terpasang" (Infus/NGT/Kateter) DIPINDAH ke kolom Anamnesa
+        // sub-tab PACS (temuan klinis, bukan data registrasi) - lihat
+        // initPacsTab(). Widget-nya tetap dibuat di sini supaya sudah ada
+        // saat initPacsTab() (dipanggil belakangan) menaruhnya ke panel.
         lblTerpasang = new widget.Label();
-        lblTerpasang.setText("Sudah Terpasang :");
-        FormInput.add(lblTerpasang);
-        lblTerpasang.setBounds(0, 100, 110, 23);
+        lblTerpasang.setText("Sudah Terpasang");
 
         PacsInfus = new widget.CekBox(); PacsInfus.setText("Infus");
-        FormInput.add(PacsInfus);
-        PacsInfus.setBounds(113, 100, 60, 23);
-
         PacsNgt = new widget.CekBox(); PacsNgt.setText("NGT");
-        FormInput.add(PacsNgt);
-        PacsNgt.setBounds(173, 100, 55, 23);
-
         PacsKateter = new widget.CekBox(); PacsKateter.setText("Kateter Urin");
-        FormInput.add(PacsKateter);
-        PacsKateter.setBounds(228, 100, 100, 23);
 
-        lblIdentitasPengantar = new widget.Label();
-        lblIdentitasPengantar.setText("Identitas Pengantar :");
-        FormInput.add(lblIdentitasPengantar);
-        lblIdentitasPengantar.setBounds(340, 100, 145, 23);
-
-        lblNamaPengantar = new widget.Label();
-        lblNamaPengantar.setText("Nama :");
-        FormInput.add(lblNamaPengantar);
-        lblNamaPengantar.setBounds(490, 100, 45, 23);
-
+        lblIdentitasPengantar = new widget.Label(); lblIdentitasPengantar.setText("Identitas Pengantar");
+        lblNamaPengantar = new widget.Label(); lblNamaPengantar.setText("Nama");
+        lblTelpPengantar = new widget.Label(); lblTelpPengantar.setText("Telp");
         PacsNamaPengantar = new widget.TextBox();
-        FormInput.add(PacsNamaPengantar);
-        PacsNamaPengantar.setBounds(535, 100, 175, 23);
-
-        lblTelpPengantar = new widget.Label();
-        lblTelpPengantar.setText("Telp :");
-        FormInput.add(lblTelpPengantar);
-        lblTelpPengantar.setBounds(715, 100, 40, 23);
-
         PacsTelpPengantar = new widget.TextBox();
-        FormInput.add(PacsTelpPengantar);
-        PacsTelpPengantar.setBounds(755, 100, 110, 23);
+    }
 
-        // [PACS] Dokter/Petugas - pindahkan widget ASLI dari tab Sekunder (internalFrame12)
-        // ke header bersama, bukan bikin widget baru - supaya tetap satu-satunya sumber data
-        // (dipakai bersama oleh Sekunder & PACS, tanpa perlu pindah tab untuk mengisi/melihatnya).
-        // Swing otomatis melepas komponen dari parent lama (internalFrame12) begitu ditambahkan
-        // ke parent baru (FormInput) - listener yang sudah terpasang di initComponents() tetap ikut.
-        FormInput.add(jLabel30);
-        jLabel30.setBounds(0, 130, 130, 23);
-        FormInput.add(SekunderKodePetugas);
-        SekunderKodePetugas.setBounds(134, 130, 110, 23);
-        FormInput.add(SekunderNamaPetugas);
-        SekunderNamaPetugas.setBounds(246, 130, 210, 23);
-        FormInput.add(btnSekunderPetugas);
-        btnSekunderPetugas.setBounds(458, 130, 28, 23);
+    // ---- konstanta warna header (dari widget.ThemeConfig / Bagian A) ----
+    private static java.awt.Color warnaTema(java.awt.Color c){ return c; }
 
-        java.awt.Dimension ukuranLama = FormInput.getPreferredSize();
-        FormInput.setPreferredSize(new java.awt.Dimension(ukuranLama.width, 164));
+    /**
+     * [Modernisasi header - Bagian B] FormInput ditata ulang: 2 sel
+     * (MigLayout `[262!][grow,fill]` ditiru dgn GridBagLayout krn MigLayout
+     * tidak ada di classpath proyek & aturan "1 file" melarang menambah jar).
+     *
+     *  - Sel KIRI  : kartu "IDENTITAS PASIEN" (badge TERKUNCI) berisi HANYA
+     *                widget.Label (nama, JK+umur, No. RM, No. Rawat).
+     *                TextBox lama (TNoRw/TNoRM/TPasien) tetap dibuat &
+     *                di-setVisible(false) - logika simpan yg baca .getText()
+     *                tidak pecah; label kartu disinkronkan dari isinya.
+     *  - Sel KANAN : grid 5 kolom x 2 baris, label DI ATAS field.
+     */
+    private void initPatientBanner(){
+        FormInput.removeAll();
+        FormInput.setLayout(new java.awt.GridBagLayout());
+        FormInput.setBackground(widget.ThemeConfig.SURFACE);
+        FormInput.setBorder(javax.swing.BorderFactory.createEmptyBorder(12,14,12,14));
+
+        // TextBox read-only lama -> disembunyikan, jadi sumber data tersembunyi.
+        TNoRw.setVisible(false); TNoRM.setVisible(false); TPasien.setVisible(false);
+
+        // ===================== SEL KIRI: kartu identitas =====================
+        widget.PanelBiasa kartu = new widget.PanelBiasa();
+        kartu.setLayout(new java.awt.GridBagLayout());
+        kartu.setOpaque(true);
+        kartu.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
+
+        widget.Label lblJudulKartu = new widget.Label();
+        lblJudulKartu.setText("IDENTITAS PASIEN");
+        lblJudulKartu.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblJudulKartu.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+        lblJudulKartu.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        widget.Label badgeKunci = new widget.Label();
+        badgeKunci.setText("  TERKUNCI  ");
+        badgeKunci.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        badgeKunci.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 9));
+        badgeKunci.setOpaque(true);
+        badgeKunci.setBackground(widget.ThemeConfig.BORDER_SOFT);
+        badgeKunci.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        lblKartuNama = new widget.Label();
+        lblKartuNama.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuNama.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        lblKartuNama.setForeground(widget.ThemeConfig.TEXT);
+        lblKartuJK = new widget.Label();
+        lblKartuJK.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuJK.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lblKartuRM = new widget.Label();
+        lblKartuRM.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuRM.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lblKartuRawat = new widget.Label();
+        lblKartuRawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuRawat.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        java.awt.GridBagConstraints k = new java.awt.GridBagConstraints();
+        k.gridx=0; k.gridy=0; k.anchor=java.awt.GridBagConstraints.WEST;
+        k.fill=java.awt.GridBagConstraints.HORIZONTAL; k.weightx=1.0;
+        kartu.add(lblJudulKartu,k);
+        k.gridx=1; k.weightx=0; k.fill=java.awt.GridBagConstraints.NONE;
+        k.anchor=java.awt.GridBagConstraints.EAST; kartu.add(badgeKunci,k);
+        k.gridx=0; k.gridwidth=2; k.weightx=1.0; k.anchor=java.awt.GridBagConstraints.WEST;
+        k.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        k.gridy=1; k.insets=new java.awt.Insets(8,0,0,0);  kartu.add(lblKartuNama,k);
+        k.gridy=2; k.insets=new java.awt.Insets(2,0,0,0);   kartu.add(lblKartuJK,k);
+        k.gridy=3; k.insets=new java.awt.Insets(6,0,0,0);   kartu.add(lblKartuRM,k);
+        k.gridy=4; k.insets=new java.awt.Insets(2,0,0,0);   kartu.add(lblKartuRawat,k);
+        k.gridy=5; k.weighty=1.0; k.fill=java.awt.GridBagConstraints.BOTH;
+        kartu.add(javax.swing.Box.createGlue(),k);
+
+        // sinkronisasi label kartu <- TextBox tersembunyi
+        javax.swing.event.DocumentListener sinkronKartu = new javax.swing.event.DocumentListener(){
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e){ sinkronKartuIdentitas(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e){ sinkronKartuIdentitas(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e){ sinkronKartuIdentitas(); }
+        };
+        TNoRw.getDocument().addDocumentListener(sinkronKartu);
+        TNoRM.getDocument().addDocumentListener(sinkronKartu);
+        TPasien.getDocument().addDocumentListener(sinkronKartu);
+        sinkronKartuIdentitas();
+
+        // ===================== SEL KANAN: grid 5 x 2 =====================
+        widget.PanelBiasa grid = new widget.PanelBiasa();
+        grid.setOpaque(false);
+        grid.setLayout(new java.awt.GridBagLayout());
+
+        // tombol lookup -> glyph "cari", 30px, di dalam pembungkus berborder.
+        btnKasus.setText("⌕"); btnKasus.setIcon(null);
+        btnKasus.setPreferredSize(new java.awt.Dimension(30,30));
+        btnSekunderPetugas.setText("⌕"); btnSekunderPetugas.setIcon(null);
+        btnSekunderPetugas.setPreferredSize(new java.awt.Dimension(30,30));
+        KdKasus.setVisible(false);
+        SekunderKodePetugas.setVisible(false);
+
+        java.awt.Component selMacamKasus   = hdrLookup(NmKasus, btnKasus);
+        java.awt.Component selDokterPetugas = hdrLookup(SekunderNamaPetugas, btnSekunderPetugas);
+        // (penanda wajib cukup tanda "*" merah di label - tanpa border merah pada field, sesuai permintaan)
+
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        g.anchor=java.awt.GridBagConstraints.NORTH;
+        g.weightx=0.2; g.weighty=0;
+        g.insets=new java.awt.Insets(0,0,0,14);
+        // baris 1
+        g.gridy=0;
+        g.gridx=0; grid.add(hdrCell("Tgl. Kunjungan",   TanggalKunjungan,  false),g);
+        g.gridx=1; grid.add(hdrCell("Cara Masuk",        CaraMasuk,         false),g);
+        g.gridx=2; grid.add(hdrCell("Transportasi",      Transportasi,      false),g);
+        g.gridx=3; grid.add(hdrCell("Alasan Kedatangan", AlasanKedatangan,  false),g);
+        g.gridx=4; g.insets=new java.awt.Insets(0,0,0,0);
+        grid.add(hdrCell("Macam Kasus", selMacamKasus, true),g);
+        // baris 2
+        g.gridy=1; g.insets=new java.awt.Insets(10,0,0,14);
+        g.gridx=0; grid.add(hdrCell("Dokter / Petugas IGD", selDokterPetugas, true),g);
+        g.gridx=1; grid.add(hdrCell("Pengantar — Nama", PacsNamaPengantar, false),g);
+        g.gridx=2; grid.add(hdrCell("Pengantar — Telp", PacsTelpPengantar, false),g);
+        g.gridx=3; g.gridwidth=2; g.weightx=0.4; g.insets=new java.awt.Insets(10,0,0,0);
+        grid.add(hdrCell("Keterangan", KeteranganKedatangan, false),g);
+
+        // ===================== rakit FormInput =====================
+        java.awt.GridBagConstraints f = new java.awt.GridBagConstraints();
+        f.gridx=0; f.gridy=0; f.fill=java.awt.GridBagConstraints.BOTH;
+        f.weightx=0; f.weighty=1.0;
+        f.insets=new java.awt.Insets(0,0,0,16);
+        java.awt.Dimension dk = new java.awt.Dimension(262,10);
+        kartu.setMinimumSize(dk); kartu.setPreferredSize(dk);
+        FormInput.add(kartu,f);
+        f.gridx=1; f.weightx=1.0; f.insets=new java.awt.Insets(0,0,0,0);
+        FormInput.add(grid,f);
+
+        FormInput.setPreferredSize(new java.awt.Dimension(900,132));
+    }
+
+    /** [Bagian B] Sinkronkan label kartu identitas dari TextBox tersembunyi. */
+    private void sinkronKartuIdentitas(){
+        if(lblKartuNama==null){ return; }
+        lblKartuNama.setText(TPasien.getText().trim().isEmpty()? "—" : TPasien.getText().trim());
+        lblKartuRM.setText("No. RM  "+TNoRM.getText().trim());
+        lblKartuRawat.setText("No. Rawat  "+TNoRw.getText().trim());
+        String jkUmur = "";
+        String rm = TNoRM.getText().trim();
+        if(!rm.isEmpty()){
+            try{
+                String jk = Sequel.cariIsi("select jk from pasien where no_rkm_medis='"+rm.replaceAll("'","")+"'");
+                String umur = Sequel.cariIsi("select TIMESTAMPDIFF(YEAR,tgl_lahir,CURDATE()) from pasien where no_rkm_medis='"+rm.replaceAll("'","")+"'");
+                if(jk!=null && !jk.isEmpty()){
+                    jkUmur = ("L".equalsIgnoreCase(jk)||"Laki-Laki".equalsIgnoreCase(jk)) ? "Laki-laki" : "Perempuan";
+                }
+                if(umur!=null && !umur.isEmpty()){ jkUmur = jkUmur.isEmpty()? umur+" Th" : jkUmur+" · "+umur+" Th"; }
+            }catch(Exception e){ /* label identitas sifatnya tampilan saja */ }
+        }
+        lblKartuJK.setText(jkUmur);
+    }
+
+    /** [Bagian B] Satu sel grid header: label 11px TEXT_MUTED di ATAS field 30px. */
+    private widget.PanelBiasa hdrCell(String label, java.awt.Component field, boolean wajib){
+        widget.PanelBiasa sel = new widget.PanelBiasa();
+        sel.setOpaque(false);
+        sel.setLayout(new java.awt.BorderLayout(0,3));
+        widget.Label l = new widget.Label();
+        l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        l.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        if(wajib){
+            l.setText("<html>"+label+" <font color='#B3261E'>*</font></html>");
+        }else{
+            l.setText(label);
+        }
+        if(field instanceof javax.swing.JComponent){
+            ((javax.swing.JComponent)field).setPreferredSize(new java.awt.Dimension(0,30));
+        }
+        sel.add(l, java.awt.BorderLayout.NORTH);
+        sel.add(field, java.awt.BorderLayout.CENTER);
+        return sel;
     }
 
     /**
-     * [Fase 4 - Patient Banner] Header form (No.Rawat s/d Dokter/Petugas IGD)
-     * sebelumnya tersebar renggang di FormInput (null-layout GEN block, 5
-     * baris y=10..130, tanpa pengelompokan visual/border). Dibungkus jadi
-     * SATU kartu ("Patient Banner") - latar putih + TitledBorder - dgn
-     * komponen yg SAMA (tidak ada yg dibuat baru/dihapus) direparent ke
-     * dalamnya & dirapikan jadi 5 baris padat berkelompok (26px per baris,
-     * dari 30px sebelumnya): Identitas Utama / Detail Kunjungan (2 baris,
-     * krn Macam Kasus+Keterangan terlalu lebar utk 1 baris bareng
-     * Tgl-CaraMasuk-Alasan) / Status Tambahan+Petugas (2 baris).
-     *
-     * Teknik: sama persis pola reparent yg sudah terbukti aman di sesi²
-     * sebelumnya (RM 03-2/03-4-05-06/Transfer Pasien) - panggil
-     * `panelPatientBanner.add(komponenLama)` pada komponen yg SUDAH ada
-     * (dibuat GEN block/initHeaderTambahan), Swing otomatis melepasnya dari
-     * parent lama (FormInput) tanpa perlu FormInput.remove() manual, lalu
-     * `.setBounds()` dipanggil ULANG relatif ke parent BARU (panelPatientBanner).
-     * FormInput SENDIRI TIDAK dihapus/diganti (masih target GEN block
-     * `FormInput.add(...)` & `FormTriase.add(FormInput, PAGE_START)`,
-     * keduanya di dalam GEN-BEGIN/GEN-END - tidak disentuh) - cuma jadi
-     * "bingkai transparan" tipis yg membungkus 1 kartu panelPatientBanner.
+     * [Bagian B.4] Field lookup = [TextBox | tombol ⌕] berdampingan.
+     * TextBox DIBIARKAN apa adanya (widget.TextBox = sudut tajam/kotak,
+     * FlatRoundBorder TIDAK dipasang - lihat probe radius) supaya bentuknya
+     * SAMA PERSIS dgn TextBox lain di form ini; tidak ada panel berborder
+     * yg membungkusnya (dulu bikin sudut lookup beda sendiri dari yg lain).
      */
-    private void initPatientBanner(){
-        widget.PanelBiasa panelPatientBanner = new widget.PanelBiasa();
-        panelPatientBanner.setLayout(null);
-        panelPatientBanner.setBackground(widget.ThemeConfig.SURFACE);
-        javax.swing.border.TitledBorder tbBanner = javax.swing.BorderFactory.createTitledBorder("Informasi Registrasi & Pasien");
-        tbBanner.setTitleFont(widget.ThemeConfig.FONT_BOLD);
-        panelPatientBanner.setBorder(tbBanner);
+    private widget.PanelBiasa hdrLookup(widget.TextBox tf, widget.Button btn){
+        widget.PanelBiasa w = new widget.PanelBiasa();
+        w.setOpaque(false);
+        w.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        w.setLayout(new java.awt.BorderLayout(4,0));
+        w.add(tf, java.awt.BorderLayout.CENTER);
+        w.add(btn, java.awt.BorderLayout.EAST);
+        return w;
+    }
 
-        // ----- Baris 1: Identitas Utama (No.Rawat, No.RM, Nama Pasien, Transportasi) -----
-        panelPatientBanner.add(jLabel4); jLabel4.setBounds(6,22,75,23);
-        panelPatientBanner.add(TNoRw); TNoRw.setBounds(84,22,118,23);
-        panelPatientBanner.add(TNoRM); TNoRM.setBounds(206,22,65,23);
-        panelPatientBanner.add(TPasien); TPasien.setBounds(276,22,230,23);
-        panelPatientBanner.add(jLabel22); jLabel22.setBounds(518,22,80,23);
-        panelPatientBanner.add(Transportasi); Transportasi.setBounds(600,22,95,23);
+    /**
+     * [Bagian G] Action bar bawah (panelGlass8 - dipakai bersama SEMUA tab
+     * form ini). Restyle warna/font + "Keluar" dipisah ke kanan + label
+     * ringkasan pilihan. Ditata ulang dari method tangan (pola sama dgn
+     * initHeaderTambahan/initPatientBanner) - blok GEN tidak disentuh.
+     */
+    private void initActionBar(){
+        // Simpan: tanpa background warna (permintaan) - cukup teks tebal + label lebih jelas
+        BtnSimpan.setText("Simpan Triase");
+        BtnSimpan.setGlassColor(java.awt.Color.WHITE);
+        BtnSimpan.setForeground(widget.ThemeConfig.TEXT);
+        BtnSimpan.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        BtnSimpan.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8,0xDB,0xD6)));
+        BtnSimpan.setPreferredSize(new java.awt.Dimension(140,32));
 
-        // ----- Baris 2 (2 sub-baris): Detail Kunjungan -----
-        panelPatientBanner.add(jLabel18); jLabel18.setBounds(6,50,90,23);
-        panelPatientBanner.add(TanggalKunjungan); TanggalKunjungan.setBounds(98,50,135,23);
-        panelPatientBanner.add(jLabel20); jLabel20.setBounds(245,50,78,23);
-        panelPatientBanner.add(CaraMasuk); CaraMasuk.setBounds(325,50,105,23);
-        panelPatientBanner.add(jLabel23); jLabel23.setBounds(442,50,130,23);
-        panelPatientBanner.add(AlasanKedatangan); AlasanKedatangan.setBounds(574,50,150,23);
+        // sekunder: Baru, Ganti, Hapus, Cetak, Semua
+        widget.Button[] sekunder = {BtnBatal, BtnEdit, BtnHapus, BtnPrint, BtnAll};
+        for(widget.Button b : sekunder){
+            b.setGlassColor(java.awt.Color.WHITE);
+            b.setForeground(widget.ThemeConfig.TEXT);
+            b.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8,0xDB,0xD6)));
+            b.setPreferredSize(new java.awt.Dimension(96,32));
+        }
 
-        panelPatientBanner.add(jLabel5); jLabel5.setBounds(6,78,90,23);
-        panelPatientBanner.add(KdKasus); KdKasus.setBounds(98,78,50,23);
-        panelPatientBanner.add(NmKasus); NmKasus.setBounds(152,78,240,23);
-        panelPatientBanner.add(btnKasus); btnKasus.setBounds(396,78,28,23);
-        panelPatientBanner.add(jLabel8); jLabel8.setBounds(436,78,86,23);
-        panelPatientBanner.add(KeteranganKedatangan); KeteranganKedatangan.setBounds(526,78,195,23);
+        // Keluar: sisi kanan, teks danger-ish
+        BtnKeluar.setGlassColor(java.awt.Color.WHITE);
+        BtnKeluar.setForeground(new java.awt.Color(0x8A,0x4A,0x46));
+        BtnKeluar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8,0xDB,0xD6)));
+        BtnKeluar.setPreferredSize(new java.awt.Dimension(96,32));
 
-        // ----- Baris 3 (2 sub-baris): Status Tambahan & Petugas -----
-        panelPatientBanner.add(lblTerpasang); lblTerpasang.setBounds(6,106,110,23);
-        panelPatientBanner.add(PacsInfus); PacsInfus.setBounds(119,106,60,23);
-        panelPatientBanner.add(PacsNgt); PacsNgt.setBounds(179,106,55,23);
-        panelPatientBanner.add(PacsKateter); PacsKateter.setBounds(234,106,100,23);
-        panelPatientBanner.add(lblIdentitasPengantar); lblIdentitasPengantar.setBounds(346,106,145,23);
-        panelPatientBanner.add(lblNamaPengantar); lblNamaPengantar.setBounds(496,106,45,23);
-        panelPatientBanner.add(PacsNamaPengantar); PacsNamaPengantar.setBounds(541,106,175,23);
-        panelPatientBanner.add(lblTelpPengantar); lblTelpPengantar.setBounds(721,106,40,23);
-        panelPatientBanner.add(PacsTelpPengantar); PacsTelpPengantar.setBounds(761,106,110,23);
+        lblRingkasanPacs = new widget.Label();
+        lblRingkasanPacs.setText("");
+        lblRingkasanPacs.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblRingkasanPacs.setForeground(widget.ThemeConfig.TEXT_FAINT);
 
-        panelPatientBanner.add(jLabel30); jLabel30.setBounds(6,134,130,23);
-        panelPatientBanner.add(SekunderKodePetugas); SekunderKodePetugas.setBounds(140,134,110,23);
-        panelPatientBanner.add(SekunderNamaPetugas); SekunderNamaPetugas.setBounds(252,134,210,23);
-        panelPatientBanner.add(btnSekunderPetugas); btnSekunderPetugas.setBounds(462,134,28,23);
+        widget.PanelBiasa kiri = new widget.PanelBiasa();
+        kiri.setOpaque(false);
+        kiri.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 8));
+        kiri.add(BtnSimpan); kiri.add(BtnBatal); kiri.add(BtnEdit);
+        kiri.add(BtnHapus); kiri.add(BtnPrint); kiri.add(BtnAll);
 
-        FormInput.add(panelPatientBanner);
-        panelPatientBanner.setBounds(2,2,885,172);
+        widget.PanelBiasa kanan = new widget.PanelBiasa();
+        kanan.setOpaque(false);
+        kanan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 8));
+        kanan.add(lblRingkasanPacs);
+        kanan.add(BtnKeluar);
 
-        java.awt.Dimension ukuranBanner = FormInput.getPreferredSize();
-        FormInput.setPreferredSize(new java.awt.Dimension(ukuranBanner.width, 180));
+        panelGlass8.removeAll();
+        panelGlass8.setLayout(new java.awt.BorderLayout());
+        panelGlass8.setBorder(javax.swing.BorderFactory.createMatteBorder(1,0,0,0, widget.ThemeConfig.BORDER_SOFT));
+        panelGlass8.add(kiri, java.awt.BorderLayout.CENTER);
+        panelGlass8.add(kanan, java.awt.BorderLayout.EAST);
+    }
+
+    /** [Bagian G.4] "Level terpilih: PACS n · <keputusan>" di action bar. */
+    private void refreshRingkasanPacs(){
+        if(lblRingkasanPacs==null){ return; }
+        String lvl = RbPacs1.isSelected()?"PACS 1":RbPacs2.isSelected()?"PACS 2":
+                     RbPacs3.isSelected()?"PACS 3":RbPacs4.isSelected()?"PACS 4":null;
+        String kep = RbPacsResusitasi.isSelected()?"Ruang Resusitasi":
+                     RbPacsNonResusitasi.isSelected()?"Ruang Non Resusitasi":
+                     RbPacsPoliKlinik.isSelected()?"Poli Klinik":
+                     RbPacsDOA.isSelected()?"Death On Arrival":null;
+        if(lvl==null && kep==null){ lblRingkasanPacs.setText(""); return; }
+        lblRingkasanPacs.setText("Level terpilih: "+(lvl==null?"—":lvl)+(kep==null?"":" · "+kep));
     }
 
     /**
@@ -4423,58 +4609,46 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
      */
     private void initPacsTab(){
         PanelPacs = new widget.PanelBiasa();
-        PanelPacs.setLayout(new java.awt.GridBagLayout());
-        java.awt.GridBagConstraints c;
-        int row = 0;
+        PanelPacs.setLayout(new java.awt.BorderLayout());
+        PanelPacs.setOpaque(true);
+        PanelPacs.setBackground(widget.ThemeConfig.SURFACE);
+        PanelPacs.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 
-        row = tambahBarisPacsLabel(PanelPacs, row, "Triase (PACS)");
-        // ["Sudah Terpasang" dan "Identitas Pengantar" dipindah ke header bersama - lihat initHeaderTambahan()]
+        selSkorPacs = new widget.Label[6][4];
+        kartuLevelPacs = new widget.PanelBiasa[4];
+        kartuStripPacs = new widget.PanelBiasa[4];
+        kartuJudulPacs = new widget.Label[4];
+        kartuDescPacs  = new widget.Label[4];
+        bungkusKeputusanPacs = new widget.PanelBiasa[4];
 
-        // [Fase 3 - Pilot Modernisasi Layout] Tab PACS diubah dari satu kolom
-        // vertikal panjang jadi DUA KOLOM berdampingan (memanfaatkan ruang
-        // horizontal, memperpendek scroll): panelPacsKiri (Anamnesa & Tanda
-        // Vital) dan panelPacsKanan (Skor EWS & Keputusan). Urutan/isi tiap
-        // baris TIDAK berubah - cuma dipindah ke kolom masing-masing lewat
-        // parameter "panel" baru pada tambahBarisPacsLabel()/
-        // tambahBarisPacsField() (sebelumnya selalu hardcode ke PanelPacs).
-        widget.PanelBiasa panelPacsKiri = new widget.PanelBiasa();
-        panelPacsKiri.setLayout(new java.awt.GridBagLayout());
-        javax.swing.border.TitledBorder tbKiri = javax.swing.BorderFactory.createTitledBorder("Anamnesa & Tanda Vital");
-        tbKiri.setTitleFont(widget.ThemeConfig.FONT_BOLD);
-        panelPacsKiri.setBorder(tbKiri);
+        // [Bagian C] Badan sub-tab = 3 kolom (Anamnesa 398 | Tanda Vital 398 |
+        // Skor EWS & Keputusan grow). TitledBorder bersarang DIHAPUS - judul
+        // kolom kini header strip (buatHeaderStrip). GridBagLayout meniru
+        // MigLayout `[398!][398!][grow,fill]`.
+        widget.PanelBiasa panelBadan = new widget.PanelBiasa();
+        panelBadan.setOpaque(true);
+        panelBadan.setBackground(widget.ThemeConfig.SURFACE);
+        panelBadan.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        panelBadan.setLayout(new java.awt.GridBagLayout());
 
-        // Bugfix alignment (dikonfirmasi via screenshot user + render offscreen):
-        // panelPacsKiri sendiri MELEBAR mengisi setengah lebar PanelPacs (lihat
-        // fill=HORIZONTAL+weightx=0.5 di bawah), tapi isinya (label+field) TIDAK
-        // boleh ikut melebar/menempel di kiri - harus TETAP di lebar alaminya,
-        // diposisikan TENGAH horizontal dgn ruang kosong SAMA RATA kiri-kanan.
-        // Solusinya: seluruh baris label/field ditaruh ke panel PEMBUNGKUS BARU
-        // (innerKiri, lebar alami, tak diregangkan), baru innerKiri itu sendiri
-        // ditempel ke panelPacsKiri dgn anchor=NORTH (rata TENGAH horizontal +
-        // rata ATAS vertikal - gotcha GridBagLayout yg sama yg dulu jadi masalah,
-        // sekarang dipakai sengaja sbg fitur di sini).
-        widget.PanelBiasa innerKiri = new widget.PanelBiasa();
-        innerKiri.setLayout(new java.awt.GridBagLayout());
-        int rowKiri = 0;
+        // ========================= KOLOM 1: ANAMNESA =========================
+        widget.PanelBiasa kolAnamnesa = buatKolomPacs(398,true);
+        int rA = 0;
+        rA = tambahIsiKolom(kolAnamnesa, rA, buatHeaderStrip("ANAMNESA"));
 
-        widget.PanelBiasa panelPacsKanan = new widget.PanelBiasa();
-        panelPacsKanan.setLayout(new java.awt.GridBagLayout());
-        javax.swing.border.TitledBorder tbKanan = javax.swing.BorderFactory.createTitledBorder("Skor EWS & Keputusan");
-        tbKanan.setTitleFont(widget.ThemeConfig.FONT_BOLD);
-        panelPacsKanan.setBorder(tbKanan);
-
-        // innerKanan: sama alasan dgn innerKiri di atas.
-        widget.PanelBiasa innerKanan = new widget.PanelBiasa();
-        innerKanan.setLayout(new java.awt.GridBagLayout());
-        int rowKanan = 0;
-
-        // ===== KOLOM KIRI: Mekanisme Trauma, Keluhan Utama, Tanda Vital =====
+        PacsKeluhanUtama = new widget.TextArea();
+        PacsKeluhanUtama.setBorder(javax.swing.BorderFactory.createEmptyBorder(1,1,1,1));
+        PacsKeluhanUtama.setRows(5);
+        widget.ScrollPane scrollKeluhanUtama = new widget.ScrollPane();
+        scrollKeluhanUtama.setViewportView(PacsKeluhanUtama);
+        scrollKeluhanUtama.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER));
+        rA = tambahIsiKolom(kolAnamnesa, rA, barisAreaPacs("Keluhan Utama", scrollKeluhanUtama));
 
         // [Mekanisme Trauma] Hanya tampil kalau Kasus = Trauma (KdKasus != "004").
-        // Diperbarui oleh perbaruiVisibilitasMekanismeTrauma() - dipanggil dari
-        // btnKasusActionPerformed, tampilPacs(), dan resetPacsTab().
-        rowKiri = tambahBarisPacsLabel(innerKiri, rowKiri, "Mekanisme Trauma (khusus Kasus = Trauma)");
+        // Diperbarui oleh perbaruiVisibilitasMekanismeTrauma(). Isi panel TIDAK
+        // diubah - cuma pindah ke kolom Anamnesa.
         panelMekanismeTrauma = new widget.PanelBiasa();
+        panelMekanismeTrauma.setOpaque(false);
         panelMekanismeTrauma.setLayout(new java.awt.GridBagLayout());
         int rowMt = 0;
         java.awt.GridBagConstraints cmt;
@@ -4482,6 +4656,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         CekBoxIsiTeks(CekKklTunggal = new widget.CekBox(),"KKL Tunggal");
         CekBoxIsiTeks(CekKklDenganLawan = new widget.CekBox(),"KKL dengan lawan");
         widget.PanelBiasa panelKkl = new widget.PanelBiasa();
+        panelKkl.setOpaque(false);
         panelKkl.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         panelKkl.add(CekKklTunggal); panelKkl.add(CekKklDenganLawan);
         cmt = pacsConstraint(0,rowMt); cmt.gridwidth=2; panelMekanismeTrauma.add(panelKkl,cmt); rowMt++;
@@ -4503,69 +4678,45 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         rowMt = tambahBarisMekanismeTrauma(panelMekanismeTrauma,rowMt,"Trauma Fisik",CekTraumaFisik = new widget.CekBox(),TTraumaFisikKet = new widget.TextBox());
         rowMt = tambahBarisMekanismeTrauma(panelMekanismeTrauma,rowMt,"Trauma Zat Kimia",CekTraumaZatKimia = new widget.CekBox(),TTraumaZatKimiaKet = new widget.TextBox());
         rowMt = tambahBarisMekanismeTrauma(panelMekanismeTrauma,rowMt,"Trauma Zat Lainnya",CekTraumaZatLainnya = new widget.CekBox(),TTraumaZatLainnyaKet = new widget.TextBox());
-        // Bugfix alignment (lihat javadoc tambahPengisiKolom()): tanpa ini,
-        // checkbox/field di dalam panelMekanismeTrauma (Lawan, Tempat Kejadian,
-        // dll) ikut mengambang ke tengah begitu panel ini direntangkan lebih
-        // lebar dari kontennya sendiri oleh baris di bawah.
         tambahPengisiKolom(panelMekanismeTrauma);
 
-        c = pacsConstraint(0,rowKiri); c.gridwidth=2;
-        // Celah vertikal ekstra (atas 10px, bawah 14px) supaya saat panel ini
-        // muncul (Kasus = Trauma) tidak menabrak "Keluhan Utama" di atas /
-        // "Tanda Vital (PACS)" di bawah - insets baku pacsConstraint (3px)
-        // terlalu rapat utk panel yang baru pop-up.
-        c.insets = new java.awt.Insets(10,5,14,5);
-        innerKiri.add(panelMekanismeTrauma,c); rowKiri++;
+        barisMekanismePacs = barisAreaPacs("Mekanisme Trauma (khusus Kasus = Trauma)", panelMekanismeTrauma);
+        rA = tambahIsiKolom(kolAnamnesa, rA, barisMekanismePacs);
         panelMekanismeTrauma.setVisible(false);
+        barisMekanismePacs.setVisible(false);
 
-        PacsKeluhanUtama = new widget.TextArea();
-        PacsKeluhanUtama.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        // Kolom dilebarkan (20->32) - mengurangi margin kosong di luar kartu
-        // dua-kolom (diverifikasi via render offscreen) TANPA menyentuh lebar
-        // kotak input angka (Nadi/Suhu/dll tetap 130px pendek).
-        PacsKeluhanUtama.setColumns(32);
-        PacsKeluhanUtama.setRows(5);
-        widget.ScrollPane scrollKeluhanUtama = new widget.ScrollPane();
-        scrollKeluhanUtama.setViewportView(PacsKeluhanUtama);
-        // Bugfix border: widget.ScrollPane bawaan sudah py LineBorder, tapi
-        // warnanya (239,244,234, krem nyaris putih) nyaris tak kelihatan di
-        // atas latar putih - jadi TextArea ini kelihatan "tanpa border" spt
-        // dilaporkan. Ditimpa border eksplisit pakai warna Design System
-        // (ThemeConfig.BORDER, dipakai jg oleh FlatLaf Component.borderColor
-        // sejak Fase 2.5) supaya konsisten & terlihat jelas spt TextField
-        // di sekitarnya.
-        scrollKeluhanUtama.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER));
-        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Keluhan Utama", scrollKeluhanUtama);
+        // [Bagian B.5] "Sudah Terpasang" dipindah dari header ke sini.
+        widget.PanelBiasa panelTerpasang = new widget.PanelBiasa();
+        panelTerpasang.setOpaque(false);
+        panelTerpasang.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,6,0));
+        panelTerpasang.add(PacsInfus); panelTerpasang.add(PacsNgt); panelTerpasang.add(PacsKateter);
+        rA = tambahIsiKolom(kolAnamnesa, rA, barisAreaPacs("Sudah Terpasang", panelTerpasang));
+        tutupKolomPacs(kolAnamnesa, rA);
 
-        rowKiri = tambahBarisPacsLabel(innerKiri, rowKiri, "Tanda Vital (PACS)");
-        // Bugfix ukuran field: widget.TextBox/ComboBox py gotcha lawas
-        // (constructor diam2 setSize(WIDTH,23) dgn WIDTH=1 dari
-        // ImageObserver.WIDTH, BUKAN lebar pixel - sudah didokumentasikan &
-        // diperbaiki di sesi RM 03-2/03-4-05-06 dgn pola yg sama) - tanpa
-        // .setPreferredSize() eksplisit, lebar kolom field jadi "kebetulan"
-        // ikut komponen lain yg lebih lebar. Diberi lebar TETAP & PENDEK
-        // (130px, cukup utk angka) sesuai permintaan "kotak input angka
-        // tetap pas/pendek, jangan melebar" - bukan diperlebar.
-        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Tekanan Darah", ukuranPacsFieldPendek(PacsTensi = new widget.TextBox()));
-        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Nadi (/menit)", ukuranPacsFieldPendek(PacsNadi = new widget.TextBox()));
-        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Pernapasan (/menit)", ukuranPacsFieldPendek(PacsRespirasi = new widget.TextBox()));
-        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Suhu (C)", ukuranPacsFieldPendek(PacsSuhu = new widget.TextBox()));
-        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Saturasi O2 (%)", ukuranPacsFieldPendek(PacsSaturasi = new widget.TextBox()));
-        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Nyeri", ukuranPacsFieldPendek(PacsNyeri = new widget.TextBox()));
+        // ======================= KOLOM 2: TANDA VITAL =======================
+        widget.PanelBiasa kolVital = buatKolomPacs(398,true);
+        int rV = 0;
+        rV = tambahIsiKolom(kolVital, rV, buatHeaderStrip("TANDA VITAL"));
+        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Tekanan Darah", ukuranPacsFieldPendek(PacsTensi = new widget.TextBox()), "mmHg"));
+        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Nadi",          ukuranPacsFieldPendek(PacsNadi = new widget.TextBox()), "/mnt"));
+        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Pernapasan",    ukuranPacsFieldPendek(PacsRespirasi = new widget.TextBox()), "/mnt"));
+        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Suhu",          ukuranPacsFieldPendek(PacsSuhu = new widget.TextBox()), "°C"));
+        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Saturasi O₂", ukuranPacsFieldPendek(PacsSaturasi = new widget.TextBox()), "%"));
+        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Skala Nyeri",   ukuranPacsFieldPendek(PacsNyeri = new widget.TextBox()), "/10"));
 
         PacsKesadaran = new widget.ComboBox();
         PacsKesadaran.addItem("Sadar Penuh");
         PacsKesadaran.addItem("Respon Suara");
         PacsKesadaran.addItem("Respon Nyeri");
         PacsKesadaran.addItem("Tidak Respon");
-        PacsKesadaran.setPreferredSize(new java.awt.Dimension(160,23));
-        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Kesadaran (AVPU)", PacsKesadaran);
-        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Berat Badan (kg)", ukuranPacsFieldPendek(PacsBeratBadan = new widget.TextBox()));
-        rowKiri = tambahBarisPacsField(innerKiri, rowKiri, "Tinggi Badan (cm)", ukuranPacsFieldPendek(PacsTinggiBadan = new widget.TextBox()));
+        PacsKesadaran.setVisible(false);
+        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Kesadaran (AVPU)", buatPanelAvpu(), ""));
+        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Berat Badan", ukuranPacsFieldPendek(PacsBeratBadan = new widget.TextBox()), "kg"));
+        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Tinggi Badan", ukuranPacsFieldPendek(PacsTinggiBadan = new widget.TextBox()), "cm"));
+        tutupKolomPacs(kolVital, rV);
 
-        // [PACS] Stage: skor 0-3 dihitung otomatis (bukan dipilih manual) begitu
-        // petugas selesai mengisi tanda vital - lihat hitungSkorOtomatisPacs()
-        // yang murni memanggil kelas PacsScoring (aturan sesuai formulir).
+        // [PACS] skor 0-3 dihitung OTOMATIS dari tanda vital (bukan dipilih
+        // manual) - perilaku TIDAK berubah, hanya tampilannya (sel indikator).
         java.awt.event.FocusAdapter pemicuSkorOtomatis = new java.awt.event.FocusAdapter(){
             @Override
             public void focusLost(java.awt.event.FocusEvent e){
@@ -4579,122 +4730,80 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         PacsSaturasi.addFocusListener(pemicuSkorOtomatis);
         PacsKesadaran.addItemListener((java.awt.event.ItemEvent e) -> hitungSkorOtomatisPacs());
 
-        // ===== KOLOM KANAN: Level Triage, Skor EWS, Total Skor, Catatan Khusus, Keputusan =====
+        // [Bagian C.6] Validasi rentang tanda vital - INDIKATOR VISUAL SAJA.
+        pasangValidasiRentangPacs(PacsNadi, 60, 100);
+        pasangValidasiRentangPacs(PacsRespirasi, 12, 20);
+        pasangValidasiRentangPacs(PacsSuhu, 36, 37.5);
+        pasangValidasiRentangPacs(PacsSaturasi, 95, 100);
+        pasangValidasiRentangPacs(PacsNyeri, 0, 3);
 
-        rowKanan = tambahBarisPacsLabel(innerKanan, rowKanan, "Level Triage (PACS)");
-        widget.PanelBiasa panelLevel = new widget.PanelBiasa();
-        panelLevel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-        bgLevelPacs = new javax.swing.ButtonGroup();
-        RbPacs1 = new widget.RadioButton(); RbPacs1.setText(PacsLevel.PACS_1.getLabel()); pewarnaanTombolPacs(RbPacs1,PacsLevel.PACS_1);
-        RbPacs2 = new widget.RadioButton(); RbPacs2.setText(PacsLevel.PACS_2.getLabel()); pewarnaanTombolPacs(RbPacs2,PacsLevel.PACS_2);
-        RbPacs3 = new widget.RadioButton(); RbPacs3.setText(PacsLevel.PACS_3.getLabel()); pewarnaanTombolPacs(RbPacs3,PacsLevel.PACS_3);
-        RbPacs4 = new widget.RadioButton(); RbPacs4.setText(PacsLevel.PACS_4.getLabel()); pewarnaanTombolPacs(RbPacs4,PacsLevel.PACS_4);
-        bgLevelPacs.add(RbPacs1); bgLevelPacs.add(RbPacs2); bgLevelPacs.add(RbPacs3); bgLevelPacs.add(RbPacs4);
-        panelLevel.add(RbPacs1); panelLevel.add(RbPacs2); panelLevel.add(RbPacs3); panelLevel.add(RbPacs4);
-        c = pacsConstraint(1,rowKanan); innerKanan.add(panelLevel,c); rowKanan++;
+        // ================ KOLOM 3: SKOR EWS & KEPUTUSAN ================
+        widget.PanelBiasa kolEws = buatKolomPacs(0,false);
+        int rE = 0;
+        rE = tambahIsiKolom(kolEws, rE, buatHeaderStrip("SKOR EWS & KEPUTUSAN"));
+        rE = tambahIsiKolom(kolEws, rE, barisSkorHeaderPacs());
+        String[] namaParam = {"Tingkat Kesadaran","Tekanan Darah Sistolik","Frekuensi Nadi","Frekuensi Respirasi","Temperatur","Saturasi Oksigen"};
+        for(int i=0;i<6;i++){ rE = tambahIsiKolom(kolEws, rE, barisSkorPacs(i, namaParam[i])); }
 
-        rowKanan = tambahBarisPacsLabel(innerKanan, rowKanan, "Skor EWS (0-3 per parameter)");
-        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor Kesadaran", CmbSkorKesadaranPacs = buatComboSkor());
-        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor TD Sistolik", CmbSkorTDPacs = buatComboSkor());
-        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor Nadi", CmbSkorNadiPacs = buatComboSkor());
-        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor Respirasi", CmbSkorRespirasiPacs = buatComboSkor());
-        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor Temperatur", CmbSkorTemperaturPacs = buatComboSkor());
-        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Skor Saturasi O2", CmbSkorSaturasiPacs = buatComboSkor());
+        // Combo skor lama TETAP dibuat (terikat simpan/tampil) - disembunyikan,
+        // jadi sumber nilai utk sel indikator 0-3.
+        CmbSkorKesadaranPacs = buatComboSkor();
+        CmbSkorTDPacs = buatComboSkor();
+        CmbSkorNadiPacs = buatComboSkor();
+        CmbSkorRespirasiPacs = buatComboSkor();
+        CmbSkorTemperaturPacs = buatComboSkor();
+        CmbSkorSaturasiPacs = buatComboSkor();
+        widget.ComboBox[] semuaCmbSkor = {CmbSkorKesadaranPacs,CmbSkorTDPacs,CmbSkorNadiPacs,CmbSkorRespirasiPacs,CmbSkorTemperaturPacs,CmbSkorSaturasiPacs};
         java.awt.event.ItemListener hitungSkor = (java.awt.event.ItemEvent e) -> hitungTotalSkorPacs();
-        CmbSkorKesadaranPacs.addItemListener(hitungSkor);
-        CmbSkorTDPacs.addItemListener(hitungSkor);
-        CmbSkorNadiPacs.addItemListener(hitungSkor);
-        CmbSkorRespirasiPacs.addItemListener(hitungSkor);
-        CmbSkorTemperaturPacs.addItemListener(hitungSkor);
-        CmbSkorSaturasiPacs.addItemListener(hitungSkor);
+        for(widget.ComboBox cmb : semuaCmbSkor){ cmb.setVisible(false); cmb.addItemListener(hitungSkor); }
 
         LblTotalSkorPacs = new widget.Label();
         LblTotalSkorPacs.setText("0");
-        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Total Skor", LblTotalSkorPacs);
+        rE = tambahIsiKolom(kolEws, rE, buatBannerTotalPacs());
+
+        rE = tambahIsiKolom(kolEws, rE, barisSaranLevelPacs());
+        rE = tambahIsiKolom(kolEws, rE, buatBarisKartuLevelPacs());
 
         PacsCatatanKhusus = new widget.TextArea();
-        PacsCatatanKhusus.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        // Kolom dilebarkan (20->32), sama alasan spt PacsKeluhanUtama di atas.
-        PacsCatatanKhusus.setColumns(32);
-        PacsCatatanKhusus.setRows(3);
+        PacsCatatanKhusus.setBorder(javax.swing.BorderFactory.createEmptyBorder(1,1,1,1));
+        PacsCatatanKhusus.setRows(4);
         widget.ScrollPane scrollCatatanKhusus = new widget.ScrollPane();
         scrollCatatanKhusus.setViewportView(PacsCatatanKhusus);
-        // Bugfix border: sama alasan spt scrollKeluhanUtama di atas.
         scrollCatatanKhusus.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER));
-        rowKanan = tambahBarisPacsField(innerKanan, rowKanan, "Catatan Khusus", scrollCatatanKhusus);
 
-        rowKanan = tambahBarisPacsLabel(innerKanan, rowKanan, "Keputusan");
-        widget.PanelBiasa panelKeputusan = new widget.PanelBiasa();
-        panelKeputusan.setLayout(new java.awt.GridLayout(4,1));
-        bgKeputusanPacs = new javax.swing.ButtonGroup();
-        RbPacsResusitasi = new widget.RadioButton(); RbPacsResusitasi.setText("Ruang Resusitasi");
-        RbPacsNonResusitasi = new widget.RadioButton(); RbPacsNonResusitasi.setText("Ruang Non Resusitasi");
-        RbPacsPoliKlinik = new widget.RadioButton(); RbPacsPoliKlinik.setText("Poli Klinik/Klinik Umum 24 Jam");
-        RbPacsDOA = new widget.RadioButton(); RbPacsDOA.setText("Death On Arrival");
-        bgKeputusanPacs.add(RbPacsResusitasi); bgKeputusanPacs.add(RbPacsNonResusitasi);
-        bgKeputusanPacs.add(RbPacsPoliKlinik); bgKeputusanPacs.add(RbPacsDOA);
-        panelKeputusan.add(RbPacsResusitasi); panelKeputusan.add(RbPacsNonResusitasi);
-        panelKeputusan.add(RbPacsPoliKlinik); panelKeputusan.add(RbPacsDOA);
-        c = pacsConstraint(1,rowKanan); innerKanan.add(panelKeputusan,c); rowKanan++;
+        rE = tambahIsiKolom(kolEws, rE, buatHeaderStrip("KEPUTUSAN PENEMPATAN"));
+        rE = tambahIsiKolom(kolEws, rE, buatBarisKeputusanPacs(scrollCatatanKhusus));
+        tutupKolomPacs(kolEws, rE);
 
-        // (Pukul Keputusan & Tanggal/Jam Triase dihapus dari sini - sudah terwakili oleh
-        // Tanggal Kunjungan/Kontak Awal Pasien di header. Nilainya diturunkan otomatis
-        // dari TanggalKunjungan saat simpan - lihat BtnSimpanActionPerformed/ganti().)
-        // (Petugas Triase PACS dihapus dari sini - dipakai bersama dengan Dokter/Petugas tab Sekunder)
+        // (Pukul Keputusan & Tanggal/Jam Triase diturunkan dari TanggalKunjungan
+        // saat simpan. Petugas Triase dipakai bersama tab Sekunder.)
 
-        // [REVISI, dikonfirmasi via screenshot user + render offscreen] Dulu di
-        // sini dipanggil tambahPengisiKolom(panelPacsKiri/Kanan) - filler di
-        // ujung kanan supaya isi tetap rata kiri saat panel direntangkan (dulu
-        // dikira itu yg dimaksud "center"). TERNYATA yg dimaksud user adalah isi
-        // (innerKiri/innerKanan) diposisikan TENGAH dgn ruang kosong SAMA RATA
-        // kiri-kanan, bukan rata kiri dgn kosong menumpuk di kanan. Makanya
-        // sekarang SEMUA baris di atas (tambahBarisPacsLabel/Field, panelLevel,
-        // panelKeputusan, panelMekanismeTrauma) ditaruh ke innerKiri/innerKanan
-        // (panel baru, lebar alami/tak diregangkan) - ditempel ke tengah di sini.
-        java.awt.GridBagConstraints cInnerKiri = new java.awt.GridBagConstraints();
-        cInnerKiri.gridx = 0; cInnerKiri.gridy = 0;
-        cInnerKiri.anchor = java.awt.GridBagConstraints.NORTH; // tengah horizontal, atas vertikal
-        panelPacsKiri.add(innerKiri, cInnerKiri);
+        // ===== Rakit 3 kolom ke panelBadan =====
+        java.awt.GridBagConstraints cb = new java.awt.GridBagConstraints();
+        cb.gridy = 0; cb.weighty = 1.0;
+        cb.fill = java.awt.GridBagConstraints.BOTH;
+        cb.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        cb.gridx = 0; cb.weightx = 0; panelBadan.add(kolAnamnesa, cb);
+        cb.gridx = 1; cb.weightx = 0; panelBadan.add(kolVital, cb);
+        cb.gridx = 2; cb.weightx = 1.0; panelBadan.add(kolEws, cb);
 
-        java.awt.GridBagConstraints cInnerKanan = new java.awt.GridBagConstraints();
-        cInnerKanan.gridx = 0; cInnerKanan.gridy = 0;
-        cInnerKanan.anchor = java.awt.GridBagConstraints.NORTH;
-        panelPacsKanan.add(innerKanan, cInnerKanan);
-
-        // ===== Gabungkan kedua kolom sejajar (side-by-side) ke PanelPacs =====
-        // weightx=0.5 di masing-masing + insets kanan/kiri 10px (total 20px
-        // celah antar blok) sesuai permintaan spacing minimal 10-15px.
-        // Bugfix (lanjutan): fill=HORIZONTAL SAJA (bukan BOTH) + anchor=NORTH -
-        // tiap kolom TIDAK direntangkan mengikuti tinggi kolom sebelahnya yang
-        // lebih tinggi (dulu fill=BOTH memaksa panelPacsKanan setinggi
-        // panelPacsKiri begitu Mekanisme Trauma tampil, lalu krn TIDAK ada
-        // weighty di baris manapun panelPacsKanan, isinya ikut "mengambang di
-        // tengah" secara VERTIKAL juga - kotak kanan jadi kosong besar di atas
-        // & konten "Skor EWS" ikut turun/geser tiap Mekanisme Trauma di-toggle).
-        // Sekarang tiap kolom tingginya murni mengikuti konten sendiri, rata
-        // atas (NORTH) - independen dari tinggi kolom sebelahnya.
-        java.awt.GridBagConstraints cKolom;
-        cKolom = pacsConstraint(0,row);
-        cKolom.anchor = java.awt.GridBagConstraints.NORTH;
-        cKolom.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cKolom.weightx = 0.5;
-        cKolom.insets = new java.awt.Insets(5,5,10,10);
-        PanelPacs.add(panelPacsKiri,cKolom);
-
-        cKolom = pacsConstraint(1,row);
-        cKolom.anchor = java.awt.GridBagConstraints.NORTH;
-        cKolom.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cKolom.weightx = 0.5;
-        cKolom.insets = new java.awt.Insets(5,10,10,5);
-        PanelPacs.add(panelPacsKanan,cKolom);
-        row++;
+        PanelPacs.add(panelBadan, java.awt.BorderLayout.CENTER);
 
         widget.PanelBiasa panelCetak = new widget.PanelBiasa();
+        panelCetak.setOpaque(false);
         panelCetak.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         btnPrintPacs = new widget.Button(); btnPrintPacs.setText("Cetak Lembar Triase PACS");
         btnPrintPacs.addActionListener((java.awt.event.ActionEvent evt) -> btnPrintPacsActionPerformed(evt));
         panelCetak.add(btnPrintPacs);
-        c = pacsConstraint(0,row); c.gridwidth=2; PanelPacs.add(panelCetak,c); row++;
+        PanelPacs.add(panelCetak, java.awt.BorderLayout.PAGE_END);
+
+        // Listener styling Level & Keputusan + ringkasan action bar.
+        java.awt.event.ItemListener liLevel = (java.awt.event.ItemEvent e) -> { refreshKartuLevelPacs(); refreshRingkasanPacs(); };
+        RbPacs1.addItemListener(liLevel); RbPacs2.addItemListener(liLevel);
+        RbPacs3.addItemListener(liLevel); RbPacs4.addItemListener(liLevel);
+        java.awt.event.ItemListener liKeputusan = (java.awt.event.ItemEvent e) -> { refreshBungkusKeputusanPacs(); refreshRingkasanPacs(); };
+        RbPacsResusitasi.addItemListener(liKeputusan); RbPacsNonResusitasi.addItemListener(liKeputusan);
+        RbPacsPoliKlinik.addItemListener(liKeputusan); RbPacsDOA.addItemListener(liKeputusan);
 
         // [PACS] Dibungkus widget.ScrollPane dengan ukuran preferred TETAP
         // (bukan mengikuti tinggi asli kontennya), persis pola yang sudah
@@ -4750,16 +4859,542 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         // via render offscreen sebelum diterapkan di sini.
         ViewportTengahPacs wrapperPacs = new ViewportTengahPacs();
         java.awt.GridBagConstraints cWrapperPacs = new java.awt.GridBagConstraints();
-        cWrapperPacs.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cWrapperPacs.fill = java.awt.GridBagConstraints.BOTH;
         cWrapperPacs.weightx = 1.0;
-        cWrapperPacs.anchor = java.awt.GridBagConstraints.NORTH;
+        cWrapperPacs.weighty = 1.0;
+        cWrapperPacs.anchor = java.awt.GridBagConstraints.NORTHWEST;
         wrapperPacs.add(PanelPacs, cWrapperPacs);
 
         widget.ScrollPane scrollPacs = new widget.ScrollPane();
         scrollPacs.setViewportView(wrapperPacs);
-        scrollPacs.setPreferredSize(new java.awt.Dimension(1000,420));
+        // Fase 5: layout 3 kolom - target muat 1 layar 1600x900 tanpa scroll
+        // vertikal. Lebar preferred dinaikkan (1000->1200), tinggi disesuaikan.
+        scrollPacs.setPreferredSize(new java.awt.Dimension(1200,560));
         TabTriase.addTab("PACS", scrollPacs);
+
         perbaruiVisibilitasMekanismeTrauma();
+        refreshAvpuPacs();
+        refreshIndikatorSkorPacs();
+        refreshBannerTotalPacs();
+        refreshSaranLevelPacs();
+        refreshKartuLevelPacs();
+        refreshBungkusKeputusanPacs();
+        refreshRingkasanPacs();
+    }
+
+    // =====================================================================
+    // [Bagian C/D/E/F] Helper tampilan sub-tab PACS (UI-only).
+    // =====================================================================
+
+    /** Kolom badan PACS. lebar>0 -> lebar tetap (strut tak-terlihat); pemisahKanan -> garis 1px di sisi kanan. */
+    private widget.PanelBiasa buatKolomPacs(int lebar, boolean pemisahKanan){
+        widget.PanelBiasa k = new widget.PanelBiasa();
+        k.setOpaque(true);
+        k.setBackground(widget.ThemeConfig.SURFACE);
+        k.setLayout(new java.awt.GridBagLayout());
+        k.setBorder(pemisahKanan
+            ? javax.swing.BorderFactory.createMatteBorder(0,0,0,1, widget.ThemeConfig.BORDER_SOFT)
+            : javax.swing.BorderFactory.createEmptyBorder());
+        if(lebar>0){
+            k.setMinimumSize(new java.awt.Dimension(lebar,10));
+            java.awt.GridBagConstraints cs = new java.awt.GridBagConstraints();
+            cs.gridx=0; cs.gridy=900; cs.fill=java.awt.GridBagConstraints.HORIZONTAL;
+            k.add(javax.swing.Box.createHorizontalStrut(lebar), cs);
+        }
+        return k;
+    }
+
+    /** Tambah 1 komponen sebagai baris penuh kolom (rata atas-kiri, lebar penuh). */
+    private int tambahIsiKolom(widget.PanelBiasa kolom, int row, java.awt.Component komp){
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.gridy=row; c.gridwidth=java.awt.GridBagConstraints.REMAINDER;
+        c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor=java.awt.GridBagConstraints.NORTHWEST;
+        kolom.add(komp,c);
+        return row+1;
+    }
+
+    /** Baris pengisi weighty=1 di bawah supaya isi kolom menempel ke atas. */
+    private void tutupKolomPacs(widget.PanelBiasa kolom, int row){
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.gridy=row; c.weighty=1.0; c.fill=java.awt.GridBagConstraints.BOTH;
+        kolom.add(javax.swing.Box.createGlue(), c);
+    }
+
+    /** [Bagian C.2] Judul kolom = strip 32px SURFACE_ALT + garis bawah + label bold uppercase. */
+    private widget.PanelBiasa buatHeaderStrip(String judul){
+        widget.PanelBiasa s = new widget.PanelBiasa();
+        s.setOpaque(true);
+        s.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        s.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(0,10,0,10)));
+        s.setLayout(new java.awt.BorderLayout());
+        s.setPreferredSize(new java.awt.Dimension(10,32));
+        widget.Label l = new widget.Label();
+        l.setText(judul.toUpperCase());
+        l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+        l.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        s.add(l, java.awt.BorderLayout.CENTER);
+        return s;
+    }
+
+    /** Baris "label kecil di atas + isi lebar penuh" (TextArea / panel checkbox). */
+    private widget.PanelBiasa barisAreaPacs(String label, java.awt.Component isi){
+        widget.PanelBiasa p = new widget.PanelBiasa();
+        p.setOpaque(false);
+        p.setBorder(javax.swing.BorderFactory.createEmptyBorder(6,10,2,10));
+        p.setLayout(new java.awt.BorderLayout(0,3));
+        widget.Label l = new widget.Label();
+        l.setText(label);
+        l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        l.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        p.add(l, java.awt.BorderLayout.NORTH);
+        p.add(isi, java.awt.BorderLayout.CENTER);
+        return p;
+    }
+
+    /** [Bagian C.4] Baris: label kanan 118px | field grow | satuan mono 52px TEXT_FAINT. */
+    private widget.PanelBiasa barisFieldPacs(String label, java.awt.Component field, String satuan){
+        widget.PanelBiasa p = new widget.PanelBiasa();
+        p.setOpaque(false);
+        p.setBorder(javax.swing.BorderFactory.createEmptyBorder(4,10,4,10));
+        p.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridy=0; c.anchor=java.awt.GridBagConstraints.WEST;
+
+        widget.Label l = new widget.Label();
+        l.setText(label);
+        l.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        java.awt.Dimension dl = new java.awt.Dimension(118,24);
+        l.setPreferredSize(dl); l.setMinimumSize(dl);
+        c.gridx=0; c.weightx=0; c.fill=java.awt.GridBagConstraints.NONE;
+        c.insets=new java.awt.Insets(0,0,0,8);
+        p.add(l,c);
+
+        c.gridx=1; c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets=new java.awt.Insets(0,0,0,0);
+        p.add(field,c);
+
+        widget.Label u = new widget.Label();
+        u.setText(satuan==null?"":satuan);
+        u.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        u.setForeground(widget.ThemeConfig.TEXT_FAINT);
+        u.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.PLAIN, 11));
+        java.awt.Dimension du = new java.awt.Dimension(52,24);
+        u.setPreferredSize(du); u.setMinimumSize(du);
+        c.gridx=2; c.weightx=0; c.fill=java.awt.GridBagConstraints.NONE;
+        c.insets=new java.awt.Insets(0,6,0,0);
+        p.add(u,c);
+        return p;
+    }
+
+    /** [Bagian C.5] 4 JToggleButton A/V/P/U -> disinkron ke ComboBox PacsKesadaran (tersembunyi). */
+    private widget.PanelBiasa buatPanelAvpu(){
+        bgAvpuPacs = new javax.swing.ButtonGroup();
+        tblAvpuA = new javax.swing.JToggleButton("A");
+        tblAvpuV = new javax.swing.JToggleButton("V");
+        tblAvpuP = new javax.swing.JToggleButton("P");
+        tblAvpuU = new javax.swing.JToggleButton("U");
+        final javax.swing.JToggleButton[] tg = {tblAvpuA,tblAvpuV,tblAvpuP,tblAvpuU};
+        widget.PanelBiasa p = new widget.PanelBiasa();
+        p.setOpaque(true);
+        p.setBackground(widget.ThemeConfig.SURFACE);
+        p.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER));
+        p.setLayout(new java.awt.GridLayout(1,4));
+        for(int i=0;i<4;i++){
+            final int idx = i;
+            tg[i].setFocusPainted(false);
+            tg[i].setOpaque(true);
+            tg[i].setContentAreaFilled(true);
+            tg[i].setBorder(javax.swing.BorderFactory.createEmptyBorder(4,0,4,0));
+            bgAvpuPacs.add(tg[i]);
+            p.add(tg[i]);
+            tg[i].addActionListener((java.awt.event.ActionEvent e) -> {
+                PacsKesadaran.setSelectedIndex(idx);
+                refreshAvpuPacs();
+            });
+        }
+        return p;
+    }
+
+    private void refreshAvpuPacs(){
+        if(tblAvpuA==null){ return; }
+        javax.swing.JToggleButton[] tg = {tblAvpuA,tblAvpuV,tblAvpuP,tblAvpuU};
+        for(javax.swing.JToggleButton b : tg){
+            if(b.isSelected()){ b.setBackground(widget.ThemeConfig.ACCENT); b.setForeground(java.awt.Color.WHITE); }
+            else { b.setBackground(java.awt.Color.WHITE); b.setForeground(widget.ThemeConfig.TEXT); }
+        }
+    }
+
+    /** Setelah PacsKesadaran diisi dari DB, nyalakan toggle AVPU yang sesuai. */
+    private void syncAvpuDariCombo(){
+        if(tblAvpuA==null){ return; }
+        int i = PacsKesadaran.getSelectedIndex();
+        javax.swing.JToggleButton[] tg = {tblAvpuA,tblAvpuV,tblAvpuP,tblAvpuU};
+        if(i>=0 && i<4){ tg[i].setSelected(true); } else { bgAvpuPacs.clearSelection(); }
+        refreshAvpuPacs();
+    }
+
+    /** [Bagian C.6] DocumentListener: di luar rentang -> warna WARN; dalam rentang/kosong -> normal. TIDAK memblokir simpan. */
+    private void pasangValidasiRentangPacs(final widget.TextBox tb, final double min, final double max){
+        javax.swing.event.DocumentListener dl = new javax.swing.event.DocumentListener(){
+            private void cek(){
+                String s = tb.getText().trim().replace(",",".");
+                boolean luar = false;
+                if(!s.isEmpty()){
+                    try{ double v = Double.parseDouble(s); luar = (v<min || v>max); }
+                    catch(NumberFormatException ex){ luar = false; }
+                }
+                if(luar){
+                    tb.setBackground(widget.ThemeConfig.WARN_BG);
+                    tb.setForeground(widget.ThemeConfig.WARN);
+                    tb.putClientProperty("JComponent.outline", new Object[]{ widget.ThemeConfig.WARN });
+                }else{
+                    tb.setBackground(java.awt.Color.WHITE);
+                    tb.setForeground(widget.ThemeConfig.TEXT);
+                    tb.putClientProperty("JComponent.outline", null);
+                }
+            }
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e){ cek(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e){ cek(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e){ cek(); }
+        };
+        tb.getDocument().addDocumentListener(dl);
+    }
+
+    /** [Bagian D] Baris judul tabel skor: "PARAMETER" + kolom 0/1/2/3. */
+    private widget.PanelBiasa barisSkorHeaderPacs(){
+        widget.PanelBiasa p = new widget.PanelBiasa();
+        p.setOpaque(false);
+        p.setBorder(javax.swing.BorderFactory.createEmptyBorder(8,10,4,10));
+        p.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridy=0; c.anchor=java.awt.GridBagConstraints.WEST; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        widget.Label t = new widget.Label();
+        t.setText("PARAMETER");
+        t.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        t.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+        t.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        c.gridx=0; c.weightx=1.0; p.add(t,c);
+        for(int j=0;j<4;j++){
+            widget.Label h = new widget.Label();
+            h.setText(String.valueOf(j));
+            h.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            h.setForeground(widget.ThemeConfig.TEXT_MUTED);
+            java.awt.Dimension d = new java.awt.Dimension(54,20);
+            h.setPreferredSize(d); h.setMinimumSize(d);
+            c.gridx=1+j; c.weightx=0; c.insets=new java.awt.Insets(0,4,0,0);
+            p.add(h,c);
+        }
+        return p;
+    }
+
+    /** [Bagian D.1-4] Baris indikator skor 1 parameter: nama + 4 sel 0-3 (Label read-only), zebra. */
+    private widget.PanelBiasa barisSkorPacs(int idx, String nama){
+        widget.PanelBiasa p = new widget.PanelBiasa();
+        p.setOpaque(true);
+        p.setBackground(idx%2==0 ? new java.awt.Color(0xFB,0xFC,0xFA) : java.awt.Color.WHITE);
+        p.setBorder(javax.swing.BorderFactory.createEmptyBorder(5,10,5,10));
+        p.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridy=0; c.anchor=java.awt.GridBagConstraints.WEST; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+
+        widget.Label lblNama = new widget.Label();
+        lblNama.setText(nama);
+        lblNama.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        java.awt.Dimension dn = new java.awt.Dimension(150,24);
+        lblNama.setPreferredSize(dn); lblNama.setMinimumSize(dn);
+        c.gridx=0; c.weightx=1.0; p.add(lblNama,c);
+
+        for(int j=0;j<4;j++){
+            widget.Label sel = new widget.Label();
+            sel.setText(String.valueOf(j));
+            sel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            java.awt.Dimension ds = new java.awt.Dimension(54,24);
+            sel.setPreferredSize(ds); sel.setMinimumSize(ds);
+            sel.setOpaque(true);
+            selSkorPacs[idx][j] = sel;
+            c.gridx=1+j; c.weightx=0; c.insets=new java.awt.Insets(0,4,0,0);
+            p.add(sel,c);
+        }
+        return p;
+    }
+
+    /** [Bagian D.2-3] Warnai sel indikator dari nilai combo skor (0=OK,1=PACS3,2=WARN,3=DANGER). */
+    private void refreshIndikatorSkorPacs(){
+        if(selSkorPacs==null){ return; }
+        widget.ComboBox[] cmb = {CmbSkorKesadaranPacs,CmbSkorTDPacs,CmbSkorNadiPacs,CmbSkorRespirasiPacs,CmbSkorTemperaturPacs,CmbSkorSaturasiPacs};
+        java.awt.Color[] solid = {widget.ThemeConfig.OK, widget.ThemeConfig.PACS3, widget.ThemeConfig.WARN, widget.ThemeConfig.DANGER};
+        java.awt.Color[] bg    = {widget.ThemeConfig.OK_BG, widget.ThemeConfig.PACS3_BG, widget.ThemeConfig.WARN_BG, widget.ThemeConfig.DANGER_BG};
+        java.awt.Color inaktifBg = new java.awt.Color(0xF4,0xF5,0xF2);
+        for(int i=0;i<6;i++){
+            int skor = -1;
+            Object v = (cmb[i]==null) ? null : cmb[i].getSelectedItem();
+            if(v!=null){ try{ skor = Integer.parseInt(v.toString()); }catch(NumberFormatException e){ skor = -1; } }
+            for(int j=0;j<4;j++){
+                widget.Label sel = selSkorPacs[i][j];
+                if(sel==null){ continue; }
+                sel.setOpaque(true);
+                if(j==skor){
+                    sel.setBackground(bg[j]);
+                    sel.setForeground(solid[j]);
+                    sel.setBorder(javax.swing.BorderFactory.createLineBorder(solid[j]));
+                    sel.setFont(sel.getFont().deriveFont(java.awt.Font.BOLD));
+                }else{
+                    sel.setBackground(inaktifBg);
+                    sel.setForeground(widget.ThemeConfig.TEXT_FAINT);
+                    sel.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT));
+                    sel.setFont(sel.getFont().deriveFont(java.awt.Font.PLAIN));
+                }
+            }
+        }
+    }
+
+    /** [Bagian D.5] Banner Total Skor EWS - warna & interpretasi mengikuti level PACS hasil skor. */
+    private widget.PanelBiasa buatBannerTotalPacs(){
+        bannerTotalPacs = new widget.PanelBiasa();
+        bannerTotalPacs.setOpaque(true);
+        bannerTotalPacs.setLayout(new java.awt.BorderLayout(12,0));
+
+        widget.PanelBiasa kiri = new widget.PanelBiasa();
+        kiri.setOpaque(false);
+        kiri.setLayout(new java.awt.GridLayout(2,1));
+        widget.Label judul = new widget.Label();
+        judul.setText("TOTAL SKOR EWS");
+        judul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        lblBannerTafsirPacs = new widget.Label();
+        lblBannerTafsirPacs.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblBannerTafsirPacs.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        kiri.add(judul); kiri.add(lblBannerTafsirPacs);
+
+        widget.PanelBiasa kanan = new widget.PanelBiasa();
+        kanan.setOpaque(false);
+        kanan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT,6,0));
+        LblTotalSkorPacs.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        LblTotalSkorPacs.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 28));
+        lblBannerSatuanPacs = new widget.Label();
+        lblBannerSatuanPacs.setText("/ 18");
+        lblBannerSatuanPacs.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        kanan.add(LblTotalSkorPacs); kanan.add(lblBannerSatuanPacs);
+
+        bannerTotalPacs.add(kiri, java.awt.BorderLayout.CENTER);
+        bannerTotalPacs.add(kanan, java.awt.BorderLayout.EAST);
+
+        widget.PanelBiasa wrap = new widget.PanelBiasa();
+        wrap.setOpaque(false);
+        wrap.setBorder(javax.swing.BorderFactory.createEmptyBorder(8,10,10,10));
+        wrap.setLayout(new java.awt.BorderLayout());
+        wrap.add(bannerTotalPacs, java.awt.BorderLayout.CENTER);
+        return wrap;
+    }
+
+    private void refreshBannerTotalPacs(){
+        if(bannerTotalPacs==null){ return; }
+        int total;
+        try{ total = Integer.parseInt(LblTotalSkorPacs.getText().trim()); }
+        catch(NumberFormatException e){ total = -1; }
+        java.awt.Color solid, bg; String tafsir;
+        if(total<0){ solid = widget.ThemeConfig.TEXT_MUTED; bg = widget.ThemeConfig.SURFACE_ALT; tafsir = "Menunggu tanda vital"; }
+        else if(total>=7){ solid = widget.ThemeConfig.DANGER; bg = widget.ThemeConfig.DANGER_BG; tafsir = "Risiko tinggi — respons segera"; }
+        else if(total>=4){ solid = widget.ThemeConfig.WARN;   bg = widget.ThemeConfig.WARN_BG;   tafsir = "Risiko sedang — tinjau dalam 10 menit"; }
+        else if(total>=2){ solid = widget.ThemeConfig.PACS3;  bg = widget.ThemeConfig.PACS3_BG;  tafsir = "Risiko rendah — pantau berkala"; }
+        else { solid = widget.ThemeConfig.OK; bg = widget.ThemeConfig.OK_BG; tafsir = "Stabil"; }
+        bannerTotalPacs.setBackground(bg);
+        bannerTotalPacs.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(solid),
+            javax.swing.BorderFactory.createEmptyBorder(12,16,12,16)));
+        lblBannerTafsirPacs.setText(tafsir);
+        lblBannerTafsirPacs.setForeground(solid);
+        LblTotalSkorPacs.setForeground(solid);
+    }
+
+    /** [Bagian E.3] Baris: judul "LEVEL TRIAGE (PACS)" + badge "Saran sistem: PACS n". */
+    private widget.PanelBiasa barisSaranLevelPacs(){
+        lblSaranLevelPacs = new widget.Label();
+        lblSaranLevelPacs.setText("Saran sistem: —");
+        lblSaranLevelPacs.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblSaranLevelPacs.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+        lblSaranLevelPacs.setOpaque(true);
+        lblSaranLevelPacs.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        lblSaranLevelPacs.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lblSaranLevelPacs.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(3,10,3,10)));
+
+        widget.Label judul = new widget.Label();
+        judul.setText("LEVEL TRIAGE (PACS)");
+        judul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+        judul.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        widget.PanelBiasa p = new widget.PanelBiasa();
+        p.setOpaque(false);
+        p.setBorder(javax.swing.BorderFactory.createEmptyBorder(10,10,0,10));
+        p.setLayout(new java.awt.BorderLayout());
+        p.add(judul, java.awt.BorderLayout.WEST);
+        p.add(lblSaranLevelPacs, java.awt.BorderLayout.EAST);
+        return p;
+    }
+
+    private int saranLevelDariTotal(int total){
+        if(total>=7) return 1;
+        if(total>=4) return 2;
+        if(total>=2) return 3;
+        return 4;
+    }
+
+    private void refreshSaranLevelPacs(){
+        if(lblSaranLevelPacs==null){ return; }
+        try{
+            int total = Integer.parseInt(LblTotalSkorPacs.getText().trim());
+            lblSaranLevelPacs.setText("Saran sistem: PACS "+saranLevelDariTotal(total));
+        }catch(NumberFormatException e){
+            lblSaranLevelPacs.setText("Saran sistem: —");
+        }
+    }
+
+    /** [Bagian E.1] 4 kartu Level Triage; klik kartu -> pilih RbPacsN (tersembunyi, tetap sumber nilai simpan). */
+    private widget.PanelBiasa buatBarisKartuLevelPacs(){
+        String[] judul = {"PACS 1","PACS 2","PACS 3","PACS 4"};
+        String[] desc  = {"Resusitasi · segera","Emergensi · ≤ 10 mnt","Urgen · ≤ 30 mnt","Non-urgen · ≤ 60 mnt"};
+
+        bgLevelPacs = new javax.swing.ButtonGroup();
+        RbPacs1 = new widget.RadioButton(); RbPacs1.setText(PacsLevel.PACS_1.getLabel());
+        RbPacs2 = new widget.RadioButton(); RbPacs2.setText(PacsLevel.PACS_2.getLabel());
+        RbPacs3 = new widget.RadioButton(); RbPacs3.setText(PacsLevel.PACS_3.getLabel());
+        RbPacs4 = new widget.RadioButton(); RbPacs4.setText(PacsLevel.PACS_4.getLabel());
+        final widget.RadioButton[] rb = {RbPacs1,RbPacs2,RbPacs3,RbPacs4};
+        for(widget.RadioButton r : rb){ bgLevelPacs.add(r); r.setVisible(false); }
+
+        widget.PanelBiasa baris = new widget.PanelBiasa();
+        baris.setOpaque(false);
+        baris.setBorder(javax.swing.BorderFactory.createEmptyBorder(6,10,6,10));
+        baris.setLayout(new java.awt.GridLayout(1,4,8,0));
+        for(int i=0;i<4;i++){
+            final int idx = i;
+            widget.PanelBiasa kartu = new widget.PanelBiasa();
+            kartu.setOpaque(true);
+            kartu.setLayout(new java.awt.BorderLayout());
+
+            widget.PanelBiasa strip = new widget.PanelBiasa();
+            strip.setOpaque(true);
+            strip.setPreferredSize(new java.awt.Dimension(10,4));
+
+            widget.PanelBiasa isi = new widget.PanelBiasa();
+            isi.setOpaque(false);
+            isi.setBorder(javax.swing.BorderFactory.createEmptyBorder(8,10,10,10));
+            isi.setLayout(new java.awt.GridLayout(2,1));
+            widget.Label lj = new widget.Label();
+            lj.setText(judul[i]);
+            lj.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            lj.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+            widget.Label ld = new widget.Label();
+            ld.setText(desc[i]);
+            ld.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            ld.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+            isi.add(lj); isi.add(ld);
+
+            kartu.add(strip, java.awt.BorderLayout.NORTH);
+            kartu.add(isi, java.awt.BorderLayout.CENTER);
+            kartu.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+            kartu.addMouseListener(new java.awt.event.MouseAdapter(){
+                @Override public void mousePressed(java.awt.event.MouseEvent e){ rb[idx].setSelected(true); }
+            });
+
+            kartuLevelPacs[i]=kartu; kartuStripPacs[i]=strip; kartuJudulPacs[i]=lj; kartuDescPacs[i]=ld;
+            baris.add(kartu);
+        }
+        return baris;
+    }
+
+    private java.awt.Color campurWarna(java.awt.Color a, java.awt.Color b, double t){
+        int r  = (int)Math.round(a.getRed()  *(1-t) + b.getRed()  *t);
+        int g  = (int)Math.round(a.getGreen()*(1-t) + b.getGreen()*t);
+        int bl = (int)Math.round(a.getBlue() *(1-t) + b.getBlue() *t);
+        return new java.awt.Color(r,g,bl);
+    }
+
+    /** [Bagian E.2] Restyle kartu Level dari RbPacs* mana yang terpilih. */
+    private void refreshKartuLevelPacs(){
+        if(kartuLevelPacs==null){ return; }
+        boolean[] aktif = {RbPacs1.isSelected(),RbPacs2.isSelected(),RbPacs3.isSelected(),RbPacs4.isSelected()};
+        java.awt.Color inaktifBorder = new java.awt.Color(0xD8,0xDB,0xD6);
+        for(int i=0;i<4;i++){
+            if(kartuLevelPacs[i]==null){ continue; }
+            if(aktif[i]){
+                kartuLevelPacs[i].setBackground(warnaLevelBgPacs[i]);
+                kartuLevelPacs[i].setBorder(javax.swing.BorderFactory.createMatteBorder(2,2,2,2, warnaLevelPacs[i]));
+                kartuStripPacs[i].setBackground(warnaLevelPacs[i]);
+                kartuJudulPacs[i].setForeground(warnaLevelPacs[i]);
+                kartuDescPacs[i].setForeground(warnaLevelPacs[i]);
+            }else{
+                kartuLevelPacs[i].setBackground(java.awt.Color.WHITE);
+                kartuLevelPacs[i].setBorder(javax.swing.BorderFactory.createLineBorder(inaktifBorder));
+                kartuStripPacs[i].setBackground(campurWarna(warnaLevelPacs[i], java.awt.Color.WHITE, 0.58));
+                kartuJudulPacs[i].setForeground(widget.ThemeConfig.TEXT);
+                kartuDescPacs[i].setForeground(widget.ThemeConfig.TEXT_MUTED);
+            }
+        }
+    }
+
+    /** [Bagian F] panelKeputusan (4 radio berbungkus) + Catatan Khusus berdampingan. */
+    private widget.PanelBiasa buatBarisKeputusanPacs(java.awt.Component scrollCatatan){
+        bgKeputusanPacs = new javax.swing.ButtonGroup();
+        RbPacsResusitasi = new widget.RadioButton(); RbPacsResusitasi.setText("Ruang Resusitasi");
+        RbPacsNonResusitasi = new widget.RadioButton(); RbPacsNonResusitasi.setText("Ruang Non Resusitasi");
+        RbPacsPoliKlinik = new widget.RadioButton(); RbPacsPoliKlinik.setText("Poli Klinik/Klinik Umum 24 Jam");
+        RbPacsDOA = new widget.RadioButton(); RbPacsDOA.setText("Death On Arrival");
+        widget.RadioButton[] rb = {RbPacsResusitasi,RbPacsNonResusitasi,RbPacsPoliKlinik,RbPacsDOA};
+
+        widget.PanelBiasa panelKeputusan = new widget.PanelBiasa();
+        panelKeputusan.setOpaque(false);
+        panelKeputusan.setLayout(new java.awt.GridLayout(4,1,0,7));
+        for(int i=0;i<4;i++){
+            bgKeputusanPacs.add(rb[i]);
+            widget.PanelBiasa w = new widget.PanelBiasa();
+            w.setOpaque(true);
+            w.setBackground(java.awt.Color.WHITE);
+            w.setLayout(new java.awt.BorderLayout());
+            rb[i].setOpaque(false);
+            w.add(rb[i], java.awt.BorderLayout.CENTER);
+            bungkusKeputusanPacs[i]=w;
+            panelKeputusan.add(w);
+        }
+
+        widget.PanelBiasa isi = new widget.PanelBiasa();
+        isi.setOpaque(false);
+        isi.setBorder(javax.swing.BorderFactory.createEmptyBorder(6,10,10,10));
+        isi.setLayout(new java.awt.GridLayout(1,2,16,0));
+        isi.add(panelKeputusan);
+        isi.add(scrollCatatan);
+        return isi;
+    }
+
+    private void refreshBungkusKeputusanPacs(){
+        if(bungkusKeputusanPacs==null){ return; }
+        widget.RadioButton[] rb = {RbPacsResusitasi,RbPacsNonResusitasi,RbPacsPoliKlinik,RbPacsDOA};
+        for(int i=0;i<4;i++){
+            if(bungkusKeputusanPacs[i]==null){ continue; }
+            if(rb[i].isSelected()){
+                bungkusKeputusanPacs[i].setBackground(new java.awt.Color(0xF2,0xF7,0xFB));
+                bungkusKeputusanPacs[i].setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                    javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.ACCENT),
+                    javax.swing.BorderFactory.createEmptyBorder(7,10,7,10)));
+                rb[i].setForeground(widget.ThemeConfig.ACCENT);
+                rb[i].setFont(rb[i].getFont().deriveFont(java.awt.Font.BOLD));
+            }else{
+                bungkusKeputusanPacs[i].setBackground(java.awt.Color.WHITE);
+                bungkusKeputusanPacs[i].setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                    javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+                    javax.swing.BorderFactory.createEmptyBorder(7,10,7,10)));
+                rb[i].setForeground(widget.ThemeConfig.TEXT);
+                rb[i].setFont(rb[i].getFont().deriveFont(java.awt.Font.PLAIN));
+            }
+        }
     }
 
     /**
@@ -4867,6 +5502,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     private void perbaruiVisibilitasMekanismeTrauma(){
         boolean trauma = !KdKasus.getText().trim().equals("004") && !KdKasus.getText().trim().isEmpty();
         panelMekanismeTrauma.setVisible(trauma);
+        if(barisMekanismePacs!=null){ barisMekanismePacs.setVisible(trauma); }
         if(!trauma){
             CekKklTunggal.setSelected(false);
             CekKklDenganLawan.setSelected(false);
@@ -5127,6 +5763,8 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
             }
         }catch(NumberFormatException e){
         }
+        hitungTotalSkorPacs();
+        refreshIndikatorSkorPacs();
     }
 
     /**
@@ -5142,11 +5780,17 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         for(widget.ComboBox cmb : semuaSkor){
             if(cmb.getSelectedItem()==null||"?".equals(cmb.getSelectedItem().toString())){
                 LblTotalSkorPacs.setText("?");
+                refreshIndikatorSkorPacs();
+                refreshBannerTotalPacs();
+                refreshSaranLevelPacs();
                 return;
             }
             total += Integer.parseInt(cmb.getSelectedItem().toString());
         }
         LblTotalSkorPacs.setText(String.valueOf(total));
+        refreshIndikatorSkorPacs();
+        refreshBannerTotalPacs();
+        refreshSaranLevelPacs();
     }
 
     /** Stage i: kembalikan seluruh field tab PACS ke kondisi kosong/default (dipanggil dari emptTeks()). */
@@ -5189,6 +5833,15 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         CekTraumaZatLainnya.setSelected(false);
         TTraumaZatLainnyaKet.setText("");
         panelMekanismeTrauma.setVisible(false);
+        // [Modernisasi] kembalikan cermin visual ke kondisi kosong
+        if(bgAvpuPacs!=null){ bgAvpuPacs.clearSelection(); }
+        refreshAvpuPacs();
+        refreshIndikatorSkorPacs();
+        refreshBannerTotalPacs();
+        refreshSaranLevelPacs();
+        refreshKartuLevelPacs();
+        refreshBungkusKeputusanPacs();
+        refreshRingkasanPacs();
     }
 
     /**
@@ -5327,6 +5980,14 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
             System.out.println("Notif PACS : "+e);
         }
         perbaruiVisibilitasMekanismeTrauma();
+        // [Modernisasi] sinkronkan cermin visual dgn nilai yg baru dimuat
+        syncAvpuDariCombo();
+        refreshIndikatorSkorPacs();
+        refreshBannerTotalPacs();
+        refreshSaranLevelPacs();
+        refreshKartuLevelPacs();
+        refreshBungkusKeputusanPacs();
+        refreshRingkasanPacs();
     }
 
     /** Stage c: validasi input tab PACS sebelum INSERT/UPDATE. Pola sama seperti validasi Primer/Sekunder (Valid.textKosong). */
