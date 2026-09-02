@@ -1265,7 +1265,7 @@ public class frmUtama extends javax.swing.JFrame {
         //this.setSize(screen.width,screen.height);
         edAdmin.setDocument(new batasInput((byte)100).getKata(edAdmin));
         edPwd.setDocument(new batasInput((byte)100).getKata(edPwd));
-        DlgLogin.setSize(380,580);
+        DlgLogin.setSize(420,660);
         DlgLogin.setLocationRelativeTo(null);
         jMenu1.setOpaque(false);
         jMenu5.setOpaque(false);
@@ -1317,8 +1317,8 @@ public class frmUtama extends javax.swing.JFrame {
     private void initComponents() {
 
         DlgLogin = new javax.swing.JDialog();
-        pnlLoginBg = new usu.widget.glass.PanelGlass();
-        pnlLoginCard = new usu.widget.glass.PanelGlass();
+        pnlLoginBg = new javax.swing.JPanel();
+        pnlLoginCard = new widget.PanelKartu();
         lblLoginJudul = new javax.swing.JLabel();
         lblLoginLogo = new javax.swing.JLabel();
         lblLoginWelcome = new javax.swing.JLabel();
@@ -1899,6 +1899,9 @@ public class frmUtama extends javax.swing.JFrame {
         DlgLogin.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         DlgLogin.setName("DlgLogin"); // NOI18N
         DlgLogin.setUndecorated(true);
+        // Latar dialog transparan: bagian di sekeliling kartu tidak digambar
+        // (dihapus sesuai tanda silang user), hanya kartu + nama RS yang tampak.
+        DlgLogin.setBackground(new java.awt.Color(0, 0, 0, 0));
         DlgLogin.setResizable(false);
 
         lblLoginJudul.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
@@ -1907,13 +1910,13 @@ public class frmUtama extends javax.swing.JFrame {
         lblLoginJudul.setText("SIMRS KHANZA");
         lblLoginJudul.setName("lblLoginJudul"); // NOI18N
         pnlLoginCard.add(lblLoginJudul);
-        lblLoginJudul.setBounds(0, 20, 320, 16);
+        lblLoginJudul.setBounds(0, 36, 396, 16);
 
         lblLoginLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblLoginLogo.setIcon(skalakanIkon(new javax.swing.ImageIcon(getClass().getResource("/picture/yaski24.png")).getImage(),96,96)); // NOI18N
+        lblLoginLogo.setIcon(skalakanIkon(new javax.swing.ImageIcon(getClass().getResource("/picture/yaski_icon.png")).getImage(),64,64)); // NOI18N
         lblLoginLogo.setName("lblLoginLogo"); // NOI18N
         pnlLoginCard.add(lblLoginLogo);
-        lblLoginLogo.setBounds(112, 44, 96, 96);
+        lblLoginLogo.setBounds(166, 62, 64, 64);
 
         lblLoginWelcome.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         lblLoginWelcome.setForeground(new java.awt.Color(40, 40, 40));
@@ -1921,33 +1924,36 @@ public class frmUtama extends javax.swing.JFrame {
         lblLoginWelcome.setText("Selamat Datang");
         lblLoginWelcome.setName("lblLoginWelcome"); // NOI18N
         pnlLoginCard.add(lblLoginWelcome);
-        lblLoginWelcome.setBounds(0, 152, 320, 28);
+        lblLoginWelcome.setBounds(0, 142, 396, 30);
 
         lblLoginSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         lblLoginSubtitle.setForeground(new java.awt.Color(130, 130, 130));
         lblLoginSubtitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblLoginSubtitle.setText("Silakan masuk untuk melanjutkan");
+        lblLoginSubtitle.setText("Masuk untuk mengakses SIM Rawat Jalan");
         lblLoginSubtitle.setName("lblLoginSubtitle"); // NOI18N
         pnlLoginCard.add(lblLoginSubtitle);
-        lblLoginSubtitle.setBounds(0, 182, 320, 18);
+        lblLoginSubtitle.setBounds(0, 174, 396, 16);
 
-        pnlLoginDivider.setBackground(new java.awt.Color(8, 126, 139));
+        pnlLoginDivider.setBackground(new java.awt.Color(233, 236, 239));
         pnlLoginDivider.setName("pnlLoginDivider"); // NOI18N
         pnlLoginCard.add(pnlLoginDivider);
-        pnlLoginDivider.setBounds(140, 209, 40, 3);
+        pnlLoginDivider.setBounds(30, 206, 336, 1);
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(90, 90, 90));
+        jLabel4.setForeground(new java.awt.Color(60, 60, 60));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("ID Admin");
         jLabel4.setName("jLabel4"); // NOI18N
         pnlLoginCard.add(jLabel4);
-        jLabel4.setBounds(32, 224, 200, 16);
+        jLabel4.setBounds(30, 222, 200, 16);
 
         edAdmin.setForeground(new java.awt.Color(50, 50, 50));
+        edAdmin.setBackground(new java.awt.Color(247, 249, 250));
         edAdmin.setToolTipText("Silahkan masukkan ID Admin");
-        edAdmin.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        edAdmin.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         edAdmin.setName("edAdmin"); // NOI18N
+        edAdmin.putClientProperty("JTextField.arc", 999);
+        edAdmin.putClientProperty("JTextField.placeholderText", "Masukkan ID Admin");
         edAdmin.putClientProperty("JTextField.leadingIcon", skalakanIkon(new javax.swing.ImageIcon(getClass().getResource("/picture/user.png")).getImage(),16,16));
         edAdmin.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -1955,28 +1961,32 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
         pnlLoginCard.add(edAdmin);
-        edAdmin.setBounds(32, 242, 256, 36);
+        edAdmin.setBounds(30, 242, 336, 38);
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(90, 90, 90));
+        jLabel5.setForeground(new java.awt.Color(60, 60, 60));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel5.setText("Password");
         jLabel5.setName("jLabel5"); // NOI18N
         pnlLoginCard.add(jLabel5);
-        jLabel5.setBounds(32, 288, 200, 16);
+        jLabel5.setBounds(30, 296, 200, 16);
 
         edPwd.setForeground(new java.awt.Color(50, 50, 50));
+        edPwd.setBackground(new java.awt.Color(247, 249, 250));
         edPwd.setToolTipText("Silahkan masukkan password");
-        edPwd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        edPwd.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         edPwd.setName("edPwd"); // NOI18N
+        edPwd.putClientProperty("JTextField.arc", 999);
+        edPwd.putClientProperty("JTextField.placeholderText", "Masukkan Password");
         edPwd.putClientProperty("JTextField.leadingIcon", skalakanIkon(new javax.swing.ImageIcon(getClass().getResource("/picture/lock.png")).getImage(),16,16));
+        edPwd.putClientProperty("JTextField.trailingIcon", ikonMata(true));
         edPwd.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 edPwdKeyPressed(evt);
             }
         });
         pnlLoginCard.add(edPwd);
-        edPwd.setBounds(32, 306, 256, 36);
+        edPwd.setBounds(30, 316, 336, 38);
 
         chkTampilkanPassword.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         chkTampilkanPassword.setForeground(new java.awt.Color(90, 90, 90));
@@ -1989,7 +1999,7 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
         pnlLoginCard.add(chkTampilkanPassword);
-        chkTampilkanPassword.setBounds(28, 350, 150, 22);
+        chkTampilkanPassword.setBounds(26, 368, 180, 22);
 
         lblLupaPassword.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
         lblLupaPassword.setForeground(new java.awt.Color(8, 126, 139));
@@ -2003,14 +2013,15 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
         pnlLoginCard.add(lblLupaPassword);
-        lblLupaPassword.setBounds(188, 350, 100, 22);
+        lblLupaPassword.setBounds(216, 368, 150, 22);
 
         BtnLogin.setMnemonic('Z');
         BtnLogin.setText("MASUK");
         BtnLogin.setToolTipText("Alt+Z");
         BtnLogin.setName("BtnLogin"); // NOI18N
         BtnLogin.putClientProperty("JButton.buttonType", "roundRect");
-        BtnLogin.setBackground(new java.awt.Color(0, 168, 106));
+        BtnLogin.putClientProperty("JButton.arc", 999);
+        BtnLogin.setBackground(new java.awt.Color(8, 126, 139));
         BtnLogin.setForeground(java.awt.Color.WHITE);
         BtnLogin.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         BtnLogin.setFocusPainted(false);
@@ -2021,13 +2032,14 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
         pnlLoginCard.add(BtnLogin);
-        BtnLogin.setBounds(32, 384, 256, 42);
+        BtnLogin.setBounds(30, 402, 336, 46);
 
         BtnCancel.setMnemonic('Y');
         BtnCancel.setText("Batal");
         BtnCancel.setToolTipText("Alt+Y");
         BtnCancel.setName("BtnCancel"); // NOI18N
         BtnCancel.putClientProperty("JButton.buttonType", "roundRect");
+        BtnCancel.putClientProperty("JButton.arc", 999);
         BtnCancel.setBackground(java.awt.Color.WHITE);
         BtnCancel.setForeground(new java.awt.Color(90, 90, 90));
         BtnCancel.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
@@ -2040,28 +2052,33 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
         pnlLoginCard.add(BtnCancel);
-        BtnCancel.setBounds(32, 436, 256, 32);
+        BtnCancel.setBounds(30, 460, 336, 38);
 
-        pnlLoginCard.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 229, 233)));
-        pnlLoginCard.setOpaqueImage(false);
-        pnlLoginCard.setRound(false);
+        // PanelKartu tidak punya setOpaqueImage/setRound/setBorder khusus -
+        // garis tepi digambar sendiri lewat warnaGaris (default ThemeConfig.BORDER).
+        pnlLoginCard.setRadius(18);
         pnlLoginCard.setWarna(java.awt.Color.WHITE);
+        // Shadow sedikit lebih tegas supaya kartu terlihat "melayang" seperti
+        // pada foto referensi.
+        pnlLoginCard.setAlphaShadow(45);
         pnlLoginCard.setLayout(null);
 
         pnlLoginBg.add(pnlLoginCard);
-        pnlLoginCard.setBounds(30, 40, 320, 500);
+        // Kartu login memenuhi dialog; latar transparan sehingga bagian di
+        // sekeliling kartu tidak terlihat (sesuai tanda silang user).
+        pnlLoginCard.setBounds(12, 12, 396, 596);
 
-        lblLoginNamaRS.setFont(new java.awt.Font("Segoe UI", 1, 11)); // NOI18N
-        lblLoginNamaRS.setForeground(new java.awt.Color(110, 110, 110));
+        lblLoginNamaRS.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblLoginNamaRS.setForeground(new java.awt.Color(80, 80, 80));
         lblLoginNamaRS.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblLoginNamaRS.setText("SIMRS KHANZA");
         lblLoginNamaRS.setName("lblLoginNamaRS"); // NOI18N
         pnlLoginBg.add(lblLoginNamaRS);
-        lblLoginNamaRS.setBounds(30, 548, 320, 20);
+        lblLoginNamaRS.setBounds(0, 632, 420, 20);
 
-        pnlLoginBg.setOpaqueImage(false);
-        pnlLoginBg.setRound(false);
-        pnlLoginBg.setWarna(new java.awt.Color(222, 228, 235));
+        // Latar dialog transparan (non-opaque): yang terlihat hanya kartu
+        // login dan nama RS di bawahnya.
+        pnlLoginBg.setOpaque(false);
         pnlLoginBg.setLayout(null);
 
         DlgLogin.getContentPane().add(pnlLoginBg, java.awt.BorderLayout.CENTER);
@@ -8502,6 +8519,9 @@ public class frmUtama extends javax.swing.JFrame {
 
     private void chkTampilkanPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkTampilkanPasswordActionPerformed
         edPwd.setEchoChar(chkTampilkanPassword.isSelected() ? (char)0 : '●');
+        // Ikon mata di ujung kanan field: mata terbuka saat password
+        // tersembunyi (ajakan menampilkan), mata tertutup saat tampil.
+        edPwd.putClientProperty("JTextField.trailingIcon", ikonMata(!chkTampilkanPassword.isSelected()));
     }//GEN-LAST:event_chkTampilkanPasswordActionPerformed
 
     private void lblLupaPasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLupaPasswordMouseClicked
@@ -24455,8 +24475,8 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private javax.swing.JLabel lblTgl;
     private javax.swing.JLabel lblUser;
     private usu.widget.glass.PanelGlass panelJudul;
-    private usu.widget.glass.PanelGlass pnlLoginBg;
-    private usu.widget.glass.PanelGlass pnlLoginCard;
+        private javax.swing.JPanel pnlLoginBg;
+        private widget.PanelKartu pnlLoginCard;
     private javax.swing.JPanel pnlLoginDivider;
     private widget.InternalFrame panelMenu;
     private widget.panelisi panelisi2;
@@ -24605,6 +24625,10 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         return new javax.swing.ImageIcon(src.getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH));
     }
 
+    private javax.swing.ImageIcon ikonMata(boolean terbuka){
+        return skalakanIkon(new javax.swing.ImageIcon(getClass().getResource(terbuka ? "/picture/matabuka.png" : "/picture/matatutup.png")).getImage(),16,16);
+    }
+
     private static com.formdev.flatlaf.extras.FlatSVGIcon svgIconHover(String path){
         com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon(path, 24, 24);
         icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter()
@@ -24634,7 +24658,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                         Blob logoBlob = rs.getBlob("logo");
                         if(logoBlob!=null && logoBlob.length()>0){
                             byte[] logoBytes = logoBlob.getBytes(1, (int) (logoBlob.length()));
-                            lblLoginLogo.setIcon(skalakanIkon(new javax.swing.ImageIcon(logoBytes).getImage(),96,96));
+                            lblLoginLogo.setIcon(skalakanIkon(new javax.swing.ImageIcon(logoBytes).getImage(),64,64));
                             jLabel8.setIcon(skalakanIkon(new javax.swing.ImageIcon(logoBytes).getImage(),110,110));
                             logoBlob.free();
                         }
@@ -24647,6 +24671,8 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                         javax.swing.ImageIcon wallIcon = new javax.swing.ImageIcon(wallBytes);
                         PanelWall.setBackgroundImage(wallIcon);
                         PanelWall.setOpaqueImage(true);
+                        // Latar dialog login sengaja dibuat putih polos,
+                        // tidak ikut wallpaper setting (permintaan user).
                         repaint();
                     }
                 }
