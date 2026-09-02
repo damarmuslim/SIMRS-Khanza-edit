@@ -10,6 +10,19 @@ cache/
 # git tidak terbaca dan folder .git membengkak.
 graphify-out/
 
+# Ruang kerja ekstensi Kilo Code. Isinya BUKAN konfigurasi proyek melainkan
+# `git worktree` penuh - tiga salinan lengkap repo ini (pie-plume,
+# playful-eclipse, snow-icon), terdaftar di `git worktree list`. `du -sh .kilo`
+# bahkan menggantung karena besarnya. Git tidak akan melacak isi worktree,
+# tapi tanpa aturan ini berkas setelan di akarnya tetap muncul di
+# `git status` dan mengaburkan perubahan yang sesungguhnya.
+.kilo/
+
+# Skrip PowerShell sekali pakai untuk memeriksa sumber (mis. tmp_read.ps1 yang
+# hanya membaca deklarasi warna ThemeConfig). Bukan alat proyek, tidak perlu
+# ikut riwayat.
+tmp_*.ps1
+
 # Keluaran cetak PDF (Valid.MyReportPDF menulis ./report/<nama laporan>.pdf).
 # Berisi DATA PASIEN dan ditimpa setiap kali tombol Cetak > PDF ditekan, jadi
 # tidak boleh ikut ter-commit. Ditambahkan saat RM 02-2 diberi pilihan keluaran

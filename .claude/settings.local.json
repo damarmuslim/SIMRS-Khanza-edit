@@ -3,7 +3,17 @@
     "allow": [
       "PowerShell(python --version)",
       "PowerShell(python -c \"import graphify; print\\('graphify installed'\\)\" 2>&1)",
-      "PowerShell(& \"C:\\\\Users\\\\itdem\\\\.local\\\\bin\\\\graphify.exe\" --help 2>&1)"
+      "PowerShell(& \"C:\\\\Users\\\\itdem\\\\.local\\\\bin\\\\graphify.exe\" --help 2>&1)",
+      "Bash(PYTHONIOENCODING=utf-8 python -c ' *)",
+      "Bash(python -c ' *)",
+      "Bash(python3 -c \"print\\('python tidak ada'\\)\")",
+      "Bash(graphify query *)",
+      "Bash(git diff *)",
+      "Bash(awk '{print $3}')",
+      "Bash(awk -F, '$2>15 || $2==\"\" {print}')",
+      "Bash(\"C:/Program Files/NetBeans-14/netbeans/extide/ant/bin/ant.bat\" compile)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }
