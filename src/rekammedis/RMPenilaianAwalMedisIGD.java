@@ -158,6 +158,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
 
         pensiunkanFieldLama();
         initRm032Tambahan();
+        daftarkanSeksiLegacyMedis();
         susunRangkaMedis();
     }
 
@@ -2339,6 +2340,30 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private widget.PanelBiasa railMedis;
     private widget.ScrollPane scrollRailMedis;
 
+    /**
+     * [Bagian C] Satu entri navigasi bagian di rail kiri.
+     *
+     * `strip` = komponen judul section (widget.Label dari tambahBarisRm032Judul,
+     * atau salah satu jLabel99/94/100/101/103 legacy), dipakai sebagai sasaran
+     * scroll. Tidak perlu field `induk`/`urutBangun` seperti SeksiKep milik
+     * Keperawatan - Medis tidak butuh sortir ulang (lihat daftarkanSeksiLegacyMedis()).
+     */
+    private static final class SeksiMedis {
+        final String judul;
+        final javax.swing.JComponent strip;
+        widget.PanelBiasa baris;
+        widget.Label lblJudul;
+        widget.PanelBiasa aksen;
+        SeksiMedis(String judul, javax.swing.JComponent strip){
+            this.judul = judul; this.strip = strip;
+        }
+    }
+    /** Daftar bagian, diisi tambahBarisRm032Judul() + daftarkanSeksiLegacyMedis(). */
+    private final java.util.List<SeksiMedis> seksiMedis = new java.util.ArrayList<>();
+    /** Index bagian yg sedang disorot di rail, -1 = belum ada. */
+    private int seksiAktifMedis = -1;
+    private widget.Label lblProgresJudulMedis, lblProgresHitungMedis;
+
     // -- A. Intervensi Pre Hospital --
     private widget.CekBox CekPreCervicalCollar, CekPreDefibrilasi, CekPreVtp, CekPreBalutBidai, CekPreNgt,
         CekPreRjp, CekPreIntubasi, CekPreDekompresiWsd, CekPreKateterUrin, CekPreInfus, CekPreTidakAda;
@@ -2522,6 +2547,10 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         java.awt.GridBagConstraints c = rm032Constraint(0,row);
         c.gridwidth = 2;
         panel.add(lbl,c);
+        // [Bagian C] Funnel ini jadi tempat pendaftaran rail navigasi - daftar
+        // bagian ikut benar sendiri kalau section berikutnya ditambah/dipindah,
+        // tanpa daftar judul kedua yg bisa basi.
+        seksiMedis.add(new SeksiMedis(judul, lbl));
         return row+1;
     }
 
@@ -3079,6 +3108,26 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         FormInput.setPreferredSize(new java.awt.Dimension(870, yBawah + ukuranRm032.height + 20));
     }
 
+    /**
+     * [Bagian C] Selipkan 5 judul section LEGACY (jLabel99/94/100/101/103) ke
+     * posisi yg benar dalam seksiMedis - satu-satunya bagian yg TIDAK lewat
+     * funnel tambahBarisRm032Judul() (lihat komentar struktural di kelas ini).
+     * jLabel102 ("V", sudah disembunyikan pensiunkanFieldLama()) SENGAJA
+     * dikecualikan. Index dihitung eksplisit (bukan cari string judul) supaya
+     * gampang diperiksa: sesudah initRm032Tambahan(), seksiMedis berisi 16
+     * entri urut [I..VII, XI..XIV, XVI, XVIII..XXI] - splice di titik itu
+     * menghasilkan urutan akhir I..XXI.
+     */
+    private void daftarkanSeksiLegacyMedis(){
+        seksiMedis.add(7, new SeksiMedis(jLabel99.getText(), jLabel99));   // VIII
+        seksiMedis.add(8, new SeksiMedis(jLabel94.getText(), jLabel94));   // IX
+        seksiMedis.add(9, new SeksiMedis(jLabel100.getText(), jLabel100)); // X
+        // sesudah splice di atas, "XI..XIV" kini di index 10..13, "XVI" di index 14
+        seksiMedis.add(14, new SeksiMedis(jLabel101.getText(), jLabel101)); // XV, sebelum XVI
+        // "XVI" kini di index 15, "XVIII.." mulai index 16
+        seksiMedis.add(16, new SeksiMedis(jLabel103.getText(), jLabel103)); // XVII, sebelum XVIII
+    }
+
     // =========================================================================
     // [Sesi 1 - Restrukturisasi UI, Bagian A+B] Rangka 4 zona + bar pasien.
     // Pola & alasan desain IDENTIK dgn RMPenilaianAwalKeperawatanIGD.java
@@ -3319,13 +3368,190 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         return banner;
     }
 
+    // =========================================================================
+    // [Sesi 2 - Restrukturisasi UI, Bagian C] Isi rail navigasi bagian.
+    // Pola & alasan desain IDENTIK dgn RMPenilaianAwalKeperawatanIGD.java
+    // (isiRailKep()/buatBarisRailKep() dkk, sesi identik modul perawat),
+    // dgn SATU perbedaan sengaja: judul dipakai APA ADANYA (termasuk angka
+    // Romawi bawaan I-XXI), TIDAK di-strip & dinomori ulang Arab seperti
+    // Keperawatan - Medis sudah punya penomoran baku yg dipakai konsisten
+    // di seluruh form (kemungkinan juga di cetakan), jadi dipertahankan
+    // supaya rail dan isi form memakai istilah yg sama persis.
+    // =========================================================================
+
+    /** Ruang isi yg diikutkan saat menggulung ke sebuah bagian. */
+    private static final int TINGGI_KONTEKS_MEDIS = 220;
+
+    /**
+     * [Bagian C] Satu baris rail = panel yg bisa diklik (bukan widget.Button).
+     *
+     * Dipilih panel + MouseListener supaya keadaan aktif/hover dan batang
+     * aksen kiri sepenuhnya dikendalikan di sini; widget.Button melukis
+     * latarnya sendiri lewat glass color dan sulit diberi batang aksen.
+     */
+    private widget.PanelBiasa buatBarisRailMedis(final int idx){
+        final SeksiMedis s = seksiMedis.get(idx);
+        widget.PanelBiasa baris = new widget.PanelBiasa();
+        latarMedis(baris, widget.ThemeConfig.SURFACE);
+        baris.setLayout(new java.awt.BorderLayout(0,0));
+        baris.setBorder(javax.swing.BorderFactory.createEmptyBorder(1,0,1,0));
+        baris.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+
+        // Batang aksen kiri 3px - penanda bagian aktif tanpa mengandalkan
+        // warna latar saja (pembeda tetap terbaca di layar berkontras rendah).
+        widget.PanelBiasa aksen = new widget.PanelBiasa();
+        latarMedis(aksen, widget.ThemeConfig.SURFACE);
+        aksen.setPreferredSize(new java.awt.Dimension(3,10));
+
+        widget.Label lbl = new widget.Label();
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbl.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.PLAIN, 11));
+        lbl.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+        lbl.setBorder(javax.swing.BorderFactory.createEmptyBorder(7,9,7,9));
+        // Judul dibungkus <div width> supaya MEMBUNGKUS, bukan terpotong.
+        lbl.setText("<html><div style='width:"+LEBAR_TEKS_RAIL_MEDIS+"px'>"
+                + escHtmlMedis(s.judul) + "</div></html>");
+
+        baris.add(aksen, java.awt.BorderLayout.WEST);
+        baris.add(lbl, java.awt.BorderLayout.CENTER);
+        s.baris = baris; s.lblJudul = lbl; s.aksen = aksen;
+
+        baris.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override public void mouseClicked(java.awt.event.MouseEvent e){
+                kePosisiSeksiMedis(idx);
+            }
+            @Override public void mouseEntered(java.awt.event.MouseEvent e){
+                if(idx!=seksiAktifMedis){ latarMedis(s.baris, widget.ThemeConfig.SURFACE_ALT); }
+            }
+            @Override public void mouseExited(java.awt.event.MouseEvent e){
+                if(idx!=seksiAktifMedis){ latarMedis(s.baris, widget.ThemeConfig.SURFACE); }
+            }
+        });
+        return baris;
+    }
+
+    /** Lebar teks judul di rail (300px rail - aksen - padding - scrollbar). */
+    private static final int LEBAR_TEKS_RAIL_MEDIS = 255;
+
+    /** [Bagian C] Pindahkan sorotan rail ke bagian ke-idx (tidak menggulung). */
+    private void sorotSeksiMedis(int idx){
+        if(idx<0 || idx>=seksiMedis.size()){ return; }
+        seksiAktifMedis = idx;
+        for(int i=0;i<seksiMedis.size();i++){
+            SeksiMedis s = seksiMedis.get(i);
+            if(s.baris==null){ continue; }
+            boolean aktif = (i==idx);
+            latarMedis(s.baris, aktif ? widget.ThemeConfig.SURFACE_ALT : widget.ThemeConfig.SURFACE);
+            latarMedis(s.aksen, aktif ? widget.ThemeConfig.PRIMARY : widget.ThemeConfig.SURFACE);
+            s.lblJudul.setForeground(aktif ? widget.ThemeConfig.TEXT : widget.ThemeConfig.TEXT_NORMAL);
+            s.lblJudul.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY,
+                    aktif ? java.awt.Font.BOLD : java.awt.Font.PLAIN, 11));
+        }
+        if(lblProgresJudulMedis!=null){
+            SeksiMedis s = seksiMedis.get(idx);
+            lblProgresJudulMedis.setText("<html><div style='width:"+LEBAR_TEKS_RAIL_MEDIS+"px'>"
+                    + escHtmlMedis(s.judul) + "</div></html>");
+            lblProgresHitungMedis.setText("Bagian " + (idx+1) + " dari " + seksiMedis.size());
+        }
+        railMedis.revalidate();
+        railMedis.repaint();
+    }
+
+    /**
+     * [Bagian C] Gulung FormInput sampai header bagian ke-idx terlihat.
+     *
+     * Ditambah TINGGI_KONTEKS_MEDIS di bawah strip supaya yg tampil bukan
+     * cuma judulnya, melainkan judul + beberapa baris pertama isinya.
+     * Dihitung LIVE saat klik (bukan di-cache saat construction) karena
+     * posisi Y section legacy bergantung geser/geser2/geser3 runtime.
+     */
+    private void kePosisiSeksiMedis(int idx){
+        if(idx<0 || idx>=seksiMedis.size()){ return; }
+        SeksiMedis s = seksiMedis.get(idx);
+        java.awt.Container induk = s.strip.getParent();
+        if(induk==null){ sorotSeksiMedis(idx); return; }
+        java.awt.Rectangle r = javax.swing.SwingUtilities.convertRectangle(
+                induk, s.strip.getBounds(), FormInput);
+        r.height = Math.min(r.height + TINGGI_KONTEKS_MEDIS, Math.max(1, FormInput.getHeight() - r.y));
+        FormInput.scrollRectToVisible(r);
+        sorotSeksiMedis(idx);
+    }
+
+    /**
+     * [Bagian C] Kartu progres di kepala rail.
+     *
+     * Sengaja HANYA menampilkan posisi bagian ("Bagian N dari 21"), bukan
+     * hitungan isian wajib/opsional/persentase - itu Bagian E (sesi lain);
+     * menaruh angka yg belum dihitung apa pun lebih menyesatkan daripada
+     * tidak ada. Keputusan sama persis dgn Keperawatan Sesi 2.
+     */
+    private widget.PanelBiasa buatKartuProgresMedis(){
+        widget.PanelBiasa kartu = new widget.PanelBiasa();
+        latarMedis(kartu, widget.ThemeConfig.SURFACE_ALT);
+        kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
+        kartu.setLayout(new java.awt.GridBagLayout());
+
+        widget.Label judul = new widget.Label();
+        judul.setText("BAGIAN AKTIF");
+        judul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judul.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 10));
+        judul.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        lblProgresJudulMedis = new widget.Label();
+        lblProgresJudulMedis.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblProgresJudulMedis.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 12));
+        lblProgresJudulMedis.setForeground(widget.ThemeConfig.TEXT);
+        lblProgresJudulMedis.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        lblProgresHitungMedis = new widget.Label();
+        lblProgresHitungMedis.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblProgresHitungMedis.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.PLAIN, 11));
+        lblProgresHitungMedis.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.gridy=0; c.weightx=1.0; c.anchor=java.awt.GridBagConstraints.WEST;
+        c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        kartu.add(judul,c);
+        c.gridy=1; c.insets=new java.awt.Insets(6,0,0,0); kartu.add(lblProgresJudulMedis,c);
+        c.gridy=2; c.insets=new java.awt.Insets(4,0,0,0); kartu.add(lblProgresHitungMedis,c);
+        return kartu;
+    }
+
+    /** [Bagian C] Isi rail: kartu progres di atas + satu baris tiap bagian. */
+    private void isiRailMedis(){
+        railMedis.removeAll();
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor=java.awt.GridBagConstraints.NORTH;
+
+        c.gridy=0; c.insets=new java.awt.Insets(12,12,10,12);
+        railMedis.add(buatKartuProgresMedis(), c);
+
+        c.insets=new java.awt.Insets(0,8,0,8);
+        int gy = 1;
+        for(int i=0;i<seksiMedis.size();i++){
+            c.gridy=gy++;
+            railMedis.add(buatBarisRailMedis(i), c);
+        }
+        // Pengisi vertikal - tanpa ini GridBagLayout menengahkan seluruh
+        // daftar saat rail lebih tinggi dari isinya.
+        c.gridy=gy; c.weighty=1.0; c.fill=java.awt.GridBagConstraints.BOTH;
+        c.insets=new java.awt.Insets(0,0,0,0);
+        railMedis.add(javax.swing.Box.createGlue(), c);
+
+        if(!seksiMedis.isEmpty()){ sorotSeksiMedis(0); }
+    }
+
     /**
      * [Bagian A] Rangka layar 4 zona. Dipanggil di akhir konstruktor,
      * sesudah initRm032Tambahan() (FormInput sudah tersusun penuh).
      *
      *   internalFrame2 (BorderLayout)
      *     NORTH  barPasienMedis  <- hasil buatBannerMedis()
-     *     WEST   scrollRailMedis <- placeholder KOSONG, diisi Sesi 2
+     *     WEST   scrollRailMedis <- diisi isiRailMedis() (Sesi 2, Bagian C)
      *     CENTER scrollInput     <- SUDAH ADA dari GEN, sudah membungkus
      *                                FormInput (L1311/1313) - dipakai lagi,
      *                                tidak dibuat ulang.
@@ -3355,6 +3581,10 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         internalFrame2.add(barPasienMedis, java.awt.BorderLayout.NORTH);
         internalFrame2.add(scrollRailMedis, java.awt.BorderLayout.WEST);
         internalFrame2.add(scrollInput, java.awt.BorderLayout.CENTER);
+        // Isi rail SESUDAH scrollInput ada - kePosisiSeksiMedis() memakai
+        // FormInput.scrollRectToVisible() yg butuh FormInput sudah ternaung
+        // JViewport/JScrollPane.
+        isiRailMedis();
         internalFrame2.revalidate();
         internalFrame2.repaint();
     }
