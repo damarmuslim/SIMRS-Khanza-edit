@@ -185,7 +185,17 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                 column.setPreferredWidth(350);
             }
         }
-        tbMasalahKeperawatan.setDefaultRenderer(Object.class, new WarnaTable());
+        // Gaya tabel form ini (kepala terang, baris 28px, seleksi 0xF2F7FB) -
+        // lihat javadoc gayaTabelKep(). Model, isi, editable, lebar kolom dan
+        // kolom Boolean "P" tidak berubah sama sekali.
+        //
+        // fungsi.WarnaTable diganti rendererSelKepTabel() KHUSUS instans ini,
+        // bukan karena zebra-nya jelek, tapi karena WarnaTable memaksa warna
+        // seleksi navy pada sel yg dirender-nya sementara kolom centang
+        // dipegang renderer Boolean bawaan yg menuruti tabel - satu baris
+        // terpilih akan jadi dua warna. Kelas WarnaTable tidak disentuh.
+        gayaTabelKep(tbMasalahKeperawatan, 28);
+        tbMasalahKeperawatan.setDefaultRenderer(Object.class, rendererSelKepTabel());
         
         tabModeDetailMasalah=new DefaultTableModel(null,new Object[]{
                 "Kode","Masalah Keperawatan"
@@ -2948,12 +2958,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         if(wadah.getLayout() instanceof java.awt.GridLayout){
             aturKolomGridKep(wadah, budget);
         } else if(wadah.getLayout() instanceof java.awt.GridBagLayout){
-            // Pelipatan HANYA utk anggaran sempit. Panel spt panelKeadaanUmum
-            // dan panelKpVital aslinya ditulis 2 pasang label+field per baris
-            // (gridx 0..3) - itu justru grid 4 kolom yg diminta Bagian D utk
-            // tanda vital/GCS. Dilipat cuma karena kartu 330px tak memuatnya;
-            // di halaman selebar layar melipatnya berarti membuang desain
-            // aslinya lalu memasangnya kembali dgn kode baru.
+            // Pelipatan HANYA utk anggaran sempit. Panel spt panelKeadaanUmum,
+            // panelFlacc, dan panelKpVital SEKARANG memang grid 4 kolom
+            // mini-label yg diminta Bagian D butir 7 (sel di gridx 0/2/4/6,
+            // masing2 gridwidth 2). Dilipat cuma karena kartu 330px tak
+            // memuatnya; di halaman selebar layar melipatnya berarti membuang
+            // desain yg baru saja dipasang.
             if(budget < LEBAR_LIPAT_KEP){
                 lipatDuaKolomKep(wadah);
             }
@@ -3142,6 +3152,39 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     // ada (reparent) + styling via widget.ThemeConfig - meniru helper senama
     // di RMTriaseIGD.java. Tidak ada logika data/CRUD/handler yg diubah.
     // =====================================================================
+
+    /**
+     * Latar SOLID utk widget.PanelBiasa. WAJIB dipakai - setBackground() saja
+     * TIDAK PERNAH sampai ke layar.
+     *
+     * widget.PanelBiasa.paintComponent() (src/widget/PanelBiasa.java:63) melukis
+     * ULANG seluruh bidangnya dgn gradien warnaAtas->warnaBawah setiap kali
+     * isOpaque()==true, dan dua warna itu defaultnya PUTIH PENUH. Urutannya:
+     * super.paintComponent() memang mengisi latar sesuai getBackground(), lalu
+     * baris berikutnya menimpanya putih 100% (gradientImage opaque, digambar
+     * selebar-setinggi panel). Border dan komponen anak lolos - keduanya
+     * dilukis di paintBorder()/paintChildren() SESUDAH itu - jadi yg hilang
+     * cuma ISIAN warnanya, dan itu sebabnya cacat ini lolos empat sesi.
+     *
+     * Korban terparah bukan yg samar: batang aksen 4px PRIMARY di strip
+     * halaman dan batang 3px penanda bagian aktif di rail keduanya PanelBiasa
+     * opaque TANPA anak, jadi yg terlihat 100% putih - dua penanda navigasi
+     * paling penting di layout ini tidak pernah tampil. Yg samar (SURFACE_ALT
+     * di kartu identitas, kartu progres, strip halaman) ikut hilang jadi putih.
+     *
+     * getBackground() tetap melaporkan warna yg diminta, jadi harness apa pun
+     * yg memeriksa getBackground() akan berkata "aman" - sama persis pola
+     * borderPainted=false di Sesi 3c. Karena itu warna diset ke KETIGANYA:
+     * background biar getBackground() tidak menipu, warnaAtas/warnaBawah biar
+     * benar2 terlukis.
+     */
+    private static void latarKep(widget.PanelBiasa p, java.awt.Color warna){
+        if(p==null || warna==null){ return; }
+        p.setOpaque(true);
+        p.setBackground(warna);
+        p.setWarnaAtas(warna);
+        p.setWarnaBawah(warna);
+    }
 
     /** Garis tipis di kanan sub-judul, angka dari Bagian D butir 4. */
     private static final java.awt.Color GARIS_SUBJUDUL_KEP = new java.awt.Color(0xEC,0xEE,0xEA);
@@ -3497,8 +3540,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
         // ---- kartu identitas (kiri) ----
         widget.PanelBiasa kartu = new widget.PanelBiasa();
-        kartu.setOpaque(true);
-        kartu.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        latarKep(kartu, widget.ThemeConfig.SURFACE_ALT);
         kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
             javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
             javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
@@ -3931,8 +3973,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      */
     private widget.PanelBiasa buatKartuProgresKep(){
         widget.PanelBiasa kartu = new widget.PanelBiasa();
-        kartu.setOpaque(true);
-        kartu.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        latarKep(kartu, widget.ThemeConfig.SURFACE_ALT);
         kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
             javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
             javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
@@ -3974,8 +4015,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private widget.PanelBiasa buatBarisRailKep(final int idx){
         final HalamanKep h = halamanKep.get(idx);
         widget.PanelBiasa baris = new widget.PanelBiasa();
-        baris.setOpaque(true);
-        baris.setBackground(widget.ThemeConfig.SURFACE);
+        latarKep(baris, widget.ThemeConfig.SURFACE);
         baris.setLayout(new java.awt.BorderLayout(0,0));
         baris.setBorder(javax.swing.BorderFactory.createEmptyBorder(1,0,1,0));
         baris.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
@@ -3983,8 +4023,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // Batang aksen kiri 3px - penanda bagian aktif tanpa mengandalkan
         // warna latar saja (pembeda tetap terbaca di layar berkontras rendah).
         widget.PanelBiasa aksen = new widget.PanelBiasa();
-        aksen.setOpaque(true);
-        aksen.setBackground(widget.ThemeConfig.SURFACE);
+        latarKep(aksen, widget.ThemeConfig.SURFACE);
         aksen.setPreferredSize(new java.awt.Dimension(3,10));
 
         widget.Label lbl = new widget.Label();
@@ -4009,10 +4048,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                 keHalamanKep(idx);
             }
             @Override public void mouseEntered(java.awt.event.MouseEvent e){
-                if(idx!=halamanAktifKep){ h.baris.setBackground(widget.ThemeConfig.SURFACE_ALT); }
+                if(idx!=halamanAktifKep){ latarKep(h.baris, widget.ThemeConfig.SURFACE_ALT); h.baris.repaint(); }
             }
             @Override public void mouseExited(java.awt.event.MouseEvent e){
-                if(idx!=halamanAktifKep){ h.baris.setBackground(widget.ThemeConfig.SURFACE); }
+                if(idx!=halamanAktifKep){ latarKep(h.baris, widget.ThemeConfig.SURFACE); h.baris.repaint(); }
             }
         });
         return baris;
@@ -4060,8 +4099,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             HalamanKep h = halamanKep.get(i);
             if(h.baris==null){ continue; }
             boolean aktif = (i==idx);
-            h.baris.setBackground(aktif ? widget.ThemeConfig.SURFACE_ALT : widget.ThemeConfig.SURFACE);
-            h.aksen.setBackground(aktif ? widget.ThemeConfig.PRIMARY : widget.ThemeConfig.SURFACE);
+            latarKep(h.baris, aktif ? widget.ThemeConfig.SURFACE_ALT : widget.ThemeConfig.SURFACE);
+            latarKep(h.aksen, aktif ? widget.ThemeConfig.PRIMARY : widget.ThemeConfig.SURFACE);
             h.lblJudul.setForeground(aktif ? widget.ThemeConfig.TEXT : widget.ThemeConfig.TEXT_NORMAL);
             h.lblJudul.setFont(new java.awt.Font("Segoe UI",
                     aktif ? java.awt.Font.BOLD : java.awt.Font.PLAIN, 11));
@@ -4137,16 +4176,14 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private void susunRangkaKep(){
         // -- zona NORTH: bar pasien --
         barPasienKep = buatBannerKep();
-        barPasienKep.setOpaque(true);
-        barPasienKep.setBackground(widget.ThemeConfig.SURFACE);
+        latarKep(barPasienKep, widget.ThemeConfig.SURFACE);
         barPasienKep.setBorder(javax.swing.BorderFactory.createCompoundBorder(
             javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT),
             javax.swing.BorderFactory.createEmptyBorder(12,14,12,14)));
 
         // -- zona WEST: rail navigasi bagian --
         railKep = new widget.PanelBiasa();
-        railKep.setOpaque(true);
-        railKep.setBackground(widget.ThemeConfig.SURFACE);
+        latarKep(railKep, widget.ThemeConfig.SURFACE);
         railKep.setLayout(new java.awt.GridBagLayout());
         scrollRailKep = new widget.ScrollPane();
         scrollRailKep.setViewportView(railKep);
@@ -4196,7 +4233,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private void susunHalamanKep(){
         FormInput.removeAll();
         FormInput.setLayout(new java.awt.GridBagLayout());
-        FormInput.setBackground(widget.ThemeConfig.BACKGROUND);
+        // latarKep(), bukan setBackground(): FormInput ini widget.PanelBiasa dan
+        // ia LATAR SATU-SATUNYA yg membuat kartu halaman putih terbaca sbg
+        // kartu. Dgn setBackground() saja, #F7F9FB ditimpa putih (lihat
+        // latarKep) - kartu putih di atas latar putih, tinggal garis 1px-nya.
+        latarKep(FormInput, widget.ThemeConfig.BACKGROUND);
         FormInput.setBorder(javax.swing.BorderFactory.createEmptyBorder(12,14,12,14));
         // GEN memanggil FormInput.setPreferredSize(870,1203) - reset ke null
         // supaya GridBagLayout yg menghitung ukuran (kalau tidak, lebar/tinggi
@@ -4292,8 +4333,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      */
     private void buatHalamanKep(HalamanKep h, int idx){
         widget.PanelBiasa kartu = new widget.PanelBiasa();
-        kartu.setOpaque(true);
-        kartu.setBackground(widget.ThemeConfig.SURFACE);
+        latarKep(kartu, widget.ThemeConfig.SURFACE);
         kartu.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT));
         kartu.setLayout(new java.awt.GridBagLayout());
 
@@ -4341,15 +4381,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      */
     private widget.PanelBiasa buatStripHalamanKep(String judul, int idx){
         widget.PanelBiasa strip = new widget.PanelBiasa();
-        strip.setOpaque(true);
-        strip.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        latarKep(strip, widget.ThemeConfig.SURFACE_ALT);
         strip.setBorder(javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT));
         strip.setLayout(new java.awt.BorderLayout(0,0));
         strip.setPreferredSize(new java.awt.Dimension(10,52));
 
         widget.PanelBiasa aksen = new widget.PanelBiasa();
-        aksen.setOpaque(true);
-        aksen.setBackground(widget.ThemeConfig.PRIMARY);
+        latarKep(aksen, widget.ThemeConfig.PRIMARY);
         aksen.setPreferredSize(new java.awt.Dimension(4,10));
 
         widget.Label l = new widget.Label();
@@ -5090,45 +5128,25 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         FlaccBersuara.setPreferredSize(new java.awt.Dimension(120,26));
         FlaccBersuara.addActionListener(alFlacc);
 
-        // Dibungkus panel tersendiri (pola sama spt KEADAAN UMUM) supaya
-        // kolomnya rapat, tidak ikut lebar kolom 1 milik section lain -
-        // 3 baris: Wajah|Kaki, Aktivitas|Menangis, Bersuara|(kosong).
+        // Lima kriteria FLACC = grid 4 kolom mini-label (Bagian D butir 7),
+        // pola persis KEADAAN UMUM. Menggantikan tata letak 3 baris x 2 pasang
+        // "label :" rata KANAN - itu satu-satunya sisa gaya lama di halaman 9
+        // sesudah Sesi 3b/3c, dan pasangan 2 kolomnya menyisakan separuh baris
+        // kosong di kanan "Bersuara". Lima widget.Label lokal (lblFlaccWajah
+        // dst.) ikut hilang; mini-label sekarang dibuat buatSelKepField().
+        // Aman: hitungTotalFlacc() membaca FIELD combo-nya, bukan panel induk.
         widget.PanelBiasa panelFlacc = new widget.PanelBiasa();
         panelFlacc.setLayout(new java.awt.GridBagLayout());
-        int rowFlacc = 0;
+        String[] labelFlaccKep = { "Wajah", "Kaki", "Aktivitas", "Menangis", "Bersuara" };
+        java.awt.Component[] isiFlaccKep = { FlaccWajah, FlaccKaki, FlaccAktivitas,
+            FlaccMenangis, FlaccBersuara };
+        for(int i=0;i<isiFlaccKep.length;i++){
+            tambahSelKepField(panelFlacc, i%KOLOM_VITAL_KEP, i/KOLOM_VITAL_KEP,
+                    labelFlaccKep[i], isiFlaccKep[i]);
+        }
+        int rowFlacc = (isiFlaccKep.length + KOLOM_VITAL_KEP - 1) / KOLOM_VITAL_KEP;
 
-        widget.Label lblFlaccWajah = new widget.Label(); lblFlaccWajah.setText("Wajah :");
-        java.awt.GridBagConstraints cLblFlaccWajah = kepConstraint(0,rowFlacc); cLblFlaccWajah.anchor = java.awt.GridBagConstraints.EAST; cLblFlaccWajah.fill = java.awt.GridBagConstraints.NONE;
-        panelFlacc.add(lblFlaccWajah, cLblFlaccWajah);
-        java.awt.GridBagConstraints cFlaccWajah = kepConstraint(1,rowFlacc); cFlaccWajah.anchor = java.awt.GridBagConstraints.WEST; cFlaccWajah.fill = java.awt.GridBagConstraints.NONE; cFlaccWajah.weightx = 0;
-        panelFlacc.add(FlaccWajah, cFlaccWajah);
-        widget.Label lblFlaccKaki = new widget.Label(); lblFlaccKaki.setText("Kaki :");
-        java.awt.GridBagConstraints cLblFlaccKaki = kepConstraint(2,rowFlacc); cLblFlaccKaki.anchor = java.awt.GridBagConstraints.EAST; cLblFlaccKaki.fill = java.awt.GridBagConstraints.NONE; cLblFlaccKaki.insets = new java.awt.Insets(3,20,3,5);
-        panelFlacc.add(lblFlaccKaki, cLblFlaccKaki);
-        java.awt.GridBagConstraints cFlaccKaki = kepConstraint(3,rowFlacc); cFlaccKaki.anchor = java.awt.GridBagConstraints.WEST; cFlaccKaki.fill = java.awt.GridBagConstraints.NONE; cFlaccKaki.weightx = 0;
-        panelFlacc.add(FlaccKaki, cFlaccKaki);
-        rowFlacc++;
-
-        widget.Label lblFlaccAktivitas = new widget.Label(); lblFlaccAktivitas.setText("Aktivitas :");
-        java.awt.GridBagConstraints cLblFlaccAktivitas = kepConstraint(0,rowFlacc); cLblFlaccAktivitas.anchor = java.awt.GridBagConstraints.EAST; cLblFlaccAktivitas.fill = java.awt.GridBagConstraints.NONE;
-        panelFlacc.add(lblFlaccAktivitas, cLblFlaccAktivitas);
-        java.awt.GridBagConstraints cFlaccAktivitas = kepConstraint(1,rowFlacc); cFlaccAktivitas.anchor = java.awt.GridBagConstraints.WEST; cFlaccAktivitas.fill = java.awt.GridBagConstraints.NONE; cFlaccAktivitas.weightx = 0;
-        panelFlacc.add(FlaccAktivitas, cFlaccAktivitas);
-        widget.Label lblFlaccMenangis = new widget.Label(); lblFlaccMenangis.setText("Menangis :");
-        java.awt.GridBagConstraints cLblFlaccMenangis = kepConstraint(2,rowFlacc); cLblFlaccMenangis.anchor = java.awt.GridBagConstraints.EAST; cLblFlaccMenangis.fill = java.awt.GridBagConstraints.NONE; cLblFlaccMenangis.insets = new java.awt.Insets(3,20,3,5);
-        panelFlacc.add(lblFlaccMenangis, cLblFlaccMenangis);
-        java.awt.GridBagConstraints cFlaccMenangis = kepConstraint(3,rowFlacc); cFlaccMenangis.anchor = java.awt.GridBagConstraints.WEST; cFlaccMenangis.fill = java.awt.GridBagConstraints.NONE; cFlaccMenangis.weightx = 0;
-        panelFlacc.add(FlaccMenangis, cFlaccMenangis);
-        rowFlacc++;
-
-        widget.Label lblFlaccBersuara = new widget.Label(); lblFlaccBersuara.setText("Bersuara :");
-        java.awt.GridBagConstraints cLblFlaccBersuara = kepConstraint(0,rowFlacc); cLblFlaccBersuara.anchor = java.awt.GridBagConstraints.EAST; cLblFlaccBersuara.fill = java.awt.GridBagConstraints.NONE;
-        panelFlacc.add(lblFlaccBersuara, cLblFlaccBersuara);
-        java.awt.GridBagConstraints cFlaccBersuara = kepConstraint(1,rowFlacc); cFlaccBersuara.anchor = java.awt.GridBagConstraints.WEST; cFlaccBersuara.fill = java.awt.GridBagConstraints.NONE; cFlaccBersuara.weightx = 0;
-        panelFlacc.add(FlaccBersuara, cFlaccBersuara);
-        rowFlacc++;
-
-        java.awt.GridBagConstraints cFillerFlacc = kepConstraint(4, 0);
+        java.awt.GridBagConstraints cFillerFlacc = kepConstraint(KOLOM_VITAL_KEP*2, 0);
         cFillerFlacc.gridheight = rowFlacc;
         cFillerFlacc.weightx = 1.0;
         cFillerFlacc.fill = java.awt.GridBagConstraints.BOTH;
@@ -5232,15 +5250,23 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         Scroll8.setPreferredSize(new java.awt.Dimension(
                 Scroll8.getPreferredSize().width, 140));
         widget.PanelBiasa panelCariMasalah = new widget.PanelBiasa();
+        panelCariMasalah.setOpaque(false);
         panelCariMasalah.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
-        panelCariMasalah.add(label12); panelCariMasalah.add(TCariMasalah);
+        // label12 ("Key Word :") DIBUAT & disembunyikan, bukan dibuang: helper
+        // baris yg menggambar labelnya sekarang, dan aturan baku prompt melarang
+        // menghapus komponen yg tampilannya digantikan. Titik dua ikut hilang -
+        // di kolom label tetap 232px pemisahnya sudah kolom itu sendiri.
+        label12.setVisible(false);
+        panelCariMasalah.add(TCariMasalah);
         panelCariMasalah.add(BtnCariMasalah); panelCariMasalah.add(BtnAllMasalah); panelCariMasalah.add(BtnTambahMasalah);
         java.awt.GridBagConstraints cMasalah = kepConstraint(0,row); cMasalah.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepTiga.add(Scroll8, cMasalah);
         row++;
-        java.awt.GridBagConstraints cMasalahCari = kepConstraint(0,row); cMasalahCari.gridwidth=java.awt.GridBagConstraints.REMAINDER;
-        panelKepTiga.add(panelCariMasalah, cMasalahCari);
-        row++;
+        // Lewat helper baris (butir D3), bukan kepConstraint() telanjang:
+        // sebelumnya baris ini satu2nya di halaman 10 yg masih bergaya lama
+        // "label :" - labelnya menempel di tepi kiri isi, tidak sejajar kolom
+        // label 232px milik 105 baris lainnya.
+        row = tambahBarisKepField(panelKepTiga, row, "Key Word", panelCariMasalah);
 
         // -- II. Intervensi Keperawatan --
         row = tambahBarisKepJudul(panelKepTiga, row, "II. INTERVENSI KEPERAWATAN");
@@ -5527,71 +5553,44 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         DTPKpPukul.tampilkanTanggal();
         DTPKpPukul.setPreferredSize(new java.awt.Dimension(190,23));
         DTPKpPukul.setJam(new Date());
-        row = tambahBarisKepField(panelKepEmpat, row, "Pukul", DTPKpPukul);
+        // "Pukul" BUKAN baris sendiri lagi: Bagian D butir 7 menyebut kondisi
+        // pulang sbg satu grid "Pukul | GCS E | GCS V | GCS M | TD | Nadi |
+        // Suhu | Pernapasan | SpO2" - Pukul adalah sel PERTAMA grid itu, dan
+        // dialah yg menentukan lebar kolom 0 (190px, terlebar di grid).
 
-        // GCS/TD/Nadi/Suhu/Pernafasan/SpO2 ditata 3 baris x 2 kolom (pola
-        // sama spt KEADAAN UMUM) - lebar field disamakan dgn Suhu (60px),
-        // permintaan user.
+        // Sembilan field kondisi pulang jadi GRID 4 KOLOM, urutan PERSIS
+        // Bagian D butir 7. Menggantikan tata letak 3 baris x 2 pasang
+        // "label :" rata KANAN - bersama baris input obat di bawah, itu sisa
+        // gaya lama terakhir di halaman 11. Lebar field tetap 60px (permintaan
+        // user, disamakan dgn Suhu); mini-label sekarang yg menentukan lebar
+        // sel, bukan label rata kanan yg dulu makan 150px sendiri.
+        //
+        // Satuan tetap ditulis DI DALAM mini-label ("TD (mmHg)"), bukan sbg
+        // teks monospace terpisah di kanan field spt bunyi butir 7: grid
+        // KEADAAN UMUM (Sesi 3b) sudah memakai pola dalam-label, dan dua gaya
+        // satuan di form yg sama lebih buruk drpd satu gaya yg konsisten.
         TKpGcsE = new widget.TextBox(); TKpGcsE.setPreferredSize(new java.awt.Dimension(60,23));
         TKpGcsV = new widget.TextBox(); TKpGcsV.setPreferredSize(new java.awt.Dimension(60,23));
         TKpGcsM = new widget.TextBox(); TKpGcsM.setPreferredSize(new java.awt.Dimension(60,23));
-        widget.PanelBiasa panelKpGcs = new widget.PanelBiasa();
-        panelKpGcs.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
-        panelKpGcs.add(new widget.Label()); // spacer kecil (konsisten style baris lain)
-        panelKpGcs.add(TKpGcsE); panelKpGcs.add(TKpGcsV); panelKpGcs.add(TKpGcsM);
         TKpTd = new widget.TextBox(); TKpTd.setPreferredSize(new java.awt.Dimension(60,23));
         TKpNadi = new widget.TextBox(); TKpNadi.setPreferredSize(new java.awt.Dimension(60,23));
-        RbKpNadiReguler = new widget.RadioButton(); RbKpNadiReguler.setText("Reguler");
-        RbKpNadiIreguler = new widget.RadioButton(); RbKpNadiIreguler.setText("Ireguler");
-        bgKpNadiReguler = new javax.swing.ButtonGroup(); bgKpNadiReguler.add(RbKpNadiReguler); bgKpNadiReguler.add(RbKpNadiIreguler);
-        widget.PanelBiasa panelKpNadi = new widget.PanelBiasa();
-        panelKpNadi.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
-        panelKpNadi.add(TKpNadi); panelKpNadi.add(RbKpNadiReguler); panelKpNadi.add(RbKpNadiIreguler);
         TKpSuhu = new widget.TextBox(); TKpSuhu.setPreferredSize(new java.awt.Dimension(60,23));
         TKpPernafasan = new widget.TextBox(); TKpPernafasan.setPreferredSize(new java.awt.Dimension(60,23));
         TKpSpo = new widget.TextBox(); TKpSpo.setPreferredSize(new java.awt.Dimension(60,23));
 
         widget.PanelBiasa panelKpVital = new widget.PanelBiasa();
         panelKpVital.setLayout(new java.awt.GridBagLayout());
-        int rowKpVital = 0;
+        String[] labelKpVitalKep = { "Pukul", "GCS E", "GCS V", "GCS M", "TD (mmHg)",
+            "Nadi (x/menit)", "Suhu (°C)", "Pernafasan (x/menit)", "SpO2 (%)" };
+        java.awt.Component[] isiKpVitalKep = { DTPKpPukul, TKpGcsE, TKpGcsV, TKpGcsM,
+            TKpTd, TKpNadi, TKpSuhu, TKpPernafasan, TKpSpo };
+        for(int i=0;i<isiKpVitalKep.length;i++){
+            tambahSelKepField(panelKpVital, i%KOLOM_VITAL_KEP, i/KOLOM_VITAL_KEP,
+                    labelKpVitalKep[i], isiKpVitalKep[i]);
+        }
+        int rowKpVital = (isiKpVitalKep.length + KOLOM_VITAL_KEP - 1) / KOLOM_VITAL_KEP;
 
-        widget.Label lblKpGcs = new widget.Label(); lblKpGcs.setText("GCS (E/V/M) :");
-        java.awt.GridBagConstraints cLblKpGcs = kepConstraint(0,rowKpVital); cLblKpGcs.anchor = java.awt.GridBagConstraints.EAST; cLblKpGcs.fill = java.awt.GridBagConstraints.NONE;
-        panelKpVital.add(lblKpGcs, cLblKpGcs);
-        java.awt.GridBagConstraints cKpGcs = kepConstraint(1,rowKpVital); cKpGcs.anchor = java.awt.GridBagConstraints.WEST; cKpGcs.fill = java.awt.GridBagConstraints.NONE; cKpGcs.weightx = 0;
-        panelKpVital.add(panelKpGcs, cKpGcs);
-        widget.Label lblKpTd = new widget.Label(); lblKpTd.setText("TD (mmHg) :");
-        java.awt.GridBagConstraints cLblKpTd = kepConstraint(2,rowKpVital); cLblKpTd.anchor = java.awt.GridBagConstraints.EAST; cLblKpTd.fill = java.awt.GridBagConstraints.NONE; cLblKpTd.insets = new java.awt.Insets(3,20,3,5);
-        panelKpVital.add(lblKpTd, cLblKpTd);
-        java.awt.GridBagConstraints cKpTd = kepConstraint(3,rowKpVital); cKpTd.anchor = java.awt.GridBagConstraints.WEST; cKpTd.fill = java.awt.GridBagConstraints.NONE; cKpTd.weightx = 0;
-        panelKpVital.add(TKpTd, cKpTd);
-        rowKpVital++;
-
-        widget.Label lblKpNadi = new widget.Label(); lblKpNadi.setText("Nadi (x/menit) :");
-        java.awt.GridBagConstraints cLblKpNadi = kepConstraint(0,rowKpVital); cLblKpNadi.anchor = java.awt.GridBagConstraints.EAST; cLblKpNadi.fill = java.awt.GridBagConstraints.NONE;
-        panelKpVital.add(lblKpNadi, cLblKpNadi);
-        java.awt.GridBagConstraints cKpNadi = kepConstraint(1,rowKpVital); cKpNadi.anchor = java.awt.GridBagConstraints.WEST; cKpNadi.fill = java.awt.GridBagConstraints.NONE; cKpNadi.weightx = 0;
-        panelKpVital.add(panelKpNadi, cKpNadi);
-        widget.Label lblKpSuhu = new widget.Label(); lblKpSuhu.setText("Suhu (°C) :");
-        java.awt.GridBagConstraints cLblKpSuhu = kepConstraint(2,rowKpVital); cLblKpSuhu.anchor = java.awt.GridBagConstraints.EAST; cLblKpSuhu.fill = java.awt.GridBagConstraints.NONE; cLblKpSuhu.insets = new java.awt.Insets(3,20,3,5);
-        panelKpVital.add(lblKpSuhu, cLblKpSuhu);
-        java.awt.GridBagConstraints cKpSuhu = kepConstraint(3,rowKpVital); cKpSuhu.anchor = java.awt.GridBagConstraints.WEST; cKpSuhu.fill = java.awt.GridBagConstraints.NONE; cKpSuhu.weightx = 0;
-        panelKpVital.add(TKpSuhu, cKpSuhu);
-        rowKpVital++;
-
-        widget.Label lblKpPernafasan = new widget.Label(); lblKpPernafasan.setText("Pernafasan (x/menit) :");
-        java.awt.GridBagConstraints cLblKpPernafasan = kepConstraint(0,rowKpVital); cLblKpPernafasan.anchor = java.awt.GridBagConstraints.EAST; cLblKpPernafasan.fill = java.awt.GridBagConstraints.NONE;
-        panelKpVital.add(lblKpPernafasan, cLblKpPernafasan);
-        java.awt.GridBagConstraints cKpPernafasan = kepConstraint(1,rowKpVital); cKpPernafasan.anchor = java.awt.GridBagConstraints.WEST; cKpPernafasan.fill = java.awt.GridBagConstraints.NONE; cKpPernafasan.weightx = 0;
-        panelKpVital.add(TKpPernafasan, cKpPernafasan);
-        widget.Label lblKpSpo = new widget.Label(); lblKpSpo.setText("SpO2 (%) :");
-        java.awt.GridBagConstraints cLblKpSpo = kepConstraint(2,rowKpVital); cLblKpSpo.anchor = java.awt.GridBagConstraints.EAST; cLblKpSpo.fill = java.awt.GridBagConstraints.NONE; cLblKpSpo.insets = new java.awt.Insets(3,20,3,5);
-        panelKpVital.add(lblKpSpo, cLblKpSpo);
-        java.awt.GridBagConstraints cKpSpo = kepConstraint(3,rowKpVital); cKpSpo.anchor = java.awt.GridBagConstraints.WEST; cKpSpo.fill = java.awt.GridBagConstraints.NONE; cKpSpo.weightx = 0;
-        panelKpVital.add(TKpSpo, cKpSpo);
-        rowKpVital++;
-
-        java.awt.GridBagConstraints cFillerKpVital = kepConstraint(4, 0);
+        java.awt.GridBagConstraints cFillerKpVital = kepConstraint(KOLOM_VITAL_KEP*2, 0);
         cFillerKpVital.gridheight = rowKpVital;
         cFillerKpVital.weightx = 1.0;
         cFillerKpVital.fill = java.awt.GridBagConstraints.BOTH;
@@ -5604,6 +5603,22 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         cKpVitalPanel.insets = new java.awt.Insets(0,5,0,5);
         panelKepEmpat.add(panelKpVital, cKpVitalPanel);
         row++;
+
+        // "Irama Nadi" = satu-satunya LABEL baru di sesi ini, dan cuma label -
+        // nol field ditambah/dihapus. Perlu krn di tata letak lama kedua radio
+        // ini duduk dalam satu FlowLayout bersama TKpNadi, jadi label
+        // "Nadi (x/menit) :" merangkap judul keduanya. Sesudah TKpNadi masuk
+        // sel grid, radionya TIDAK bisa ikut: sel berisi field+2 chip ~260px
+        // akan melebarkan kolom grid ke-1 utk SEMUA baris, sehingga "GCS V"
+        // kebagian ~200px kosong di kanannya. Jadi baris chip tersendiri
+        // tepat di bawah grid - masih terbaca sebagai keterangan nadi.
+        RbKpNadiReguler = new widget.RadioButton(); RbKpNadiReguler.setText("Reguler");
+        RbKpNadiIreguler = new widget.RadioButton(); RbKpNadiIreguler.setText("Ireguler");
+        bgKpNadiReguler = new javax.swing.ButtonGroup(); bgKpNadiReguler.add(RbKpNadiReguler); bgKpNadiReguler.add(RbKpNadiIreguler);
+        widget.PanelBiasa panelKpNadi = new widget.PanelBiasa();
+        panelKpNadi.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
+        panelKpNadi.add(RbKpNadiReguler); panelKpNadi.add(RbKpNadiIreguler);
+        row = tambahBarisKepField(panelKepEmpat, row, "Irama Nadi", panelKpNadi);
 
         // Masuk Rumah Sakit & Petugas yang Menerima disejajarkan 1 baris
         // (permintaan user). Ruang & Petugas Penerima KEDUANYA dipilih lewat
@@ -5656,13 +5671,20 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
         widget.PanelBiasa panelKpMasukPetugas = new widget.PanelBiasa();
         panelKpMasukPetugas.setLayout(new java.awt.GridBagLayout());
-        java.awt.GridBagConstraints cKpMasukRs = kepConstraint(0,0); cKpMasukRs.gridwidth = 2; cKpMasukRs.anchor = java.awt.GridBagConstraints.WEST; cKpMasukRs.fill = java.awt.GridBagConstraints.NONE;
+        // Anchor SOUTHWEST, bukan WEST: sel di sebelahnya sekarang menumpuk
+        // mini-label DI ATAS field-nya, jadi baris jadi lebih tinggi dan chip
+        // ini - kalau dibiarkan WEST (=CENTER vertikal) - berhenti sejajar
+        // mini-label, bukan sejajar field-nya. Chip-nya sendiri tidak diberi
+        // mini-label krn teks checkbox "Masuk Rumah Sakit, di Ruang" SUDAH
+        // labelnya; menambah mini-label berarti menulisnya dua kali.
+        java.awt.GridBagConstraints cKpMasukRs = kepConstraint(0,0);
+        cKpMasukRs.gridwidth = 2;
+        cKpMasukRs.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        cKpMasukRs.fill = java.awt.GridBagConstraints.NONE;
         panelKpMasukPetugas.add(panelKpMasukRs, cKpMasukRs);
-        widget.Label lblKpPetugasPenerima = new widget.Label(); lblKpPetugasPenerima.setText("Petugas yang Menerima :");
-        java.awt.GridBagConstraints cLblKpPetugasPenerima = kepConstraint(2,0); cLblKpPetugasPenerima.anchor = java.awt.GridBagConstraints.EAST; cLblKpPetugasPenerima.fill = java.awt.GridBagConstraints.NONE; cLblKpPetugasPenerima.insets = new java.awt.Insets(3,20,3,5);
-        panelKpMasukPetugas.add(lblKpPetugasPenerima, cLblKpPetugasPenerima);
-        java.awt.GridBagConstraints cKpPetugasPenerima = kepConstraint(3,0); cKpPetugasPenerima.anchor = java.awt.GridBagConstraints.WEST; cKpPetugasPenerima.fill = java.awt.GridBagConstraints.NONE; cKpPetugasPenerima.weightx = 0;
-        panelKpMasukPetugas.add(panelKpPetugasPenerima, cKpPetugasPenerima);
+        // "Petugas yang Menerima :" rata KANAN -> mini-label di atas field.
+        // Tetap SATU baris bersama chip di kiri (permintaan user).
+        tambahSelKepField(panelKpMasukPetugas, 1, 0, "Petugas yang Menerima", panelKpPetugasPenerima);
         java.awt.GridBagConstraints cFillerKpMasukPetugas = kepConstraint(4, 0);
         cFillerKpMasukPetugas.weightx = 1.0;
         cFillerKpMasukPetugas.fill = java.awt.GridBagConstraints.BOTH;
@@ -5709,13 +5731,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
         widget.PanelBiasa panelKpDirujukAlasan = new widget.PanelBiasa();
         panelKpDirujukAlasan.setLayout(new java.awt.GridBagLayout());
-        java.awt.GridBagConstraints cKpDirujuk = kepConstraint(0,0); cKpDirujuk.gridwidth = 2; cKpDirujuk.anchor = java.awt.GridBagConstraints.WEST; cKpDirujuk.fill = java.awt.GridBagConstraints.NONE;
+        // SOUTHWEST + mini-label, alasan sama dgn panelKpMasukPetugas di atas.
+        java.awt.GridBagConstraints cKpDirujuk = kepConstraint(0,0);
+        cKpDirujuk.gridwidth = 2;
+        cKpDirujuk.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        cKpDirujuk.fill = java.awt.GridBagConstraints.NONE;
         panelKpDirujukAlasan.add(panelKpDirujuk, cKpDirujuk);
-        widget.Label lblKpDirujukAlasan = new widget.Label(); lblKpDirujukAlasan.setText("Alasan Dirujuk :");
-        java.awt.GridBagConstraints cLblKpDirujukAlasan = kepConstraint(2,0); cLblKpDirujukAlasan.anchor = java.awt.GridBagConstraints.EAST; cLblKpDirujukAlasan.fill = java.awt.GridBagConstraints.NONE; cLblKpDirujukAlasan.insets = new java.awt.Insets(3,20,3,5);
-        panelKpDirujukAlasan.add(lblKpDirujukAlasan, cLblKpDirujukAlasan);
-        java.awt.GridBagConstraints cKpDirujukAlasan = kepConstraint(3,0); cKpDirujukAlasan.anchor = java.awt.GridBagConstraints.WEST; cKpDirujukAlasan.fill = java.awt.GridBagConstraints.NONE; cKpDirujukAlasan.weightx = 0;
-        panelKpDirujukAlasan.add(TKpDirujukAlasan, cKpDirujukAlasan);
+        tambahSelKepField(panelKpDirujukAlasan, 1, 0, "Alasan Dirujuk", TKpDirujukAlasan);
         java.awt.GridBagConstraints cFillerKpDirujukAlasan = kepConstraint(4, 0);
         cFillerKpDirujukAlasan.weightx = 1.0;
         cFillerKpDirujukAlasan.fill = java.awt.GridBagConstraints.BOTH;
@@ -5835,26 +5857,75 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         int row = 0;
         row = tambahBarisKepJudul(panelKepObat, row, "PEMBERIAN OBAT / INFUS");
 
-        tabModeObatInfus = new DefaultTableModel(null, new Object[]{"Pukul","Nama Obat/Infus","Dosis","Rute","Diperiksa Oleh","Diberikan Oleh"}){
+        // [Bagian F butir 1] Kolom ke-7 "" = tombol hapus per baris. Sengaja
+        // TANPA judul: "HAPUS" di kolom 34px pasti terpotong. Aman thd
+        // penyimpanan - tampilObatInfus()/simpanObat() tetap addRow 6 nilai
+        // dan DefaultTableModel.justifyRows() menambal sisanya null, sedangkan
+        // renderer kolom ini mengabaikan isi selnya (selalu melukis tanda X).
+        tabModeObatInfus = new DefaultTableModel(null, new Object[]{"Pukul","Nama Obat/Infus","Dosis","Rute","Diperiksa Oleh","Diberikan Oleh",""}){
             @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbObatInfus = new widget.Table();
         tbObatInfus.setModel(tabModeObatInfus);
-        widget.ScrollPane scrollObatInfus = new widget.ScrollPane();
+        gayaTabelObatKep();
+        pasangKlikHapusObatKep();
+
+        // [Bagian F butir 5] Label "Belum ada data obat/infus" DILUKIS OLEH
+        // SCROLL PANE, bukan oleh tabelnya: dgn 0 baris tinggi JTable = 0px,
+        // jadi apa pun yg digambar di paintComponent() tabel tidak punya
+        // bidang utk muncul. Digambar SESUDAH super.paintChildren() supaya
+        // duduk di atas viewport (ViewPortGlass melukis latarnya sendiri).
+        widget.ScrollPane scrollObatInfus = new widget.ScrollPane(){
+            @Override protected void paintChildren(java.awt.Graphics g){
+                super.paintChildren(g);
+                if(tabModeObatInfus==null || tabModeObatInfus.getRowCount()>0){ return; }
+                java.awt.Rectangle vp = getViewport().getBounds();
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING,
+                        java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                g2.setFont(new java.awt.Font("Segoe UI",java.awt.Font.PLAIN,12));
+                g2.setColor(widget.ThemeConfig.TEXT_FAINT);
+                java.awt.FontMetrics fm = g2.getFontMetrics();
+                String pesan = "Belum ada data obat/infus";
+                g2.drawString(pesan, vp.x + Math.max(0,(vp.width - fm.stringWidth(pesan))/2),
+                        vp.y + (vp.height + fm.getAscent() - fm.getDescent())/2);
+                g2.dispose();
+            }
+        };
         scrollObatInfus.setViewportView(tbObatInfus);
-        // Tinggi saja (120px = ~4 baris). Lebarnya diserahkan ke rapikanIsiKep():
-        // pin 320px sisa tata letak 3 kolom membuat tabel 6 kolom ini punya
-        // scrollbar horizontal sendiri di dalam halaman selebar 1240px.
+        scrollObatInfus.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT));
+        // Model dikosongkan/diisi dari getData()/emptTeks()/tampilObatInfus()
+        // tanpa menyentuh scroll pane-nya, jadi repaint diikat ke model.
+        tabModeObatInfus.addTableModelListener((javax.swing.event.TableModelEvent e) -> scrollObatInfus.repaint());
+        // Tinggi: kepala 30 + 4 baris x 30 = 150 (baris naik dari 22 ke 30px
+        // sesuai butir 2). Lebarnya tetap diserahkan ke rapikanIsiKep().
         scrollObatInfus.setPreferredSize(new java.awt.Dimension(
-                scrollObatInfus.getPreferredSize().width, 120));
+                scrollObatInfus.getPreferredSize().width, 150));
         java.awt.GridBagConstraints cTabelObat = kepConstraint(0,row); cTabelObat.gridwidth=java.awt.GridBagConstraints.REMAINDER;
         panelKepObat.add(scrollObatInfus, cTabelObat);
         row++;
 
-        // Pukul|Nama Obat/Infus & Dosis|Rute ditata 2 kolom, 2 baris dalam
-        // panel tersendiri (pola sama spt KEADAAN UMUM) - permintaan user.
+        // [Bagian F butir 3] Enam isian tinggi 30px, disusun 4 sel mini-label
+        // (Pukul|Nama|Dosis|Rute) + 2 sel (Diperiksa|Diberikan) - bukan lagi
+        // "label :" rata KANAN. Dua panel terpisah supaya lebar kolomnya
+        // dihitung sendiri2: sel "Diperiksa Oleh" isinya ~310px (NIP+nama+
+        // tombol cari), kalau sebaris grid dgn Pukul maka kolom 0 melebar
+        // 310px utk semuanya dan Pukul kebagian 160px kosong.
+        //
+        // Keduanya dibungkus SATU strip berlatar SURFACE_ALT + LineBorder
+        // BORDER_SOFT (bunyi butir 3), supaya "baris input" terbaca sebagai
+        // satu area kerja yg terpisah dari tabel di atasnya. CompoundBorder,
+        // bukan LineBorder telanjang: padding dalamnya yg menjauhkan isian
+        // dari garis strip.
+        widget.PanelBiasa stripInputObat = new widget.PanelBiasa();
+        stripInputObat.setLayout(new java.awt.GridBagLayout());
+        latarKep(stripInputObat, widget.ThemeConfig.SURFACE_ALT);
+        stripInputObat.setBorder(new javax.swing.border.CompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+                javax.swing.BorderFactory.createEmptyBorder(6,10,8,10)));
+
         DTPObatPukul = new widget.Jam();
-        DTPObatPukul.setPreferredSize(new java.awt.Dimension(150,23));
+        DTPObatPukul.setPreferredSize(new java.awt.Dimension(150,30));
         DTPObatPukul.setJam(new Date());
         // Nama Obat/Infus - ambil dari data master `databarang` lewat
         // DlgCariNamaObat (baru, murni SELECT read-only) supaya nama
@@ -5863,10 +5934,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // tabel stok `gudangbarang`/`data_batch` sama sekali). TObatNama
         // tetap TextBox biasa (bisa diketik manual juga), cuma diisi
         // otomatis kalau user pilih lewat tombol cari.
-        TObatNama = new widget.TextBox(); TObatNama.setPreferredSize(new java.awt.Dimension(200,23));
+        TObatNama = new widget.TextBox(); TObatNama.setPreferredSize(new java.awt.Dimension(200,30));
         BtnObatNama = new widget.Button();
         BtnObatNama.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png")));
-        BtnObatNama.setPreferredSize(new java.awt.Dimension(28,23));
+        BtnObatNama.setPreferredSize(new java.awt.Dimension(28,30));
         BtnObatNama.addActionListener((java.awt.event.ActionEvent evt) -> {
             DlgCariNamaObat dlgObat = new DlgCariNamaObat(null,false);
             dlgObat.addWindowListener(new WindowAdapter() {
@@ -5882,57 +5953,48 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             dlgObat.setVisible(true);
         });
         widget.PanelBiasa panelObatNama = new widget.PanelBiasa();
+        // setOpaque(false) WAJIB di dalam strip berlatar SURFACE_ALT: panel
+        // opaque melukis dirinya PUTIH PENUH (lihat latarKep()), jadi tanpa
+        // ini tiap pembungkus FlowLayout jadi tambalan putih di atas strip.
+        panelObatNama.setOpaque(false);
         panelObatNama.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelObatNama.add(TObatNama); panelObatNama.add(BtnObatNama);
-        TObatDosis = new widget.TextBox(); TObatDosis.setPreferredSize(new java.awt.Dimension(150,23));
-        TObatRute = new widget.TextBox(); TObatRute.setPreferredSize(new java.awt.Dimension(150,23));
+        TObatDosis = new widget.TextBox(); TObatDosis.setPreferredSize(new java.awt.Dimension(150,30));
+        TObatRute = new widget.TextBox(); TObatRute.setPreferredSize(new java.awt.Dimension(150,30));
 
         widget.PanelBiasa panelObatBaris = new widget.PanelBiasa();
+        panelObatBaris.setOpaque(false);
         panelObatBaris.setLayout(new java.awt.GridBagLayout());
-        int rowObat = 0;
+        String[] labelInputObatKep = { "Pukul", "Nama Obat/Infus", "Dosis", "Rute" };
+        java.awt.Component[] isiInputObatKep = { DTPObatPukul, panelObatNama, TObatDosis, TObatRute };
+        for(int i=0;i<isiInputObatKep.length;i++){
+            tambahSelKepField(panelObatBaris, i, 0, labelInputObatKep[i], isiInputObatKep[i]);
+        }
 
-        widget.Label lblObatPukul = new widget.Label(); lblObatPukul.setText("Pukul :");
-        java.awt.GridBagConstraints cLblObatPukul = kepConstraint(0,rowObat); cLblObatPukul.anchor = java.awt.GridBagConstraints.EAST; cLblObatPukul.fill = java.awt.GridBagConstraints.NONE;
-        panelObatBaris.add(lblObatPukul, cLblObatPukul);
-        java.awt.GridBagConstraints cObatPukul = kepConstraint(1,rowObat); cObatPukul.anchor = java.awt.GridBagConstraints.WEST; cObatPukul.fill = java.awt.GridBagConstraints.NONE; cObatPukul.weightx = 0;
-        panelObatBaris.add(DTPObatPukul, cObatPukul);
-        widget.Label lblObatNama = new widget.Label(); lblObatNama.setText("Nama Obat/Infus :");
-        java.awt.GridBagConstraints cLblObatNama = kepConstraint(2,rowObat); cLblObatNama.anchor = java.awt.GridBagConstraints.EAST; cLblObatNama.fill = java.awt.GridBagConstraints.NONE; cLblObatNama.insets = new java.awt.Insets(3,20,3,5);
-        panelObatBaris.add(lblObatNama, cLblObatNama);
-        java.awt.GridBagConstraints cObatNama = kepConstraint(3,rowObat); cObatNama.anchor = java.awt.GridBagConstraints.WEST; cObatNama.fill = java.awt.GridBagConstraints.NONE; cObatNama.weightx = 0;
-        panelObatBaris.add(panelObatNama, cObatNama);
-        rowObat++;
-
-        widget.Label lblObatDosis = new widget.Label(); lblObatDosis.setText("Dosis :");
-        java.awt.GridBagConstraints cLblObatDosis = kepConstraint(0,rowObat); cLblObatDosis.anchor = java.awt.GridBagConstraints.EAST; cLblObatDosis.fill = java.awt.GridBagConstraints.NONE;
-        panelObatBaris.add(lblObatDosis, cLblObatDosis);
-        java.awt.GridBagConstraints cObatDosis = kepConstraint(1,rowObat); cObatDosis.anchor = java.awt.GridBagConstraints.WEST; cObatDosis.fill = java.awt.GridBagConstraints.NONE; cObatDosis.weightx = 0;
-        panelObatBaris.add(TObatDosis, cObatDosis);
-        widget.Label lblObatRute = new widget.Label(); lblObatRute.setText("Rute :");
-        java.awt.GridBagConstraints cLblObatRute = kepConstraint(2,rowObat); cLblObatRute.anchor = java.awt.GridBagConstraints.EAST; cLblObatRute.fill = java.awt.GridBagConstraints.NONE; cLblObatRute.insets = new java.awt.Insets(3,20,3,5);
-        panelObatBaris.add(lblObatRute, cLblObatRute);
-        java.awt.GridBagConstraints cObatRute = kepConstraint(3,rowObat); cObatRute.anchor = java.awt.GridBagConstraints.WEST; cObatRute.fill = java.awt.GridBagConstraints.NONE; cObatRute.weightx = 0;
-        panelObatBaris.add(TObatRute, cObatRute);
-        rowObat++;
-
-        java.awt.GridBagConstraints cFillerObat = kepConstraint(4, 0);
-        cFillerObat.gridheight = rowObat;
+        java.awt.GridBagConstraints cFillerObat = kepConstraint(KOLOM_VITAL_KEP*2, 0);
         cFillerObat.weightx = 1.0;
         cFillerObat.fill = java.awt.GridBagConstraints.BOTH;
         cFillerObat.insets = new java.awt.Insets(0,0,0,0);
         panelObatBaris.add(javax.swing.Box.createHorizontalGlue(), cFillerObat);
 
-        java.awt.GridBagConstraints cObatBarisPanel = kepConstraint(0, row);
+        java.awt.GridBagConstraints cObatBarisPanel = kepConstraint(0, 0);
         cObatBarisPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cObatBarisPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cObatBarisPanel.insets = new java.awt.Insets(0,5,0,5);
-        panelKepObat.add(panelObatBaris, cObatBarisPanel);
-        row++;
+        // weightx 1.0 WAJIB: kepConstraint() meninggalkan weightx 0, dan
+        // GridBagLayout MENENGAHKAN seluruh gridnya kalau tak satu kolom pun
+        // berbobot. Tanpa ini kedua baris input berhenti ~210px dari tepi kiri
+        // strip - kelihatan di render sbg lubang kosong di kiri "Pukul",
+        // sementara semua angka lebarnya wajar. Gotcha yg sama sudah dicatat
+        // CLAUDE.md ("butuh DUA pengisi"), cuma di sumbu horizontal saja.
+        cObatBarisPanel.weightx = 1.0;
+        cObatBarisPanel.insets = new java.awt.Insets(0,0,0,0);
+        stripInputObat.add(panelObatBaris, cObatBarisPanel);
 
-        KdObatDiperiksa = new widget.TextBox(); KdObatDiperiksa.setPreferredSize(new java.awt.Dimension(70,23)); KdObatDiperiksa.setEditable(false);
-        NmObatDiperiksa = new widget.TextBox(); NmObatDiperiksa.setPreferredSize(new java.awt.Dimension(200,23)); NmObatDiperiksa.setEditable(false);
+        KdObatDiperiksa = new widget.TextBox(); KdObatDiperiksa.setPreferredSize(new java.awt.Dimension(70,30)); KdObatDiperiksa.setEditable(false);
+        NmObatDiperiksa = new widget.TextBox(); NmObatDiperiksa.setPreferredSize(new java.awt.Dimension(200,30)); NmObatDiperiksa.setEditable(false);
         BtnObatDiperiksa = new widget.Button();
         BtnObatDiperiksa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png")));
+        BtnObatDiperiksa.setPreferredSize(new java.awt.Dimension(28,30));
         BtnObatDiperiksa.addActionListener((java.awt.event.ActionEvent evt) -> {
             DlgCariPetugas dlg = new DlgCariPetugas(null,false);
             dlg.addWindowListener(new WindowAdapter() {
@@ -5949,13 +6011,15 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             dlg.setVisible(true);
         });
         widget.PanelBiasa panelObatDiperiksa = new widget.PanelBiasa();
+        panelObatDiperiksa.setOpaque(false);
         panelObatDiperiksa.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelObatDiperiksa.add(KdObatDiperiksa); panelObatDiperiksa.add(NmObatDiperiksa); panelObatDiperiksa.add(BtnObatDiperiksa);
 
-        KdObatDiberikan = new widget.TextBox(); KdObatDiberikan.setPreferredSize(new java.awt.Dimension(70,23)); KdObatDiberikan.setEditable(false);
-        NmObatDiberikan = new widget.TextBox(); NmObatDiberikan.setPreferredSize(new java.awt.Dimension(200,23)); NmObatDiberikan.setEditable(false);
+        KdObatDiberikan = new widget.TextBox(); KdObatDiberikan.setPreferredSize(new java.awt.Dimension(70,30)); KdObatDiberikan.setEditable(false);
+        NmObatDiberikan = new widget.TextBox(); NmObatDiberikan.setPreferredSize(new java.awt.Dimension(200,30)); NmObatDiberikan.setEditable(false);
         BtnObatDiberikan = new widget.Button();
         BtnObatDiberikan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png")));
+        BtnObatDiberikan.setPreferredSize(new java.awt.Dimension(28,30));
         BtnObatDiberikan.addActionListener((java.awt.event.ActionEvent evt) -> {
             DlgCariPetugas dlg = new DlgCariPetugas(null,false);
             dlg.addWindowListener(new WindowAdapter() {
@@ -5972,57 +6036,346 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             dlg.setVisible(true);
         });
         widget.PanelBiasa panelObatDiberikan = new widget.PanelBiasa();
+        panelObatDiberikan.setOpaque(false);
         panelObatDiberikan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
         panelObatDiberikan.add(KdObatDiberikan); panelObatDiberikan.add(NmObatDiberikan); panelObatDiberikan.add(BtnObatDiberikan);
 
         // Diperiksa Oleh & Diberikan Oleh disejajarkan 1 baris (permintaan
-        // user), pola sama spt panelObatBaris (Pukul/Nama/Dosis/Rute) di atas.
+        // user), pola sama spt panelObatBaris di atas: mini-label DI ATAS
+        // field, bukan "label :" rata KANAN.
         widget.PanelBiasa panelObatPetugas = new widget.PanelBiasa();
+        panelObatPetugas.setOpaque(false);
         panelObatPetugas.setLayout(new java.awt.GridBagLayout());
-        widget.Label lblObatDiperiksa = new widget.Label(); lblObatDiperiksa.setText("Diperiksa Oleh :");
-        java.awt.GridBagConstraints cLblObatDiperiksa = kepConstraint(0,0); cLblObatDiperiksa.anchor = java.awt.GridBagConstraints.EAST; cLblObatDiperiksa.fill = java.awt.GridBagConstraints.NONE;
-        panelObatPetugas.add(lblObatDiperiksa, cLblObatDiperiksa);
-        java.awt.GridBagConstraints cObatDiperiksa = kepConstraint(1,0); cObatDiperiksa.anchor = java.awt.GridBagConstraints.WEST; cObatDiperiksa.fill = java.awt.GridBagConstraints.NONE; cObatDiperiksa.weightx = 0;
-        panelObatPetugas.add(panelObatDiperiksa, cObatDiperiksa);
-        widget.Label lblObatDiberikan = new widget.Label(); lblObatDiberikan.setText("Diberikan Oleh :");
-        java.awt.GridBagConstraints cLblObatDiberikan = kepConstraint(2,0); cLblObatDiberikan.anchor = java.awt.GridBagConstraints.EAST; cLblObatDiberikan.fill = java.awt.GridBagConstraints.NONE; cLblObatDiberikan.insets = new java.awt.Insets(3,20,3,5);
-        panelObatPetugas.add(lblObatDiberikan, cLblObatDiberikan);
-        java.awt.GridBagConstraints cObatDiberikan = kepConstraint(3,0); cObatDiberikan.anchor = java.awt.GridBagConstraints.WEST; cObatDiberikan.fill = java.awt.GridBagConstraints.NONE; cObatDiberikan.weightx = 0;
-        panelObatPetugas.add(panelObatDiberikan, cObatDiberikan);
-        java.awt.GridBagConstraints cFillerObatPetugas = kepConstraint(4, 0);
+        tambahSelKepField(panelObatPetugas, 0, 0, "Diperiksa Oleh", panelObatDiperiksa);
+        tambahSelKepField(panelObatPetugas, 1, 0, "Diberikan Oleh", panelObatDiberikan);
+
+        // [Bagian F butir 3] "+ Tambah" = tombol PRIMER ACCENT teks putih.
+        // Ikon plus_16.png DIBUANG, bukan lupa: widget.Button.setText()
+        // menyembunyikan ikon RASTER begitu tombolnya punya teks, jadi ikon
+        // itu sejak awal tidak pernah tampil - tanda "+" ditulis di teksnya.
+        // Tinggi 30px menyamai keenam isian di sebelahnya.
+        BtnTambahObat = new widget.Button(); BtnTambahObat.setText("+ Tambah");
+        BtnTambahObat.setPreferredSize(new java.awt.Dimension(110,30));
+        jadikanTombolPrimerKep(BtnTambahObat);
+        BtnTambahObat.addActionListener((java.awt.event.ActionEvent evt) -> simpanObat());
+        // Nonaktif selama Nama Obat kosong (butir 3). DocumentListener, bukan
+        // pemeriksaan saat diklik: tombol mati lebih jelas drpd dialog "nama
+        // obat masih kosong" SESUDAH user menekannya. simpanObat() tetap
+        // memegang penjaganya sendiri (jalur Enter/keyboard), dan
+        // emptTeksObatInfus() ikut mematikan tombol ini gratis krn ia
+        // mengosongkan TObatNama.
+        BtnTambahObat.setEnabled(false);
+        warnaiTombolPrimerKep(BtnTambahObat, false);
+        TObatNama.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+            private void nilai(){
+                boolean adaIsi = !TObatNama.getText().trim().isEmpty();
+                BtnTambahObat.setEnabled(adaIsi);
+                warnaiTombolPrimerKep(BtnTambahObat, adaIsi);
+            }
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e){ nilai(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e){ nilai(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e){ nilai(); }
+        });
+        // gridx 4, krn dua sel di atas memakai gridwidth 2 (gridx 0-1 dan 2-3).
+        // SOUTHWEST: sel di sebelahnya menumpuk mini-label DI ATAS field, jadi
+        // WEST (= CENTER vertikal) akan menaruh tombol sejajar mini-label,
+        // bukan sejajar field-nya.
+        java.awt.GridBagConstraints cBtnTambahObat = kepConstraint(4, 0);
+        cBtnTambahObat.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        cBtnTambahObat.fill = java.awt.GridBagConstraints.NONE;
+        panelObatPetugas.add(BtnTambahObat, cBtnTambahObat);
+
+        java.awt.GridBagConstraints cFillerObatPetugas = kepConstraint(5, 0);
         cFillerObatPetugas.weightx = 1.0;
         cFillerObatPetugas.fill = java.awt.GridBagConstraints.BOTH;
         cFillerObatPetugas.insets = new java.awt.Insets(0,0,0,0);
         panelObatPetugas.add(javax.swing.Box.createHorizontalGlue(), cFillerObatPetugas);
 
-        java.awt.GridBagConstraints cObatPetugasPanel = kepConstraint(0, row);
+        java.awt.GridBagConstraints cObatPetugasPanel = kepConstraint(0, 1);
         cObatPetugasPanel.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cObatPetugasPanel.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        cObatPetugasPanel.insets = new java.awt.Insets(0,5,0,5);
-        panelKepObat.add(panelObatPetugas, cObatPetugasPanel);
+        cObatPetugasPanel.weightx = 1.0;
+        cObatPetugasPanel.insets = new java.awt.Insets(0,0,0,0);
+        stripInputObat.add(panelObatPetugas, cObatPetugasPanel);
+
+        java.awt.GridBagConstraints cStripInputObat = kepConstraint(0, row);
+        cStripInputObat.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        cStripInputObat.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        cStripInputObat.insets = new java.awt.Insets(8,5,0,5);
+        panelKepObat.add(stripInputObat, cStripInputObat);
         row++;
 
-        // widget.Button (glass style) butuh .setPreferredSize() eksplisit
-        // spy latar/rounded-background-nya kelihatan - tanpa ini cuma
-        // teks polos yg tampil (bug yg sama spt TextBox/ComboBox, lihat
-        // BtnSimpan yg sudah benar pakai setPreferredSize(100,30) sbg
-        // acuan). Ikon disamakan dgn gaya tombol lain di aplikasi ini.
-        BtnTambahObat = new widget.Button(); BtnTambahObat.setText("Tambah");
-        BtnTambahObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/plus_16.png")));
-        BtnTambahObat.setPreferredSize(new java.awt.Dimension(110,28));
-        BtnTambahObat.addActionListener((java.awt.event.ActionEvent evt) -> simpanObat());
+        // BtnHapusObat TETAP DIBUAT lengkap dgn listener-nya - aturan baku
+        // prompt: komponen yg digantikan tampilannya hanya setVisible(false),
+        // tidak dihapus. Penggantinya kolom "✕" per baris di tabel (butir 4).
+        // Panel tombol lamanya hilang seluruhnya: penghuni satunya lagi,
+        // "+ Tambah", sekarang duduk di dalam strip input.
         BtnHapusObat = new widget.Button(); BtnHapusObat.setText("Hapus Baris Terpilih");
         BtnHapusObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Delete.png")));
         BtnHapusObat.setPreferredSize(new java.awt.Dimension(180,28));
         BtnHapusObat.addActionListener((java.awt.event.ActionEvent evt) -> hapusObat());
-        widget.PanelBiasa panelObatTombol = new widget.PanelBiasa();
-        panelObatTombol.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
-        panelObatTombol.add(BtnTambahObat); panelObatTombol.add(BtnHapusObat);
-        row = tambahBarisKepField(panelKepObat, row, "", panelObatTombol);
+        BtnHapusObat.setVisible(false);
 
         // panelKepObat (Pemberian Obat/Infus) jadi seksi tersendiri lewat
         // pecahSeksiKep() lalu ditempatkan susunHalamanKep() - Y-math
         // null-layout lama dinonaktifkan.
+    }
+
+    /**
+     * Lebar tiap kolom tabel obat/infus, urutan PERSIS Bagian F butir 1:
+     * Pukul | Nama Obat/Infus | Dosis | Rute | Diperiksa Oleh | Diberikan Oleh
+     * | (hapus). Nilai -1 berarti "biarkan melar": enam kolom lainnya dipatok
+     * min = max = preferred, sehingga SELURUH sisa lebar jatuh ke Nama
+     * Obat/Infus - itulah kolom yg isinya paling panjang dan paling sering
+     * terpotong di tata letak lama.
+     */
+    private static final int[] LEBAR_KOLOM_OBAT_KEP = { 88, -1, 96, 96, 150, 150, 34 };
+
+    /**
+     * [Bagian F butir 2] Gaya tabel yg dipakai form ini: kepala terang
+     * SURFACE_ALT + teks 10,5px bold uppercase TEXT_MUTED, baris tinggi
+     * `tinggiBaris`, gridline 0xF0F2EE tanpa garis vertikal, seleksi 0xF2F7FB.
+     *
+     * Dipisah jadi helper krn dipakai DUA tabel: tbObatInfus (halaman 11) dan
+     * tbMasalahKeperawatan (halaman 10). Bagian F cuma menyebut tabel obat,
+     * tapi keduanya tampil di form yg sama dgn selisih satu halaman - kepala
+     * NAVY gelap bawaan widget.Table di sebelah kepala terang yg baru bukan
+     * "dua tabel", tapi satu form yg terlihat setengah dikerjakan. Kepala
+     * gelap itu juga lebih pekat drpd strip kartu halamannya sendiri, jadi
+     * hierarki warnanya terbalik.
+     *
+     * Semuanya per instans: widget.Table dipakai ratusan form lain (kepala
+     * NAVY, rowHeight 22), menyetel gaya ini di widget-nya akan mengubah
+     * SELURUH aplikasi.
+     *
+     * setSelectionForeground() WAJIB ikut diganti: widget.Table mewarisi teks
+     * seleksi PUTIH (utk latar seleksi NAVY-nya), sedangkan seleksi kita
+     * 0xF2F7FB yg hampir putih - tanpa ini baris terpilih jadi putih di atas
+     * putih, jadi teksnya HILANG tepat saat user memilih baris.
+     */
+    private void gayaTabelKep(JTable tabel, int tinggiBaris){
+        tabel.setRowHeight(tinggiBaris);
+        tabel.setGridColor(new java.awt.Color(0xF0F2EE));
+        tabel.setShowVerticalLines(false);
+        tabel.setIntercellSpacing(new java.awt.Dimension(0,1));
+        tabel.setSelectionBackground(new java.awt.Color(0xF2F7FB));
+        tabel.setSelectionForeground(widget.ThemeConfig.TEXT);
+        tabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+        tabel.setForeground(widget.ThemeConfig.TEXT);
+        tabel.setFillsViewportHeight(true);
+        tabel.getTableHeader().setReorderingAllowed(false);
+        tabel.getTableHeader().setDefaultRenderer(rendererKepalaTabelKep());
+        // Latar JTableHeader-nya sendiri ikut diganti, BUKAN cuma renderernya.
+        // Renderer hanya melukis petak per kolom; sisa lebar kepala yg tidak
+        // tertutup kolom mana pun dilukis oleh header itu sendiri, dan
+        // widget.Table menyetelnya NAVY - jadi kepala terang bisa berakhir
+        // dgn sisa strip gelap di kanan. Ketahuannya dari dump CekTabelKep
+        // ("kepala latar #17324D") padahal renderer sudah benar; dari render
+        // PNG-nya tidak kelihatan krn kedua tabel ini kolomnya memang penuh.
+        tabel.getTableHeader().setBackground(widget.ThemeConfig.SURFACE_ALT);
+        tabel.getTableHeader().setForeground(widget.ThemeConfig.TEXT_MUTED);
+        tabel.getTableHeader().setBorder(javax.swing.BorderFactory.createMatteBorder(
+                0,0,1,0, widget.ThemeConfig.BORDER_SOFT));
+        tabel.getTableHeader().setPreferredSize(new java.awt.Dimension(
+                tabel.getTableHeader().getPreferredSize().width, 30));
+    }
+
+    /**
+     * Tabel obat/infus: gaya bersama di atas + lebar kolom Bagian F butir 1 +
+     * renderer kolom hapus.
+     */
+    private void gayaTabelObatKep(){
+        gayaTabelKep(tbObatInfus, 30);
+        tbObatInfus.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+        javax.swing.table.DefaultTableCellRenderer selBiasa = rendererSelKepTabel();
+        for(int i=0;i<LEBAR_KOLOM_OBAT_KEP.length;i++){
+            TableColumn kol = tbObatInfus.getColumnModel().getColumn(i);
+            if(LEBAR_KOLOM_OBAT_KEP[i] < 0){
+                // Kolom melar: min saja yg dipatok, supaya AUTO_RESIZE tidak
+                // pernah memerasnya jadi 0 di kartu 330px.
+                kol.setPreferredWidth(200);
+                kol.setMinWidth(160);
+                kol.setCellRenderer(selBiasa);
+                continue;
+            }
+            kol.setPreferredWidth(LEBAR_KOLOM_OBAT_KEP[i]);
+            kol.setMinWidth(LEBAR_KOLOM_OBAT_KEP[i]);
+            kol.setMaxWidth(LEBAR_KOLOM_OBAT_KEP[i]);
+            kol.setCellRenderer(i==LEBAR_KOLOM_OBAT_KEP.length-1
+                    ? rendererHapusObatKep() : selBiasa);
+        }
+    }
+
+    /**
+     * Sel data biasa: cuma padding 8px kiri/kanan, TANPA menyentuh warna.
+     *
+     * Justru "tanpa warna" itu isinya: renderer yg tidak mengoper-warna akan
+     * memakai selectionBackground/selectionForeground milik TABEL-nya, jadi
+     * satu baris terpilih pasti sewarna di semua kolomnya.
+     *
+     * Ini yg menggantikan fungsi.WarnaTable di tbMasalahKeperawatan. WarnaTable
+     * memaksa TABLE_SELECTION_BG (navy 0x3A5168) + teks putih pada sel yg
+     * dirender-nya, sementara kolom centang "P" bertipe Boolean.class dipegang
+     * renderer bawaan JTable yg menuruti tabelnya (0xF2F7FB). Kalau gaya baru
+     * dipasang sambil WarnaTable dibiarkan, hasilnya SATU BARIS TERPILIH DUA
+     * WARNA: kotak centang pucat menempel di blok navy. Kelasnya sendiri tidak
+     * disentuh - dipakai ratusan tabel lain di aplikasi ini.
+     *
+     * Zebra pink (255,244,244) milik WarnaTable ikut hilang, dan itu memang
+     * diinginkan: warnanya hangat di tengah palet hijau-teal, dan tabel ini
+     * cuma punya dua kolom tampak (centang lalu teks yg langsung menempel di
+     * sebelahnya) - mata tidak perlu menyeberangi baris, jadi zebra tak
+     * memberi apa pun selain satu warna asing lagi.
+     */
+    private javax.swing.table.DefaultTableCellRenderer rendererSelKepTabel(){
+        javax.swing.table.DefaultTableCellRenderer sel = new javax.swing.table.DefaultTableCellRenderer();
+        sel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,8,0,8));
+        return sel;
+    }
+
+    /**
+     * Kepala tabel: latar SURFACE_ALT, teks 10,5px bold UPPERCASE TEXT_MUTED,
+     * garis bawah 1px BORDER_SOFT (Bagian F butir 2). Dipakai tbObatInfus dan
+     * tbMasalahKeperawatan lewat gayaTabelKep().
+     *
+     * setOpaque(true) eksplisit: DefaultTableCellRenderer yg dipakai sbg
+     * renderer KEPALA tidak selalu opaque, dan kalau tidak, latar SURFACE_ALT
+     * tidak pernah terlukis - yg tampil justru latar bawaan JTableHeader.
+     *
+     * Kontras TEXT_MUTED di atas SURFACE_ALT ~3,9:1, di bawah 4,5:1 yg diminta
+     * WCAG utk teks kecil. Sengaja mengikuti bunyi prompt; angkanya otomatis
+     * naik kalau keputusan TEXT_MUTED -> #657387 di PROGRESS.md diambil.
+     *
+     * Padding 8px MENGERUT jadi 2px pada kolom sempit. Bukan kosmetik:
+     * kolom centang "P" di tbMasalahKeperawatan lebarnya dipatok 20px, jadi
+     * padding 8+8 hanya menyisakan 4px dan JLabel menggantinya dgn "..." -
+     * kepala kolomnya berubah jadi elipsis, kelihatan di render hal-10.
+     * Diukur dari lebar kolom yg SEDANG dipakai supaya kolom sempit apa pun
+     * (mis. kolom "x" 34px di tabel obat) ikut terlindungi tanpa daftar
+     * pengecualian.
+     */
+    private javax.swing.table.TableCellRenderer rendererKepalaTabelKep(){
+        return new javax.swing.table.DefaultTableCellRenderer(){
+            @Override public java.awt.Component getTableCellRendererComponent(JTable tabel,
+                    Object nilai, boolean terpilih, boolean fokus, int baris, int kolom){
+                super.getTableCellRendererComponent(tabel, nilai, false, false, baris, kolom);
+                setOpaque(true);
+                setBackground(widget.ThemeConfig.SURFACE_ALT);
+                setForeground(widget.ThemeConfig.TEXT_MUTED);
+                setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11).deriveFont(10.5f));
+                setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+                int lebarKolom = kolom < tabel.getColumnModel().getColumnCount()
+                        ? tabel.getColumnModel().getColumn(kolom).getWidth() : 0;
+                int isi = lebarKolom < 30 ? 2 : 8;
+                setBorder(new javax.swing.border.CompoundBorder(
+                        javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT),
+                        javax.swing.BorderFactory.createEmptyBorder(0,isi,0,isi)));
+                setText(nilai==null ? "" : nilai.toString().toUpperCase());
+                return this;
+            }
+        };
+    }
+
+    /**
+     * Kolom terakhir: tanda hapus, SELALU digambar - isi selnya diabaikan.
+     *
+     * Itu yg membuat kolom ke-7 aman thd penyimpanan: tampilObatInfus() dan
+     * simpanObat() tetap addRow 6 nilai dan DefaultTableModel menambal sel
+     * ke-7 dgn null, sedangkan renderer ini tidak pernah membaca `nilai`.
+     */
+    private javax.swing.table.TableCellRenderer rendererHapusObatKep(){
+        return new javax.swing.table.DefaultTableCellRenderer(){
+            @Override public java.awt.Component getTableCellRendererComponent(JTable tabel,
+                    Object nilai, boolean terpilih, boolean fokus, int baris, int kolom){
+                super.getTableCellRendererComponent(tabel, nilai, terpilih, false, baris, kolom);
+                java.awt.Font f = new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 13);
+                setFont(f);
+                setText(tandaHapusKep(f));
+                setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+                setBorder(javax.swing.BorderFactory.createEmptyBorder());
+                setForeground(terpilih ? widget.ThemeConfig.TEXT : widget.ThemeConfig.TEXT_FAINT);
+                setToolTipText("Hapus baris ini");
+                return this;
+            }
+        };
+    }
+
+    /**
+     * Tanda hapus kolom terakhir. "✕" (U+2715) dipilih krn bentuknya bukan
+     * huruf x, tapi tidak semua font punya glif itu - dan font yg tidak
+     * punya melukis KOTAK KOSONG, bukan error. Jadi diperiksa dulu, lalu
+     * jatuh ke "×" (U+00D7, ada di semua font Latin) kalau perlu.
+     */
+    private static String tandaHapusKep(java.awt.Font f){
+        return f.canDisplay('✕') ? "✕" : "×";
+    }
+
+    /**
+     * [Bagian F butir 4] Klik di kolom terakhir = hapus baris itu, dgn
+     * konfirmasi lebih dulu (pola "Yakin mau dihapus obat ...?" yg dipakai
+     * form obat lain di aplikasi ini).
+     *
+     * Konfirmasinya duduk DI SINI, bukan di dalam hapusObat(): hapusObat()
+     * memegang SQL delete-nya dan sama sekali tidak disentuh sesi ini, jadi
+     * jalur penyimpanan tetap seperti sebelumnya. Barisnya diseleksi dulu krn
+     * hapusObat() membaca getSelectedRow().
+     */
+    private void pasangKlikHapusObatKep(){
+        tbObatInfus.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override public void mouseClicked(java.awt.event.MouseEvent evt){
+                int kolom = tbObatInfus.columnAtPoint(evt.getPoint());
+                int baris = tbObatInfus.rowAtPoint(evt.getPoint());
+                if(baris < 0 || kolom != tbObatInfus.getColumnCount()-1){ return; }
+                tbObatInfus.setRowSelectionInterval(baris, baris);
+                Object nama = tabModeObatInfus.getValueAt(baris, 1);
+                Object pukul = tabModeObatInfus.getValueAt(baris, 0);
+                if(JOptionPane.showConfirmDialog(rootPane,
+                        "Yakin mau dihapus obat "+(nama==null?"":nama)
+                        +" pukul "+(pukul==null?"":pukul)+"...?",
+                        "Konfirmasi", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                    hapusObat();
+                }
+            }
+        });
+        // Kursor tangan cuma di kolom hapus: satu-satunya petunjuk bahwa
+        // kolom tanpa judul itu bisa diklik.
+        tbObatInfus.addMouseMotionListener(new java.awt.event.MouseMotionAdapter(){
+            @Override public void mouseMoved(java.awt.event.MouseEvent evt){
+                boolean diHapus = tbObatInfus.columnAtPoint(evt.getPoint())
+                        == tbObatInfus.getColumnCount()-1;
+                tbObatInfus.setCursor(java.awt.Cursor.getPredefinedCursor(diHapus
+                        ? java.awt.Cursor.HAND_CURSOR : java.awt.Cursor.DEFAULT_CURSOR));
+            }
+        });
+    }
+
+    /**
+     * Tombol PRIMER: latar ACCENT, teks putih tebal. Dipakai "+ Tambah"
+     * (Bagian F butir 3); resepnya dipisah jadi helper supaya BtnSimpan di
+     * Bagian G memakai yg SAMA, bukan salinan tiga baris ini.
+     *
+     * Knob latar widget.Button adalah setGlassColor(), BUKAN setBackground():
+     * widget.Button extends usu.widget.ButtonGlass yg melukis latarnya sendiri
+     * dari glassColor. setBackground() tidak menghasilkan apa pun DAN tidak
+     * memberi error - bentuk jebakan yg sama dgn PanelBiasa (latar diminta,
+     * getBackground() melaporkannya, tapi bukan itu yg terlukis).
+     */
+    private static void jadikanTombolPrimerKep(widget.Button b){
+        b.setGlassColor(widget.ThemeConfig.ACCENT);
+        b.setForeground(java.awt.Color.WHITE);
+        b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+    }
+
+    /**
+     * Warna tombol primer saat NONAKTIF. ButtonGlass melukis glassColor tanpa
+     * peduli isEnabled(), jadi tombol mati harus DIWARNAI mati juga - kalau
+     * tidak, "+ Tambah" tetap ACCENT terang dan terlihat bisa diklik padahal
+     * setEnabled(false).
+     */
+    private static void warnaiTombolPrimerKep(widget.Button b, boolean hidup){
+        b.setGlassColor(hidup ? widget.ThemeConfig.ACCENT : new java.awt.Color(0xD8DBD6));
+        b.setForeground(hidup ? java.awt.Color.WHITE : widget.ThemeConfig.TEXT_FAINT);
     }
 
     /**

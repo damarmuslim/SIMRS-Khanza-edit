@@ -3513,3 +3513,264 @@ Bagian D butir 8/9/11 masih memakai gaya lama "label :" rata kanan — grid
 FLACC di halaman 9, baris input obat dan blok GCS/kondisi pulang di halaman
 11. Kondisi pulang belum jadi grid 4 kolom D7. Semuanya sudah jadwal Sesi 4
 bersama Bagian F (tabel obat/infus + panel tombol Tambah/Hapus).
+
+---
+
+# Sesi 4 — Bagian F (tabel obat/infus) + sisa Bagian D, dan gaya tabel yang menular ke tetangganya
+
+Sesi ini mengerjakan Bagian F utuh, menutup tiga tempat terakhir yang masih
+bergaya lama "label :" rata kanan, lalu — karena tabel obat yang baru ditata
+duduk satu halaman dari tabel yang belum — memperluas satu langkah **di luar**
+kata-kata Bagian F, dengan alasan yang dicatat di kode. Nol field
+ditambah/dihapus, nol nama variabel diganti, nol query dan nol baris `.jrxml`
+disentuh.
+
+## Koreksi catatan sesi lalu: Bagian D hanya punya TUJUH butir
+
+Catatan penutup Sesi 3c menulis sisa pekerjaan sebagai "Bagian D butir 8/9/11".
+**Butir itu tidak ada** — Bagian D berakhir di butir 7. Sisa yang dimaksud
+sebenarnya ditentukan oleh **lokasi**, bukan nomor butir: grid FLACC di halaman
+9, baris input obat dan blok GCS/kondisi pulang di halaman 11, plus satu baris
+"Key Word" di halaman 10. Semuanya dikerjakan sesi ini. Nomor butir palsu itu
+ditulis ulang di sini supaya sesi berikutnya tidak mencari spesifikasi yang
+tidak pernah ada.
+
+## Bagian F — tabel obat/infus
+
+Kolom persis butir F1: `Pukul(88) | Nama Obat/Infus(grow) | Dosis(96) |
+Rute(96) | Diperiksa Oleh(150) | Diberikan Oleh(150) | ✕(34)`. Kolom melar
+hanya dipatok `minWidth` 160 dan `preferred` 200, tidak `max`, supaya
+`AUTO_RESIZE_ALL_COLUMNS` tidak pernah memerasnya jadi 0 saat kartu menyempit.
+
+Kolom ke-7 (`✕`) **hanya untuk tampilan** dan aman ditambahkan tanpa menyentuh
+penyimpanan: `DefaultTableModel.addRow` melengkapi baris pendek dengan `null`,
+dan `validasi.tabelKosong` cuma `setRowCount(0)` — jadi seluruh pemanggilan
+`addRow` yang mengirim 6 nilai tetap sah. Tanda hapusnya lewat
+`tandaHapusKep(Font)`: `f.canDisplay('✕') ? "✕" : "×"`, karena tidak semua
+font di mesin klien punya U+2715 dan kolom yang gagal render akan tampil
+sebagai kotak kosong — bukan tombol.
+
+Baris kosong ditangani di `widget.ScrollPane` turunan yang melukis
+"Belum ada data obat/infus" **sesudah** `super.paintChildren()`: dengan 0 baris
+tinggi `JTable` juga 0, jadi label tengah tidak bisa dititipkan ke tabelnya.
+
+Baris input (butir F3) jadi satu strip `SURFACE_ALT` + `LineBorder(BORDER_SOFT)`
+berisi 6 field dengan mini-label di atasnya dan tombol "+ Tambah" `ACCENT`.
+Tombolnya mati selama Nama Obat kosong — dan **warnanya harus diganti
+tangan** saat mati, karena `widget.Button` turunan `usu.widget.ButtonGlass`
+melukis `glassColor` tanpa peduli `isEnabled()`; tombol mati yang tetap
+teal terlihat seperti tombol hidup yang rusak.
+
+`BtnHapusObat` **dibuat lalu `setVisible(false)`**, bukan dibuang — aturan baku
+prompt: komponen yang tampilannya digantikan tetap ada dan tetap diisi.
+Penghapusan sekarang lewat klik kolom `✕` dengan konfirmasi
+`JOptionPane.YES_NO_OPTION` mengikuti pola form lain.
+
+Petugas di baris input tetap **dipilih dari master** (`DlgCariPetugas`, NIP +
+nama, keduanya `setEditable(false)`) — aturan CLAUDE.md, bukan pilihan gaya.
+
+## Satu langkah di luar Bagian F: gaya tabelnya menular ke `tbMasalahKeperawatan`
+
+Bagian F **hanya menyebut tabel obat**. Tapi `tbMasalahKeperawatan` di halaman
+10 tampil di form yang sama, selisih satu halaman, dan masih memakai bawaan
+`widget.Table`: kepala **NAVY gelap**, `rowHeight` 22. Kepala gelap di sebelah
+kepala terang yang baru bukan "dua tabel berbeda", tapi satu form yang terlihat
+setengah dikerjakan — dan kepala NAVY itu lebih pekat daripada strip kartu
+halamannya sendiri, jadi hierarki warnanya terbalik: elemen terdalam paling
+menonjol.
+
+Karena itu `gayaTabelObatKep()` dipecah: bagian yang bukan-lebar-kolom diangkat
+jadi `gayaTabelKep(JTable, int tinggiBaris)`, dipakai `tbObatInfus` (30px) dan
+`tbMasalahKeperawatan` (28px). **Semuanya per instans** — `widget.Table` dipakai
+ratusan form lain, menyetel gaya ini di widget-nya akan mengubah seluruh
+aplikasi.
+
+Satu baris di dalam helper itu wajib dan mudah terlewat:
+`setSelectionForeground(TEXT)`. `widget.Table` mewarisi teks seleksi **putih**
+(untuk latar seleksi NAVY-nya), sedangkan seleksi baru `0xF2F7FB` hampir putih —
+tanpa penggantian itu teks baris terpilih **hilang tepat saat user memilihnya**.
+
+## `fungsi.WarnaTable` dilepas dari satu instans — supaya baris terpilih tidak dua warna
+
+`tbMasalahKeperawatan` memakai `fungsi.WarnaTable`, zebra bersama seluruh
+aplikasi. `WarnaTable` **memaksa** `TABLE_SELECTION_BG` (navy `0x3A5168`) + teks
+putih pada sel yang dirender-nya. Kolom centang "P" bertipe `Boolean.class`,
+jadi dipegang `JTable$BooleanRenderer` bawaan yang **menuruti tabelnya**
+(`0xF2F7FB`). Kalau gaya baru dipasang sambil `WarnaTable` dibiarkan, hasilnya
+**satu baris terpilih dua warna**: kotak centang pucat menempel di blok navy.
+
+Penggantinya `rendererSelKepTabel()` — isinya cuma padding 8px kiri/kanan dan
+**tidak menyentuh warna sama sekali**. Justru itu isinya: renderer yang tidak
+mengoper warna otomatis memakai `selectionBackground`/`selectionForeground`
+milik tabelnya, jadi satu baris terpilih pasti sewarna di semua kolom. Kelas
+`WarnaTable` **tidak disentuh** — dipakai ratusan tabel lain.
+
+Zebra pink `(255,244,244)` ikut hilang, dan itu diinginkan: warnanya hangat di
+tengah palet hijau-teal, dan tabel ini cuma punya dua kolom tampak (centang
+lalu teks yang langsung menempel) — mata tidak perlu menyeberangi baris, jadi
+zebra tidak memberi apa pun selain satu warna asing lagi.
+
+## Cacat 1: kepala tabel masih NAVY walau renderernya sudah benar
+
+Sesudah renderer kepala terang dipasang, `CekTabelKep` tetap melaporkan
+`kepala latar #17324D`. Sebabnya: **renderer hanya melukis petak per kolom**;
+sisa lebar kepala yang tidak tertutup kolom mana pun dilukis oleh
+`JTableHeader` sendiri, dan `widget.Table` menyetelnya NAVY. Jadi kepala terang
+bisa berakhir dengan sisa strip gelap di kanan.
+
+Di render PNG **tidak kelihatan**, karena kolom kedua tabel ini memang mengisi
+kepala persis penuh. Baru muncul begitu lebar kartu berubah atau kolom
+disembunyikan — yaitu di mesin yang layarnya bukan 1600×900. Diperbaiki dengan
+menyetel latar/teks/border `JTableHeader`-nya sendiri, bukan cuma renderernya.
+
+**Harness saya sendiri yang sempat menyembunyikannya.** Versi pertama
+`CekTabelKep` mengecualikan tabel yang renderer kepalanya sudah milik form
+(`&& !rk.contains("RMPenilaian")`), jadi ia mencetak "kepala masih gelap = 0"
+sementara kepalanya NAVY. Pengecualian itu dibuang dan alasannya dicatat di
+harness — persis kesalahan sasaran yang sudah dicatat entri-3c.
+
+## Cacat 2: kepala kolom "P" jadi "…" — regresi yang saya buat sendiri
+
+Ketahuan dari **melihat** `hal-10.png`. Padding 8+8px milik renderer kepala di
+kolom yang dipatok 20px hanya menyisakan 4px, dan `JLabel` menggantinya dengan
+elipsis: kepala kolomnya berubah jadi "…".
+
+Diperbaiki **di penyebabnya**: padding mengerut jadi 2px pada kolom di bawah
+30px, diukur dari lebar kolom yang sedang dipakai. Bukan dengan melebarkan
+kolomnya (mengubah tata letak yang sudah benar) dan bukan dengan daftar
+pengecualian per tabel (kolom `✕` 34px di tabel obat akan jadi korban
+berikutnya).
+
+## Tiga tempat terakhir bergaya lama, ditutup
+
+- **Grid FLACC** (halaman 9) → `tambahSelKepField` 4 kolom, bukan pasangan
+  `add(label, c)` mentah.
+- **Blok GCS / kondisi pulang** (halaman 11) → grid butir D7.
+- **Baris "Key Word"** (halaman 10) → lewat `tambahBarisKepField`. Ini satu-satunya
+  baris di halaman 10 yang labelnya masih menempel di tepi kiri isi, tidak
+  sejajar kolom label 232px milik 105 baris lain. `label12` ("Key Word :")
+  **dibuat lalu `setVisible(false)`**, bukan dibuang; titik duanya ikut hilang
+  karena di kolom label tetap 232px pemisahnya sudah kolom itu sendiri.
+
+Blok kembar `label13`/`TCariRencana`/`BtnCariRencana`/… **sengaja tetap tidak
+ditampilkan**: itu milik tab checklist `tbRencanaKeperawatan` yang sudah
+dipensiunkan, dan kalau ikut ditampilkan tidak berfungsi sama sekali
+(permintaan user). Dibiarkan apa adanya.
+
+## Dua harness baru — keduanya membaca yang DILUKIS, bukan yang diminta
+
+**`CekTabelKep`** membongkar setiap `JTable` di dalam `FormInput`: nama field,
+kolom tampak/total, `rowHeight` + tinggi kepala, latar kepala (ditandai kalau
+luminansinya < 0,5), kelas renderer kepala, warna grid, warna seleksi, renderer
+yang **benar-benar** dipakai tiap kolom, dan `seleksiNyata()` yang memanggil
+renderer tiap kolom dengan `terpilih=true` lalu melaporkan "(seragam)" atau
+"BELANG, N warna". Butir terakhir itu yang membuktikan cacat baris-dua-warna
+di atas benar-benar tertutup, bukan cuma diyakini tertutup.
+
+**`CekLatarKep`** membaca warna yang benar-benar **dilukis** tiap
+`widget.PanelBiasa` (`getWarnaAtas()`/`getWarnaBawah()`), bukan
+`getBackground()`-nya. Ini penting karena `PanelBiasa.paintComponent()` menimpa
+seluruh panel dengan gradien `warnaAtas`→`warnaBawah` (bawaan **putih**) setiap
+kali `isOpaque()` true, sementara `getBackground()` tetap mengembalikan warna
+yang diminta — jadi **harness apa pun yang membaca `getBackground()` akan
+melaporkan "aman" untuk panel yang di layar putih polos.** Dua hal yang
+dicarinya: *tambalan putih* (panel opaque melukis putih di atas leluhur yang
+bukan putih) dan *niat dibuang* (`getBackground()` menyimpan token tema tapi
+yang dilukis warna lain — berarti ada `setBackground()` yang seharusnya
+`latarKep()`).
+
+11 kartu halaman didaftar-putih **per objek** (dari field `panel` tiap
+`HalamanKep`), bukan dengan menyaring ukuran/warna: kartu memang sengaja putih
+di atas zona `#F7F9FB`, dan kalau tidak didaftar, 11 kartu itu selamanya muncul
+sebagai tambalan putih dan **menutupi tambalan ke-12 yang sungguhan**.
+
+## `CekChip` mencetak angka yang sudah tidak dipakai — harness ketiga yang salah sasaran
+
+`CekChip` mencetak `BORDER (dipakai skrg) #D9E1E7`. **Salah.** Sesi 3c sudah
+memindahkan garis pil ke `TEXT_FAINT`; labelnya hardcoded di harness dan tidak
+pernah ikut berubah. Diperbaiki dengan **membaca field `garis` dari instans
+`BorderChipKep` yang benar-benar terpasang**, plus menghitung berapa warna
+**berbeda** yang terpasang di 146 chip (lebih dari satu = ada chip yang lewat
+dari `pasangChipKep()`). Sekarang: `#9AA19C` di 146 chip, **seragam**.
+
+Sekalian koreksi angka: entri-3c menulis `TEXT_FAINT` = **2,55:1** di atas latar
+chip. Yang benar **2,48:1** (2,64:1 di atas putih — angka itu memang cocok).
+Kesimpulannya tidak berubah: masih di bawah 3:1 WCAG 1.4.11, dan tetap
+disengaja, karena satu-satunya token palet yang lolos adalah `TEXT_MUTED`
+(3,77:1) dan garis sekelam itu di 146 chip mengembalikan kesan "form penuh
+kotak" yang justru sedang dibongkar.
+
+## Verifikasi
+
+- `ant compile` **BUILD SUCCESSFUL** lima kali (sesudah tiap perubahan).
+- 11 halaman dirender ke PNG dan **dilihat satu per satu**, semuanya.
+- `CekTabelKep` (**baru**): 2 tabel. `tbMasalahKeperawatan` 2/3 kolom,
+  `rowHeight` 28, kepala 30px `#F7F8F5`, grid `#F0F2EE` vertikal=false,
+  seleksi `#F2F7FB`/`#2D3748`; `tbObatInfus` 7/7 kolom, `rowHeight` 30, sama.
+  **`kepala masih gelap = 0`**, dan seleksi **kedua** tabel "(seragam)".
+- `CekLatarKep` (**baru**): 250 `PanelBiasa` (opaque 100, `setOpaque(false)`
+  150); warna yang benar-benar dilukis cuma tiga — 77 `#FFFFFF`, 12
+  `#F7F8F5` (SURFACE_ALT), 11 `#087E8B` (ACCENT). Kartu halaman putih di atas
+  zona **11 dari 11** (sengaja), **tambalan putih tak terduga = 0**,
+  **niat dibuang = 0**.
+- `CekChip`: 146 toggle, 146 chip, 0 terlewat, `BorderChipKep` masih terpasang
+  di 146, **`borderPainted=false` = 0**, insets kiri < 8px = 0, warna garis
+  berbeda yang terpasang = **1**.
+- `CekStrip`: 21 strip sub-judul, **0 garis menimpa teks**.
+- `CekKartu`: 11 kartu, strip kepala **1238×52 di y=1**, latar `#F7F8F5`,
+  `MatteBorder insets=0,0,1,0` — seragam di kesebelasnya.
+- `CekBarisKep`: **109 baris terukur, 0 gerigi**, 6 berlebar 0.
+- `CekMelar`: chip melar = **0**.
+- `CekIsiHalaman`: **0** anak tertinggal di keenam panel seksi asli.
+- Tinggi kartu 201 / 103 / 163 / 103 / 334 / 443 / 329 / 642 / 787 / 1677 /
+  895. Mode "Semua bagian" `FormInput` **1268×5821** — hanya scrollbar
+  vertikal, nol horizontal.
+
+### Dua angka yang berubah, keduanya sudah dicocokkan
+
+**109 baris, bukan 111 (Sesi 3c).** `CekBarisKep` mencacah **anak langsung**
+GridBag tiap panel seksi, jadi angkanya turun tiap kali baris dilipat jadi
+grid. Selisihnya tepat −2 dan seluruhnya di `panelKepObat`: dua anak langsung
+(`panelObatBaris` + `panelObatPetugas`) diganti **satu** (`stripInputObat`) =
+−1, dan baris tombol berlabel kosong (`""`, `panelObatTombol`) hilang karena
+"+ Tambah" sekarang di dalam strip = −1. Sisanya seri: "Key Word" +1 dan
+`panelCariMasalah` mentah −1 di `panelKepTiga`; "Irama Nadi" +1 dan "Pukul" −1
+di `panelKepEmpat`. Angka ini **bukan target** — yang harus 0 adalah gerigi.
+
+**6 baris berlebar 0 — keenamnya sama seperti Sesi 3c, bukan cacat:** lima
+strip bagian yang **sengaja** disembunyikan saat satu halaman memuat tepat satu
+bagian (`I. RIWAYAT KESEHATAN PASIEN`, `RIWAYAT ALERGI`, `KEADAAN UMUM`,
+`STATUS KEHAMILAN`, `PENGKAJIAN SPIRITUAL…`), dan satu baris
+`Gravida / Para / Abortus / HPHT` yang digerbangi `StatusKehamilan` lewat
+`setVisible(hamil)`.
+
+**Tabel: `preferred` 1188 tapi lebar nyata 1208.** Bukan salah pin. Kedua tabel
+anak langsung GridBag dengan `fill=HORIZONTAL`, jadi GridBag merentangkannya ke
+lebar sel (1208) — sama dengan **semua** 105 baris lain yang juga berakhir di
+x=1213. Pin `rapikanIsiKep()` membatasi *preferred* supaya scroll pane tidak
+pernah menuntut lebih dari anggaran dan memaksa scrollbar horizontal; ia bukan
+batas lebar akhir. Kalau tabel benar-benar berhenti di 1188, dua tabel itulah
+satu-satunya isi halaman yang mundur 20px — **justru gerigi** yang dibereskan
+Sesi 3c. Scroll pane ketiga (TextArea) tetap 1188 karena duduk di
+`BorderLayout:Center` di dalam pembungkus baris, bukan langsung di GridBag.
+
+## Pelajaran sesi ini
+
+Tiga harness salah sasaran ditemukan dalam satu sesi: `CekTabelKep` yang
+mengecualikan tabelnya sendiri, `CekChip` yang mencetak warna yang sudah
+diganti sesi sebelumnya, dan (dari sesi lalu) pola umum harness yang membaca
+`getBackground()` pada `PanelBiasa`. Ketiganya melaporkan **"aman"**. Aturan
+entri-3c terbukti lagi dan diperkuat: kalau harness bilang aman sementara
+gambar berkata lain, **harness-nya yang salah** — dan tambahannya, harness
+yang menuliskan nilai harapan sebagai **angka literal** akan basi diam-diam;
+bacalah nilai itu dari objek yang hidup.
+
+## Yang belum dikerjakan
+
+- **Sesi 5 = Bagian E**: skala nyeri 0–10 sebagai 11 `JToggleButton` 30×30 satu
+  `ButtonGroup` + label interpretasi (0–1 OK / 2–3 `0x6B7A12` / 4–6 WARN /
+  7–10 DANGER), nilainya tetap ditulis ke komponen skala lama; 17 field wajib
+  yang akhirnya lewat `wajib=true`; field turunan checkbox indent 24px (butir
+  D6).
+- **Sesi 6 = Bagian G**: action bar (Simpan primer, "Keluar" dipisah ke kanan,
+  label progres isian wajib) + status bar.
