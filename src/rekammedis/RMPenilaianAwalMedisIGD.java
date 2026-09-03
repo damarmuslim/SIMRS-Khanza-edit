@@ -158,6 +158,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
 
         pensiunkanFieldLama();
         initRm032Tambahan();
+        susunRangkaMedis();
     }
 
 
@@ -2324,6 +2325,20 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private widget.PanelBiasa panelRm032Diagnosis;
     private widget.PanelBiasa panelRm032;
 
+    // =====================================================================
+    // [Sesi 1 - Restrukturisasi UI] Rangka 4 zona + bar pasien tab "Input
+    // Pengkajian". Field lama (TNoRw/TPasien/TNoRM/TglLahir/Jk/KdDokter/
+    // NmDokter/BtnDokter/TglAsuhan/Anamnesis/Hubungan) TIDAK diganti nama -
+    // hanya disembunyikan atau dipindah parent (Container.add() Swing
+    // otomatis melepas child dari parent lama), lihat buatBannerMedis().
+    // Field baru di bawah ini murni tampilan, tidak pernah dibaca/ditulis
+    // oleh getData()/tampil()/emptTeks()/simpan().
+    // =====================================================================
+    private widget.Label lblKartuNama, lblKartuInfo, lblKartuRM, lblKartuRawat;
+    private widget.PanelBiasa barPasienMedis;
+    private widget.PanelBiasa railMedis;
+    private widget.ScrollPane scrollRailMedis;
+
     // -- A. Intervensi Pre Hospital --
     private widget.CekBox CekPreCervicalCollar, CekPreDefibrilasi, CekPreVtp, CekPreBalutBidai, CekPreNgt,
         CekPreRjp, CekPreIntubasi, CekPreDekompresiWsd, CekPreKateterUrin, CekPreInfus, CekPreTidakAda;
@@ -3062,6 +3077,286 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         FormInput.add(panelRm032);
         panelRm032.setBounds(5, yBawah, 840, ukuranRm032.height);
         FormInput.setPreferredSize(new java.awt.Dimension(870, yBawah + ukuranRm032.height + 20));
+    }
+
+    // =========================================================================
+    // [Sesi 1 - Restrukturisasi UI, Bagian A+B] Rangka 4 zona + bar pasien.
+    // Pola & alasan desain IDENTIK dgn RMPenilaianAwalKeperawatanIGD.java
+    // (susunRangkaKep()/buatBannerKep() dkk, sesi serupa modul perawat) -
+    // disalin dgn akhiran "Medis" karena kelasnya beda, bukan krn logikanya
+    // beda. Rail navigasi (WEST) sengaja KOSONG di sesi ini, diisi Sesi 2.
+    // =========================================================================
+
+    /** Tinggi seragam field & tombol di bar pasien. */
+    private static final int TINGGI_FIELD_MEDIS = 32;
+
+    private static void latarMedis(widget.PanelBiasa p, java.awt.Color warna){
+        if(p==null || warna==null){ return; }
+        p.setOpaque(true);
+        p.setBackground(warna);
+        p.setWarnaAtas(warna);
+        p.setWarnaBawah(warna);
+    }
+
+    /** Escape minimal utk teks label yg dibungkus HTML. */
+    private String escHtmlMedis(String s){
+        return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;");
+    }
+
+    /** Color -> "#RRGGBB" utk dipakai di dalam teks HTML label. */
+    private String hexMedis(java.awt.Color c){
+        return String.format("#%02X%02X%02X", c.getRed(), c.getGreen(), c.getBlue());
+    }
+
+    /**
+     * Terima BAIK bentuk mentah 'L'/'P' MAUPUN "Laki-Laki"/"Perempuan".
+     * Kolom `pasien.jk` memang enum 'L','P', tapi beberapa jalur di proyek ini
+     * sudah memanjangkannya lebih dulu - pernah membuat seluruh pasien
+     * tercetak "P" pada laporan Jasper.
+     */
+    private String jkPanjangMedis(String jk){
+        String s = jk==null ? "" : jk.trim();
+        if(s.isEmpty()){ return ""; }
+        char awal = Character.toUpperCase(s.charAt(0));
+        if(awal=='L'){ return "Laki-laki"; }
+        if(awal=='P'){ return "Perempuan"; }
+        return s;
+    }
+
+    /** Umur dari "yyyy-MM-dd" (isi TglLahir). String kosong kalau tak terbaca. */
+    private String umurDariTglLahirMedis(String tgl){
+        String s = tgl==null ? "" : tgl.trim();
+        if(s.length()<10 || s.startsWith("0000")){ return ""; }
+        try{
+            java.util.Calendar lahir = java.util.Calendar.getInstance();
+            lahir.setTime(new java.text.SimpleDateFormat("yyyy-MM-dd").parse(s.substring(0,10)));
+            java.util.Calendar kini = java.util.Calendar.getInstance();
+            int th = kini.get(java.util.Calendar.YEAR) - lahir.get(java.util.Calendar.YEAR);
+            if(kini.get(java.util.Calendar.DAY_OF_YEAR) < lahir.get(java.util.Calendar.DAY_OF_YEAR)){ th--; }
+            return th<0 ? "" : th+" Th";
+        }catch(java.text.ParseException e){
+            return "";
+        }
+    }
+
+    /**
+     * Satu baris "keterangan + nomor" di kartu identitas.
+     *
+     * Keteranganlah yg diredupkan (TEXT_MUTED), NOMORnya tetap TEXT dan
+     * monospace - dua nomor inilah yg paling tidak boleh salah dibaca,
+     * TEXT_FAINT di bawah ambang WCAG AA utk kontras.
+     */
+    private String barisNomorMedis(String keterangan, String nomor){
+        String n = nomor==null ? "" : nomor.trim();
+        return "<html><font color='"+hexMedis(widget.ThemeConfig.TEXT_MUTED)+"'>"+escHtmlMedis(keterangan)
+                +"</font>&nbsp;&nbsp;<font face='Consolas' color='"+hexMedis(widget.ThemeConfig.TEXT)+"'>"
+                +(n.isEmpty() ? "&mdash;" : escHtmlMedis(n))+"</font></html>";
+    }
+
+    /** Isi label kartu identitas dari TextBox tersembunyi (display-only). */
+    private void sinkronKartuMedis(){
+        if(lblKartuNama==null){ return; }
+        String nama = TPasien.getText()==null ? "" : TPasien.getText().trim();
+        lblKartuNama.setText(nama.isEmpty() ? "—" : nama);
+        lblKartuRM.setText(barisNomorMedis("No. RM", TNoRM.getText()));
+        lblKartuRawat.setText(barisNomorMedis("No. Rawat", TNoRw.getText()));
+        if(lblKartuInfo!=null){
+            String jk = jkPanjangMedis(Jk.getText());
+            String umur = umurDariTglLahirMedis(TglLahir.getText());
+            String isi = jk;
+            if(!umur.isEmpty()){ isi = isi.isEmpty() ? umur : isi+" · "+umur; }
+            lblKartuInfo.setText(isi.isEmpty() ? " " : isi);
+        }
+    }
+
+    /**
+     * Tandai field yg memang read-only supaya tidak terlihat seperti isian yg
+     * lupa diisi. Hanya menyentuh warna latar - `setEditable` tetap seperti
+     * aslinya, tidak diubah di sini.
+     */
+    private void tandaiReadOnlyMedis(javax.swing.JComponent c){
+        if(c==null){ return; }
+        c.setOpaque(true);
+        c.setBackground(widget.ThemeConfig.SURFACE_ALT);
+    }
+
+    /** Satu sel banner: label kecil di atas field (field dipaksa tinggi seragam). */
+    private widget.PanelBiasa hdrCellMedis(String label, java.awt.Component field, boolean wajib){
+        widget.PanelBiasa sel = new widget.PanelBiasa();
+        sel.setOpaque(false);
+        sel.setLayout(new java.awt.BorderLayout(0,3));
+        widget.Label l = new widget.Label();
+        l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        l.setText(wajib ? "<html>"+label+" <font color='#B3261E'>*</font></html>" : label);
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        l.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        sel.add(l, java.awt.BorderLayout.NORTH);
+        field.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        sel.add(field, java.awt.BorderLayout.CENTER);
+        return sel;
+    }
+
+    /** Pasangan [field lookup]. */
+    private widget.PanelBiasa hdrLookupMedis(widget.TextBox tf, widget.Button btn){
+        widget.PanelBiasa p = new widget.PanelBiasa();
+        p.setOpaque(false);
+        p.setLayout(new java.awt.BorderLayout(4,0));
+        p.add(tf, java.awt.BorderLayout.CENTER);
+        p.add(btn, java.awt.BorderLayout.EAST);
+        return p;
+    }
+
+    /**
+     * Banner pasien: kartu identitas (kiri, lebar tetap) + grid field header
+     * (kanan: Tanggal/Dokter/Anamnesis/Hubungan).
+     *
+     * TNoRw/TPasien/TNoRM/TglLahir/Jk/KdDokter disembunyikan (nilainya tetap
+     * terisi lewat tampil()/getData(), cuma tak ditampilkan lagi - jadi
+     * sumber data kartu identitas). NmDokter/BtnDokter/TglAsuhan/Anamnesis/
+     * Hubungan DIPINDAH (reparent) ke grid header - Container.add() Swing
+     * otomatis melepasnya dari FormInput, objeknya tetap sama sehingga
+     * getData()/tampil()/emptTeks()/simpan() yg memanggil method pada
+     * variabel ini tidak perlu diubah sama sekali. Label statis lama
+     * (No.Rawat/Dokter/Tgl.Lahir/J.K./Tanggal/Anamnesis) ikut disembunyikan,
+     * digantikan label baru di kartu/grid. "Keterangan Anamnesis" pada
+     * mockup awal user TIDAK ada sbg field - yg benar-benar ada di posisi
+     * itu adalah `Hubungan` (hubungan pelapor dgn pasien, dipakai utk
+     * Alloanamnesis), jadi itulah yg dipindah & diberi label "HUBUNGAN".
+     */
+    private widget.PanelBiasa buatBannerMedis(){
+        TNoRw.setVisible(false);
+        TPasien.setVisible(false);
+        TNoRM.setVisible(false);
+        TglLahir.setVisible(false);
+        Jk.setVisible(false);
+        KdDokter.setVisible(false);
+        jLabel10.setVisible(false); // "No.Rawat :"
+        jLabel8.setVisible(false);  // "Tgl.Lahir :"
+        jLabel11.setVisible(false); // "J.K. :"
+        label14.setVisible(false);  // "Dokter :"
+        label11.setVisible(false);  // "Tanggal :"
+        jLabel38.setVisible(false); // "Anamnesis :"
+
+        widget.PanelBiasa banner = new widget.PanelBiasa();
+        banner.setOpaque(false);
+        banner.setLayout(new java.awt.GridBagLayout());
+
+        // ---- kartu identitas (kiri) ----
+        widget.PanelBiasa kartu = new widget.PanelBiasa();
+        latarMedis(kartu, widget.ThemeConfig.SURFACE_ALT);
+        kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
+        kartu.setLayout(new java.awt.GridBagLayout());
+        widget.Label judulKartu = new widget.Label();
+        judulKartu.setText("IDENTITAS PASIEN");
+        judulKartu.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judulKartu.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+        judulKartu.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lblKartuNama = new widget.Label();
+        lblKartuNama.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuNama.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 15));
+        lblKartuNama.setForeground(widget.ThemeConfig.TEXT);
+        lblKartuInfo = new widget.Label();
+        lblKartuInfo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuInfo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+        lblKartuInfo.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lblKartuRM = new widget.Label();
+        lblKartuRM.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuRM.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lblKartuRawat = new widget.Label();
+        lblKartuRawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuRawat.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        java.awt.GridBagConstraints k = new java.awt.GridBagConstraints();
+        k.gridx=0; k.gridy=0; k.anchor=java.awt.GridBagConstraints.WEST;
+        k.fill=java.awt.GridBagConstraints.HORIZONTAL; k.weightx=1.0;
+        kartu.add(judulKartu,k);
+        k.gridy=1; k.insets=new java.awt.Insets(8,0,0,0); kartu.add(lblKartuNama,k);
+        k.gridy=2; k.insets=new java.awt.Insets(1,0,0,0); kartu.add(lblKartuInfo,k);
+        k.gridy=3; k.insets=new java.awt.Insets(8,0,0,0); kartu.add(lblKartuRM,k);
+        k.gridy=4; k.insets=new java.awt.Insets(2,0,0,0); kartu.add(lblKartuRawat,k);
+        k.gridy=5; k.weighty=1.0; k.fill=java.awt.GridBagConstraints.BOTH; k.insets=new java.awt.Insets(0,0,0,0);
+        kartu.add(javax.swing.Box.createGlue(),k);
+
+        javax.swing.event.DocumentListener sinkron = new javax.swing.event.DocumentListener(){
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e){ sinkronKartuMedis(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e){ sinkronKartuMedis(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e){ sinkronKartuMedis(); }
+        };
+        TNoRw.getDocument().addDocumentListener(sinkron);
+        TNoRM.getDocument().addDocumentListener(sinkron);
+        TPasien.getDocument().addDocumentListener(sinkron);
+        Jk.getDocument().addDocumentListener(sinkron);
+        TglLahir.getDocument().addDocumentListener(sinkron);
+        sinkronKartuMedis();
+
+        // ---- grid field header (kanan): Tanggal / Dokter / Anamnesis / Hubungan ----
+        widget.PanelBiasa grid = new widget.PanelBiasa();
+        grid.setOpaque(false);
+        grid.setLayout(new java.awt.GridBagLayout());
+
+        NmDokter.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        BtnDokter.setPreferredSize(new java.awt.Dimension(TINGGI_FIELD_MEDIS,TINGGI_FIELD_MEDIS));
+        tandaiReadOnlyMedis(NmDokter);
+
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.gridy=0; g.fill=java.awt.GridBagConstraints.HORIZONTAL; g.anchor=java.awt.GridBagConstraints.NORTH;
+        g.weightx=1.0;
+        g.gridx=0; g.insets=new java.awt.Insets(0,0,0,12); grid.add(hdrCellMedis("TANGGAL", TglAsuhan, true),g);
+        g.gridx=1; grid.add(hdrCellMedis("DOKTER", hdrLookupMedis(NmDokter,BtnDokter), true),g);
+        g.gridx=2; grid.add(hdrCellMedis("ANAMNESIS", Anamnesis, false),g);
+        g.gridx=3; g.insets=new java.awt.Insets(0,0,0,0); grid.add(hdrCellMedis("HUBUNGAN", Hubungan, false),g);
+
+        // ---- rakit banner: kartu (kiri, lebar tetap) + grid (kanan, fleksibel) ----
+        java.awt.Dimension dk = new java.awt.Dimension(300,10);
+        kartu.setMinimumSize(dk); kartu.setPreferredSize(dk);
+        java.awt.GridBagConstraints f = new java.awt.GridBagConstraints();
+        f.gridx=0; f.gridy=0; f.fill=java.awt.GridBagConstraints.BOTH; f.weighty=1.0;
+        f.insets=new java.awt.Insets(0,0,0,16);
+        banner.add(kartu,f);
+        f.gridx=1; f.weightx=1.0; f.insets=new java.awt.Insets(0,0,0,0);
+        banner.add(grid,f);
+        return banner;
+    }
+
+    /**
+     * [Bagian A] Rangka layar 4 zona. Dipanggil di akhir konstruktor,
+     * sesudah initRm032Tambahan() (FormInput sudah tersusun penuh).
+     *
+     *   internalFrame2 (BorderLayout)
+     *     NORTH  barPasienMedis  <- hasil buatBannerMedis()
+     *     WEST   scrollRailMedis <- placeholder KOSONG, diisi Sesi 2
+     *     CENTER scrollInput     <- SUDAH ADA dari GEN, sudah membungkus
+     *                                FormInput (L1311/1313) - dipakai lagi,
+     *                                tidak dibuat ulang.
+     *   panelGlass8 (action bar) sudah PAGE_END milik internalFrame1, di
+     *   luar scope Sesi 1 (Bagian F) - tidak disentuh.
+     */
+    private void susunRangkaMedis(){
+        barPasienMedis = buatBannerMedis();
+        latarMedis(barPasienMedis, widget.ThemeConfig.SURFACE);
+        barPasienMedis.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(12,14,12,14)));
+
+        railMedis = new widget.PanelBiasa();
+        latarMedis(railMedis, widget.ThemeConfig.SURFACE);
+        railMedis.setLayout(new java.awt.GridBagLayout());
+        scrollRailMedis = new widget.ScrollPane();
+        scrollRailMedis.setViewportView(railMedis);
+        scrollRailMedis.setBorder(javax.swing.BorderFactory.createMatteBorder(0,0,0,1, widget.ThemeConfig.BORDER_SOFT));
+        scrollRailMedis.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollRailMedis.setPreferredSize(new java.awt.Dimension(300,10));
+        scrollRailMedis.getVerticalScrollBar().setUnitIncrement(16);
+        scrollRailMedis.getViewport().setBackground(widget.ThemeConfig.SURFACE);
+
+        internalFrame2.removeAll();
+        internalFrame2.setLayout(new java.awt.BorderLayout());
+        internalFrame2.add(barPasienMedis, java.awt.BorderLayout.NORTH);
+        internalFrame2.add(scrollRailMedis, java.awt.BorderLayout.WEST);
+        internalFrame2.add(scrollInput, java.awt.BorderLayout.CENTER);
+        internalFrame2.revalidate();
+        internalFrame2.repaint();
     }
 
     /**
