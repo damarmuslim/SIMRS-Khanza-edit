@@ -160,6 +160,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         initRm032Tambahan();
         daftarkanSeksiLegacyMedis();
         pasangChipSemuaMedis();
+        initActionBarMedis();
         susunHalamanMedis();
         susunRangkaMedis();
         pasangSemuaListenerProgresMedis();
@@ -4551,6 +4552,96 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         for(widget.ComboBox c : combos){
             if(c != null){ pasangListenerProgresMedis(c); }
         }
+    }
+
+    private void gayaTombolCardFooterMedis(final widget.Button b, int lebar){
+        b.setOpaque(true);
+        b.setContentAreaFilled(true);
+        b.setBackground(java.awt.Color.WHITE);
+        b.setGlassColor(java.awt.Color.WHITE);
+        b.setRoundRect(false);
+        b.putClientProperty("Component.arc", 4);
+        b.putClientProperty("Button.arc", 4);
+        b.putClientProperty("JButton.buttonType", "square");
+        b.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        b.setIconTextGap(6);
+        b.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        b.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        final java.awt.Color borderNormal = new java.awt.Color(0xD8, 0xDB, 0xD6);
+        final java.awt.Color borderHover = new java.awt.Color(0x94, 0xA3, 0xB8);
+        final java.awt.Color bgHover = new java.awt.Color(0xF8, 0xFA, 0xFC);
+
+        b.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(borderNormal),
+            javax.swing.BorderFactory.createEmptyBorder(4, 12, 4, 12)
+        ));
+        b.setPreferredSize(new java.awt.Dimension(lebar, 32));
+
+        b.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override public void mouseEntered(java.awt.event.MouseEvent e) {
+                if(b.isEnabled()){
+                    b.setBackground(bgHover);
+                    b.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                        javax.swing.BorderFactory.createLineBorder(borderHover),
+                        javax.swing.BorderFactory.createEmptyBorder(4, 12, 4, 12)
+                    ));
+                }
+            }
+            @Override public void mouseExited(java.awt.event.MouseEvent e) {
+                b.setBackground(java.awt.Color.WHITE);
+                b.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                    javax.swing.BorderFactory.createLineBorder(borderNormal),
+                    javax.swing.BorderFactory.createEmptyBorder(4, 12, 4, 12)
+                ));
+            }
+        });
+    }
+
+    /** Restyle action bar bawah (panelGlass8) agar tombol berwujud card yang jelas. */
+    private void initActionBarMedis(){
+        BtnSimpan.setText("Simpan");
+        gayaTombolCardFooterMedis(BtnSimpan, 92);
+        gayaTombolCardFooterMedis(BtnBatal, 86);
+        gayaTombolCardFooterMedis(BtnEdit, 86);
+        gayaTombolCardFooterMedis(BtnHapus, 88);
+        gayaTombolCardFooterMedis(BtnPrint, 86);
+        gayaTombolCardFooterMedis(BtnAll, 90);
+        gayaTombolCardFooterMedis(BtnKeluar, 90);
+
+        BtnHapus.setForeground(new java.awt.Color(0xB9, 0x1C, 0x1C));
+        BtnKeluar.setForeground(new java.awt.Color(0xB9, 0x1C, 0x1C));
+
+        // Pasang icon SVG modern dari IconStyle jika belum terpasang
+        widget.IconStyle.pasang(panelGlass8);
+
+        lblProgresBawahMedis = new widget.Label();
+        // Placeholder netral, bukan pecahan literal spt "0/17..." milik Kep -
+        // totalWajibSemua Medis dihitung dinamis (Sesi 5), langsung ditimpa
+        // oleh hitungProgresMedis() di akhir konstruktor.
+        lblProgresBawahMedis.setText("Memuat status isian wajib...");
+        lblProgresBawahMedis.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11).deriveFont(11.5f));
+        lblProgresBawahMedis.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        widget.PanelBiasa kiri = new widget.PanelBiasa();
+        kiri.setOpaque(false);
+        kiri.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 8));
+        kiri.add(BtnSimpan); kiri.add(BtnBatal); kiri.add(BtnEdit);
+        kiri.add(BtnHapus); kiri.add(BtnPrint); kiri.add(BtnAll);
+        widget.PanelBiasa kanan = new widget.PanelBiasa();
+        kanan.setOpaque(false);
+        kanan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 12, 8));
+        kanan.add(lblProgresBawahMedis);
+        kanan.add(BtnKeluar);
+
+        panelGlass8.removeAll();
+        panelGlass8.setLayout(new java.awt.BorderLayout());
+        panelGlass8.setBorder(javax.swing.BorderFactory.createMatteBorder(1,0,0,0, widget.ThemeConfig.BORDER_SOFT));
+        panelGlass8.add(kiri, java.awt.BorderLayout.CENTER);
+        panelGlass8.add(kanan, java.awt.BorderLayout.EAST);
+        panelGlass8.revalidate();
+        panelGlass8.repaint();
     }
 
     /**
