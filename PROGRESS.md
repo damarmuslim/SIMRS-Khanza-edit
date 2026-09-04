@@ -3765,12 +3765,94 @@ gambar berkata lain, **harness-nya yang salah** — dan tambahannya, harness
 yang menuliskan nilai harapan sebagai **angka literal** akan basi diam-diam;
 bacalah nilai itu dari objek yang hidup.
 
-## Yang belum dikerjakan
+## Yang sudah dikerjakan (Sesi 5 & Sesi 6)
 
-- **Sesi 5 = Bagian E**: skala nyeri 0–10 sebagai 11 `JToggleButton` 30×30 satu
-  `ButtonGroup` + label interpretasi (0–1 OK / 2–3 `0x6B7A12` / 4–6 WARN /
-  7–10 DANGER), nilainya tetap ditulis ke komponen skala lama; 17 field wajib
-  yang akhirnya lewat `wajib=true`; field turunan checkbox indent 24px (butir
-  D6).
-- **Sesi 6 = Bagian G**: action bar (Simpan primer, "Keluar" dipisah ke kanan,
-  label progres isian wajib) + status bar.
+- **Sesi 5 (Bagian E)**:
+  - 11 `JToggleButton` 30×30 untuk Skala Nyeri (0–10) dengan warna aktif bergradasi sesuai tingkat keparahan (0 hijau OK, 1–3 #6B7A12, 4–6 kuning/orange #C08A2E, 7–10 merah DANGER) dan label interpretasi dinamis ("Tidak Nyeri", "Nyeri Ringan", "Nyeri Sedang", "Nyeri Berat"). Terhubung sinkron dua arah dengan `SkalaNyeri` (ComboBox lama disembunyikan `setVisible(false)`). Diagram lama `PanelWall` disembunyikan.
+  - 17 isian wajib ditandai `wajib = true` (Keluhan Utama, Riwayat Alergi, Tanda Vital KU, Status Kehamilan, Penurunan BB MST, Asupan Makan MST, Kesimpulan MST, Nyeri, Skala Nyeri, Status Psikologis, Cara Berjalan Pasien Jatuh, Hasil Resiko Jatuh, Agama, Diagnosis Keperawatan, Intervensi Keperawatan, Kondisi Pulang/TTV, Status Akhir Pulang).
+  - Listener dokumen, toggle, radio, combobox, dan tabel (`tabModeMasalah`, `tabModeObatInfus`) dipasang secara reaktif untuk kalkulasi live via `hitungProgresKep()`.
+  - Kartu header tiap bagian (52px) dilengkapi badge nomor bulat 26×26 background PRIMARY, judul 14px bold + subjudul 11.5px, glue, status badge dinamis ("0/N wajib terisi" [krem], "Wajib lengkap" [hijau], "Opsional" [abu-abu], "Tidak relevan" [abu-abu]), dan tombol "Tandai tidak relevan" / "↺ Aktifkan kembali" yang mengabaikan/mengaktifkan validasi bagian terkait.
+  - Navigasi bawah kartu 48px: tombol "‹ [Bagian Sebelumnya]", label "Bagian n dari 11", dan tombol "[Bagian Berikutnya] ›".
+- **Sesi 6 (Bagian G)**:
+  - Action bar bawah: tombol "Simpan" bergaya primer teal (`ThemeConfig.PRIMARY` background + teks putih bold), tombol sekunder berlatar putih dengan border 1px #D8DBD6, tombol "Hapus" teks merah bata #8A4A46, label ringkasan progres di kanan ("Isian wajib 0/17 - 17 belum terisi" / "Isian wajib lengkap · siap disimpan"), dan tombol "Keluar" di ujung kanan.
+  - Kartu progres rail: judul "ISIAN WAJIB" / "SEMUA ISIAN WAJIB TERPENUHI", persentase "0%", bar progress 6px, teks hitungan "0/17 isian wajib · 1 opsional terisi", serta hitungan live di masing-masing dari 11 baris rail ("0/2", "0/3", "-", "N/A").
+- **Kompilasi**: `& "C:\Program Files\NetBeans-14\netbeans\extide\ant\bin\ant.bat" compile` -> **BUILD SUCCESSFUL**.
+
+# Progress: Restrukturisasi UI Input Pengkajian — RM Medis IGD (Sesi 1–6, SELESAI)
+
+Modul **terpisah** dari RM Keperawatan IGD (RM 01) di atas — `RMPenilaianAwalMedisIGD.java`
+(Pengkajian Awal Medis IGD, dokter), plan sendiri, tag commit sendiri
+(`feat(RM Medis IGD): ... (Sesi N/6)`). Meniru pola yang sudah terbukti di
+Keperawatan, sesi demi sesi, tiap sesi satu commit terpisah. Seluruh rencana
+tuntas **4 September 2026**.
+
+- **Sesi 1** (`6954694`) — rangka 4 zona (`internalFrame2` `BorderLayout`):
+  bar pasien di `NORTH`, rail placeholder kosong di `WEST`, `scrollInput`
+  (isi 21 bagian lama) tetap di `CENTER`.
+- **Sesi 2** (`c1b3445`) — rail navigasi: 21 baris I–XXI (angka Romawi
+  bawaan dipertahankan apa adanya, TIDAK dinomori ulang Arab seperti
+  Keperawatan — Medis sudah pakai penomoran itu konsisten di form/cetakan)
+  yang bisa diklik untuk scroll ke bagian terkait, highlight bagian aktif +
+  kartu progres "Bagian N dari 21".
+- **Sesi 3a** (`2fa0d05`) — 106 kontrol radio/checkbox (105 di 4 panel
+  funnel RM032 + `ChkAccor`) digayakan jadi chip pil (`gayaChipMedis` dkk),
+  pola disalin dari Keperawatan tapi dua bug lamanya (timing `borderPainted`,
+  chip melar di `GridLayout`) dibangun benar sejak awal.
+- **Sesi 3b** (`9d7c94c`) — inti Bagian D: 21 bagian dipecah jadi 10
+  `HalamanMedis` bertumpuk, rail 21→10 baris/halaman, toggle "semua
+  halaman"/"satu halaman". Dua mekanisme pemecahan (beda dari Keperawatan
+  yang cukup satu): `pecahBarisPanelMedis()` untuk halaman dalam funnel
+  GridBag, `ekstrakPitaYMedis()` untuk 3 blok header legacy posisi-absolut.
+  Dua cacat ditemukan & diperbaiki lewat render+lihat: sapuan border bawaan
+  yang salah menelanjangi `ScrollPane` juga, dan chip yang ikut melar
+  berbagi kolom `GridBagLayout` dengan baris `FlowLayout` tetangganya.
+- **Sesi 3c** (`1d1eb79`) — pass "render lalu LIHAT" atas 10 halaman;
+  satu cacat nyata (label satuan "Kg"/"%" di Halaman 3 kepotong karena
+  komponen legacy posisi-absolut tidak ikut menyusut ke lebar kartu baru),
+  diperbaiki dengan menaikkan `LEBAR_HALAMAN_MEDIS` 880→910.
+- **Sesi 4 (Bagian F) DILEWATI** — keputusan eksplisit user setelah digrep
+  ulang: satu-satunya tabel di file ini (`tbObat`) ternyata anak
+  `internalFrame3` ("Data Pengkajian"), BUKAN anak `internalFrame2` ("Input
+  Pengkajian") yang sedang direstrukturisasi. Tab Input Pengkajian Medis
+  tidak punya tabel apa pun. Pelajaran: jangan asumsikan pemetaan sesi dari
+  modul saudara berlaku 1:1 tanpa verifikasi ulang lewat kode.
+- **Sesi 5** (`7f304dd`, Bagian E) — badge status per halaman, tombol
+  "Tandai tidak relevan" (`btnTidakRelevan`), kartu progres wajib global
+  (`buatKartuWajibMedis`), navigasi bawah tiap kartu (`buatNavigasiBawahMedis`),
+  label hitungan "x/y" di tiap baris rail. Penyimpangan sengaja dari
+  Keperawatan: kartu rail posisi lama TIDAK ditimpa (kartu wajib baru
+  disisip terpisah); `totalWajibSemua` dihitung DINAMIS dari penjumlahan
+  `h.totalWajib` tiap halaman (bukan konstanta literal `17` seperti
+  Keperawatan, yang berisiko basi diam-diam); dipakai
+  `widget.ThemeConfig.WARN`/`WARN_BG` (bukan hex inline). Diverifikasi lewat
+  listener sungguhan (`CekReaktifMedis`, bukan panggilan langsung), dan
+  `CekLebarKategori`/`CekLebarMedisDetail` — 68 lebar-nol & 0 chip melar,
+  identik baseline Sesi 3c (tidak ada regresi dari strip/nav baru).
+- **Sesi 6** (`5b62a96`, Bagian G, TERAKHIR) — restyle `panelGlass8` (bar
+  Simpan/Baru/Ganti/Hapus/Cetak/Semua/Keluar, anak `internalFrame1` di
+  `PAGE_END` — di luar 4 zona `internalFrame2`) jadi tombol bergaya kartu
+  putih (`gayaTombolCardFooterMedis`, border 1px `#D8DBD6`, hover
+  `#94A3B8`/`#F8FAFC`), Hapus & Keluar teks merah bata `0xB91C1C`, dan
+  menempelkan `lblProgresBawahMedis` (dideklarasikan sejak Sesi 5, baru
+  efektif sekarang) di kanan sebelum tombol Keluar. Karena `panelGlass8`
+  byte-identik strukturnya di kedua file sebelum sesi ini, ini jadi sesi
+  paling langsung — salinan hampir 1:1 dari `initActionBarKep()` milik
+  Keperawatan, bukan adaptasi struktural. Satu penyimpangan sengaja: teks
+  awal `lblProgresBawahMedis` placeholder netral "Memuat status isian
+  wajib..." (BUKAN pecahan literal spt "0/17..." milik Keperawatan), karena
+  `totalWajibSemua` Medis dinamis — langsung ditimpa `hitungProgresMedis()`
+  sebelum sempat terlihat user. Dikonfirmasi lewat kode (bukan asumsi):
+  `BtnSimpan`/`BtnHapus`/`BtnEdit` tetap murni `akses.getpenilaian_awal_medis_igd()`,
+  TIDAK digating progres wajib di kedua file — tidak ditambah logika baru
+  semacam itu. Verifikasi: `ant jar` sukses; render `internalFrame1` PENUH
+  dilihat manual (tombol kartu, warna merah, label "Isian wajib 1/14 - 13
+  belum terisi" tampil benar); reflektif — `panelGlass8.getLayout()
+  instanceof BorderLayout`, `lblProgresBawahMedis` cocok `lblWajibHitungMedis`
+  (1/14 sama di keduanya), warna tombol persis `0xB91C1C`.
+
+**Catatan disiplin verifikasi**: sebagian narasi Sesi 5/6 Keperawatan di
+bagian atas file ini (mis. "BtnSimpan teal primer", "Hapus merah bata
+#8A4A46") ternyata **tidak cocok dengan kode Keperawatan yang sebenarnya**
+(`initActionBarKep()`: `BtnSimpan` bergaya kartu putih polos, `BtnHapus`/
+`BtnKeluar` sama-sama `0xB91C1C`) — kode adalah sumber kebenaran, dan Sesi
+6 Medis di atas meniru KODE-nya, bukan narasi ini.
