@@ -3708,8 +3708,15 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         return panelBaru;
     }
 
-    /** Lebar kartu halaman (funnel panel + margin kartu). */
-    private static final int LEBAR_HALAMAN_MEDIS = 880;
+    /**
+     * Lebar kartu halaman (funnel panel + margin kartu). 880 sempat
+     * memotong "Kg"/"%" di Halaman 3 (jLabel13/jLabel35, posisi absolut
+     * legacy sampai x=872) krn insets kartu kiri+kanan 14+14=28 menyisakan
+     * cuma 852 utk isi - ketahuan dari render-lihat Sesi 3c. Dinaikkan ke
+     * 910 (sisa 882 utk isi, +10 marjin) drpd menggeser posisi absolut
+     * legacy itu sendiri (di luar GEN, tapi tetap posisi asli form lama).
+     */
+    private static final int LEBAR_HALAMAN_MEDIS = 910;
 
     /**
      * Bungkus konten satu halaman dgn kartu sederhana (badge nomor + judul
