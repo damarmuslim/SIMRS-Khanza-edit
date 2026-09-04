@@ -162,6 +162,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         pasangChipSemuaMedis();
         susunHalamanMedis();
         susunRangkaMedis();
+        pasangSemuaListenerProgresMedis();
+        hitungProgresMedis();
     }
 
 
@@ -2365,6 +2367,12 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     /** Index bagian yg sedang disorot di rail, -1 = belum ada. */
     private int seksiAktifMedis = -1;
     private widget.Label lblProgresJudulMedis, lblProgresHitungMedis;
+    // Sesi 5 (Bagian E): kartu progres wajib global, TERPISAH dari kartu
+    // posisi di atas (lihat buatKartuWajibMedis()/hitungProgresMedis()).
+    private widget.Label lblWajibJudulMedis, lblWajibPersenMedis, lblWajibHitungMedis;
+    private javax.swing.JProgressBar pbWajibMedis;
+    /** Disiapkan utk Sesi 6 (Bagian G, bar aksi bawah) - selalu null-checked. */
+    private widget.Label lblProgresBawahMedis;
 
     /** Sesi 3b: satu halaman = gabungan beberapa SeksiMedis, lihat susunHalamanMedis(). */
     private static final class HalamanMedis {
@@ -2373,6 +2381,15 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         widget.PanelBiasa baris;
         widget.Label lblJudul;
         widget.PanelBiasa aksen;
+        // Sesi 5 (Bagian E): indikator wajib & status tidak-relevan, murni UI/session.
+        int totalWajib = 0;
+        int terisiWajib = 0;
+        boolean tidakRelevan = false;
+        widget.Label lblBadgeNomor;
+        widget.PanelBiasa pnlBadgeStatus;
+        widget.Label lblBadgeStatus;
+        widget.Button btnTidakRelevan;
+        widget.Label lblHitunganRail;
         HalamanMedis(String judul){ this.judul = judul; }
     }
     private final java.util.List<HalamanMedis> halamanMedis = new java.util.ArrayList<>();
@@ -3739,10 +3756,11 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         badge.setText(String.valueOf(idx+1));
         badge.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         badge.setOpaque(true);
-        badge.setBackground(widget.ThemeConfig.PRIMARY);
+        badge.setBackground(h.tidakRelevan ? new java.awt.Color(0xA0,0xAE,0xC0) : widget.ThemeConfig.PRIMARY);
         badge.setForeground(java.awt.Color.WHITE);
         badge.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 11));
         badge.setPreferredSize(new java.awt.Dimension(22,22));
+        h.lblBadgeNomor = badge;
 
         widget.Label lJudul = new widget.Label();
         lJudul.setText(h.judul);
@@ -3750,8 +3768,44 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         lJudul.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 13));
         lJudul.setForeground(widget.ThemeConfig.TEXT);
 
+        // Sesi 5 (Bagian E): badge status wajib + tombol tandai tidak-relevan.
+        widget.PanelBiasa kanan = new widget.PanelBiasa();
+        kanan.setOpaque(false);
+        kanan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 4));
+
+        widget.PanelBiasa pnlStatus = new widget.PanelBiasa();
+        pnlStatus.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 8, 4));
+        pnlStatus.setBorder(javax.swing.BorderFactory.createEmptyBorder(1,6,1,6));
+        widget.Label lStatus = new widget.Label();
+        lStatus.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 11).deriveFont(11.5f));
+        lStatus.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        pnlStatus.add(lStatus);
+        h.pnlBadgeStatus = pnlStatus;
+        h.lblBadgeStatus = lStatus;
+        kanan.add(pnlStatus);
+
+        final widget.Button btnRel = new widget.Button();
+        btnRel.setText(h.tidakRelevan ? "↺ Aktifkan kembali" : "Tandai tidak relevan");
+        btnRel.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.PLAIN, 11));
+        btnRel.setPreferredSize(new java.awt.Dimension(140, 26));
+        btnRel.setGlassColor(java.awt.Color.WHITE);
+        btnRel.setBackground(java.awt.Color.WHITE);
+        btnRel.setForeground(widget.ThemeConfig.TEXT);
+        btnRel.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT));
+        final HalamanMedis hh = h;
+        final widget.PanelBiasa isiFinal = isi;
+        btnRel.addActionListener((java.awt.event.ActionEvent e) -> {
+            hh.tidakRelevan = !hh.tidakRelevan;
+            btnRel.setText(hh.tidakRelevan ? "↺ Aktifkan kembali" : "Tandai tidak relevan");
+            setHalamanRelevanMedis(hh, isiFinal, !hh.tidakRelevan);
+            hitungProgresMedis();
+        });
+        h.btnTidakRelevan = btnRel;
+        kanan.add(btnRel);
+
         strip.add(badge, java.awt.BorderLayout.WEST);
         strip.add(lJudul, java.awt.BorderLayout.CENTER);
+        strip.add(kanan, java.awt.BorderLayout.EAST);
 
         isi.setOpaque(false);
 
@@ -3764,11 +3818,142 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         ci.insets=new java.awt.Insets(12,14,14,14);
         kartu.add(isi, ci);
 
+        // Sesi 5 (Bagian E): navigasi bawah (prev/next + "Halaman N dari 10").
+        widget.PanelBiasa nav = buatNavigasiBawahMedis(idx);
+        java.awt.GridBagConstraints cn = new java.awt.GridBagConstraints();
+        cn.gridx=0; cn.gridy=2; cn.weightx=1.0; cn.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        kartu.add(nav, cn);
+
         java.awt.GridBagConstraints cg = new java.awt.GridBagConstraints();
-        cg.gridx=0; cg.gridy=2; cg.weighty=1.0; cg.fill=java.awt.GridBagConstraints.BOTH;
+        cg.gridx=0; cg.gridy=3; cg.weighty=1.0; cg.fill=java.awt.GridBagConstraints.BOTH;
         kartu.add(javax.swing.Box.createGlue(), cg);
 
         return kartu;
+    }
+
+    /**
+     * Sesi 5 (Bagian E): tombol kartu navigasi prev/next, lebar otomatis
+     * mengikuti panjang teks. Salinan pola buatKartuTombolNavigasiKep.
+     */
+    private widget.PanelBiasa buatKartuTombolNavigasiMedis(String teks, String chevron, boolean arahKanan, boolean enabled, final Runnable onClick){
+        final widget.PanelBiasa card = new widget.PanelBiasa();
+        card.setOpaque(true);
+        card.setBackground(java.awt.Color.WHITE);
+        card.setLayout(new java.awt.BorderLayout(8, 0));
+        card.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(0, 12, 0, 12)
+        ));
+
+        widget.Label lblTeks = new widget.Label();
+        lblTeks.setHorizontalAlignment(arahKanan ? javax.swing.SwingConstants.LEFT : javax.swing.SwingConstants.RIGHT);
+        lblTeks.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.PLAIN, 11));
+        lblTeks.setForeground(enabled ? widget.ThemeConfig.TEXT_NORMAL : widget.ThemeConfig.TEXT_FAINT);
+        lblTeks.setText(teks == null ? "" : teks.trim());
+
+        widget.Label lblChevron = new widget.Label();
+        lblChevron.setText(chevron);
+        lblChevron.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 13));
+        lblChevron.setForeground(enabled ? widget.ThemeConfig.TEXT_MUTED : widget.ThemeConfig.TEXT_FAINT);
+
+        if(arahKanan){
+            card.add(lblTeks, java.awt.BorderLayout.CENTER);
+            card.add(lblChevron, java.awt.BorderLayout.EAST);
+        } else {
+            card.add(lblChevron, java.awt.BorderLayout.WEST);
+            card.add(lblTeks, java.awt.BorderLayout.CENTER);
+        }
+
+        java.awt.FontMetrics fmTeks = lblTeks.getFontMetrics(lblTeks.getFont());
+        java.awt.FontMetrics fmChev = lblChevron.getFontMetrics(lblChevron.getFont());
+        int pTeks = fmTeks != null ? fmTeks.stringWidth(lblTeks.getText()) : (lblTeks.getText().length() * 7);
+        int pChev = fmChev != null ? fmChev.stringWidth(chevron) : 10;
+        int lebarCard = pTeks + pChev + 8 + 24 + 10;
+        card.setPreferredSize(new java.awt.Dimension(lebarCard, 32));
+
+        if(enabled){
+            card.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            lblTeks.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            lblChevron.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+            java.awt.event.MouseAdapter ma = new java.awt.event.MouseAdapter() {
+                @Override public void mouseEntered(java.awt.event.MouseEvent e) {
+                    card.setBackground(widget.ThemeConfig.SURFACE_ALT);
+                    card.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                        javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.PRIMARY),
+                        javax.swing.BorderFactory.createEmptyBorder(0, 12, 0, 12)
+                    ));
+                    card.repaint();
+                }
+                @Override public void mouseExited(java.awt.event.MouseEvent e) {
+                    card.setBackground(java.awt.Color.WHITE);
+                    card.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                        javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+                        javax.swing.BorderFactory.createEmptyBorder(0, 12, 0, 12)
+                    ));
+                    card.repaint();
+                }
+                @Override public void mouseClicked(java.awt.event.MouseEvent e) {
+                    if(onClick != null){ onClick.run(); }
+                }
+            };
+            card.addMouseListener(ma);
+            lblTeks.addMouseListener(ma);
+            lblChevron.addMouseListener(ma);
+        }
+
+        return card;
+    }
+
+    /**
+     * Sesi 5 (Bagian E): navigasi bawah kartu halaman (prev/next +
+     * "Halaman N dari 10"). Dipakai JUDUL_HALAMAN_MEDIS langsung
+     * (bukan halamanMedis.get(idx±1)) krn dipanggil dari
+     * buatKartuHalamanMedis() SAAT susunHalamanMedis() masih membangun
+     * daftar halamanMedis satu per satu - entri idx+1 belum tentu ada
+     * di list itu saat method ini jalan utk idx yg lebih kecil.
+     * keHalamanMedis() Medis sudah memanggil sorotHalamanMedis() sendiri
+     * di akhir (beda dari Keperawatan), jadi cukup satu panggilan.
+     */
+    private widget.PanelBiasa buatNavigasiBawahMedis(final int idx){
+        widget.PanelBiasa nav = new widget.PanelBiasa();
+        latarMedis(nav, widget.ThemeConfig.SURFACE);
+        nav.setBorder(javax.swing.BorderFactory.createMatteBorder(1,0,0,0, widget.ThemeConfig.BORDER_SOFT));
+        nav.setLayout(new java.awt.BorderLayout(0,0));
+        nav.setPreferredSize(new java.awt.Dimension(10, 48));
+
+        widget.PanelBiasa pnlKiri = new widget.PanelBiasa();
+        pnlKiri.setOpaque(false);
+        pnlKiri.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 12, 8));
+        if(idx > 0){
+            pnlKiri.add(buatKartuTombolNavigasiMedis(JUDUL_HALAMAN_MEDIS[idx-1], "‹", false, true, () -> {
+                keHalamanMedis(idx - 1);
+            }));
+        } else {
+            pnlKiri.add(buatKartuTombolNavigasiMedis("Awal", "‹", false, false, null));
+        }
+
+        widget.Label lblPos = new widget.Label();
+        lblPos.setText("Halaman " + (idx+1) + " dari " + JUDUL_HALAMAN_MEDIS.length);
+        lblPos.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.PLAIN, 11));
+        lblPos.setForeground(widget.ThemeConfig.TEXT_FAINT);
+        lblPos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        widget.PanelBiasa pnlKanan = new widget.PanelBiasa();
+        pnlKanan.setOpaque(false);
+        pnlKanan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 12, 8));
+        if(idx < JUDUL_HALAMAN_MEDIS.length - 1){
+            pnlKanan.add(buatKartuTombolNavigasiMedis(JUDUL_HALAMAN_MEDIS[idx+1], "›", true, true, () -> {
+                keHalamanMedis(idx + 1);
+            }));
+        } else {
+            pnlKanan.add(buatKartuTombolNavigasiMedis("Akhir", "›", true, false, null));
+        }
+
+        nav.add(pnlKiri, java.awt.BorderLayout.WEST);
+        nav.add(lblPos, java.awt.BorderLayout.CENTER);
+        nav.add(pnlKanan, java.awt.BorderLayout.EAST);
+        return nav;
     }
 
     private static final String[] JUDUL_HALAMAN_MEDIS = {
@@ -3944,8 +4129,19 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         lbl.setText("<html><div style='width:"+LEBAR_TEKS_RAIL_MEDIS+"px'>"
                 + escHtmlMedis(h.judul) + "</div></html>");
 
+        // Sesi 5 (Bagian E): label hitungan "x/y" wajib terisi, diisi/
+        // diwarnai oleh hitungProgresMedis().
+        widget.Label lblHitung = new widget.Label();
+        lblHitung.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblHitung.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+        lblHitung.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.PLAIN, 10));
+        lblHitung.setForeground(widget.ThemeConfig.TEXT_FAINT);
+        lblHitung.setBorder(javax.swing.BorderFactory.createEmptyBorder(7,6,7,9));
+        h.lblHitunganRail = lblHitung;
+
         baris.add(aksen, java.awt.BorderLayout.WEST);
         baris.add(lbl, java.awt.BorderLayout.CENTER);
+        baris.add(lblHitung, java.awt.BorderLayout.EAST);
         h.baris = baris; h.lblJudul = lbl; h.aksen = aksen;
 
         baris.addMouseListener(new java.awt.event.MouseAdapter(){
@@ -4048,7 +4244,52 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         return kartu;
     }
 
-    /** [Bagian C+D] Isi rail: kartu progres + toggle mode + satu baris tiap halaman. */
+    /**
+     * Sesi 5 (Bagian E): kartu progres ISIAN WAJIB global - persen +
+     * progress bar + hitungan, dihitung ulang oleh hitungProgresMedis().
+     * Kartu BARU terpisah dari buatKartuProgresMedis() (posisi halaman) -
+     * lihat catatan "Perbedaan struktural" di plan Sesi 5.
+     */
+    private widget.PanelBiasa buatKartuWajibMedis(){
+        widget.PanelBiasa kartu = new widget.PanelBiasa(new java.awt.GridBagLayout());
+        latarMedis(kartu, widget.ThemeConfig.SURFACE_ALT);
+        kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
+
+        lblWajibJudulMedis = new widget.Label();
+        lblWajibJudulMedis.setText("ISIAN WAJIB");
+        lblWajibJudulMedis.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblWajibJudulMedis.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 10));
+        lblWajibJudulMedis.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        lblWajibPersenMedis = new widget.Label();
+        lblWajibPersenMedis.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblWajibPersenMedis.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 16));
+        lblWajibPersenMedis.setForeground(widget.ThemeConfig.TEXT);
+
+        pbWajibMedis = new javax.swing.JProgressBar(0,100);
+        pbWajibMedis.setPreferredSize(new java.awt.Dimension(10,6));
+        pbWajibMedis.setBorderPainted(false);
+        pbWajibMedis.setForeground(widget.ThemeConfig.PRIMARY);
+        pbWajibMedis.setBackground(widget.ThemeConfig.BORDER_SOFT);
+
+        lblWajibHitungMedis = new widget.Label();
+        lblWajibHitungMedis.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblWajibHitungMedis.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.PLAIN, 11));
+        lblWajibHitungMedis.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.weightx=1.0; c.anchor=java.awt.GridBagConstraints.WEST;
+        c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        c.gridy=0; kartu.add(lblWajibJudulMedis,c);
+        c.gridy=1; c.insets=new java.awt.Insets(6,0,0,0); kartu.add(lblWajibPersenMedis,c);
+        c.gridy=2; c.insets=new java.awt.Insets(4,0,0,0); kartu.add(pbWajibMedis,c);
+        c.gridy=3; c.insets=new java.awt.Insets(6,0,0,0); kartu.add(lblWajibHitungMedis,c);
+        return kartu;
+    }
+
+    /** [Bagian C+D+E] Isi rail: kartu posisi + kartu wajib + toggle mode + satu baris tiap halaman. */
     private void isiRailMedis(){
         railMedis.removeAll();
         java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
@@ -4059,10 +4300,13 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         railMedis.add(buatKartuProgresMedis(), c);
 
         c.gridy=1; c.insets=new java.awt.Insets(0,12,10,12);
+        railMedis.add(buatKartuWajibMedis(), c);
+
+        c.gridy=2; c.insets=new java.awt.Insets(0,12,10,12);
         railMedis.add(buatToggleModeMedis(), c);
 
         c.insets=new java.awt.Insets(0,8,0,8);
-        int gy = 2;
+        int gy = 3;
         for(int i=0;i<halamanMedis.size();i++){
             c.gridy=gy++;
             railMedis.add(buatBarisRailMedis(i), c);
@@ -4074,6 +4318,239 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         railMedis.add(javax.swing.Box.createGlue(), c);
 
         if(!halamanMedis.isEmpty()){ sorotHalamanMedis(Math.max(0,halamanAktifMedis)); }
+    }
+
+    /**
+     * Sesi 5 (Bagian E): enable/disable seluruh isi halaman saat ditandai
+     * tidak relevan - flag UI/session saja, TIDAK disimpan ke DB. Beda
+     * dari setHalamanRelevanKep milik Keperawatan yg meloop h.anggota
+     * (daftar sub-seksi): HalamanMedis cuma punya SATU JComponent konten
+     * per halaman, jadi cukup dipanggil sekali atas isi itu langsung.
+     */
+    private void setHalamanRelevanMedis(HalamanMedis h, javax.swing.JComponent isi, boolean relevan){
+        if(isi != null){
+            setKomponenEnabledRekursifMedis(isi, relevan);
+        }
+        if(h.konten != null){
+            widget.PanelBiasa kartu = (h.konten instanceof widget.PanelBiasa) ? (widget.PanelBiasa) h.konten : null;
+            if(kartu != null){
+                latarMedis(kartu, relevan ? widget.ThemeConfig.SURFACE : new java.awt.Color(0xF6,0xF7,0xF4));
+                kartu.repaint();
+            }
+        }
+    }
+
+    /** Salinan persis setKomponenEnabledRekursif milik Keperawatan. */
+    private void setKomponenEnabledRekursifMedis(java.awt.Container c, boolean enabled){
+        for(java.awt.Component comp : c.getComponents()){
+            if(comp instanceof javax.swing.JComponent && !(comp instanceof widget.Label)){
+                comp.setEnabled(enabled);
+            }
+            if(comp instanceof java.awt.Container){
+                setKomponenEnabledRekursifMedis((java.awt.Container) comp, enabled);
+            }
+        }
+    }
+
+    /**
+     * Sesi 5 (Bagian E): meniru hitungProgresKep (RMPenilaianAwalKeperawatanIGD,
+     * baris 6430-6637) TAPI totalWajibSemua DIHITUNG DINAMIS dari penjumlahan
+     * h.totalWajib tiap halaman - bukan konstanta literal terpisah seperti
+     * "17" milik Keperawatan, yang berisiko basi diam-diam kalau salah satu
+     * case di bawah diubah tanpa mengubah konstanta itu. Tabel field wajib
+     * per halaman ada di plan Sesi 5.
+     */
+    private void hitungProgresMedis(){
+        int totalWajibSemua = 0;
+        int totalTerisiWajib = 0;
+        int totalOpsional = 0;
+
+        for(int i=0;i<halamanMedis.size();i++){
+            HalamanMedis h = halamanMedis.get(i);
+            int wajib = 0;
+            int terisi = 0;
+
+            switch(i){
+                case 0:
+                    wajib = 3;
+                    if(bgJnKesimpulan!=null && bgJnKesimpulan.getSelection()!=null){ terisi++; }
+                    if(bgNapKesimpulan!=null && bgNapKesimpulan.getSelection()!=null){ terisi++; }
+                    if(bgSirKesimpulan!=null && bgSirKesimpulan.getSelection()!=null){ terisi++; }
+                    break;
+                case 1:
+                    wajib = 2;
+                    if(KategoriPasien!=null && KategoriPasien.getSelectedIndex()>=0){ terisi++; }
+                    if(TGcsE!=null && TGcsV!=null && TGcsM!=null &&
+                       (!TGcsE.getText().trim().isEmpty() || !TGcsV.getText().trim().isEmpty() || !TGcsM.getText().trim().isEmpty())){
+                        terisi++;
+                    }
+                    break;
+                case 2:
+                    wajib = 2;
+                    if(KeluhanUtama!=null && !KeluhanUtama.getText().trim().isEmpty()){ terisi++; }
+                    if(TD!=null && Nadi!=null && RR!=null && Suhu!=null &&
+                       (!TD.getText().trim().isEmpty() || !Nadi.getText().trim().isEmpty() || !RR.getText().trim().isEmpty() || !Suhu.getText().trim().isEmpty())){
+                        terisi++;
+                    }
+                    break;
+                case 3:
+                    wajib = 2;
+                    if(bgKonjungtiva!=null && bgSklera!=null &&
+                       (bgKonjungtiva.getSelection()!=null || bgSklera.getSelection()!=null)){
+                        terisi++;
+                    }
+                    if(TJantung!=null && TParu!=null &&
+                       (!TJantung.getText().trim().isEmpty() || !TParu.getText().trim().isEmpty())){
+                        terisi++;
+                    }
+                    break;
+                case 4:
+                    wajib = 0;
+                    break;
+                case 5:
+                    wajib = 1;
+                    if(TDiagnosaKerja!=null && !TDiagnosaKerja.getText().trim().isEmpty()){ terisi++; }
+                    break;
+                case 6:
+                    wajib = 1;
+                    if(Tatalaksana!=null && !Tatalaksana.getText().trim().isEmpty()){ terisi++; }
+                    break;
+                case 7:
+                    wajib = 0;
+                    break;
+                case 8:
+                    wajib = 1;
+                    if((CekEdukasiDiberikan!=null && CekEdukasiDiberikan.isSelected()) ||
+                       (CekEdukasiTidakBisa!=null && CekEdukasiTidakBisa.isSelected())){
+                        terisi++;
+                    }
+                    break;
+                case 9:
+                    wajib = 2;
+                    if(bgKondisiPulang!=null && bgKondisiPulang.getSelection()!=null){ terisi++; }
+                    if(TTdAkhir!=null && TNadiAkhir!=null && TRrAkhir!=null && TSuhuAkhir!=null &&
+                       (!TTdAkhir.getText().trim().isEmpty() || !TNadiAkhir.getText().trim().isEmpty()
+                        || !TRrAkhir.getText().trim().isEmpty() || !TSuhuAkhir.getText().trim().isEmpty())){
+                        terisi++;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            h.totalWajib = wajib;
+            h.terisiWajib = h.tidakRelevan ? wajib : Math.min(wajib, terisi);
+            totalWajibSemua += wajib;
+            totalTerisiWajib += h.terisiWajib;
+            if(wajib==0){ totalOpsional += terisi; }
+
+            if(h.lblHitunganRail != null){
+                if(h.tidakRelevan){
+                    h.lblHitunganRail.setText("N/A");
+                    h.lblHitunganRail.setForeground(widget.ThemeConfig.TEXT_FAINT);
+                } else if(wajib==0){
+                    h.lblHitunganRail.setText("-");
+                    h.lblHitunganRail.setForeground(widget.ThemeConfig.TEXT_FAINT);
+                } else {
+                    h.lblHitunganRail.setText(terisi+"/"+wajib);
+                    h.lblHitunganRail.setForeground(terisi>=wajib ? widget.ThemeConfig.OK : widget.ThemeConfig.WARN);
+                }
+            }
+
+            if(h.pnlBadgeStatus != null && h.lblBadgeStatus != null){
+                if(h.tidakRelevan){
+                    latarMedis(h.pnlBadgeStatus, new java.awt.Color(0xF2,0xF4,0xF7));
+                    h.lblBadgeStatus.setText("Tidak relevan");
+                    h.lblBadgeStatus.setForeground(widget.ThemeConfig.TEXT_FAINT);
+                } else if(wajib==0){
+                    latarMedis(h.pnlBadgeStatus, new java.awt.Color(0xF2,0xF4,0xF7));
+                    h.lblBadgeStatus.setText("Opsional");
+                    h.lblBadgeStatus.setForeground(widget.ThemeConfig.TEXT_FAINT);
+                } else if(h.terisiWajib>=wajib){
+                    latarMedis(h.pnlBadgeStatus, widget.ThemeConfig.OK_BG);
+                    h.lblBadgeStatus.setText("Wajib lengkap");
+                    h.lblBadgeStatus.setForeground(widget.ThemeConfig.OK);
+                } else {
+                    latarMedis(h.pnlBadgeStatus, widget.ThemeConfig.WARN_BG);
+                    h.lblBadgeStatus.setText(terisi+"/"+wajib+" wajib terisi");
+                    h.lblBadgeStatus.setForeground(widget.ThemeConfig.WARN);
+                }
+                h.pnlBadgeStatus.repaint();
+            }
+
+            if(h.lblBadgeNomor != null){
+                h.lblBadgeNomor.setBackground(h.tidakRelevan ? new java.awt.Color(0xA0,0xAE,0xC0) : widget.ThemeConfig.PRIMARY);
+                h.lblBadgeNomor.repaint();
+            }
+        }
+
+        int persen = totalWajibSemua>0 ? (totalTerisiWajib*100)/totalWajibSemua : 100;
+        if(lblWajibPersenMedis != null){ lblWajibPersenMedis.setText(persen+"%"); }
+        if(pbWajibMedis != null){
+            pbWajibMedis.setValue(persen);
+            pbWajibMedis.setForeground(persen>=100 ? widget.ThemeConfig.OK : widget.ThemeConfig.PRIMARY);
+        }
+        if(lblWajibJudulMedis != null){
+            lblWajibJudulMedis.setText(persen>=100 ? "SEMUA ISIAN WAJIB TERPENUHI" : "ISIAN WAJIB");
+        }
+        if(lblWajibHitungMedis != null){
+            lblWajibHitungMedis.setText(totalTerisiWajib+"/"+totalWajibSemua+" isian wajib · "+totalOpsional+" opsional terisi");
+        }
+        if(lblProgresBawahMedis != null){
+            if(persen>=100){
+                lblProgresBawahMedis.setText("Isian wajib lengkap · siap disimpan");
+                lblProgresBawahMedis.setForeground(widget.ThemeConfig.OK);
+            } else {
+                lblProgresBawahMedis.setText("Isian wajib "+totalTerisiWajib+"/"+totalWajibSemua+" - "+(totalWajibSemua-totalTerisiWajib)+" belum terisi");
+                lblProgresBawahMedis.setForeground(widget.ThemeConfig.TEXT_MUTED);
+            }
+        }
+    }
+
+    /**
+     * Sesi 5 (Bagian E): listener reaktif utk field wajib/opsional - salinan
+     * persis pasangListenerProgresKep (dispatch by type, tanpa TableModelListener
+     * krn tab Input Pengkajian Medis tidak punya tabel - lihat Sesi 4).
+     */
+    private void pasangListenerProgresMedis(java.awt.Component comp){
+        if(comp instanceof javax.swing.text.JTextComponent){
+            ((javax.swing.text.JTextComponent)comp).getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override public void insertUpdate(javax.swing.event.DocumentEvent e){ hitungProgresMedis(); }
+                @Override public void removeUpdate(javax.swing.event.DocumentEvent e){ hitungProgresMedis(); }
+                @Override public void changedUpdate(javax.swing.event.DocumentEvent e){ hitungProgresMedis(); }
+            });
+        } else if(comp instanceof javax.swing.AbstractButton){
+            ((javax.swing.AbstractButton)comp).addItemListener((java.awt.event.ItemEvent e) -> hitungProgresMedis());
+        } else if(comp instanceof widget.ComboBox){
+            ((widget.ComboBox)comp).addItemListener((java.awt.event.ItemEvent e) -> hitungProgresMedis());
+        }
+    }
+
+    private void pasangSemuaListenerProgresMedis(){
+        javax.swing.text.JTextComponent[] texts = {
+            KeluhanUtama, TD, Nadi, RR, Suhu, TGcsE, TGcsV, TGcsM,
+            TJantung, TParu, TDiagnosaKerja, Tatalaksana,
+            TTdAkhir, TNadiAkhir, TRrAkhir, TSuhuAkhir
+        };
+        for(javax.swing.text.JTextComponent t : texts){
+            if(t != null){ pasangListenerProgresMedis(t); }
+        }
+
+        javax.swing.AbstractButton[] btns = {
+            RbJnAman, RbJnMengancamJiwa, RbNapAman, RbNapMengancamJiwa,
+            RbSirAman, RbSirMengancamJiwa, RbKonjungtivaPucat, RbKonjungtivaPink,
+            RbSkleraIkterik, RbSkleraTidakIkterik, CekDiagnosaKerja,
+            CekEdukasiDiberikan, CekEdukasiTidakBisa,
+            RbKondisiMembaik, RbKondisiMemburuk, RbKondisiTetap, RbKondisiMeninggal, RbKondisiDoa
+        };
+        for(javax.swing.AbstractButton b : btns){
+            if(b != null){ pasangListenerProgresMedis(b); }
+        }
+
+        widget.ComboBox[] combos = { KategoriPasien };
+        for(widget.ComboBox c : combos){
+            if(c != null){ pasangListenerProgresMedis(c); }
+        }
     }
 
     /**
