@@ -160,6 +160,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         initRm032Tambahan();
         daftarkanSeksiLegacyMedis();
         pasangChipSemuaMedis();
+        susunHalamanMedis();
         susunRangkaMedis();
     }
 
@@ -2365,6 +2366,19 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private int seksiAktifMedis = -1;
     private widget.Label lblProgresJudulMedis, lblProgresHitungMedis;
 
+    /** Sesi 3b: satu halaman = gabungan beberapa SeksiMedis, lihat susunHalamanMedis(). */
+    private static final class HalamanMedis {
+        final String judul;
+        javax.swing.JComponent konten;
+        widget.PanelBiasa baris;
+        widget.Label lblJudul;
+        widget.PanelBiasa aksen;
+        HalamanMedis(String judul){ this.judul = judul; }
+    }
+    private final java.util.List<HalamanMedis> halamanMedis = new java.util.ArrayList<>();
+    private int halamanAktifMedis = -1;
+    private boolean satuHalamanMedis = true;
+
     // -- A. Intervensi Pre Hospital --
     private widget.CekBox CekPreCervicalCollar, CekPreDefibrilasi, CekPreVtp, CekPreBalutBidai, CekPreNgt,
         CekPreRjp, CekPreIntubasi, CekPreDekompresiWsd, CekPreKateterUrin, CekPreInfus, CekPreTidakAda;
@@ -2972,7 +2986,14 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         // -- O. Edukasi --
         row = tambahBarisRm032Judul(panelRm032, row, "XIX. EDUKASI");
         CekEdukasiDiberikan = new widget.CekBox(); CekEdukasiDiberikan.setText("Diberikan kepada Pasien/Keluarga");
-        row = tambahBarisRm032Field(panelRm032, row, "Edukasi Diberikan", CekEdukasiDiberikan);
+        // Dibungkus FlowLayout spt panelEdukasiTidakBisa di bawah - tanpa ini
+        // chip melar mengisi lebar kolom GridBagLayout yg ditentukan baris
+        // tetangganya (panelEdukasiTidakBisa, ~500px), krn fill=HORIZONTAL
+        // di rm032Constraint() menyamakan lebar SEMUA baris di kolom field.
+        // Ketahuan dari CekLebarMedisDetail (chip MELAR=1) + render Halaman 9.
+        widget.PanelBiasa panelEdukasiDiberikan = new widget.PanelBiasa(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,0,0));
+        panelEdukasiDiberikan.add(CekEdukasiDiberikan);
+        row = tambahBarisRm032Field(panelRm032, row, "Edukasi Diberikan", panelEdukasiDiberikan);
         CekEdukasiTidakBisa = new widget.CekBox(); CekEdukasiTidakBisa.setText("Tidak dapat memberikan edukasi karena");
         TEdukasiTidakBisaKet = new widget.TextBox(); TEdukasiTidakBisaKet.setPreferredSize(new java.awt.Dimension(250,23));
         widget.PanelBiasa panelEdukasiTidakBisa = new widget.PanelBiasa();
@@ -3546,27 +3567,363 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     // supaya rail dan isi form memakai istilah yg sama persis.
     // =========================================================================
 
-    /** Ruang isi yg diikutkan saat menggulung ke sebuah bagian. */
+    /** Ruang isi yg diikutkan saat menggulung ke sebuah halaman. */
     private static final int TINGGI_KONTEKS_MEDIS = 220;
 
+    /** Lebar teks judul di rail (300px rail - aksen - padding - scrollbar). */
+    private static final int LEBAR_TEKS_RAIL_MEDIS = 255;
+
+    // =========================================================================
+    // [Sesi 3b - Restrukturisasi UI, Bagian D] 21 bagian jadi 10 halaman.
+    //
+    // FormInput berlayout NULL dan isinya campuran: 4 panel funnel
+    // ber-GridBagLayout (panelRm032Atas/Tengah/Diagnosis/panelRm032, isi
+    // dari tambahBarisRm032Judul()/Field()) + 5 header legacy yg ditempel
+    // langsung ke FormInput dgn posisi absolut hasil geser/geser2/geser3
+    // di initRm032Tambahan(). Dua sumber beda butuh dua mekanisme beda:
+    //   - pecahBarisPanelMedis()  : jalan baris GridBag milik SATU funnel
+    //     panel, potong jadi panel baru tiap ketemu strip yg terdaftar
+    //     sbg batas halaman (dipakai utk panelRm032Atas dan panelRm032).
+    //   - ekstrakPitaYMedis()     : sapu anak langsung FormInput yg posisi
+    //     Y-nya (LIVE, sudah lewat geser) ada di antara dua batas, pindah
+    //     ke panel baru berlayout null (dipakai utk 3 bagian legacy).
+    // panelRm032Tengah dan panelRm032Diagnosis kebetulan = 1 halaman utuh,
+    // dipakai langsung tanpa dipecah.
+    // =========================================================================
+
+    private static final java.awt.Color KOTAK_BAWAAN_MEDIS = new java.awt.Color(239,244,234);
+
     /**
-     * [Bagian C] Satu baris rail = panel yg bisa diklik (bukan widget.Button).
+     * Sapuan rekursif border bawaan konstruktor tanpa-argumen
+     * widget.PanelBiasa (LineBorder #EFF4EA) - dipasang proaktif sejak 3b,
+     * bukan ditunggu sampai 3c, krn sudah diketahui dari histori
+     * Keperawatan bahwa border ini muncul diam-diam pada panel pembungkus
+     * baru yg lupa dibuat lewat konstruktor ber-LayoutManager.
+     *
+     * HARUS dibatasi ke instance widget.PanelBiasa saja - warna #EFF4EA
+     * BUKAN penanda unik "border liar", dipakai juga sebagai border
+     * DISENGAJA oleh widget.ScrollPane dan beberapa widget lain (lihat
+     * widget/ScrollPane.java, editorpane.java, dst). Sapuan awal yang
+     * mencocokkan SEMUA JComponent lewat warna sempat membuat setiap
+     * widget.ScrollPane di form (mis. TJantung/TParu Halaman 4) kehilangan
+     * bingkainya - dengan setOpaque(false) + teks kosong, field itu jadi
+     * tidak terlihat sama sekali. Ketahuan dari render Halaman 4.
+     */
+    private void buangKotakBawaanMedis(java.awt.Component k){
+        if(k instanceof widget.PanelBiasa){
+            javax.swing.JComponent jc = (javax.swing.JComponent) k;
+            javax.swing.border.Border b = jc.getBorder();
+            if(b instanceof javax.swing.border.LineBorder
+                    && KOTAK_BAWAAN_MEDIS.equals(((javax.swing.border.LineBorder) b).getLineColor())){
+                jc.setBorder(null);
+            }
+        }
+        if(k instanceof java.awt.Container){
+            for(java.awt.Component anak : ((java.awt.Container) k).getComponents()){
+                buangKotakBawaanMedis(anak);
+            }
+        }
+    }
+
+    /**
+     * Tambah pengisi kolom kanan berbobot pada panel GridBagLayout.
+     *
+     * WAJIB, bukan sekadar jaga-jaga: rm032Constraint() (baris section
+     * Medis) TIDAK PERNAH menyetel weightx dan memakai gridwidth tetap
+     * (bukan REMAINDER) - artinya baris-baris ini punya bobot kolom nol
+     * hari ini. Begitu dibungkus kartu halaman yg lebih lebar dari lebar
+     * alami panelnya, gotcha GridBagLayout (CLAUDE.md: menengahkan isi
+     * pada kedua sumbu bila container lebih besar) PASTI muncul tanpa ini.
+     */
+    private void pasangGlueKananMedis(widget.PanelBiasa panel){
+        java.awt.GridBagLayout gbl = (java.awt.GridBagLayout) panel.getLayout();
+        int kolom = 1;
+        for(java.awt.Component k : panel.getComponents()){
+            java.awt.GridBagConstraints kc = gbl.getConstraints(k);
+            int lebar = kc.gridwidth>0 ? kc.gridwidth : 1;
+            kolom = Math.max(kolom, Math.max(0,kc.gridx) + lebar);
+        }
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx = kolom; c.gridy = 0; c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        panel.add(javax.swing.Box.createHorizontalGlue(), c);
+    }
+
+    /**
+     * Pecah baris GridBag `induk` jadi beberapa panel, potong tiap kali
+     * ketemu strip yg terdaftar di `potongDiStrip`. Komponen SEBELUM batas
+     * pertama tetap di `induk` sendiri (jadi konten halaman pertama grup
+     * ini); strip batas sendiri ikut pindah ke panel BARU (bukan tertinggal
+     * di induk) - sama seperti pecahSatuIndukKep() milik Keperawatan.
+     * Constraint asli (gridx/gridy/gridwidth/insets/dst) dipertahankan apa
+     * adanya, hanya dipindah induknya - GridBagLayout tetap benar walau
+     * nomor baris tidak mulai dari 0 di panel barunya.
+     */
+    private void pecahBarisPanelMedis(widget.PanelBiasa induk,
+            java.util.LinkedHashMap<javax.swing.JComponent,widget.PanelBiasa> potongDiStrip){
+        java.awt.GridBagLayout gbl = (java.awt.GridBagLayout) induk.getLayout();
+        java.util.List<java.awt.Component> anak = new java.util.ArrayList<>(
+                java.util.Arrays.asList(induk.getComponents()));
+        final java.util.Map<java.awt.Component,java.awt.GridBagConstraints> peta = new java.util.IdentityHashMap<>();
+        for(java.awt.Component k : anak){ peta.put(k, gbl.getConstraints(k)); }
+        anak.sort((a,b) -> {
+            java.awt.GridBagConstraints ca = peta.get(a), cb = peta.get(b);
+            if(ca.gridy!=cb.gridy){ return Integer.compare(ca.gridy, cb.gridy); }
+            return Integer.compare(ca.gridx, cb.gridx);
+        });
+        induk.removeAll();
+        widget.PanelBiasa tujuan = null;
+        for(java.awt.Component k : anak){
+            if(potongDiStrip.containsKey(k)){ tujuan = potongDiStrip.get(k); }
+            widget.PanelBiasa target = (tujuan==null) ? induk : tujuan;
+            target.add(k, peta.get(k));
+        }
+    }
+
+    /** Lebar isi halaman legacy hasil ekstraksi pita-Y (samakan dgn funnel panel). */
+    private static final int LEBAR_ISI_MEDIS = 840;
+
+    /**
+     * Ekstrak semua anak langsung FormInput yg posisi Y LIVE-nya (sudah
+     * lewat geser/geser2/geser3) berada di [yAtas,yBawah) ke panel baru
+     * berlayout null - generalisasi langsung dari idiom geser massal
+     * berdasar ambang Y yg sudah dipakai initRm032Tambahan() sendiri.
+     * HARUS dipanggil sebelum 4 funnel panel dilepas dari FormInput
+     * (batas bawah tiap pita dibaca dari getY() funnel panel tetangganya).
+     */
+    private widget.PanelBiasa ekstrakPitaYMedis(int yAtas, int yBawah){
+        widget.PanelBiasa panelBaru = new widget.PanelBiasa(null);
+        java.util.List<java.awt.Component> anak = new java.util.ArrayList<>();
+        for(java.awt.Component k : FormInput.getComponents()){
+            if(k==panelRm032Atas || k==panelRm032Tengah || k==panelRm032Diagnosis || k==panelRm032){ continue; }
+            int y = k.getY();
+            if(y>=yAtas && y<yBawah){ anak.add(k); }
+        }
+        for(java.awt.Component k : anak){
+            FormInput.remove(k);
+            k.setLocation(k.getX(), k.getY()-yAtas);
+            panelBaru.add(k);
+        }
+        panelBaru.setPreferredSize(new java.awt.Dimension(LEBAR_ISI_MEDIS, Math.max(1, yBawah-yAtas)));
+        return panelBaru;
+    }
+
+    /** Lebar kartu halaman (funnel panel + margin kartu). */
+    private static final int LEBAR_HALAMAN_MEDIS = 880;
+
+    /**
+     * Bungkus konten satu halaman dgn kartu sederhana (badge nomor + judul
+     * + isi). SENGAJA jauh lebih sederhana dari buatHalamanKep() milik
+     * Keperawatan (badge status/tidakRelevan/nav bawah itu Bagian E - di
+     * luar cakupan 3b Medis).
+     */
+    private widget.PanelBiasa buatKartuHalamanMedis(HalamanMedis h, widget.PanelBiasa isi, int idx){
+        widget.PanelBiasa kartu = new widget.PanelBiasa(new java.awt.GridBagLayout());
+        latarMedis(kartu, widget.ThemeConfig.SURFACE);
+        kartu.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT));
+
+        widget.PanelBiasa strip = new widget.PanelBiasa(new java.awt.BorderLayout(10,0));
+        latarMedis(strip, widget.ThemeConfig.SURFACE_ALT);
+        strip.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT),
+            javax.swing.BorderFactory.createEmptyBorder(8,12,8,12)));
+
+        widget.Label badge = new widget.Label();
+        badge.setText(String.valueOf(idx+1));
+        badge.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        badge.setOpaque(true);
+        badge.setBackground(widget.ThemeConfig.PRIMARY);
+        badge.setForeground(java.awt.Color.WHITE);
+        badge.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 11));
+        badge.setPreferredSize(new java.awt.Dimension(22,22));
+
+        widget.Label lJudul = new widget.Label();
+        lJudul.setText(h.judul);
+        lJudul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lJudul.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 13));
+        lJudul.setForeground(widget.ThemeConfig.TEXT);
+
+        strip.add(badge, java.awt.BorderLayout.WEST);
+        strip.add(lJudul, java.awt.BorderLayout.CENTER);
+
+        isi.setOpaque(false);
+
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx=0; c.gridy=0; c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        kartu.add(strip, c);
+
+        java.awt.GridBagConstraints ci = new java.awt.GridBagConstraints();
+        ci.gridx=0; ci.gridy=1; ci.weightx=1.0; ci.fill=java.awt.GridBagConstraints.BOTH;
+        ci.insets=new java.awt.Insets(12,14,14,14);
+        kartu.add(isi, ci);
+
+        java.awt.GridBagConstraints cg = new java.awt.GridBagConstraints();
+        cg.gridx=0; cg.gridy=2; cg.weighty=1.0; cg.fill=java.awt.GridBagConstraints.BOTH;
+        kartu.add(javax.swing.Box.createGlue(), cg);
+
+        return kartu;
+    }
+
+    private static final String[] JUDUL_HALAMAN_MEDIS = {
+        "I–IV. Survei Primer",
+        "V–VII. Triase & Survei Lanjutan",
+        "VIII–X. Riwayat & Pemeriksaan Awal",
+        "XI–XIV. Pemeriksaan Fisik per Regio",
+        "XV. Pemeriksaan Penunjang",
+        "XVI. Diagnosis",
+        "XVII. Rencana/Tindakan/Terapi",
+        "XVIII. Konsul Dr. Spesialis",
+        "XIX. Edukasi",
+        "XX–XXI. Kondisi Pulang + Tanda Vital Terakhir",
+    };
+
+    /**
+     * [Bagian D] Bangun 10 HalamanMedis dari 21 SeksiMedis, timpa
+     * penempelan lama 4 funnel panel + 3 pita legacy di FormInput dgn
+     * kartu halaman yg ditumpuk (runningY). Dipanggil dari konstruktor
+     * SESUDAH pasangChipSemuaMedis() dan SEBELUM susunRangkaMedis()
+     * (rail Sesi 2 dibangun ulang di isiRailMedis() memakai halamanMedis,
+     * bukan seksiMedis, lihat sana).
+     */
+    private void susunHalamanMedis(){
+        // Halaman 1 & 2: pecah panelRm032Atas (I-VII) di batas V.
+        widget.PanelBiasa panelHal2 = new widget.PanelBiasa(new java.awt.GridBagLayout());
+        java.util.LinkedHashMap<javax.swing.JComponent,widget.PanelBiasa> potongAtas = new java.util.LinkedHashMap<>();
+        potongAtas.put(seksiMedis.get(4).strip, panelHal2);
+        pecahBarisPanelMedis(panelRm032Atas, potongAtas);
+        pasangGlueKananMedis(panelRm032Atas);
+        pasangGlueKananMedis(panelHal2);
+
+        // Halaman 8/9/10: pecah panelRm032 (XVIII-XXI) di batas XIX dan XX.
+        widget.PanelBiasa panelHal9 = new widget.PanelBiasa(new java.awt.GridBagLayout());
+        widget.PanelBiasa panelHal10 = new widget.PanelBiasa(new java.awt.GridBagLayout());
+        java.util.LinkedHashMap<javax.swing.JComponent,widget.PanelBiasa> potongBawah = new java.util.LinkedHashMap<>();
+        potongBawah.put(seksiMedis.get(18).strip, panelHal9);
+        potongBawah.put(seksiMedis.get(19).strip, panelHal10);
+        pecahBarisPanelMedis(panelRm032, potongBawah);
+        pasangGlueKananMedis(panelRm032);
+        pasangGlueKananMedis(panelHal9);
+        pasangGlueKananMedis(panelHal10);
+
+        // Halaman 3/5/7: ekstraksi pita-Y legacy - HARUS dihitung sebelum
+        // 4 funnel panel dilepas dari FormInput di bawah (batas bawah
+        // tiap pita dibaca dari getY() funnel panel tetangganya).
+        widget.PanelBiasa panelHal3 = ekstrakPitaYMedis(jLabel99.getY(), panelRm032Tengah.getY());
+        widget.PanelBiasa panelHal5 = ekstrakPitaYMedis(jLabel101.getY(), panelRm032Diagnosis.getY());
+        widget.PanelBiasa panelHal7 = ekstrakPitaYMedis(jLabel103.getY(), panelRm032.getY());
+
+        // Halaman 4 dan 6 = funnel panel utuh, tidak dipecah.
+        widget.PanelBiasa panelHal4 = panelRm032Tengah;
+        widget.PanelBiasa panelHal6 = panelRm032Diagnosis;
+
+        // Lepas 4 funnel panel dari penempelan lama FormInput - isinya
+        // sudah dipakai sbg konten kartu halaman di bawah.
+        FormInput.remove(panelRm032Atas);
+        FormInput.remove(panelRm032Tengah);
+        FormInput.remove(panelRm032Diagnosis);
+        FormInput.remove(panelRm032);
+
+        widget.PanelBiasa[] konten = {
+            panelRm032Atas, panelHal2, panelHal3, panelHal4, panelHal5,
+            panelHal6, panelHal7, panelRm032, panelHal9, panelHal10,
+        };
+        halamanMedis.clear();
+        for(int i=0;i<JUDUL_HALAMAN_MEDIS.length;i++){
+            HalamanMedis h = new HalamanMedis(JUDUL_HALAMAN_MEDIS[i]);
+            h.konten = buatKartuHalamanMedis(h, konten[i], i);
+            FormInput.add(h.konten);
+            halamanMedis.add(h);
+        }
+
+        buangKotakBawaanMedis(FormInput);
+        terapkanModeHalamanMedis();
+    }
+
+    /**
+     * Tumpuk (mode "semua halaman") atau tampilkan satu (mode "satu
+     * halaman") 10 kartu halaman di FormInput (tetap berlayout null).
+     * Dipanggil ulang tiap ganti mode atau ganti halaman aktif.
+     */
+    private void terapkanModeHalamanMedis(){
+        if(halamanMedis.isEmpty()){ return; }
+        int lebar = LEBAR_HALAMAN_MEDIS;
+        if(satuHalamanMedis){
+            int aktif = Math.max(0, halamanAktifMedis);
+            for(int i=0;i<halamanMedis.size();i++){
+                HalamanMedis h = halamanMedis.get(i);
+                boolean aktifIni = (i==aktif);
+                h.konten.setVisible(aktifIni);
+                if(aktifIni){ h.konten.setBounds(5,5,lebar,h.konten.getPreferredSize().height); }
+            }
+            javax.swing.JComponent kontenAktif = halamanMedis.get(aktif).konten;
+            FormInput.setPreferredSize(new java.awt.Dimension(lebar+10, kontenAktif.getPreferredSize().height+10));
+        } else {
+            int runningY = 5;
+            for(HalamanMedis h : halamanMedis){
+                h.konten.setVisible(true);
+                h.konten.setBounds(5, runningY, lebar, h.konten.getPreferredSize().height);
+                runningY += h.konten.getPreferredSize().height + 14;
+            }
+            FormInput.setPreferredSize(new java.awt.Dimension(lebar+10, runningY));
+        }
+        FormInput.revalidate();
+        FormInput.repaint();
+    }
+
+    /**
+     * Toggle "Semua halaman" <-> "Satu halaman", meniru
+     * buatToggleModeKep() milik Keperawatan - dua widget.RadioButton
+     * digayakan jadi chip pil lewat gayaChipMedis() (Sesi 3a), bukan dua
+     * widget.Button (Button melukis latarnya sendiri, sulit diberi gaya
+     * chip terpilih/tidak).
+     */
+    private widget.PanelBiasa buatToggleModeMedis(){
+        widget.PanelBiasa panel = new widget.PanelBiasa(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,6,0));
+        panel.setOpaque(false);
+
+        final widget.RadioButton rbSemua = new widget.RadioButton();
+        rbSemua.setText("Semua halaman");
+        final widget.RadioButton rbSatu = new widget.RadioButton();
+        rbSatu.setText("Satu halaman");
+        javax.swing.ButtonGroup grup = new javax.swing.ButtonGroup();
+        grup.add(rbSemua); grup.add(rbSatu);
+        rbSatu.setSelected(satuHalamanMedis);
+        rbSemua.setSelected(!satuHalamanMedis);
+
+        rbSemua.addActionListener((java.awt.event.ActionEvent e) -> {
+            satuHalamanMedis = false;
+            terapkanModeHalamanMedis();
+            keHalamanMedis(Math.max(0, halamanAktifMedis));
+        });
+        rbSatu.addActionListener((java.awt.event.ActionEvent e) -> {
+            satuHalamanMedis = true;
+            terapkanModeHalamanMedis();
+            keHalamanMedis(Math.max(0, halamanAktifMedis));
+        });
+
+        panel.add(rbSemua);
+        panel.add(rbSatu);
+        gayaChipMedis(panel);
+        return panel;
+    }
+
+    /**
+     * [Bagian C+D] Satu baris rail = panel yg bisa diklik (bukan widget.Button).
      *
      * Dipilih panel + MouseListener supaya keadaan aktif/hover dan batang
      * aksen kiri sepenuhnya dikendalikan di sini; widget.Button melukis
      * latarnya sendiri lewat glass color dan sulit diberi batang aksen.
      */
     private widget.PanelBiasa buatBarisRailMedis(final int idx){
-        final SeksiMedis s = seksiMedis.get(idx);
-        widget.PanelBiasa baris = new widget.PanelBiasa();
+        final HalamanMedis h = halamanMedis.get(idx);
+        widget.PanelBiasa baris = new widget.PanelBiasa(new java.awt.BorderLayout(0,0));
         latarMedis(baris, widget.ThemeConfig.SURFACE);
-        baris.setLayout(new java.awt.BorderLayout(0,0));
         baris.setBorder(javax.swing.BorderFactory.createEmptyBorder(1,0,1,0));
         baris.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 
-        // Batang aksen kiri 3px - penanda bagian aktif tanpa mengandalkan
+        // Batang aksen kiri 3px - penanda halaman aktif tanpa mengandalkan
         // warna latar saja (pembeda tetap terbaca di layar berkontras rendah).
-        widget.PanelBiasa aksen = new widget.PanelBiasa();
+        widget.PanelBiasa aksen = new widget.PanelBiasa(new java.awt.BorderLayout());
         latarMedis(aksen, widget.ThemeConfig.SURFACE);
         aksen.setPreferredSize(new java.awt.Dimension(3,10));
 
@@ -3578,91 +3935,88 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         lbl.setBorder(javax.swing.BorderFactory.createEmptyBorder(7,9,7,9));
         // Judul dibungkus <div width> supaya MEMBUNGKUS, bukan terpotong.
         lbl.setText("<html><div style='width:"+LEBAR_TEKS_RAIL_MEDIS+"px'>"
-                + escHtmlMedis(s.judul) + "</div></html>");
+                + escHtmlMedis(h.judul) + "</div></html>");
 
         baris.add(aksen, java.awt.BorderLayout.WEST);
         baris.add(lbl, java.awt.BorderLayout.CENTER);
-        s.baris = baris; s.lblJudul = lbl; s.aksen = aksen;
+        h.baris = baris; h.lblJudul = lbl; h.aksen = aksen;
 
         baris.addMouseListener(new java.awt.event.MouseAdapter(){
             @Override public void mouseClicked(java.awt.event.MouseEvent e){
-                kePosisiSeksiMedis(idx);
+                keHalamanMedis(idx);
             }
             @Override public void mouseEntered(java.awt.event.MouseEvent e){
-                if(idx!=seksiAktifMedis){ latarMedis(s.baris, widget.ThemeConfig.SURFACE_ALT); }
+                if(idx!=halamanAktifMedis){ latarMedis(h.baris, widget.ThemeConfig.SURFACE_ALT); }
             }
             @Override public void mouseExited(java.awt.event.MouseEvent e){
-                if(idx!=seksiAktifMedis){ latarMedis(s.baris, widget.ThemeConfig.SURFACE); }
+                if(idx!=halamanAktifMedis){ latarMedis(h.baris, widget.ThemeConfig.SURFACE); }
             }
         });
         return baris;
     }
 
-    /** Lebar teks judul di rail (300px rail - aksen - padding - scrollbar). */
-    private static final int LEBAR_TEKS_RAIL_MEDIS = 255;
-
-    /** [Bagian C] Pindahkan sorotan rail ke bagian ke-idx (tidak menggulung). */
-    private void sorotSeksiMedis(int idx){
-        if(idx<0 || idx>=seksiMedis.size()){ return; }
-        seksiAktifMedis = idx;
-        for(int i=0;i<seksiMedis.size();i++){
-            SeksiMedis s = seksiMedis.get(i);
-            if(s.baris==null){ continue; }
+    /** [Bagian C+D] Pindahkan sorotan rail ke halaman ke-idx (tidak menggulung/ganti mode). */
+    private void sorotHalamanMedis(int idx){
+        if(idx<0 || idx>=halamanMedis.size()){ return; }
+        halamanAktifMedis = idx;
+        for(int i=0;i<halamanMedis.size();i++){
+            HalamanMedis h = halamanMedis.get(i);
+            if(h.baris==null){ continue; }
             boolean aktif = (i==idx);
-            latarMedis(s.baris, aktif ? widget.ThemeConfig.SURFACE_ALT : widget.ThemeConfig.SURFACE);
-            latarMedis(s.aksen, aktif ? widget.ThemeConfig.PRIMARY : widget.ThemeConfig.SURFACE);
-            s.lblJudul.setForeground(aktif ? widget.ThemeConfig.TEXT : widget.ThemeConfig.TEXT_NORMAL);
-            s.lblJudul.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY,
+            latarMedis(h.baris, aktif ? widget.ThemeConfig.SURFACE_ALT : widget.ThemeConfig.SURFACE);
+            latarMedis(h.aksen, aktif ? widget.ThemeConfig.PRIMARY : widget.ThemeConfig.SURFACE);
+            h.lblJudul.setForeground(aktif ? widget.ThemeConfig.TEXT : widget.ThemeConfig.TEXT_NORMAL);
+            h.lblJudul.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY,
                     aktif ? java.awt.Font.BOLD : java.awt.Font.PLAIN, 11));
         }
         if(lblProgresJudulMedis!=null){
-            SeksiMedis s = seksiMedis.get(idx);
+            HalamanMedis h = halamanMedis.get(idx);
             lblProgresJudulMedis.setText("<html><div style='width:"+LEBAR_TEKS_RAIL_MEDIS+"px'>"
-                    + escHtmlMedis(s.judul) + "</div></html>");
-            lblProgresHitungMedis.setText("Bagian " + (idx+1) + " dari " + seksiMedis.size());
+                    + escHtmlMedis(h.judul) + "</div></html>");
+            lblProgresHitungMedis.setText("Halaman " + (idx+1) + " dari " + halamanMedis.size());
         }
         railMedis.revalidate();
         railMedis.repaint();
     }
 
     /**
-     * [Bagian C] Gulung FormInput sampai header bagian ke-idx terlihat.
-     *
-     * Ditambah TINGGI_KONTEKS_MEDIS di bawah strip supaya yg tampil bukan
-     * cuma judulnya, melainkan judul + beberapa baris pertama isinya.
-     * Dihitung LIVE saat klik (bukan di-cache saat construction) karena
-     * posisi Y section legacy bergantung geser/geser2/geser3 runtime.
+     * [Bagian D] Pindah ke halaman ke-idx: mode "satu halaman" langsung
+     * tukar kartu yg tampil (tanpa perlu scroll - selalu mulai dari
+     * atas); mode "semua halaman" tetap menggulung FormInput seperti
+     * kePosisiSeksiMedis() lama, memakai bounds kartu (anak LANGSUNG
+     * FormInput, jadi tak perlu convertRectangle lintas induk lagi).
      */
-    private void kePosisiSeksiMedis(int idx){
-        if(idx<0 || idx>=seksiMedis.size()){ return; }
-        SeksiMedis s = seksiMedis.get(idx);
-        java.awt.Container induk = s.strip.getParent();
-        if(induk==null){ sorotSeksiMedis(idx); return; }
-        java.awt.Rectangle r = javax.swing.SwingUtilities.convertRectangle(
-                induk, s.strip.getBounds(), FormInput);
-        r.height = Math.min(r.height + TINGGI_KONTEKS_MEDIS, Math.max(1, FormInput.getHeight() - r.y));
-        FormInput.scrollRectToVisible(r);
-        sorotSeksiMedis(idx);
+    private void keHalamanMedis(int idx){
+        if(idx<0 || idx>=halamanMedis.size()){ return; }
+        halamanAktifMedis = idx;
+        if(satuHalamanMedis){
+            terapkanModeHalamanMedis();
+        } else {
+            HalamanMedis h = halamanMedis.get(idx);
+            java.awt.Rectangle r = new java.awt.Rectangle(h.konten.getBounds());
+            r.height = Math.min(r.height + TINGGI_KONTEKS_MEDIS, Math.max(1, FormInput.getHeight()-r.y));
+            FormInput.scrollRectToVisible(r);
+        }
+        sorotHalamanMedis(idx);
     }
 
     /**
      * [Bagian C] Kartu progres di kepala rail.
      *
-     * Sengaja HANYA menampilkan posisi bagian ("Bagian N dari 21"), bukan
-     * hitungan isian wajib/opsional/persentase - itu Bagian E (sesi lain);
-     * menaruh angka yg belum dihitung apa pun lebih menyesatkan daripada
-     * tidak ada. Keputusan sama persis dgn Keperawatan Sesi 2.
+     * Sengaja HANYA menampilkan posisi halaman ("Halaman N dari 10"),
+     * bukan hitungan isian wajib/opsional/persentase - itu Bagian E (sesi
+     * lain); menaruh angka yg belum dihitung apa pun lebih menyesatkan
+     * daripada tidak ada. Keputusan sama persis dgn Keperawatan Sesi 2.
      */
     private widget.PanelBiasa buatKartuProgresMedis(){
-        widget.PanelBiasa kartu = new widget.PanelBiasa();
+        widget.PanelBiasa kartu = new widget.PanelBiasa(new java.awt.GridBagLayout());
         latarMedis(kartu, widget.ThemeConfig.SURFACE_ALT);
         kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
             javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
             javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
-        kartu.setLayout(new java.awt.GridBagLayout());
 
         widget.Label judul = new widget.Label();
-        judul.setText("BAGIAN AKTIF");
+        judul.setText("HALAMAN AKTIF");
         judul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         judul.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 10));
         judul.setForeground(widget.ThemeConfig.TEXT_MUTED);
@@ -3687,7 +4041,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         return kartu;
     }
 
-    /** [Bagian C] Isi rail: kartu progres di atas + satu baris tiap bagian. */
+    /** [Bagian C+D] Isi rail: kartu progres + toggle mode + satu baris tiap halaman. */
     private void isiRailMedis(){
         railMedis.removeAll();
         java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
@@ -3697,9 +4051,12 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         c.gridy=0; c.insets=new java.awt.Insets(12,12,10,12);
         railMedis.add(buatKartuProgresMedis(), c);
 
+        c.gridy=1; c.insets=new java.awt.Insets(0,12,10,12);
+        railMedis.add(buatToggleModeMedis(), c);
+
         c.insets=new java.awt.Insets(0,8,0,8);
-        int gy = 1;
-        for(int i=0;i<seksiMedis.size();i++){
+        int gy = 2;
+        for(int i=0;i<halamanMedis.size();i++){
             c.gridy=gy++;
             railMedis.add(buatBarisRailMedis(i), c);
         }
@@ -3709,7 +4066,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         c.insets=new java.awt.Insets(0,0,0,0);
         railMedis.add(javax.swing.Box.createGlue(), c);
 
-        if(!seksiMedis.isEmpty()){ sorotSeksiMedis(0); }
+        if(!halamanMedis.isEmpty()){ sorotHalamanMedis(Math.max(0,halamanAktifMedis)); }
     }
 
     /**
