@@ -159,6 +159,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         pensiunkanFieldLama();
         initRm032Tambahan();
         daftarkanSeksiLegacyMedis();
+        pasangChipSemuaMedis();
         susunRangkaMedis();
     }
 
@@ -3155,6 +3156,172 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     /** Color -> "#RRGGBB" utk dipakai di dalam teks HTML label. */
     private String hexMedis(java.awt.Color c){
         return String.format("#%02X%02X%02X", c.getRed(), c.getGreen(), c.getBlue());
+    }
+
+    // =========================================================================
+    // [Sesi 3a - Restrukturisasi UI, Bagian D] 106 pilihan radio/checkbox
+    // digayakan jadi CHIP (pil). Pola & alasan desain DISALIN dari
+    // RMPenilaianAwalKeperawatanIGD.java (gayaChipKep/pasangChipKep/
+    // warnaiChipKep, lihat PROGRESS.md Sesi 3a Keperawatan) dgn akhiran
+    // "Medis" - termasuk DUA bug yg di sana baru ketemu lewat render PNG,
+    // sengaja dibangun benar sejak awal di sini (tidak diulang temuannya):
+    // (1) BasicRadioButtonUI/BasicCheckBoxUI memaksa borderPainted=false di
+    // installDefaults(), dan AbstractButton.paintBorder() diam2 melompati
+    // pengecatan kalau flag itu false - jadi setBorderPainted(true) WAJIB
+    // dipanggil SESUDAH javax.swing.JCheckBox/JRadioButton terbentuk (bukan
+    // sebelum), kalau tidak pil-nya memakan ruang insets tapi tak pernah
+    // dilukis. (2) GridLayout (dipakai panelChecklist()) memberi semua sel
+    // ukuran SAMA dan mengisinya penuh, jadi tiap pil melar selebar kolom -
+    // ditukar GridBagLayout 2-kolom (anchor=WEST, fill=NONE) + kolom pengisi
+    // berbobot di kanan, persis pelukChipGridKep().
+    //
+    // Dipasang HANYA pada 4 panel funnel RM032 (panelRm032Atas/Tengah/
+    // Diagnosis/panelRm032) - sudah diverifikasi lewat Grep bahwa SELURUH
+    // 105 dari 106 titik "new widget.RadioButton(...)"/"new widget.CekBox(...)"
+    // berada di range baris initRm032Tambahan() (2579-3109); satu-satunya
+    // sisanya (ChkAccor, baris 177) adalah tombol kolaps/perluas panel
+    // ringkasan HTML (ikon panah, BUKAN pilihan klinis) - kalau digayakan
+    // jadi pil, ikonnya akan tertutup padding chip. Menelusuri dari akar
+    // FormInput/internalFrame2 akan ikut menyentuh ChkAccor tanpa sengaja;
+    // menelusuri dari 4 panel funnel ini tidak mungkin mengenainya.
+    // =========================================================================
+
+    /** Latar chip terpilih: PRIMARY dilarutkan ~10% ke putih. Nilai sama
+     *  persis dgn CHIP_PILIH_BG_KEP - token warna dipakai bersama. */
+    private static final java.awt.Color CHIP_PILIH_BG_MEDIS = new java.awt.Color(0xE6,0xF2,0xF3);
+
+    /** Latar chip saat kursor di atasnya. */
+    private static final java.awt.Color CHIP_HOVER_BG_MEDIS = new java.awt.Color(0xEE,0xF1,0xEC);
+
+    /** Border kotak/pil utk JCheckBox/JRadioButton, identik BorderChipKep. */
+    private static final class BorderChipMedis implements javax.swing.border.Border {
+        private java.awt.Color garis = widget.ThemeConfig.BORDER_SOFT;
+        void setGaris(java.awt.Color c){ garis = c; }
+        @Override public java.awt.Insets getBorderInsets(java.awt.Component c){
+            return new java.awt.Insets(4,10,4,10);
+        }
+        @Override public boolean isBorderOpaque(){ return false; }
+        @Override public void paintBorder(java.awt.Component c, java.awt.Graphics g,
+                                          int x, int y, int w, int h){
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+            g2.setColor(garis);
+            g2.drawRect(x, y, w - 1, h - 1);
+            g2.dispose();
+        }
+    }
+
+    /** Panggil sekali dari konstruktor, sesudah 4 panel funnel RM032 selesai
+     *  dibangun (initRm032Tambahan()). */
+    private void pasangChipSemuaMedis(){
+        gayaChipMedis(panelRm032Atas);
+        gayaChipMedis(panelRm032Tengah);
+        gayaChipMedis(panelRm032Diagnosis);
+        gayaChipMedis(panelRm032);
+    }
+
+    /** Turun rekursif dan gayakan tiap JRadioButton/JCheckBox jadi chip.
+     *  Hanya JPanel yg ditelusuri, sama pola gayaChipKep(). Sesudah anak
+     *  digayakan, kalau wadah ini sendiri ber-GridLayout dan isinya chip
+     *  (panelChecklist()), layoutnya ditukar supaya chip tidak melar. */
+    private void gayaChipMedis(java.awt.Container wadah){
+        for(java.awt.Component k : wadah.getComponents()){
+            if(k instanceof javax.swing.JRadioButton || k instanceof javax.swing.JCheckBox){
+                pasangChipMedis((javax.swing.JToggleButton) k);
+            } else if(k instanceof javax.swing.JPanel){
+                gayaChipMedis((java.awt.Container) k);
+            }
+        }
+        if(wadah.getLayout() instanceof java.awt.GridLayout){
+            pelukChipGridMedis(wadah);
+        }
+    }
+
+    /** Pasang gaya chip + pemantau status pada satu radio/checkbox. */
+    private void pasangChipMedis(final javax.swing.JToggleButton t){
+        // Penanda supaya aman dipanggil dua kali - tanpa ini, tiap
+        // pemanggilan menambah 1 listener baru.
+        if(Boolean.TRUE.equals(t.getClientProperty("chipMedis"))){ return; }
+        t.putClientProperty("chipMedis", Boolean.TRUE);
+        t.setOpaque(true);
+        // WAJIB dipanggil SESUDAH UI terpasang - lihat catatan panjang di
+        // komentar blok Sesi 3a di atas kelas ini.
+        t.setBorderPainted(true);
+        t.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        final BorderChipMedis bd = new BorderChipMedis();
+        t.setBorder(bd);
+        warnaiChipMedis(t, bd, false);
+        // itemStateChanged, bukan actionPerformed: pilihan ButtonGroup yg
+        // TER-DESELEKSI tidak pernah memancarkan action.
+        t.addItemListener(new java.awt.event.ItemListener(){
+            @Override public void itemStateChanged(java.awt.event.ItemEvent e){
+                warnaiChipMedis(t, bd, false);
+            }
+        });
+        t.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override public void mouseEntered(java.awt.event.MouseEvent e){ warnaiChipMedis(t,bd,true); }
+            @Override public void mouseExited(java.awt.event.MouseEvent e){ warnaiChipMedis(t,bd,false); }
+        });
+    }
+
+    /** Tiga status chip, token palet yg sama dgn warnaiChipKep (lihat
+     *  komentar panjang di sana soal kontras TEXT_FAINT) - tidak diulang
+     *  di sini supaya penjelasannya tidak bercabang dua tempat. */
+    private void warnaiChipMedis(javax.swing.JToggleButton t, BorderChipMedis bd, boolean hover){
+        if(t.isSelected()){
+            t.setForeground(widget.ThemeConfig.PRIMARY);
+            t.setBackground(CHIP_PILIH_BG_MEDIS);
+            bd.setGaris(widget.ThemeConfig.PRIMARY);
+        } else if(hover){
+            t.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+            t.setBackground(CHIP_HOVER_BG_MEDIS);
+            bd.setGaris(widget.ThemeConfig.PRIMARY);
+        } else {
+            t.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+            t.setBackground(widget.ThemeConfig.SURFACE_ALT);
+            bd.setGaris(widget.ThemeConfig.TEXT_FAINT);
+        }
+        t.repaint();
+    }
+
+    /** Bikin chip di dalam panelChecklist() (GridLayout 2 kolom) MEMELUK
+     *  teksnya, bukan melar selebar sel grid - persis pelukChipGridKep().
+     *  Jumlah kolom TIDAK dihitung ulang dari lebar (beda dgn Keperawatan):
+     *  Medis belum punya sistem anggaran-lebar responsif di Sesi 3a ini
+     *  (itu pekerjaan Sesi 3b saat halaman dipecah) - kolom dipertahankan
+     *  apa adanya dari GridLayout asli panelChecklist() (selalu 2). */
+    private void pelukChipGridMedis(java.awt.Container box){
+        java.awt.GridLayout grid = (java.awt.GridLayout) box.getLayout();
+        int kolom = grid.getColumns();
+        if(kolom<1){ kolom = box.getComponentCount(); }
+        if(kolom<1 || box.getComponentCount()<1){ return; }
+        boolean adaChip = false, adaLain = false;
+        for(java.awt.Component k : box.getComponents()){
+            if(k instanceof javax.swing.JToggleButton){ adaChip = true; } else { adaLain = true; }
+        }
+        if(!adaChip){ return; }
+        int hgap = grid.getHgap(), vgap = grid.getVgap();
+        java.awt.Component[] anak = box.getComponents();
+        box.removeAll();
+        box.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.anchor = java.awt.GridBagConstraints.WEST;
+        for(int i=0;i<anak.length;i++){
+            boolean chip = anak[i] instanceof javax.swing.JToggleButton;
+            c.gridx = i % kolom;
+            c.gridy = i / kolom;
+            c.insets = new java.awt.Insets(0, 0, vgap, c.gridx==kolom-1 ? 0 : hgap);
+            c.fill = chip ? java.awt.GridBagConstraints.NONE
+                          : java.awt.GridBagConstraints.HORIZONTAL;
+            c.weightx = chip ? 0.0 : 1.0;
+            box.add(anak[i], c);
+        }
+        // Kolom pengisi HANYA kalau tak ada anak lain yg menuntut sisa ruang.
+        if(!adaLain){
+            c.gridx = kolom; c.gridy = 0; c.weightx = 1.0;
+            c.fill = java.awt.GridBagConstraints.NONE;
+            c.insets = new java.awt.Insets(0,0,0,0);
+            box.add(javax.swing.Box.createHorizontalGlue(), c);
+        }
     }
 
     /**
