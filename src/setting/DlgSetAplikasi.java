@@ -609,6 +609,9 @@ public class DlgSetAplikasi extends javax.swing.JDialog {
                              "','"+Propinsi.getText()+"','"+Kontak.getText()+"','"+Email.getText()+
                              "','"+YesNo.getSelectedItem()+"','"+kdPPK.getText()+"','"+kdPPK1.getText()+"','"+kdPPK2.getText()+"'","Setting",EGb,ELogo);
             runBackground(() ->tampil());
+            try {
+                simrskhanza.frmUtama.getInstance().isWall();
+            } catch (Exception ex) {}
         }else if(tabMode.getRowCount()>0){
             JOptionPane.showMessageDialog(null,"Maaf, Hanya diijinkan satu Set Aplikasi...!!!!");
             Nm.requestFocus();
@@ -643,6 +646,9 @@ public class DlgSetAplikasi extends javax.swing.JDialog {
             Sequel.queryu("delete from setting ");
             runBackground(() ->tampil());
             emptTeks();
+            try {
+                simrskhanza.frmUtama.getInstance().isWall();
+            } catch (Exception ex) {}
         }
     }//GEN-LAST:event_BtnHapusActionPerformed
 
@@ -719,6 +725,9 @@ public class DlgSetAplikasi extends javax.swing.JDialog {
                              "','"+Propinsi.getText()+"','"+Kontak.getText()+"','"+Email.getText()+
                              "','"+YesNo.getSelectedItem()+"','"+kdPPK.getText()+"','"+kdPPK1.getText()+"','"+kdPPK2.getText()+"'","Setting",EGb,ELogo);
             runBackground(() ->tampil());
+            try {
+                simrskhanza.frmUtama.getInstance().isWall();
+            } catch (Exception ex) {}
         }
     }//GEN-LAST:event_BtnEditActionPerformed
 

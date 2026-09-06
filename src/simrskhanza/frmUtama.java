@@ -1247,6 +1247,7 @@ public class frmUtama extends javax.swing.JFrame {
     
     private frmUtama() {
         super();
+        myInstance = this;
         initComponents();
         widget.IconStyle.pasang(this);
         // [BARU] Hapus ikon pensil berwarna pada teks credit - lihat
@@ -1257,6 +1258,13 @@ public class frmUtama extends javax.swing.JFrame {
         // atas permintaan user - lebar label fixed di GEN block bikin ikon
         // ketiban/ketutup teks.)
         jLabel7.setIcon(null);
+        // [BARU] Matikan wash kaca putih transparan bawaan PanelGlass (alpha
+        // default 0.2f di constructor-nya, tak pernah di-override di GEN
+        // block - hanya setWarna() yg dipanggil di sana). Wash ini yg jadi
+        // gradasi putih di depan foto wallpaper; overlay gelap utk keterbacaan
+        // teks sudah ditangani sendiri oleh PanelLandingHospital, jadi wash
+        // dari PanelWall di sini murni tak terpakai lagi.
+        PanelWall.setAlpha(0f);
         initKhanza();
         initKhanza2();
         setIconImage(new ImageIcon(super.getClass().getResource("/picture/yaski24.png")).getImage());
@@ -1297,6 +1305,12 @@ public class frmUtama extends javax.swing.JFrame {
             }
         }catch(Exception e){
         }
+        
+        try{
+            isWall();
+        }catch(Exception exWall){
+            System.out.println("Notif isWall Constructor: " + exWall);
+        }
     }
     
     public static frmUtama getInstance() {
@@ -1304,6 +1318,12 @@ public class frmUtama extends javax.swing.JFrame {
             myInstance = new frmUtama();
 
         return myInstance;
+    }
+    
+    public void triggerLogin() {
+        if (BtnLog != null) {
+            BtnLog.doClick();
+        }
     }
      
 
@@ -7267,7 +7287,12 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame1.setVerifyInputWhenFocusTarget(false);
         internalFrame1.setWarnaAtas(java.awt.Color.WHITE);
         internalFrame1.setWarnaBawah(java.awt.Color.WHITE);
-        internalFrame1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 12, 8));
+        internalFrame1.setLayout(new java.awt.BorderLayout());
+
+        javax.swing.JPanel pnlLeftTools = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 8));
+        pnlLeftTools.setOpaque(false);
+        javax.swing.JPanel pnlRightActions = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 12, 8));
+        pnlRightActions.setOpaque(false);
 
         BtnMenu.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/menu.svg", 24, 24));
         BtnMenu.setRolloverIcon(svgIconHover("picture/icons/toolbar/menu.svg"));
@@ -7292,7 +7317,7 @@ public class frmUtama extends javax.swing.JFrame {
                 BtnMenuActionPerformed(evt);
             }
         });
-        internalFrame1.add(BtnMenu);
+        pnlLeftTools.add(BtnMenu);
 
         jSeparator4.setBackground(new java.awt.Color(217, 226, 232));
         jSeparator4.setForeground(new java.awt.Color(217, 226, 232));
@@ -7301,7 +7326,7 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator4.setName("jSeparator4"); // NOI18N
         jSeparator4.setOpaque(true);
         jSeparator4.setPreferredSize(new java.awt.Dimension(1, 28));
-        internalFrame1.add(jSeparator4);
+        pnlLeftTools.add(jSeparator4);
 
         BtnToolReg.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/registration.svg", 24, 24));
         BtnToolReg.setRolloverIcon(svgIconHover("picture/icons/toolbar/registration.svg"));
@@ -7326,7 +7351,7 @@ public class frmUtama extends javax.swing.JFrame {
                 BtnToolRegActionPerformed(evt);
             }
         });
-        internalFrame1.add(BtnToolReg);
+        pnlLeftTools.add(BtnToolReg);
 
         btnToolIGD.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/emergency.svg", 24, 24));
         btnToolIGD.setRolloverIcon(svgIconHover("picture/icons/toolbar/emergency.svg"));
@@ -7351,7 +7376,7 @@ public class frmUtama extends javax.swing.JFrame {
                 btnToolIGDActionPerformed(evt);
             }
         });
-        internalFrame1.add(btnToolIGD);
+        pnlLeftTools.add(btnToolIGD);
 
         jSeparator5.setBackground(new java.awt.Color(217, 226, 232));
         jSeparator5.setForeground(new java.awt.Color(217, 226, 232));
@@ -7360,7 +7385,7 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator5.setName("jSeparator5"); // NOI18N
         jSeparator5.setOpaque(true);
         jSeparator5.setPreferredSize(new java.awt.Dimension(1, 28));
-        internalFrame1.add(jSeparator5);
+        pnlLeftTools.add(jSeparator5);
 
         btnToolLab.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/laboratory.svg", 24, 24));
         btnToolLab.setRolloverIcon(svgIconHover("picture/icons/toolbar/laboratory.svg"));
@@ -7384,7 +7409,7 @@ public class frmUtama extends javax.swing.JFrame {
                 btnToolLabActionPerformed(evt);
             }
         });
-        internalFrame1.add(btnToolLab);
+        pnlLeftTools.add(btnToolLab);
 
         btnToolRad.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/radiology.svg", 24, 24));
         btnToolRad.setRolloverIcon(svgIconHover("picture/icons/toolbar/radiology.svg"));
@@ -7408,7 +7433,7 @@ public class frmUtama extends javax.swing.JFrame {
                 btnToolRadActionPerformed(evt);
             }
         });
-        internalFrame1.add(btnToolRad);
+        pnlLeftTools.add(btnToolRad);
 
         BtnToolJualObat.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/pharmacy.svg", 24, 24));
         BtnToolJualObat.setRolloverIcon(svgIconHover("picture/icons/toolbar/pharmacy.svg"));
@@ -7432,7 +7457,7 @@ public class frmUtama extends javax.swing.JFrame {
                 BtnToolJualObatActionPerformed(evt);
             }
         });
-        internalFrame1.add(BtnToolJualObat);
+        pnlLeftTools.add(BtnToolJualObat);
 
         jSeparator9.setBackground(new java.awt.Color(217, 226, 232));
         jSeparator9.setForeground(new java.awt.Color(217, 226, 232));
@@ -7441,7 +7466,7 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator9.setName("jSeparator9"); // NOI18N
         jSeparator9.setOpaque(true);
         jSeparator9.setPreferredSize(new java.awt.Dimension(1, 28));
-        internalFrame1.add(jSeparator9);
+        pnlLeftTools.add(jSeparator9);
 
         BtnToolKamnap.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/inpatient.svg", 24, 24));
         BtnToolKamnap.setRolloverIcon(svgIconHover("picture/icons/toolbar/inpatient.svg"));
@@ -7466,7 +7491,7 @@ public class frmUtama extends javax.swing.JFrame {
                 BtnToolKamnapActionPerformed(evt);
             }
         });
-        internalFrame1.add(BtnToolKamnap);
+        pnlLeftTools.add(BtnToolKamnap);
 
         BtnToolKasir.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/outpatient.svg", 24, 24));
         BtnToolKasir.setRolloverIcon(svgIconHover("picture/icons/toolbar/outpatient.svg"));
@@ -7491,31 +7516,21 @@ public class frmUtama extends javax.swing.JFrame {
                 BtnToolKasirActionPerformed(evt);
             }
         });
-        internalFrame1.add(BtnToolKasir);
+        pnlLeftTools.add(BtnToolKasir);
 
-        jSeparator7.setBackground(new java.awt.Color(217, 226, 232));
-        jSeparator7.setForeground(new java.awt.Color(217, 226, 232));
-        jSeparator7.setOrientation(javax.swing.SwingConstants.VERTICAL);
-        jSeparator7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(217, 226, 232)));
-        jSeparator7.setName("jSeparator7"); // NOI18N
-        jSeparator7.setOpaque(true);
-        jSeparator7.setPreferredSize(new java.awt.Dimension(1, 28));
-        internalFrame1.add(jSeparator7);
-
-        BtnLog.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/logout.svg", 24, 24));
-        BtnLog.setRolloverIcon(svgIconHover("picture/icons/toolbar/logout.svg"));
-        BtnLog.setPressedIcon(svgIconHover("picture/icons/toolbar/logout.svg"));
+        BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 16, null));
         BtnLog.setMnemonic('L');
         BtnLog.setText("Log In");
         BtnLog.setToolTipText("Alt+L");
         BtnLog.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        BtnLog.setIconTextGap(2);
+        BtnLog.setIconTextGap(6);
         BtnLog.setMargin(new java.awt.Insets(0, 0, 0, 0));
         BtnLog.setName("BtnLog"); // NOI18N
-        BtnLog.setPreferredSize(new java.awt.Dimension(78, 40));
+        BtnLog.setPreferredSize(new java.awt.Dimension(95, 38));
         BtnLog.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
-        BtnLog.putClientProperty("JButton.buttonType", "toolBarButton");
-        BtnLog.setForeground(new java.awt.Color(38, 55, 70));
+        BtnLog.putClientProperty("JButton.buttonType", "roundRect");
+        BtnLog.setBackground(new java.awt.Color(13, 122, 104));
+        BtnLog.setForeground(java.awt.Color.WHITE);
         BtnLog.setFont(new java.awt.Font("Segoe UI", 1, 12));
         BtnLog.setFocusPainted(false);
         BtnLog.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -7524,22 +7539,21 @@ public class frmUtama extends javax.swing.JFrame {
                 BtnLogActionPerformed(evt);
             }
         });
-        internalFrame1.add(BtnLog);
+        pnlRightActions.add(BtnLog);
 
-        BtnClose.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/exit.svg", 24, 24));
-        BtnClose.setRolloverIcon(svgIconHover("picture/icons/toolbar/exit.svg"));
-        BtnClose.setPressedIcon(svgIconHover("picture/icons/toolbar/exit.svg"));
+        BtnClose.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/exit.svg", 16, "#DC2626"));
         BtnClose.setMnemonic('U');
         BtnClose.setText("Keluar");
         BtnClose.setToolTipText("Alt+U");
         BtnClose.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        BtnClose.setIconTextGap(2);
+        BtnClose.setIconTextGap(6);
         BtnClose.setMargin(new java.awt.Insets(0, 0, 0, 0));
         BtnClose.setName("BtnClose"); // NOI18N
-        BtnClose.setPreferredSize(new java.awt.Dimension(80, 40));
+        BtnClose.setPreferredSize(new java.awt.Dimension(90, 38));
         BtnClose.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
-        BtnClose.putClientProperty("JButton.buttonType", "toolBarButton");
-        BtnClose.setForeground(new java.awt.Color(217, 83, 79));
+        BtnClose.putClientProperty("JButton.buttonType", "roundRect");
+        BtnClose.setBackground(new java.awt.Color(254, 242, 242));
+        BtnClose.setForeground(new java.awt.Color(220, 53, 69));
         BtnClose.setFont(new java.awt.Font("Segoe UI", 1, 12));
         BtnClose.setFocusPainted(false);
         BtnClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -7548,9 +7562,16 @@ public class frmUtama extends javax.swing.JFrame {
                 BtnCloseActionPerformed(evt);
             }
         });
-        internalFrame1.add(BtnClose);
+        pnlRightActions.add(BtnClose);
 
-        getContentPane().add(internalFrame1, java.awt.BorderLayout.PAGE_START);
+        internalFrame1.add(pnlLeftTools, java.awt.BorderLayout.WEST);
+        internalFrame1.add(pnlRightActions, java.awt.BorderLayout.EAST);
+
+        panelTopBar = new simrskhanza.PanelTopBar();
+        javax.swing.JPanel pnlHeaderContainer = new javax.swing.JPanel(new java.awt.BorderLayout());
+        pnlHeaderContainer.add(panelTopBar, java.awt.BorderLayout.NORTH);
+        pnlHeaderContainer.add(internalFrame1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(pnlHeaderContainer, java.awt.BorderLayout.PAGE_START);
 
         internalFrame4.setBackground(java.awt.Color.WHITE);
         internalFrame4.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(217, 226, 232)));
@@ -7655,7 +7676,7 @@ public class frmUtama extends javax.swing.JFrame {
         PanelWall.setBackground(java.awt.Color.WHITE);
         PanelWall.setOpaqueImage(false);
         PanelWall.setBackgroundImageType(usu.widget.constan.BackgroundConstan.BACKGROUND_IMAGE_STRECT);
-        PanelWall.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        PanelWall.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         PanelWall.setPreferredSize(new java.awt.Dimension(200, 200));
         PanelWall.setRound(false);
         PanelWall.setWarna(new java.awt.Color(244, 247, 249));
@@ -7666,11 +7687,15 @@ public class frmUtama extends javax.swing.JFrame {
         });
         PanelWall.setLayout(new java.awt.BorderLayout());
 
+        panelLandingHospital = new simrskhanza.PanelLandingHospital();
+        PanelWall.add(panelLandingHospital, java.awt.BorderLayout.CENTER);
+
         panelJudul.setBackground(new java.awt.Color(255, 255, 255));
         panelJudul.setOpaqueImage(false);
         panelJudul.setPreferredSize(new java.awt.Dimension(200, 170));
         panelJudul.setRound(false);
         panelJudul.setLayout(null);
+        panelJudul.setVisible(false);
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(104, 120, 135));
@@ -8518,7 +8543,7 @@ public class frmUtama extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnCancelActionPerformed
 
     private void chkTampilkanPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkTampilkanPasswordActionPerformed
-        edPwd.setEchoChar(chkTampilkanPassword.isSelected() ? (char)0 : '●');
+        edPwd.setEchoChar(chkTampilkanPassword.isSelected() ? (char)0 : '\u25cf');
         // Ikon mata di ujung kanan field: mata terbuka saat password
         // tersembunyi (ajakan menampilkan), mata tertutup saat tampil.
         edPwd.putClientProperty("JTextField.trailingIcon", ikonMata(!chkTampilkanPassword.isSelected()));
@@ -8552,9 +8577,15 @@ public class frmUtama extends javax.swing.JFrame {
                 edAdmin.setText("");
                 edPwd.setText("");
                 BtnLog.setText("Log In");
+                BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 16, null));
+                BtnLog.setBackground(new java.awt.Color(13, 122, 104));
+                BtnLog.setForeground(java.awt.Color.WHITE);
                 MnLogin.setText("Log In");
                 lblStts.setText("Status Admin : ");
                 lblUser.setText("Log Out");
+                if (panelTopBar != null) {
+                    panelTopBar.setUserStatus("Belum masuk", false);
+                }
                 BtnMenu.setEnabled(false);
                 akses.setLogOut();
                 isTutup();
@@ -8603,9 +8634,15 @@ public class frmUtama extends javax.swing.JFrame {
 
                     DlgLogin.dispose();
                     BtnLog.setText("Log Out");
+                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 16, null));
+                    BtnLog.setBackground(new java.awt.Color(220, 53, 69));
+                    BtnLog.setForeground(java.awt.Color.WHITE);
                     MnLogin.setText("Log Out");
                     lblStts.setText("Admin : ");
                     lblUser.setText("Admin Utama");
+                    if (panelTopBar != null) {
+                        panelTopBar.setUserStatus("Admin Utama", true);
+                    }
                     if(AKTIFKANTRACKSQL.equals("yes")){
                         Sequel.menyimpan("tracker","'Admin Utama',current_date(),current_time()","Login");
                     }
@@ -8613,9 +8650,15 @@ public class frmUtama extends javax.swing.JFrame {
                     BtnMenu.setEnabled(true);
                     DlgLogin.dispose();
                     BtnLog.setText("Log Out");
+                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 16, null));
+                    BtnLog.setBackground(new java.awt.Color(220, 53, 69));
+                    BtnLog.setForeground(java.awt.Color.WHITE);
                     MnLogin.setText("Log Out");
                     lblStts.setText("Admin : ");
                     lblUser.setText(akses.getkode());
+                    if (panelTopBar != null) {
+                        panelTopBar.setUserStatus(akses.getkode(), true);
+                    }
                     MnGantiPassword.setEnabled(true);
                     MnPengajuanCutiPegawai.setEnabled(true);
                     BtnToolReg.setEnabled(akses.getregistrasi());
@@ -8688,9 +8731,15 @@ public class frmUtama extends javax.swing.JFrame {
 
                     edAdmin.requestFocus();
                     BtnLog.setText("Log In");
+                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 16, null));
+                    BtnLog.setBackground(new java.awt.Color(13, 122, 104));
+                    BtnLog.setForeground(java.awt.Color.WHITE);
                     MnLogin.setText("Log In");
                     lblStts.setText("Status Admin : ");
                     lblUser.setText("Log Out");   
+                    if (panelTopBar != null) {
+                        panelTopBar.setUserStatus("Belum masuk", false);
+                    }
                 }
             } catch (Exception e) {
                 System.out.println("Notifikasi : "+e);
@@ -11467,6 +11516,9 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         setToolbar();
+        try{
+            isWall();
+        }catch(Exception exWall){}
         if(koneksiDB.CARICEPAT().equals("aktif")){
             TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
                 @Override
@@ -23972,6 +24024,8 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private javax.swing.JMenu MnTarif1;
     private javax.swing.JPanel PanelUtama;
     private usu.widget.glass.PanelGlass PanelWall;
+    private simrskhanza.PanelTopBar panelTopBar;
+    private simrskhanza.PanelLandingHospital panelLandingHospital;
     private widget.panelGlass Panelmenu;
     private widget.TextBox TCari;
     private widget.ButtonBig btnAdmin;
@@ -24653,28 +24707,59 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                     akses.setemailrs(rs.getString("email"));
                     akses.setkodeppkbpjs(rs.getString("kode_ppk"));
                     akses.setkodeppkkemenkes(rs.getString("kode_ppkkemenkes"));
-                    lblLoginNamaRS.setText(rs.getString("nama_instansi"));
+                    String namaInstansi = rs.getString("nama_instansi");
+                    String alamatInstansi = rs.getString("alamat_instansi");
+                    String kabupaten = rs.getString("kabupaten");
+                    String propinsi = rs.getString("propinsi");
+                    String kontak = rs.getString("kontak");
+                    String email = rs.getString("email");
+                    
+                    java.awt.Image logoImg = null;
                     try{
                         Blob logoBlob = rs.getBlob("logo");
                         if(logoBlob!=null && logoBlob.length()>0){
                             byte[] logoBytes = logoBlob.getBytes(1, (int) (logoBlob.length()));
                             lblLoginLogo.setIcon(skalakanIkon(new javax.swing.ImageIcon(logoBytes).getImage(),64,64));
                             jLabel8.setIcon(skalakanIkon(new javax.swing.ImageIcon(logoBytes).getImage(),110,110));
+                            logoImg = new javax.swing.ImageIcon(logoBytes).getImage();
                             logoBlob.free();
                         }
                     }catch(Exception exLogo){
                         System.out.println("Notif Logo : "+exLogo);
                     }
-                    if(rs.getString(5).equals("Yes")){
-                        Blob blob = rs.getBlob(6);
-                        byte[] wallBytes = blob.getBytes(1, (int) (blob.length()));
-                        javax.swing.ImageIcon wallIcon = new javax.swing.ImageIcon(wallBytes);
-                        PanelWall.setBackgroundImage(wallIcon);
-                        PanelWall.setOpaqueImage(true);
-                        // Latar dialog login sengaja dibuat putih polos,
-                        // tidak ikut wallpaper setting (permintaan user).
-                        repaint();
+                    
+                    java.awt.Image wallImg = null;
+                    try{
+                        if(rs.getString(5).equals("Yes")){
+                            Blob blob = rs.getBlob(6);
+                            if(blob != null && blob.length() > 0){
+                                byte[] wallBytes = blob.getBytes(1, (int) (blob.length()));
+                                javax.swing.ImageIcon wallIcon = new javax.swing.ImageIcon(wallBytes);
+                                wallImg = wallIcon.getImage();
+                                // PanelWall.setBackgroundImage/setOpaqueImage(true) SENGAJA
+                                // dihapus - dulu PanelWall yg gambar wallpaper sendiri sebelum
+                                // PanelLandingHospital ada, sekarang jadi duplikat foto yg sama
+                                // (skala beda) di belakang panelLandingHospital, tak terlihat
+                                // normal tapi kerja render dua kali & jadi kandidat sumber
+                                // gradasi/ghosting saat resize. panelLandingHospital di bawah
+                                // sudah dapat wallImg-nya sendiri lewat updateHospitalData().
+                                blob.free();
+                            }
+                        }
+                    }catch(Exception exWall){
+                        System.out.println("Notif Wallpaper : "+exWall);
                     }
+                    
+                    if(panelLandingHospital != null){
+                        panelLandingHospital.updateHospitalData(namaInstansi, kabupaten, alamatInstansi, kontak, email, logoImg, wallImg);
+                    }
+                    if(panelTopBar != null){
+                        panelTopBar.updateHospitalName(namaInstansi);
+                    }
+                    try {
+                        jLabel7.setText(" © " + namaInstansi + " - SIMRS Khanza Modern");
+                    } catch (Exception exCopy) {}
+                    repaint();
                 }
             } catch (Exception e) {
                 System.out.println(e);
