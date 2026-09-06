@@ -7549,15 +7549,15 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         TCariMasalah.putClientProperty("JTextField.placeholderText", "Ketik kata kunci masalah keperawatan...");
 
         BtnCariMasalah.setPreferredSize(new java.awt.Dimension(28, 26));
-        BtnCariMasalah.setToolTipText("Cari Masalah Keperawatan (Alt+1)");
-        javax.swing.Icon icCariMasalah = widget.IconStyle.muat("search.svg", 14, widget.IconStyle.ABU);
+        BtnCariMasalah.setToolTipText("Filter / Pilih Masalah Keperawatan (Alt+1)");
+        javax.swing.Icon icCariMasalah = widget.IconStyle.muat("check.svg", 14, widget.IconStyle.HIJAU);
         if (icCariMasalah != null) {
             BtnCariMasalah.setIcon(icCariMasalah);
         }
 
         BtnAllMasalah.setPreferredSize(new java.awt.Dimension(28, 26));
-        BtnAllMasalah.setToolTipText("Tampilkan Semua / Refresh (Alt+2)");
-        javax.swing.Icon icAllMasalah = widget.IconStyle.muat("refresh.svg", 14, widget.IconStyle.ABU);
+        BtnAllMasalah.setToolTipText("Tampilkan Semua / Cari Masalah Keperawatan (Alt+2)");
+        javax.swing.Icon icAllMasalah = widget.IconStyle.muat("search.svg", 14, widget.IconStyle.ABU);
         if (icAllMasalah != null) {
             BtnAllMasalah.setIcon(icAllMasalah);
         }
