@@ -15,8 +15,9 @@ public final class ComboBox extends JComboBox {
 
     public ComboBox(){
         setFont(new java.awt.Font("Segoe UI", 0, 11));
-        // Fase 2.5: setBackground/setForeground hardcode dihapus - biarkan
-        // FlatLaf UIManager yang menentukan warna dasar komponen ini.
+        setBackground(java.awt.Color.WHITE);
+        setOpaque(true);
+        putClientProperty("FlatLaf.style", "background: #FFFFFF; disabledBackground: #FFFFFF; buttonBackground: #FFFFFF; editableBackground: #FFFFFF;");
         setSize(WIDTH,23);
     }
 }

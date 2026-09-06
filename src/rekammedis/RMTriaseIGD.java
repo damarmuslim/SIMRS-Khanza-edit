@@ -4366,7 +4366,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         kartu.setBackground(widget.ThemeConfig.SURFACE_ALT);
         kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
             javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
-            javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
+            javax.swing.BorderFactory.createEmptyBorder(12,14,12,14)));
 
         widget.Label lblJudulKartu = new widget.Label();
         lblJudulKartu.setText("IDENTITAS PASIEN");
@@ -4404,10 +4404,10 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         k.anchor=java.awt.GridBagConstraints.EAST; kartu.add(badgeKunci,k);
         k.gridx=0; k.gridwidth=2; k.weightx=1.0; k.anchor=java.awt.GridBagConstraints.WEST;
         k.fill=java.awt.GridBagConstraints.HORIZONTAL;
-        k.gridy=1; k.insets=new java.awt.Insets(8,0,0,0);  kartu.add(lblKartuNama,k);
+        k.gridy=1; k.insets=new java.awt.Insets(7,0,0,0);  kartu.add(lblKartuNama,k);
         k.gridy=2; k.insets=new java.awt.Insets(2,0,0,0);   kartu.add(lblKartuJK,k);
-        k.gridy=3; k.insets=new java.awt.Insets(6,0,0,0);   kartu.add(lblKartuRM,k);
-        k.gridy=4; k.insets=new java.awt.Insets(2,0,0,0);   kartu.add(lblKartuRawat,k);
+        k.gridy=3; k.insets=new java.awt.Insets(7,0,0,0);   kartu.add(lblKartuRM,k);
+        k.gridy=4; k.insets=new java.awt.Insets(3,0,0,0);   kartu.add(lblKartuRawat,k);
         k.gridy=5; k.weighty=1.0; k.fill=java.awt.GridBagConstraints.BOTH;
         kartu.add(javax.swing.Box.createGlue(),k);
 
@@ -4465,13 +4465,13 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         f.gridx=0; f.gridy=0; f.fill=java.awt.GridBagConstraints.BOTH;
         f.weightx=0; f.weighty=1.0;
         f.insets=new java.awt.Insets(0,0,0,16);
-        java.awt.Dimension dk = new java.awt.Dimension(262,10);
+        java.awt.Dimension dk = new java.awt.Dimension(270,118);
         kartu.setMinimumSize(dk); kartu.setPreferredSize(dk);
         FormInput.add(kartu,f);
         f.gridx=1; f.weightx=1.0; f.insets=new java.awt.Insets(0,0,0,0);
         FormInput.add(grid,f);
 
-        FormInput.setPreferredSize(new java.awt.Dimension(900,132));
+        FormInput.setPreferredSize(new java.awt.Dimension(900,142));
     }
 
     /** [Bagian B] Sinkronkan label kartu identitas dari TextBox tersembunyi. */

@@ -3501,7 +3501,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         latarMedis(kartu, widget.ThemeConfig.SURFACE_ALT);
         kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
             javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
-            javax.swing.BorderFactory.createEmptyBorder(10,12,10,12)));
+            javax.swing.BorderFactory.createEmptyBorder(12,14,12,14)));
         kartu.setLayout(new java.awt.GridBagLayout());
         widget.Label judulKartu = new widget.Label();
         judulKartu.setText("IDENTITAS PASIEN");
@@ -3526,10 +3526,10 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         k.gridx=0; k.gridy=0; k.anchor=java.awt.GridBagConstraints.WEST;
         k.fill=java.awt.GridBagConstraints.HORIZONTAL; k.weightx=1.0;
         kartu.add(judulKartu,k);
-        k.gridy=1; k.insets=new java.awt.Insets(8,0,0,0); kartu.add(lblKartuNama,k);
-        k.gridy=2; k.insets=new java.awt.Insets(1,0,0,0); kartu.add(lblKartuInfo,k);
-        k.gridy=3; k.insets=new java.awt.Insets(8,0,0,0); kartu.add(lblKartuRM,k);
-        k.gridy=4; k.insets=new java.awt.Insets(2,0,0,0); kartu.add(lblKartuRawat,k);
+        k.gridy=1; k.insets=new java.awt.Insets(7,0,0,0); kartu.add(lblKartuNama,k);
+        k.gridy=2; k.insets=new java.awt.Insets(2,0,0,0); kartu.add(lblKartuInfo,k);
+        k.gridy=3; k.insets=new java.awt.Insets(7,0,0,0); kartu.add(lblKartuRM,k);
+        k.gridy=4; k.insets=new java.awt.Insets(3,0,0,0); kartu.add(lblKartuRawat,k);
         k.gridy=5; k.weighty=1.0; k.fill=java.awt.GridBagConstraints.BOTH; k.insets=new java.awt.Insets(0,0,0,0);
         kartu.add(javax.swing.Box.createGlue(),k);
 
@@ -3563,13 +3563,14 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         g.gridx=3; g.insets=new java.awt.Insets(0,0,0,0); grid.add(hdrCellMedis("HUBUNGAN", Hubungan, false),g);
 
         // ---- rakit banner: kartu (kiri, lebar tetap) + grid (kanan, fleksibel) ----
-        java.awt.Dimension dk = new java.awt.Dimension(300,10);
+        java.awt.Dimension dk = new java.awt.Dimension(310,120);
         kartu.setMinimumSize(dk); kartu.setPreferredSize(dk);
         java.awt.GridBagConstraints f = new java.awt.GridBagConstraints();
-        f.gridx=0; f.gridy=0; f.fill=java.awt.GridBagConstraints.BOTH; f.weighty=1.0;
+        f.gridx=0; f.gridy=0; f.fill=java.awt.GridBagConstraints.VERTICAL; f.weighty=1.0;
         f.insets=new java.awt.Insets(0,0,0,16);
         banner.add(kartu,f);
-        f.gridx=1; f.weightx=1.0; f.insets=new java.awt.Insets(0,0,0,0);
+        f.gridx=1; f.weightx=1.0; f.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        f.anchor=java.awt.GridBagConstraints.CENTER; f.insets=new java.awt.Insets(0,0,0,0);
         banner.add(grid,f);
         return banner;
     }

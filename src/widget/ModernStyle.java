@@ -60,6 +60,34 @@ public class ModernStyle {
         UIManager.put("Table.font", F_INPUT);
         UIManager.put("TableHeader.font",
                 new Font("Segoe UI Semibold", Font.PLAIN, 12));
+
+        // Input fields background - putih bersih (#FFFFFF), hilangkan warna abu-abu
+        UIManager.put("TextField.background", Color.WHITE);
+        UIManager.put("TextField.inactiveBackground", Color.WHITE);
+        UIManager.put("TextField.disabledBackground", Color.WHITE);
+        UIManager.put("TextField.focusedBackground", Color.WHITE);
+        UIManager.put("FormattedTextField.background", Color.WHITE);
+        UIManager.put("FormattedTextField.inactiveBackground", Color.WHITE);
+        UIManager.put("FormattedTextField.disabledBackground", Color.WHITE);
+        UIManager.put("FormattedTextField.focusedBackground", Color.WHITE);
+        UIManager.put("PasswordField.background", Color.WHITE);
+        UIManager.put("PasswordField.inactiveBackground", Color.WHITE);
+        UIManager.put("PasswordField.disabledBackground", Color.WHITE);
+        UIManager.put("ComboBox.background", Color.WHITE);
+        UIManager.put("ComboBox.disabledBackground", Color.WHITE);
+        UIManager.put("ComboBox.buttonBackground", Color.WHITE);
+        UIManager.put("ComboBox.buttonEditableBackground", Color.WHITE);
+        UIManager.put("ComboBox.editableBackground", Color.WHITE);
+        UIManager.put("ComboBox.focusedBackground", Color.WHITE);
+        UIManager.put("TextArea.background", Color.WHITE);
+        UIManager.put("TextArea.inactiveBackground", Color.WHITE);
+        UIManager.put("TextArea.disabledBackground", Color.WHITE);
+        UIManager.put("Spinner.background", Color.WHITE);
+        UIManager.put("Spinner.disabledBackground", Color.WHITE);
+        UIManager.put("CheckBox.background", Color.WHITE);
+        UIManager.put("RadioButton.background", Color.WHITE);
+        UIManager.put("List.background", Color.WHITE);
+        UIManager.put("PopupMenu.background", Color.WHITE);
     }
 
     /**

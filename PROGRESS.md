@@ -3856,3 +3856,85 @@ bagian atas file ini (mis. "BtnSimpan teal primer", "Hapus merah bata
 (`initActionBarKep()`: `BtnSimpan` bergaya kartu putih polos, `BtnHapus`/
 `BtnKeluar` sama-sama `0xB91C1C`) — kode adalah sumber kebenaran, dan Sesi
 6 Medis di atas meniru KODE-nya, bukan narasi ini.
+
+---
+
+# Progress: Penilaian Awal Keperawatan IGD (RM 03-4/05/06) - PILOT PROJECT
+
+Penyempurnaan komprehensif formulir `RMPenilaianAwalKeperawatanIGD.java` (Pengkajian Awal Keperawatan Gawat Darurat) yang mencakup restrukturisasi UI 11 halaman, tata letak modern FlatLaf, komponen cerdas kondisional, serta perbaikan integritas data MySQL. Form ini ditetapkan sebagai **PILOT PROJECT (Acuan Standar)** untuk penyesuaian formulir-formulir rekam medis lainnya di SIMRS Khanza.
+
+## File yang Dikerjakan / Terkait
+
+- **`src/rekammedis/RMPenilaianAwalKeperawatanIGD.java`** — Formulir utama (11 seksi/halaman, 212 kolom database).
+- **`src/widget/TextBox.java`** — Rendering placeholder/watermark native FlatLaf tanpa double-paint.
+- **`src/widget/ModernStyle.java`**, **`src/widget/ThemeConfig.java`** — Design system terpusat (Navy/Teal).
+- **`dist/SIMRS_Khanza_Edit.jar`** — Distribusi JAR aplikasi yang telah diperbarui.
+- **`tmp-cek/`** — Rangkaian skrip uji verifikasi UI snapshot & database:
+  - `CekNotNull.java` (Audit 212 kolom terhadap kekangan NOT NULL MySQL).
+  - `CekInsert.java` (Uji simulasi eksekusi query INSERT ke database `aik`).
+  - `PotretHalaman8sd11.java` (Otomasi screenshot visual Halaman 8 s/d 11 dan icon footer).
+
+## Ringkasan Perbaikan & Fitur yang Diselesaikan
+
+1. **Penyempurnaan Halaman 9 (Tindakan Klinis & Kolaborasi)**:
+   - Header seksi berbasis angka Romawi (`IV. KARDIOPULMONAL`, `V. TINDAKAN PENUNJANG`, `VI. TINDAKAN KOLABORASI`, `VII. TRAUMA / BEDAH`, `VIII. THT / MATA`, `IX. TINDAKAN OBGYN`).
+   - Tata letak grid 2-kolom seimbang 50/50 (`buatGridDuaKolomKep`) dengan perlindungan dummy panel agar proporsi kolom tetap rata kiri sempurna.
+   - Inputan kondisional interaktif (`buatItemCekTeks`): Textbox keterangan otomatis muncul di sebelah kanan checkbox saat dicentang, dan tersembunyi saat tidak aktif.
+   - Khusus Tindakan Penunjang (Cek Lab, Rontgen, CT Scan) ditata per baris vertikal dengan lebar seragam.
+   - Perbaikan teks placeholder bertumpuk/berbayang ganda (*double-paint*) pada `TextBox.java` saat FlatLaf aktif.
+
+2. **Penyempurnaan Halaman 10 (Pemberian Obat / Infus)**:
+   - Tombol hapus baris pada tabel obat (`tbObatInfus`) diperbarui menggunakan `TableCellRenderer` dan `DefaultCellEditor` khusus.
+   - Tombol tampil sebagai tombol rounded tegas berwarna merah (`#DC2626` / hover `#B91C1C`), border sudut lengkung radius 6px, ikon tanda silang putih tegas (`✕`), dan ukuran 28×28 px yang ergonomis dan mudah diklik.
+
+3. **Penyempurnaan Halaman 11 (Kondisi Saat Pindah / Pulang & Pendidikan Pasien)**:
+   - **Pendidikan Pasien Saat Pulang**: Ditata ulang simetris 2-kolom seimbang (Kiri: Makan/Minum Obat & Kebersihan Luka; Kanan: Diet & Lain-lain dengan TextBox keterangan kondisional sejajar).
+   - **Input Pukul Interaktif (`PanelJamSaja`)**:
+     - Mengganti TextBox manual `TKpPukul` dengan komponen `DTPKpPukulSaja = new PanelJamSaja(true, 26)`.
+     - Menyediakan pemilih dropdown Jam, Menit, Detik dan CheckBox realtime timer otomatis (seragam dengan pemilih jam di bagian Pemberian Obat).
+     - Terintegrasi penuh ke fungsi `simpan()`, `ganti()`, `emptTeks()`, `getData()`, dan `dispose()`.
+
+4. **Perbaikan Masalah Gagal Simpan Database `aik` (`psi_masalah_prilaku`)**:
+   - **Akar Masalah**: Kolom `psi_masalah_prilaku` di tabel `penilaian_awal_keperawatan_igd` bertipe `ENUM('Ya','Tidak') NOT NULL DEFAULT 'Tidak'`. Pada method `nilaiKep()`, kondisi checkbox tidak dicentang mengembalikan nilai `null`. MySQL menolak query dengan `MySQLIntegrityConstraintViolationException: Column 'psi_masalah_prilaku' cannot be null`, memicu dialog error generik *"Kemungkinan No.Rawat yang sama sudah dimasukkan sebelumnya...!"*.
+   - **Solusi**: Logika diubah agar menghasilkan `"Ya"` jika dipilih dan `"Tidak"` jika tidak dicentang (tidak pernah bernilai `null`).
+   - **Verifikasi**: Pengujian langsung ke database `aik` via `CekInsert.java` menghasilkan `TEST INSERT BERHASIL TANPA ERROR!` dengan seluruh 212 parameter terisi valid.
+
+---
+
+## 🌟 PANDUAN PILOT PROJECT: Standar Penyesuaian Form Lain Kedepannya
+
+Formulir Pengkajian Keperawatan IGD ini dijadikan **cetak biru (blueprint)** untuk formulir-formulir rekam medis lainnya. Berikut adalah kaidah baku yang wajib diterapkan saat mengembangkan atau merestrukturisasi formulir lain:
+
+### 1. Arsitektur Komponen & Konsistensi Tema
+- Selalu gunakan token warna terpusat dari `widget.ThemeConfig` dan `widget.ModernStyle`.
+- Hindari hardcode nilai warna heksadesimal acak; gunakan palet resmi (Primary Teal `#008B97`, Navy `#1E293B`, Surface White `#FFFFFF`, Border `#E2E8F0`, Muted Text `#6B7280`, Danger `#DC2626`).
+- Terapkan gaya font standar `ThemeConfig.FONT_NORMAL` dan border radius konsisten (4px untuk kartu/input, 6px untuk tombol aksi).
+
+### 2. Layout Berbasis Seksi & Grid Simetris 50/50
+- Strukturkan formulir panjang ke dalam seksi-seksi logis yang dapat diakses via side rail/accordion.
+- Gunakan tata letak grid 2-kolom seimbang 50/50 untuk isian yang berpasangan.
+- Selalu sisipkan komponen penyeimbang (dummy panel) pada baris ganjil agar grid tidak mengalami pergeseran visual (*zig-zag*).
+
+### 3. Komponen Pemilih Waktu Standar
+- Untuk inputan waktu/jam, hindari TextBox string polos. Gunakan selalu `PanelJamSaja(true, tinggi)` yang memiliki dropdown Jam, Menit, Detik dan Checkbox timer realtime.
+- Selalu hentikan timer pada lifecycle `dispose()`:
+  ```java
+  if (panelJam != null) {
+      panelJam.stopTimer();
+  }
+  ```
+
+### 4. Interaksi UI Cerdas (Kondisional & Responsif)
+- Checkbox yang memiliki keterangan tambahan harus menampilkan textbox secara kondisional (hanya muncul saat checkbox aktif).
+- Terapkan interaksi dua arah: mencentang checkbox memunculkan & memfokuskan kursor ke textbox; mengetik pada textbox otomatis mencentang checkbox terkait.
+- Gunakan `setPlaceholder(...)` dari `widget.TextBox` untuk instruksi input yang jelas.
+
+### 5. Tombol Aksi Tabel & Action Bar Seragam
+- Tombol aksi hapus pada JTable wajib menggunakan custom renderer/editor berpenampilan tombol kartu rounded merah (`#DC2626`) dengan ikon putih (`✕`).
+- Action bar bawah (`panelGlass8`) dibagi 2 kelompok: sisi kiri untuk tombol transaksi (Simpan, Baru, Ganti, Hapus, Cetak, Semua) dan sisi kanan untuk indikator kelengkapan isian wajib + tombol Keluar.
+
+### 6. Disiplin Integritas Database MySQL
+- Setiap kolom yang berstatus `NOT NULL` pada skema database harus dijamin menerima nilai non-null dari Java (gunakan fallback aman seperti `""` untuk teks atau `"Tidak"` / nilai default ENUM).
+- Array pemetaan kolom (`KOLOM_FORM`) harus selalu sinkron 1:1 antara klausa `INSERT` dan `UPDATE`.
+- Jalankan skrip audit kolom `NOT NULL` sebelum rilis untuk mencegah runtime integrity constraint violation.
+

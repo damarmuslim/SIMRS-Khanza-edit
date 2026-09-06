@@ -57,6 +57,8 @@ public class IconStyle {
         PETA.put("tutup",   new Object[]{"log-out.svg",  ABU_MUDA});
         PETA.put("cari",    new Object[]{"search.svg",   ABU});
         PETA.put("refresh", new Object[]{"refresh.svg",  ABU});
+        PETA.put("batal",   new Object[]{"refresh.svg",  ABU_MUDA});
+        PETA.put("reset",   new Object[]{"refresh.svg",  ABU_MUDA});
         // [BARU] Aksi non-CRUD yg belum kebagian icon (dilaporkan user -
         // tombol "Validasi" resep obat, "Sampel"/"Hasil" lab, dkk).
         PETA.put("validasi",   new Object[]{"circle-check.svg",    HIJAU});
@@ -76,7 +78,7 @@ public class IconStyle {
     public static void pasang(Container root) {
         for (Component c : root.getComponents()) {
 
-            if (c instanceof AbstractButton) {
+            if (c instanceof AbstractButton && !(c instanceof JRadioButton) && !(c instanceof JCheckBox)) {
                 AbstractButton b = (AbstractButton) c;
                 pasangIkonTombol(b);
             }
@@ -88,16 +90,46 @@ public class IconStyle {
     }
 
     private static void pasangIkonTombol(AbstractButton b) {
-        // jangan timpa tombol yang sudah punya ikon
-        if (b.getIcon() != null) return;
+        // Jangan pasang icon pada RadioButton dan CheckBox
+        if (b instanceof JRadioButton || b instanceof JCheckBox) return;
+
+        // Jangan timpa jika sudah memakai SVG modern
+        if (b.getIcon() instanceof FlatSVGIcon) return;
 
         String teks = b.getText();
-        if (teks == null || teks.trim().isEmpty()) return;
+        if (teks == null || teks.trim().isEmpty()) {
+            // Tombol icon-only (misal tombol cari petugas, all/refresh, tambah)
+            if (b.getIcon() != null) {
+                String desc = b.getIcon().toString().toLowerCase();
+                String name = (b.getName() != null ? b.getName().toLowerCase() : "");
+                String tip  = (b.getToolTipText() != null ? b.getToolTipText().toLowerCase() : "");
+
+                if (name.contains("all") || tip.contains("semua") || tip.contains("refresh")) {
+                    Icon ikon = muat("refresh.svg", 14, ABU);
+                    if (ikon != null) {
+                        b.setIcon(ikon);
+                    }
+                } else if (name.contains("tambah") || desc.contains("plus")) {
+                    Icon ikon = muat("plus.svg", 14, HIJAU);
+                    if (ikon != null) {
+                        b.setIcon(ikon);
+                    }
+                } else if (desc.contains("190.png") || desc.contains("accept.png") || desc.contains("search") || name.contains("cari")) {
+                    Icon ikon = muat("search.svg", 14, ABU_MUDA);
+                    if (ikon != null) {
+                        b.setIcon(ikon);
+                    }
+                }
+            }
+            return;
+        }
 
         String kunci = teks.trim().toLowerCase();
 
         for (Map.Entry<String, Object[]> e : PETA.entrySet()) {
-            if (kunci.contains(e.getKey())) {
+            String kataKunci = e.getKey();
+            // Cocokkan sebagai kata utuh (word boundary), agar misal 'keluarga' tidak kena 'keluar'
+            if (kunci.matches(".*\\b" + java.util.regex.Pattern.quote(kataKunci) + "\\b.*") || kunci.equals(kataKunci)) {
                 String file  = (String) e.getValue()[0];
                 Color  warna = (Color)  e.getValue()[1];
 
@@ -133,7 +165,7 @@ public class IconStyle {
     }
 
     /** Memuat SVG dan mewarnainya. Mengembalikan null bila file tidak ada. */
-    private static Icon muat(String namaFile, int ukuran, Color warna) {
+    public static Icon muat(String namaFile, int ukuran, Color warna) {
         try {
             FlatSVGIcon ikon = new FlatSVGIcon("icon/" + namaFile, ukuran, ukuran);
             ikon.setColorFilter(new FlatSVGIcon.ColorFilter(c -> warna));

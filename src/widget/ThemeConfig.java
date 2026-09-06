@@ -112,5 +112,33 @@ public final class ThemeConfig {
         UIManager.put("ComboBox.font", FONT_NORMAL);
         UIManager.put("Table.font", FONT_NORMAL);
         UIManager.put("TableHeader.font", FONT_BOLD);
+
+        // Input fields background - putih bersih (#FFFFFF), hilangkan warna abu-abu pada inactive/disabled
+        UIManager.put("TextField.background", SURFACE);
+        UIManager.put("TextField.inactiveBackground", SURFACE);
+        UIManager.put("TextField.disabledBackground", SURFACE);
+        UIManager.put("TextField.focusedBackground", SURFACE);
+        UIManager.put("FormattedTextField.background", SURFACE);
+        UIManager.put("FormattedTextField.inactiveBackground", SURFACE);
+        UIManager.put("FormattedTextField.disabledBackground", SURFACE);
+        UIManager.put("FormattedTextField.focusedBackground", SURFACE);
+        UIManager.put("PasswordField.background", SURFACE);
+        UIManager.put("PasswordField.inactiveBackground", SURFACE);
+        UIManager.put("PasswordField.disabledBackground", SURFACE);
+        UIManager.put("ComboBox.background", SURFACE);
+        UIManager.put("ComboBox.disabledBackground", SURFACE);
+        UIManager.put("ComboBox.buttonBackground", SURFACE);
+        UIManager.put("ComboBox.buttonEditableBackground", SURFACE);
+        UIManager.put("ComboBox.editableBackground", SURFACE);
+        UIManager.put("ComboBox.focusedBackground", SURFACE);
+        UIManager.put("TextArea.background", SURFACE);
+        UIManager.put("TextArea.inactiveBackground", SURFACE);
+        UIManager.put("TextArea.disabledBackground", SURFACE);
+        UIManager.put("Spinner.background", SURFACE);
+        UIManager.put("Spinner.disabledBackground", SURFACE);
+        UIManager.put("CheckBox.background", SURFACE);
+        UIManager.put("RadioButton.background", SURFACE);
+        UIManager.put("List.background", SURFACE);
+        UIManager.put("PopupMenu.background", SURFACE);
     }
 }

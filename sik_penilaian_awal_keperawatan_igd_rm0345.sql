@@ -156,6 +156,7 @@ ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `gizi_anak
 -- adanya (sudah cocok).
 -- ---------------------------------------------------------------------
 ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `nyeri_ada` ENUM('Ya','Tidak') NULL DEFAULT NULL;
+ALTER TABLE `penilaian_awal_keperawatan_igd` ADD COLUMN IF NOT EXISTS `kategori_usia_nyeri` VARCHAR(30) NULL DEFAULT NULL;
 
 -- ---------------------------------------------------------------------
 -- KELOMPOK K: FLACC (Face, Legs, Activity, Cry, Consolability) - utk
