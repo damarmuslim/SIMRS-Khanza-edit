@@ -151,6 +151,7 @@ Pola tanda tangan: satu tabel `antri<modul>` berisi SATU baris penanda record ya
   Cabang **hanya** untuk pekerjaan yang mungkin dibuang — refactor besar yang belum tentu jadi. Bukan untuk penyesuaian form.
 
 - Yang menggantikan fungsi "cara membatalkan": **tag**, bukan cabang. Beri tag tiap kali naik ke produksi (`git tag prod-2026-09-01`), supaya jelas jar mana berpasangan dengan migrasi mana.
+- **Redesign tampilan sebuah form: tag di AWAL dan di AKHIR**, bukan cuma di produksi. `git tag pre-redesign-<nama-form>` sebelum commit pertama sesi redesign, `git tag design-baru-<nama-form>` setelah form itu dianggap selesai/stabil. Satu form biasa makan banyak sesi lintas hari (kadang dibantu AI berbeda-beda) — tanpa tag di kedua ujung, versi "desain lama" cuma bisa digali manual dari `git log --follow -- <file>` per form, makin lama makin susah ditelusuri. Preseden: `RMPenilaianAwalKeperawatanIGD.java` 7.418→14.012 baris lintas 9 commit tanpa tag di awal, terpaksa digali dari pesan commit (`ef2a09c`/`9f74be3`).
 - **`DEPLOY.md` wajib diperbarui** setiap ada migrasi baru dan setiap kali migrasi dijalankan di produksi. Risiko terbesar proyek ini bukan konflik git, melainkan migrasi dan Java yang tidak naik bersamaan.
 - Alat/berkas yang tidak terkait modul mana pun juga langsung di `main`.
 - Pesan commit **menjelaskan ALASAN**, bukan daftar perubahan: keputusan yang diambil, alternatif yang ditolak beserta sebabnya, bug yang ditemukan dan bagaimana ketahuannya.
