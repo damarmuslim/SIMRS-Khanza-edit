@@ -1,0 +1,33 @@
+Tables found: bridging_resep_apotek_bpjs, bridging_resep_apotek_bpjs_nonracikan, bridging_resep_apotek_bpjs_racikan, bukti_penyerahan_resep_obat, detail_permintaan_resep_pulang, permintaan_resep_pulang, resep_dokter, resep_dokter_racikan, resep_dokter_racikan_detail, resep_luar, resep_luar_obat, resep_luar_racikan, resep_luar_racikan_detail, resep_obat, resep_pulang, template_pemeriksaan_dokter_resep, template_pemeriksaan_dokter_resep_racikan, template_pemeriksaan_dokter_resep_racikan_detail, temporary_resep
+
+--- Columns of resep_obat ---
+no_resep (varchar(14))
+tgl_perawatan (date)
+jam (time)
+no_rawat (varchar(17))
+kd_dokter (varchar(20))
+tgl_peresepan (date)
+jam_peresepan (time)
+status (enum('ralan','ranap'))
+tgl_penyerahan (date)
+jam_penyerahan (time)
+
+telaah_resep not found
+
+verifikasi_resep not found
+
+--- Columns of resep_dokter ---
+no_resep (varchar(14))
+kode_brng (varchar(15))
+jml (double)
+aturan_pakai (varchar(150))
+
+--- Columns of resep_luar ---
+no_resep (varchar(14))
+tgl_perawatan (date)
+jam (time)
+no_rawat (varchar(17))
+kd_dokter (varchar(20))
+tgl_peresepan (date)
+jam_peresepan (time)
+
