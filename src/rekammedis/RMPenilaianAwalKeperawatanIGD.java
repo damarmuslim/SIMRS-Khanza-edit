@@ -104,6 +104,14 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         buatKotakKep(FormInput);
         buatKotakKep(barPasienKep);
         widget.IconStyle.pasang(this);
+        javax.swing.Icon icCeklis = widget.IconStyle.muat("check.svg", 14, widget.IconStyle.HIJAU);
+        if (icCeklis != null) {
+            BtnCari.setIcon(icCeklis);
+        }
+        javax.swing.Icon icAllCari = widget.IconStyle.muat("search.svg", 14, widget.IconStyle.ABU);
+        if (icAllCari != null) {
+            BtnAllCari.setIcon(icAllCari);
+        }
         pasangSemuaListenerProgresKep();
         hitungProgresKep();
 
@@ -598,6 +606,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         jLabel6 = new widget.Label();
         TCari = new widget.TextBox();
         BtnCari = new widget.Button();
+        BtnAllCari = new widget.Button();
         jLabel7 = new widget.Label();
         LCount = new widget.Label();
         PanelAccor = new widget.PanelBiasa();
@@ -2330,7 +2339,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
         jLabel19.setText("Tgl.Asuhan :");
         jLabel19.setName("jLabel19"); // NOI18N
-        jLabel19.setPreferredSize(new java.awt.Dimension(70, 23));
+        jLabel19.setPreferredSize(new java.awt.Dimension(70, 26));
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
@@ -2338,13 +2347,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
-        DTPCari1.setPreferredSize(new java.awt.Dimension(90, 23));
+        DTPCari1.setPreferredSize(new java.awt.Dimension(125, 26));
         panelGlass9.add(DTPCari1);
 
         jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel21.setText("s.d.");
         jLabel21.setName("jLabel21"); // NOI18N
-        jLabel21.setPreferredSize(new java.awt.Dimension(23, 23));
+        jLabel21.setPreferredSize(new java.awt.Dimension(23, 26));
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
@@ -2352,16 +2361,17 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
-        DTPCari2.setPreferredSize(new java.awt.Dimension(90, 23));
+        DTPCari2.setPreferredSize(new java.awt.Dimension(125, 26));
         panelGlass9.add(DTPCari2);
 
         jLabel6.setText("Key Word :");
         jLabel6.setName("jLabel6"); // NOI18N
-        jLabel6.setPreferredSize(new java.awt.Dimension(80, 23));
+        jLabel6.setPreferredSize(new java.awt.Dimension(70, 26));
         panelGlass9.add(jLabel6);
 
         TCari.setName("TCari"); // NOI18N
-        TCari.setPreferredSize(new java.awt.Dimension(195, 23));
+        TCari.setPreferredSize(new java.awt.Dimension(205, 26));
+        TCari.putClientProperty("JTextField.placeholderText", "Ketik kata kunci...");
         TCari.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 TCariKeyPressed(evt);
@@ -2369,11 +2379,16 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         });
         panelGlass9.add(TCari);
 
-        BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
+        BtnCari.setPreferredSize(new java.awt.Dimension(28, 26));
         BtnCari.setMnemonic('3');
-        BtnCari.setToolTipText("Alt+3");
+        BtnCari.setToolTipText("Filter / Terapkan Pencarian (Alt+3)");
         BtnCari.setName("BtnCari"); // NOI18N
-        BtnCari.setPreferredSize(new java.awt.Dimension(28, 23));
+        javax.swing.Icon icCariData = widget.IconStyle.muat("check.svg", 14, widget.IconStyle.HIJAU);
+        if (icCariData != null) {
+            BtnCari.setIcon(icCariData);
+        } else {
+            BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
+        }
         BtnCari.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnCariActionPerformed(evt);
@@ -2386,15 +2401,39 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         });
         panelGlass9.add(BtnCari);
 
+        BtnAllCari.setPreferredSize(new java.awt.Dimension(28, 26));
+        BtnAllCari.setMnemonic('M');
+        BtnAllCari.setToolTipText("Tampilkan Semua / Cari Semua Data (Alt+M)");
+        BtnAllCari.setName("BtnAllCari"); // NOI18N
+        javax.swing.Icon icAllData = widget.IconStyle.muat("search.svg", 14, widget.IconStyle.ABU);
+        if (icAllData != null) {
+            BtnAllCari.setIcon(icAllData);
+        } else {
+            BtnAllCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
+        }
+        BtnAllCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnAllActionPerformed(evt);
+            }
+        });
+        BtnAllCari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+                    BtnAllActionPerformed(null);
+                }
+            }
+        });
+        panelGlass9.add(BtnAllCari);
+
         jLabel7.setText("Record :");
         jLabel7.setName("jLabel7"); // NOI18N
-        jLabel7.setPreferredSize(new java.awt.Dimension(60, 23));
+        jLabel7.setPreferredSize(new java.awt.Dimension(55, 26));
         panelGlass9.add(jLabel7);
 
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");
         LCount.setName("LCount"); // NOI18N
-        LCount.setPreferredSize(new java.awt.Dimension(70, 23));
+        LCount.setPreferredSize(new java.awt.Dimension(60, 26));
         panelGlass9.add(LCount);
 
         internalFrame3.add(panelGlass9, java.awt.BorderLayout.PAGE_END);
@@ -3946,7 +3985,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             }
             cmbJam = new widget.ComboBox();
             cmbJam.setModel(new javax.swing.DefaultComboBoxModel(arrJam));
-            cmbJam.setPreferredSize(new java.awt.Dimension(46, tinggi));
+            // 46px membuat FlatLaf memotong isi combo jadi "..." walau nilainya
+            // cuma 2 digit (dibuktikan lewat Robot.createScreenCapture nyata,
+            // bukan cuma printAll offscreen) - 62px terbukti cukup.
+            cmbJam.setPreferredSize(new java.awt.Dimension(62, tinggi));
             cmbJam.setBackground(java.awt.Color.WHITE);
             cmbJam.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8, 0xDB, 0xD6)));
             cmbJam.putClientProperty("Component.arc", 0);
@@ -3957,14 +3999,14 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             }
             cmbMenit = new widget.ComboBox();
             cmbMenit.setModel(new javax.swing.DefaultComboBoxModel(arrMnt));
-            cmbMenit.setPreferredSize(new java.awt.Dimension(46, tinggi));
+            cmbMenit.setPreferredSize(new java.awt.Dimension(62, tinggi));
             cmbMenit.setBackground(java.awt.Color.WHITE);
             cmbMenit.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8, 0xDB, 0xD6)));
             cmbMenit.putClientProperty("Component.arc", 0);
 
             cmbDetik = new widget.ComboBox();
             cmbDetik.setModel(new javax.swing.DefaultComboBoxModel(arrMnt));
-            cmbDetik.setPreferredSize(new java.awt.Dimension(46, tinggi));
+            cmbDetik.setPreferredSize(new java.awt.Dimension(62, tinggi));
             cmbDetik.setBackground(java.awt.Color.WHITE);
             cmbDetik.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8, 0xDB, 0xD6)));
             cmbDetik.putClientProperty("Component.arc", 0);
@@ -4012,6 +4054,20 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             }
 
             setSekarang();
+            // [BUGFIX RMTriaseIGD] FlowLayout.minimumLayoutSize() manjumlahkan
+            // getMinimumSize() tiap anak, bukan getPreferredSize() yg sudah
+            // dipatok eksplisit di atas - widget.ComboBox/Tanggal diam-diam
+            // punya minimumSize UI (FlatLaf) lebih LEBAR drpd preferredSize
+            // kecil yg sengaja dipasang di sini, sehingga getMinimumSize()
+            // panel INI (433) bisa lebih besar drpd getPreferredSize()-nya
+            // sendiri (310) - kebalikan dari asumsi normal min<=preferred.
+            // Efeknya kolom GridBagLayout pemanggil yg pas-pasan (mis. kolom
+            // Anamnesa tab PACS RMTriaseIGD, lebar tetap 398px) memepetkan
+            // kolom label di sebelahnya sampai terpotong "...", krn algoritma
+            // interpolasi min/preferred GridBagLayout kolomnya condong ke
+            // minimum yg keliru besar ini. Dipatok = preferred spy panel ini
+            // tidak pernah dianggap butuh lebih lebar dari yg sudah didesain.
+            setMinimumSize(getPreferredSize());
         }
 
         public void setSekarang() {
@@ -4108,8 +4164,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             setOpaque(false);
             setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 2, 0));
             setBorder(null);
-            setPreferredSize(new java.awt.Dimension(190, tinggi));
-            setMinimumSize(new java.awt.Dimension(190, tinggi));
+            // 190 pas utk combo 46px lama; combo sekarang 62px (fix elipsis
+            // "...") + checkbox timer 28px -> lebar total naik jadi ~240.
+            setPreferredSize(new java.awt.Dimension(240, tinggi));
+            setMinimumSize(new java.awt.Dimension(240, tinggi));
 
             String[] arrJam = new String[24];
             for (int i = 0; i < 24; i++) {
@@ -4117,7 +4175,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             }
             cmbJam = new widget.ComboBox();
             cmbJam.setModel(new javax.swing.DefaultComboBoxModel(arrJam));
-            cmbJam.setPreferredSize(new java.awt.Dimension(46, tinggi));
+            // 46px membuat FlatLaf memotong isi combo jadi "..." walau nilainya
+            // cuma 2 digit (dibuktikan lewat Robot.createScreenCapture nyata,
+            // bukan cuma printAll offscreen) - 62px terbukti cukup.
+            cmbJam.setPreferredSize(new java.awt.Dimension(62, tinggi));
             cmbJam.setBackground(java.awt.Color.WHITE);
             cmbJam.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8, 0xDB, 0xD6)));
             cmbJam.putClientProperty("Component.arc", 0);
@@ -4128,14 +4189,14 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             }
             cmbMenit = new widget.ComboBox();
             cmbMenit.setModel(new javax.swing.DefaultComboBoxModel(arrMnt));
-            cmbMenit.setPreferredSize(new java.awt.Dimension(46, tinggi));
+            cmbMenit.setPreferredSize(new java.awt.Dimension(62, tinggi));
             cmbMenit.setBackground(java.awt.Color.WHITE);
             cmbMenit.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8, 0xDB, 0xD6)));
             cmbMenit.putClientProperty("Component.arc", 0);
 
             cmbDetik = new widget.ComboBox();
             cmbDetik.setModel(new javax.swing.DefaultComboBoxModel(arrMnt));
-            cmbDetik.setPreferredSize(new java.awt.Dimension(46, tinggi));
+            cmbDetik.setPreferredSize(new java.awt.Dimension(62, tinggi));
             cmbDetik.setBackground(java.awt.Color.WHITE);
             cmbDetik.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8, 0xDB, 0xD6)));
             cmbDetik.putClientProperty("Component.arc", 0);
@@ -11534,6 +11595,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private widget.ComboBox BJM;
     private widget.TextBox Bahasa;
     private widget.Button BtnAll;
+    private widget.Button BtnAllCari;
     private widget.Button BtnAllMasalah;
     private widget.Button BtnAllRencana;
     private widget.Button BtnBatal;
