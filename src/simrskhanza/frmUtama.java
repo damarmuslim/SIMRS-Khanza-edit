@@ -1280,6 +1280,10 @@ public class frmUtama extends javax.swing.JFrame {
         jMenu6.setOpaque(false);
         jMenu7.setOpaque(false);
         jMenu4.setOpaque(false);
+        setJMenuBar(null);
+        if (panelTopBar != null) {
+            panelTopBar.setMenuBar(MenuBar);
+        }
         
         lblTgl.setText(tanggal.getSelectedItem().toString());
         try {
@@ -1323,6 +1327,12 @@ public class frmUtama extends javax.swing.JFrame {
     public void triggerLogin() {
         if (BtnLog != null) {
             BtnLog.doClick();
+        }
+    }
+
+    public void triggerMenu() {
+        if (BtnMenu != null) {
+            BtnMenu.doClick();
         }
     }
      
@@ -7281,20 +7291,20 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(217, 226, 232)));
+        internalFrame1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(226, 232, 240)));
         internalFrame1.setName("internalFrame1"); // NOI18N
-        internalFrame1.setPreferredSize(new java.awt.Dimension(40, 56));
+        internalFrame1.setPreferredSize(new java.awt.Dimension(40, 52));
         internalFrame1.setVerifyInputWhenFocusTarget(false);
         internalFrame1.setWarnaAtas(java.awt.Color.WHITE);
         internalFrame1.setWarnaBawah(java.awt.Color.WHITE);
         internalFrame1.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.JPanel pnlLeftTools = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 8));
+        javax.swing.JPanel pnlLeftTools = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 9));
         pnlLeftTools.setOpaque(false);
-        javax.swing.JPanel pnlRightActions = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 12, 8));
+        javax.swing.JPanel pnlRightActions = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 9));
         pnlRightActions.setOpaque(false);
 
-        BtnMenu.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/menu.svg", 24, 24));
+        BtnMenu.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/menu.svg", 20, 20));
         BtnMenu.setRolloverIcon(svgIconHover("picture/icons/toolbar/menu.svg"));
         BtnMenu.setPressedIcon(svgIconHover("picture/icons/toolbar/menu.svg"));
         BtnMenu.setMnemonic('M');
@@ -7302,12 +7312,13 @@ public class frmUtama extends javax.swing.JFrame {
         BtnMenu.setToolTipText("Alt+M");
         BtnMenu.setEnabled(false);
         BtnMenu.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        BtnMenu.setIconTextGap(2);
-        BtnMenu.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnMenu.setIconTextGap(6);
+        BtnMenu.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnMenu.setName("BtnMenu"); // NOI18N
-        BtnMenu.setPreferredSize(new java.awt.Dimension(78, 40));
+        BtnMenu.setPreferredSize(new java.awt.Dimension(86, 34));
         BtnMenu.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnMenu.putClientProperty("JButton.buttonType", "toolBarButton");
+        BtnMenu.putClientProperty("JButton.arc", 8);
         BtnMenu.setForeground(new java.awt.Color(38, 55, 70));
         BtnMenu.setFont(new java.awt.Font("Segoe UI", 1, 12));
         BtnMenu.setFocusPainted(false);
@@ -7319,16 +7330,16 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(BtnMenu);
 
-        jSeparator4.setBackground(new java.awt.Color(217, 226, 232));
-        jSeparator4.setForeground(new java.awt.Color(217, 226, 232));
+        jSeparator4.setBackground(new java.awt.Color(226, 232, 240));
+        jSeparator4.setForeground(new java.awt.Color(226, 232, 240));
         jSeparator4.setOrientation(javax.swing.SwingConstants.VERTICAL);
-        jSeparator4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(217, 226, 232)));
+        jSeparator4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 232, 240)));
         jSeparator4.setName("jSeparator4"); // NOI18N
         jSeparator4.setOpaque(true);
-        jSeparator4.setPreferredSize(new java.awt.Dimension(1, 28));
+        jSeparator4.setPreferredSize(new java.awt.Dimension(1, 20));
         pnlLeftTools.add(jSeparator4);
 
-        BtnToolReg.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/registration.svg", 24, 24));
+        BtnToolReg.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/registration.svg", 20, 20));
         BtnToolReg.setRolloverIcon(svgIconHover("picture/icons/toolbar/registration.svg"));
         BtnToolReg.setPressedIcon(svgIconHover("picture/icons/toolbar/registration.svg"));
         BtnToolReg.setMnemonic('R');
@@ -7336,12 +7347,13 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolReg.setToolTipText("Alt+R");
         BtnToolReg.setEnabled(false);
         BtnToolReg.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        BtnToolReg.setIconTextGap(2);
-        BtnToolReg.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnToolReg.setIconTextGap(6);
+        BtnToolReg.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolReg.setName("BtnToolReg"); // NOI18N
-        BtnToolReg.setPreferredSize(new java.awt.Dimension(100, 40));
+        BtnToolReg.setPreferredSize(new java.awt.Dimension(112, 34));
         BtnToolReg.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolReg.putClientProperty("JButton.buttonType", "toolBarButton");
+        BtnToolReg.putClientProperty("JButton.arc", 8);
         BtnToolReg.setForeground(new java.awt.Color(38, 55, 70));
         BtnToolReg.setFont(new java.awt.Font("Segoe UI", 1, 12));
         BtnToolReg.setFocusPainted(false);
@@ -7353,7 +7365,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(BtnToolReg);
 
-        btnToolIGD.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/emergency.svg", 24, 24));
+        btnToolIGD.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/emergency.svg", 20, 20));
         btnToolIGD.setRolloverIcon(svgIconHover("picture/icons/toolbar/emergency.svg"));
         btnToolIGD.setPressedIcon(svgIconHover("picture/icons/toolbar/emergency.svg"));
         btnToolIGD.setMnemonic('D');
@@ -7361,12 +7373,13 @@ public class frmUtama extends javax.swing.JFrame {
         btnToolIGD.setToolTipText("Alt+D");
         btnToolIGD.setEnabled(false);
         btnToolIGD.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnToolIGD.setIconTextGap(2);
-        btnToolIGD.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnToolIGD.setIconTextGap(6);
+        btnToolIGD.setMargin(new java.awt.Insets(0, 4, 0, 4));
         btnToolIGD.setName("btnToolIGD"); // NOI18N
-        btnToolIGD.setPreferredSize(new java.awt.Dimension(94, 40));
+        btnToolIGD.setPreferredSize(new java.awt.Dimension(102, 34));
         btnToolIGD.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         btnToolIGD.putClientProperty("JButton.buttonType", "toolBarButton");
+        btnToolIGD.putClientProperty("JButton.arc", 8);
         btnToolIGD.setForeground(new java.awt.Color(38, 55, 70));
         btnToolIGD.setFont(new java.awt.Font("Segoe UI", 1, 12));
         btnToolIGD.setFocusPainted(false);
@@ -7378,28 +7391,29 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(btnToolIGD);
 
-        jSeparator5.setBackground(new java.awt.Color(217, 226, 232));
-        jSeparator5.setForeground(new java.awt.Color(217, 226, 232));
+        jSeparator5.setBackground(new java.awt.Color(226, 232, 240));
+        jSeparator5.setForeground(new java.awt.Color(226, 232, 240));
         jSeparator5.setOrientation(javax.swing.SwingConstants.VERTICAL);
-        jSeparator5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(217, 226, 232)));
+        jSeparator5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 232, 240)));
         jSeparator5.setName("jSeparator5"); // NOI18N
         jSeparator5.setOpaque(true);
-        jSeparator5.setPreferredSize(new java.awt.Dimension(1, 28));
+        jSeparator5.setPreferredSize(new java.awt.Dimension(1, 20));
         pnlLeftTools.add(jSeparator5);
 
-        btnToolLab.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/laboratory.svg", 24, 24));
+        btnToolLab.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/laboratory.svg", 20, 20));
         btnToolLab.setRolloverIcon(svgIconHover("picture/icons/toolbar/laboratory.svg"));
         btnToolLab.setPressedIcon(svgIconHover("picture/icons/toolbar/laboratory.svg"));
         btnToolLab.setMnemonic('O');
         btnToolLab.setText("Laborat");
         btnToolLab.setToolTipText("Alt+O");
         btnToolLab.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnToolLab.setIconTextGap(2);
-        btnToolLab.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnToolLab.setIconTextGap(6);
+        btnToolLab.setMargin(new java.awt.Insets(0, 4, 0, 4));
         btnToolLab.setName("btnToolLab"); // NOI18N
-        btnToolLab.setPreferredSize(new java.awt.Dimension(88, 40));
+        btnToolLab.setPreferredSize(new java.awt.Dimension(96, 34));
         btnToolLab.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         btnToolLab.putClientProperty("JButton.buttonType", "toolBarButton");
+        btnToolLab.putClientProperty("JButton.arc", 8);
         btnToolLab.setForeground(new java.awt.Color(38, 55, 70));
         btnToolLab.setFont(new java.awt.Font("Segoe UI", 1, 12));
         btnToolLab.setFocusPainted(false);
@@ -7411,19 +7425,20 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(btnToolLab);
 
-        btnToolRad.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/radiology.svg", 24, 24));
+        btnToolRad.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/radiology.svg", 20, 20));
         btnToolRad.setRolloverIcon(svgIconHover("picture/icons/toolbar/radiology.svg"));
         btnToolRad.setPressedIcon(svgIconHover("picture/icons/toolbar/radiology.svg"));
         btnToolRad.setMnemonic('A');
         btnToolRad.setText("Radiologi");
         btnToolRad.setToolTipText("Alt+A");
         btnToolRad.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnToolRad.setIconTextGap(2);
-        btnToolRad.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnToolRad.setIconTextGap(6);
+        btnToolRad.setMargin(new java.awt.Insets(0, 4, 0, 4));
         btnToolRad.setName("btnToolRad"); // NOI18N
-        btnToolRad.setPreferredSize(new java.awt.Dimension(97, 40));
+        btnToolRad.setPreferredSize(new java.awt.Dimension(104, 34));
         btnToolRad.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         btnToolRad.putClientProperty("JButton.buttonType", "toolBarButton");
+        btnToolRad.putClientProperty("JButton.arc", 8);
         btnToolRad.setForeground(new java.awt.Color(38, 55, 70));
         btnToolRad.setFont(new java.awt.Font("Segoe UI", 1, 12));
         btnToolRad.setFocusPainted(false);
@@ -7435,19 +7450,20 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(btnToolRad);
 
-        BtnToolJualObat.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/pharmacy.svg", 24, 24));
+        BtnToolJualObat.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/pharmacy.svg", 20, 20));
         BtnToolJualObat.setRolloverIcon(svgIconHover("picture/icons/toolbar/pharmacy.svg"));
         BtnToolJualObat.setPressedIcon(svgIconHover("picture/icons/toolbar/pharmacy.svg"));
         BtnToolJualObat.setMnemonic('j');
         BtnToolJualObat.setText("Farmasi");
         BtnToolJualObat.setToolTipText("Alt+J");
         BtnToolJualObat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        BtnToolJualObat.setIconTextGap(2);
-        BtnToolJualObat.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnToolJualObat.setIconTextGap(6);
+        BtnToolJualObat.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolJualObat.setName("BtnToolJualObat"); // NOI18N
-        BtnToolJualObat.setPreferredSize(new java.awt.Dimension(90, 40));
+        BtnToolJualObat.setPreferredSize(new java.awt.Dimension(96, 34));
         BtnToolJualObat.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolJualObat.putClientProperty("JButton.buttonType", "toolBarButton");
+        BtnToolJualObat.putClientProperty("JButton.arc", 8);
         BtnToolJualObat.setForeground(new java.awt.Color(38, 55, 70));
         BtnToolJualObat.setFont(new java.awt.Font("Segoe UI", 1, 12));
         BtnToolJualObat.setFocusPainted(false);
@@ -7459,16 +7475,16 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(BtnToolJualObat);
 
-        jSeparator9.setBackground(new java.awt.Color(217, 226, 232));
-        jSeparator9.setForeground(new java.awt.Color(217, 226, 232));
+        jSeparator9.setBackground(new java.awt.Color(226, 232, 240));
+        jSeparator9.setForeground(new java.awt.Color(226, 232, 240));
         jSeparator9.setOrientation(javax.swing.SwingConstants.VERTICAL);
-        jSeparator9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(217, 226, 232)));
+        jSeparator9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 232, 240)));
         jSeparator9.setName("jSeparator9"); // NOI18N
         jSeparator9.setOpaque(true);
-        jSeparator9.setPreferredSize(new java.awt.Dimension(1, 28));
+        jSeparator9.setPreferredSize(new java.awt.Dimension(1, 20));
         pnlLeftTools.add(jSeparator9);
 
-        BtnToolKamnap.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/inpatient.svg", 24, 24));
+        BtnToolKamnap.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/inpatient.svg", 20, 20));
         BtnToolKamnap.setRolloverIcon(svgIconHover("picture/icons/toolbar/inpatient.svg"));
         BtnToolKamnap.setPressedIcon(svgIconHover("picture/icons/toolbar/inpatient.svg"));
         BtnToolKamnap.setMnemonic('K');
@@ -7476,12 +7492,13 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolKamnap.setToolTipText("Alt+K");
         BtnToolKamnap.setEnabled(false);
         BtnToolKamnap.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        BtnToolKamnap.setIconTextGap(2);
-        BtnToolKamnap.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnToolKamnap.setIconTextGap(6);
+        BtnToolKamnap.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolKamnap.setName("BtnToolKamnap"); // NOI18N
-        BtnToolKamnap.setPreferredSize(new java.awt.Dimension(107, 40));
+        BtnToolKamnap.setPreferredSize(new java.awt.Dimension(114, 34));
         BtnToolKamnap.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolKamnap.putClientProperty("JButton.buttonType", "toolBarButton");
+        BtnToolKamnap.putClientProperty("JButton.arc", 8);
         BtnToolKamnap.setForeground(new java.awt.Color(38, 55, 70));
         BtnToolKamnap.setFont(new java.awt.Font("Segoe UI", 1, 12));
         BtnToolKamnap.setFocusPainted(false);
@@ -7493,7 +7510,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(BtnToolKamnap);
 
-        BtnToolKasir.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/outpatient.svg", 24, 24));
+        BtnToolKasir.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/outpatient.svg", 20, 20));
         BtnToolKasir.setRolloverIcon(svgIconHover("picture/icons/toolbar/outpatient.svg"));
         BtnToolKasir.setPressedIcon(svgIconHover("picture/icons/toolbar/outpatient.svg"));
         BtnToolKasir.setMnemonic('S');
@@ -7501,12 +7518,13 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolKasir.setToolTipText("Alt+S");
         BtnToolKasir.setEnabled(false);
         BtnToolKasir.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        BtnToolKasir.setIconTextGap(2);
-        BtnToolKasir.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnToolKasir.setIconTextGap(6);
+        BtnToolKasir.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolKasir.setName("BtnToolKasir"); // NOI18N
-        BtnToolKasir.setPreferredSize(new java.awt.Dimension(110, 40));
+        BtnToolKasir.setPreferredSize(new java.awt.Dimension(118, 34));
         BtnToolKasir.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolKasir.putClientProperty("JButton.buttonType", "toolBarButton");
+        BtnToolKasir.putClientProperty("JButton.arc", 8);
         BtnToolKasir.setForeground(new java.awt.Color(38, 55, 70));
         BtnToolKasir.setFont(new java.awt.Font("Segoe UI", 1, 12));
         BtnToolKasir.setFocusPainted(false);
@@ -7518,7 +7536,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(BtnToolKasir);
 
-        BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 16, null));
+        BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 15, null));
         BtnLog.setMnemonic('L');
         BtnLog.setText("Log In");
         BtnLog.setToolTipText("Alt+L");
@@ -7526,10 +7544,10 @@ public class frmUtama extends javax.swing.JFrame {
         BtnLog.setIconTextGap(6);
         BtnLog.setMargin(new java.awt.Insets(0, 0, 0, 0));
         BtnLog.setName("BtnLog"); // NOI18N
-        BtnLog.setPreferredSize(new java.awt.Dimension(95, 38));
+        BtnLog.setPreferredSize(new java.awt.Dimension(108, 34));
         BtnLog.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
-        BtnLog.putClientProperty("JButton.buttonType", "roundRect");
-        BtnLog.setBackground(new java.awt.Color(13, 122, 104));
+        BtnLog.putClientProperty("JButton.arc", 8);
+        BtnLog.setBackground(new java.awt.Color(13, 148, 136));
         BtnLog.setForeground(java.awt.Color.WHITE);
         BtnLog.setFont(new java.awt.Font("Segoe UI", 1, 12));
         BtnLog.setFocusPainted(false);
@@ -7541,7 +7559,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlRightActions.add(BtnLog);
 
-        BtnClose.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/exit.svg", 16, "#DC2626"));
+        BtnClose.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/exit.svg", 15, "#E11D48"));
         BtnClose.setMnemonic('U');
         BtnClose.setText("Keluar");
         BtnClose.setToolTipText("Alt+U");
@@ -7549,11 +7567,11 @@ public class frmUtama extends javax.swing.JFrame {
         BtnClose.setIconTextGap(6);
         BtnClose.setMargin(new java.awt.Insets(0, 0, 0, 0));
         BtnClose.setName("BtnClose"); // NOI18N
-        BtnClose.setPreferredSize(new java.awt.Dimension(90, 38));
+        BtnClose.setPreferredSize(new java.awt.Dimension(98, 34));
         BtnClose.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
-        BtnClose.putClientProperty("JButton.buttonType", "roundRect");
-        BtnClose.setBackground(new java.awt.Color(254, 242, 242));
-        BtnClose.setForeground(new java.awt.Color(220, 53, 69));
+        BtnClose.putClientProperty("JButton.arc", 8);
+        BtnClose.setBackground(new java.awt.Color(255, 241, 242));
+        BtnClose.setForeground(new java.awt.Color(225, 29, 72));
         BtnClose.setFont(new java.awt.Font("Segoe UI", 1, 12));
         BtnClose.setFocusPainted(false);
         BtnClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -8516,7 +8534,10 @@ public class frmUtama extends javax.swing.JFrame {
         });
         MenuBar.add(jMenu4);
 
-        setJMenuBar(MenuBar);
+        setJMenuBar(null);
+        if (panelTopBar != null) {
+            panelTopBar.setMenuBar(MenuBar);
+        }
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -8577,14 +8598,17 @@ public class frmUtama extends javax.swing.JFrame {
                 edAdmin.setText("");
                 edPwd.setText("");
                 BtnLog.setText("Log In");
-                BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 16, null));
-                BtnLog.setBackground(new java.awt.Color(13, 122, 104));
+                BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 15, null));
+                BtnLog.setBackground(new java.awt.Color(13, 148, 136));
                 BtnLog.setForeground(java.awt.Color.WHITE);
                 MnLogin.setText("Log In");
                 lblStts.setText("Status Admin : ");
                 lblUser.setText("Log Out");
                 if (panelTopBar != null) {
                     panelTopBar.setUserStatus("Belum masuk", false);
+                }
+                if (panelLandingHospital != null) {
+                    panelLandingHospital.setLoginStatus(false, null);
                 }
                 BtnMenu.setEnabled(false);
                 akses.setLogOut();
@@ -8634,14 +8658,17 @@ public class frmUtama extends javax.swing.JFrame {
 
                     DlgLogin.dispose();
                     BtnLog.setText("Log Out");
-                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 16, null));
-                    BtnLog.setBackground(new java.awt.Color(220, 53, 69));
+                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 15, null));
+                    BtnLog.setBackground(new java.awt.Color(225, 29, 72));
                     BtnLog.setForeground(java.awt.Color.WHITE);
                     MnLogin.setText("Log Out");
                     lblStts.setText("Admin : ");
                     lblUser.setText("Admin Utama");
                     if (panelTopBar != null) {
                         panelTopBar.setUserStatus("Admin Utama", true);
+                    }
+                    if (panelLandingHospital != null) {
+                        panelLandingHospital.setLoginStatus(true, "Admin Utama");
                     }
                     if(AKTIFKANTRACKSQL.equals("yes")){
                         Sequel.menyimpan("tracker","'Admin Utama',current_date(),current_time()","Login");
@@ -8650,14 +8677,17 @@ public class frmUtama extends javax.swing.JFrame {
                     BtnMenu.setEnabled(true);
                     DlgLogin.dispose();
                     BtnLog.setText("Log Out");
-                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 16, null));
-                    BtnLog.setBackground(new java.awt.Color(220, 53, 69));
+                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 15, null));
+                    BtnLog.setBackground(new java.awt.Color(225, 29, 72));
                     BtnLog.setForeground(java.awt.Color.WHITE);
                     MnLogin.setText("Log Out");
                     lblStts.setText("Admin : ");
                     lblUser.setText(akses.getkode());
                     if (panelTopBar != null) {
                         panelTopBar.setUserStatus(akses.getkode(), true);
+                    }
+                    if (panelLandingHospital != null) {
+                        panelLandingHospital.setLoginStatus(true, akses.getkode());
                     }
                     MnGantiPassword.setEnabled(true);
                     MnPengajuanCutiPegawai.setEnabled(true);
@@ -8731,14 +8761,17 @@ public class frmUtama extends javax.swing.JFrame {
 
                     edAdmin.requestFocus();
                     BtnLog.setText("Log In");
-                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 16, null));
-                    BtnLog.setBackground(new java.awt.Color(13, 122, 104));
+                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 15, null));
+                    BtnLog.setBackground(new java.awt.Color(13, 148, 136));
                     BtnLog.setForeground(java.awt.Color.WHITE);
                     MnLogin.setText("Log In");
                     lblStts.setText("Status Admin : ");
                     lblUser.setText("Log Out");   
                     if (panelTopBar != null) {
                         panelTopBar.setUserStatus("Belum masuk", false);
+                    }
+                    if (panelLandingHospital != null) {
+                        panelLandingHospital.setLoginStatus(false, null);
                     }
                 }
             } catch (Exception e) {
@@ -24684,7 +24717,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     }
 
     private static com.formdev.flatlaf.extras.FlatSVGIcon svgIconHover(String path){
-        com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon(path, 24, 24);
+        com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon(path, 20, 20);
         icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter()
             .add(new java.awt.Color(0x17, 0x32, 0x4D), new java.awt.Color(0x08, 0x7E, 0x8B)));
         return icon;
@@ -24793,7 +24826,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                 BtnToolKasir.getWidth()+BtnLog.getWidth()+BtnClose.getWidth()+8)){
             internalFrame1.setSize(new Dimension(PanelUtama.getWidth(),90));
         }else{
-            internalFrame1.setSize(new Dimension(PanelUtama.getWidth(),44));
+            internalFrame1.setSize(new Dimension(PanelUtama.getWidth(),52));
         }
     }
     

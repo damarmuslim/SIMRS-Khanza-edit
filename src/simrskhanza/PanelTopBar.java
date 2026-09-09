@@ -29,6 +29,8 @@ public class PanelTopBar extends JPanel {
     private final JLabel lblHospitalTitle;
     private final JLabel lblUserStatus;
     private final StatusDotsPanel pnlDots;
+    private final JPanel pnlLeft;
+    private javax.swing.JMenuBar menuBar;
     private boolean isLoggedIn = false;
 
     public PanelTopBar() {
@@ -38,9 +40,9 @@ public class PanelTopBar extends JPanel {
         setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(7, 36, 30)));
 
         // -------------------------------------------------------------
-        // LEFT SIDE: Icon + SIM [RS] + Links
+        // LEFT SIDE: Icon + SIM [RS] + MenuBar
         // -------------------------------------------------------------
-        JPanel pnlLeft = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 6));
+        pnlLeft = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 3));
         pnlLeft.setOpaque(false);
 
         // Small medical emblem icon
@@ -73,12 +75,6 @@ public class PanelTopBar extends JPanel {
         lblSep.setForeground(new Color(30, 90, 78));
         pnlLeft.add(lblSep);
 
-        JLabel lblProgram = createNavLink("Program");
-        pnlLeft.add(lblProgram);
-
-        JLabel lblPresensi = createNavLink("Presensi Pegawai");
-        pnlLeft.add(lblPresensi);
-
         add(pnlLeft, BorderLayout.WEST);
 
         // -------------------------------------------------------------
@@ -98,23 +94,35 @@ public class PanelTopBar extends JPanel {
         add(pnlRight, BorderLayout.EAST);
     }
 
-    private JLabel createNavLink(String text) {
-        final JLabel lbl = new JLabel(text);
-        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        lbl.setForeground(new Color(167, 193, 186));
-        lbl.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        lbl.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                lbl.setForeground(Color.WHITE);
-            }
+    public void setMenuBar(javax.swing.JMenuBar mb) {
+        if (this.menuBar != null) {
+            pnlLeft.remove(this.menuBar);
+        }
+        this.menuBar = mb;
+        if (mb != null) {
+            mb.setOpaque(false);
+            mb.setBackground(new Color(11, 51, 44));
+            mb.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            mb.setPreferredSize(null);
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                lbl.setForeground(new Color(167, 193, 186));
+            for (int i = 0; i < mb.getMenuCount(); i++) {
+                javax.swing.JMenu m = mb.getMenu(i);
+                if (m != null) {
+                    m.setOpaque(false);
+                    m.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+                    m.setForeground(new Color(220, 235, 230));
+                    m.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                    m.putClientProperty("FlatLaf.style", "selectionBackground: #144e43; selectionForeground: #ffffff");
+                }
             }
-        });
-        return lbl;
+            pnlLeft.add(mb);
+        }
+        pnlLeft.revalidate();
+        pnlLeft.repaint();
+    }
+
+    public javax.swing.JMenuBar getMenuBar() {
+        return this.menuBar;
     }
 
     public void updateHospitalName(String nama) {

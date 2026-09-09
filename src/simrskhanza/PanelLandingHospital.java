@@ -58,11 +58,18 @@ public class PanelLandingHospital extends JPanel {
     private String email = "rsuddemang01@gmail.com";
     private String versiSimrs = "24.09";
 
+    private boolean isLoggedIn = false;
+    private String currentUserName = "";
+
     private final CircularLogoPanel pnlLogo;
     private final JLabel lblPemda;
     private final JLabel lblSubtitle;
     private final JLabel lblNamaRS;
     private final JLabel lblAlamat;
+    private final PillBadgePanel pnlBadge;
+    private final JLabel lblNotice;
+    private final JButton btnActionHero;
+    private final StatusGlassCard pnlStatusCard;
     private final JLabel lblClock;
     private final Timer clockTimer;
 
@@ -147,15 +154,15 @@ public class PanelLandingHospital extends JPanel {
 
         pnlLeftContainer.add(Box.createVerticalStrut(18));
 
-        // Row 4: Akses Terbatas Badge
-        PillBadgePanel pnlBadge = new PillBadgePanel("AKSES TERBATAS");
+        // Row 4: Akses Terbatas / Sesi Aktif Badge
+        pnlBadge = new PillBadgePanel("AKSES TERBATAS");
         pnlBadge.setAlignmentX(0.0f);
         pnlLeftContainer.add(pnlBadge);
 
         pnlLeftContainer.add(Box.createVerticalStrut(10));
 
         // Row 5: Notice description
-        JLabel lblNotice = new JLabel("<html><div style='width: 440px; color: #94a3b8; line-height: 1.4;'>"
+        lblNotice = new JLabel("<html><div style='width: 440px; color: #94a3b8; line-height: 1.4;'>"
                 + "Silakan masuk dengan akun pegawai untuk membuka modul pelayanan. "
                 + "Seluruh aktivitas tercatat dalam log audit sistem.</div></html>");
         lblNotice.setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -169,8 +176,8 @@ public class PanelLandingHospital extends JPanel {
         pnlButtons.setOpaque(false);
         pnlButtons.setAlignmentX(0.0f);
 
-        // White Primary Log In Button
-        JButton btnLoginHero = new JButton("Log In") {
+        // White Primary Hero Action Button (Log In / Buka Menu)
+        btnActionHero = new JButton("Log In") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -189,23 +196,27 @@ public class PanelLandingHospital extends JPanel {
         };
         try {
             javax.swing.Icon ico = widget.SvgIconLoader.load("/picture/icons/toolbar/login_dark.svg", 16, null);
-            if (ico != null) btnLoginHero.setIcon(ico);
-            btnLoginHero.setIconTextGap(8);
+            if (ico != null) btnActionHero.setIcon(ico);
+            btnActionHero.setIconTextGap(8);
         } catch (Exception ignored) {}
-        btnLoginHero.setContentAreaFilled(false);
-        btnLoginHero.setBorderPainted(false);
-        btnLoginHero.setFocusPainted(false);
-        btnLoginHero.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnLoginHero.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnLoginHero.setForeground(new Color(11, 51, 44)); // Dark pine
-        btnLoginHero.setPreferredSize(new Dimension(115, 38));
-        btnLoginHero.addActionListener(new ActionListener() {
+        btnActionHero.setContentAreaFilled(false);
+        btnActionHero.setBorderPainted(false);
+        btnActionHero.setFocusPainted(false);
+        btnActionHero.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnActionHero.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnActionHero.setForeground(new Color(11, 51, 44)); // Dark pine
+        btnActionHero.setPreferredSize(new Dimension(115, 38));
+        btnActionHero.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frmUtama.getInstance().triggerLogin();
+                if (isLoggedIn) {
+                    frmUtama.getInstance().triggerMenu();
+                } else {
+                    frmUtama.getInstance().triggerLogin();
+                }
             }
         });
-        pnlButtons.add(btnLoginHero);
+        pnlButtons.add(btnActionHero);
 
         // Dark Translucent IT Support Button
         JButton btnBantuanIT = new JButton("Bantuan & Kontak IT") {
@@ -258,7 +269,7 @@ public class PanelLandingHospital extends JPanel {
         JPanel pnlBottomArea = new JPanel(new FlowLayout(FlowLayout.RIGHT, 35, 25));
         pnlBottomArea.setOpaque(false);
 
-        StatusGlassCard pnlStatusCard = new StatusGlassCard();
+        pnlStatusCard = new StatusGlassCard();
         lblClock = pnlStatusCard.getClockLabel();
         pnlBottomArea.add(pnlStatusCard);
 
@@ -355,6 +366,53 @@ public class PanelLandingHospital extends JPanel {
                 + "<p style='margin-top: 10px; color: #64748b; font-size: 10px;'>Silakan hubungi administrator bila mengalami kendala akses sistem.</p>"
                 + "</body></html>";
         JOptionPane.showMessageDialog(this, msg, "Kontak IT & Bantuan", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Updates landing screen state based on active user session.
+     * When logged in:
+     * - Hero Badge becomes "SESI AKTIF" with emerald active indicator
+     * - Hero Notice welcomes the user by name and directs to navigation menu
+     * - Hero Primary CTA transforms to "Buka Menu" (triggers frmUtama.getInstance().triggerMenu())
+     * - Status Glass Card (bottom-right) displays active User name and "Sesi Aktif" (Opsi 3)
+     */
+    public void setLoginStatus(boolean loggedIn, String userName) {
+        this.isLoggedIn = loggedIn;
+        this.currentUserName = (userName != null) ? userName.trim() : "";
+
+        if (loggedIn) {
+            pnlBadge.setBadge("SESI AKTIF", true);
+            String displayUser = !currentUserName.isEmpty() ? currentUserName : "Pengguna";
+            lblNotice.setText("<html><div style='width: 440px; color: #cbd5e1; line-height: 1.4;'>"
+                    + "Selamat bertugas, <b style='color: #ffffff;'>" + displayUser + "</b>. "
+                    + "Silakan pilih modul pelayanan pada menu navigasi di atas untuk memulai pelayanan pasien.</div></html>");
+
+            btnActionHero.setText("Buka Menu");
+            btnActionHero.setPreferredSize(new Dimension(135, 38));
+            try {
+                javax.swing.Icon ico = widget.SvgIconLoader.load("/picture/icons/toolbar/menu.svg", 16, "#0b332c");
+                if (ico != null) btnActionHero.setIcon(ico);
+            } catch (Exception ignored) {}
+        } else {
+            pnlBadge.setBadge("AKSES TERBATAS", false);
+            lblNotice.setText("<html><div style='width: 440px; color: #94a3b8; line-height: 1.4;'>"
+                    + "Silakan masuk dengan akun pegawai untuk membuka modul pelayanan. "
+                    + "Seluruh aktivitas tercatat dalam log audit sistem.</div></html>");
+
+            btnActionHero.setText("Log In");
+            btnActionHero.setPreferredSize(new Dimension(115, 38));
+            try {
+                javax.swing.Icon ico = widget.SvgIconLoader.load("/picture/icons/toolbar/login_dark.svg", 16, null);
+                if (ico != null) btnActionHero.setIcon(ico);
+            } catch (Exception ignored) {}
+        }
+
+        if (pnlStatusCard != null) {
+            pnlStatusCard.updateStatus(loggedIn, currentUserName, versiSimrs);
+        }
+
+        revalidate();
+        repaint();
     }
 
     @Override
@@ -478,13 +536,26 @@ public class PanelLandingHospital extends JPanel {
     // SUBCOMPONENT: Akses Terbatas Pill Badge
     // -------------------------------------------------------------
     private static class PillBadgePanel extends JPanel {
-        private final String text;
+        private String text;
+        private boolean activeSession = false;
 
         public PillBadgePanel(String text) {
             this.text = text;
             setOpaque(false);
-            setPreferredSize(new Dimension(148, 28));
-            setMaximumSize(new Dimension(148, 28));
+            updateDimension();
+        }
+
+        public void setBadge(String text, boolean activeSession) {
+            this.text = text;
+            this.activeSession = activeSession;
+            updateDimension();
+            repaint();
+        }
+
+        private void updateDimension() {
+            int w = activeSession ? 122 : 148;
+            setPreferredSize(new Dimension(w, 28));
+            setMaximumSize(new Dimension(w, 28));
         }
 
         @Override
@@ -496,29 +567,55 @@ public class PanelLandingHospital extends JPanel {
             int w = getWidth();
             int h = getHeight();
 
-            // Background pill
-            g2.setColor(new Color(13, 148, 136, 45));
-            g2.fill(new RoundRectangle2D.Float(0, 0, w, h, h, h));
+            if (activeSession) {
+                // Background pill - Emerald active
+                g2.setColor(new Color(16, 185, 129, 45));
+                g2.fill(new RoundRectangle2D.Float(0, 0, w, h, h, h));
 
-            // Border pill
-            g2.setColor(new Color(45, 212, 191, 120));
-            g2.setStroke(new BasicStroke(1.2f));
-            g2.draw(new RoundRectangle2D.Float(0.6f, 0.6f, w - 1.2f, h - 1.2f, h, h));
+                // Border pill - Emerald active
+                g2.setColor(new Color(52, 211, 153, 130));
+                g2.setStroke(new BasicStroke(1.2f));
+                g2.draw(new RoundRectangle2D.Float(0.6f, 0.6f, w - 1.2f, h - 1.2f, h, h));
 
-            // Draw lock icon
-            int iconX = 12;
-            int iconY = 7;
-            g2.setColor(new Color(94, 234, 212));
-            // Lock body
-            g2.fillRoundRect(iconX, iconY + 5, 10, 8, 2, 2);
-            // Lock shackle
-            g2.setStroke(new BasicStroke(1.5f));
-            g2.drawArc(iconX + 2, iconY, 6, 8, 0, 180);
+                // Draw active checkmark icon
+                int iconX = 12;
+                int iconY = 8;
+                g2.setColor(new Color(52, 211, 153));
+                g2.fillOval(iconX, iconY + 1, 9, 9);
+                g2.setColor(new Color(6, 78, 59));
+                g2.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g2.drawLine(iconX + 2, iconY + 5, iconX + 4, iconY + 7);
+                g2.drawLine(iconX + 4, iconY + 7, iconX + 7, iconY + 3);
 
-            // Badge text
-            g2.setFont(new Font("Segoe UI", Font.BOLD, 10));
-            g2.setColor(new Color(94, 234, 212));
-            g2.drawString(text, iconX + 16, h - 9);
+                // Badge text
+                g2.setFont(new Font("Segoe UI", Font.BOLD, 10));
+                g2.setColor(new Color(167, 243, 208));
+                g2.drawString(text, iconX + 16, h - 9);
+            } else {
+                // Background pill - Lock teal
+                g2.setColor(new Color(13, 148, 136, 45));
+                g2.fill(new RoundRectangle2D.Float(0, 0, w, h, h, h));
+
+                // Border pill
+                g2.setColor(new Color(45, 212, 191, 120));
+                g2.setStroke(new BasicStroke(1.2f));
+                g2.draw(new RoundRectangle2D.Float(0.6f, 0.6f, w - 1.2f, h - 1.2f, h, h));
+
+                // Draw lock icon
+                int iconX = 12;
+                int iconY = 7;
+                g2.setColor(new Color(94, 234, 212));
+                // Lock body
+                g2.fillRoundRect(iconX, iconY + 5, 10, 8, 2, 2);
+                // Lock shackle
+                g2.setStroke(new BasicStroke(1.5f));
+                g2.drawArc(iconX + 2, iconY, 6, 8, 0, 180);
+
+                // Badge text
+                g2.setFont(new Font("Segoe UI", Font.BOLD, 10));
+                g2.setColor(new Color(94, 234, 212));
+                g2.drawString(text, iconX + 16, h - 9);
+            }
 
             g2.dispose();
         }
@@ -529,19 +626,35 @@ public class PanelLandingHospital extends JPanel {
     // -------------------------------------------------------------
     private static class StatusGlassCard extends JPanel {
         private final JLabel lblClock;
+        private final JLabel lblH1;
+        private final JLabel lblV1;
+        private final JLabel lblH2;
+        private final JLabel lblV2;
 
         public StatusGlassCard() {
             setOpaque(false);
             setLayout(new GridBagLayout());
             setBorder(BorderFactory.createEmptyBorder(10, 18, 10, 18));
-            setPreferredSize(new Dimension(340, 58));
+            setPreferredSize(new Dimension(410, 58));
 
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = new Insets(0, 8, 0, 8);
             gbc.fill = GridBagConstraints.VERTICAL;
 
-            // Column 1: Versi SIMRS
-            JPanel col1 = createColumn("VERSI SIMRS", "24.09", null);
+            // Column 1: Versi SIMRS / Pengguna
+            JPanel col1 = new JPanel();
+            col1.setOpaque(false);
+            col1.setLayout(new BoxLayout(col1, BoxLayout.Y_AXIS));
+            lblH1 = new JLabel("VERSI SIMRS");
+            lblH1.setFont(new Font("Segoe UI", Font.BOLD, 9));
+            lblH1.setForeground(new Color(148, 163, 184)); // Slate-400
+            lblV1 = new JLabel("24.09");
+            lblV1.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            lblV1.setForeground(Color.WHITE);
+            col1.add(lblH1);
+            col1.add(Box.createVerticalStrut(2));
+            col1.add(lblV1);
+
             gbc.gridx = 0;
             add(col1, gbc);
 
@@ -549,8 +662,41 @@ public class PanelLandingHospital extends JPanel {
             gbc.gridx = 1;
             add(createDivider(), gbc);
 
-            // Column 2: Server Status
-            JPanel col2 = createColumn("SERVER", "Terhubung", new Color(34, 197, 94));
+            // Column 2: Server Status / Sesi Aktif
+            JPanel col2 = new JPanel();
+            col2.setOpaque(false);
+            col2.setLayout(new BoxLayout(col2, BoxLayout.Y_AXIS));
+            lblH2 = new JLabel("SERVER");
+            lblH2.setFont(new Font("Segoe UI", Font.BOLD, 9));
+            lblH2.setForeground(new Color(148, 163, 184)); // Slate-400
+
+            JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+            row2.setOpaque(false);
+
+            JPanel dot = new JPanel() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(new Color(34, 197, 94)); // Emerald green #22c55e
+                    g2.fillOval(0, 4, 7, 7);
+                    g2.dispose();
+                }
+            };
+            dot.setOpaque(false);
+            dot.setPreferredSize(new Dimension(8, 16));
+            row2.add(dot);
+
+            lblV2 = new JLabel("Terhubung");
+            lblV2.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            lblV2.setForeground(Color.WHITE);
+            row2.add(lblV2);
+
+            col2.add(lblH2);
+            col2.add(Box.createVerticalStrut(2));
+            col2.add(row2);
+
             gbc.gridx = 2;
             add(col2, gbc);
 
@@ -577,54 +723,30 @@ public class PanelLandingHospital extends JPanel {
             add(col3, gbc);
         }
 
-        public JLabel getClockLabel() {
-            return lblClock;
+        public void updateStatus(boolean loggedIn, String userName, String versiSimrs) {
+            if (loggedIn) {
+                lblH1.setText("PENGGUNA");
+                String displayName = (userName != null && !userName.trim().isEmpty()) ? userName.trim() : "Pengguna";
+                if (displayName.length() > 22) {
+                    displayName = displayName.substring(0, 21) + "…";
+                }
+                lblV1.setText(displayName);
+
+                lblH2.setText("STATUS");
+                lblV2.setText("Sesi Aktif");
+            } else {
+                lblH1.setText("VERSI SIMRS");
+                lblV1.setText(versiSimrs != null && !versiSimrs.trim().isEmpty() ? versiSimrs : "24.09");
+
+                lblH2.setText("SERVER");
+                lblV2.setText("Terhubung");
+            }
+            revalidate();
+            repaint();
         }
 
-        private JPanel createColumn(String header, String value, Color dotColor) {
-            JPanel p = new JPanel();
-            p.setOpaque(false);
-            p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-
-            JLabel lblH = new JLabel(header);
-            lblH.setFont(new Font("Segoe UI", Font.BOLD, 9));
-            lblH.setForeground(new Color(148, 163, 184)); // Slate-400
-            p.add(lblH);
-            p.add(Box.createVerticalStrut(2));
-
-            if (dotColor != null) {
-                JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
-                row.setOpaque(false);
-
-                // Small indicator dot
-                JPanel dot = new JPanel() {
-                    @Override
-                    protected void paintComponent(Graphics g) {
-                        super.paintComponent(g);
-                        Graphics2D g2 = (Graphics2D) g.create();
-                        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                        g2.setColor(dotColor);
-                        g2.fillOval(0, 4, 7, 7);
-                        g2.dispose();
-                    }
-                };
-                dot.setOpaque(false);
-                dot.setPreferredSize(new Dimension(8, 16));
-                row.add(dot);
-
-                JLabel lblV = new JLabel(value);
-                lblV.setFont(new Font("Segoe UI", Font.BOLD, 13));
-                lblV.setForeground(Color.WHITE);
-                row.add(lblV);
-
-                p.add(row);
-            } else {
-                JLabel lblV = new JLabel(value);
-                lblV.setFont(new Font("Segoe UI", Font.BOLD, 13));
-                lblV.setForeground(Color.WHITE);
-                p.add(lblV);
-            }
-            return p;
+        public JLabel getClockLabel() {
+            return lblClock;
         }
 
         private JPanel createDivider() {
