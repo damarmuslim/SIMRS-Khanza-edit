@@ -3938,3 +3938,28 @@ Formulir Pengkajian Keperawatan IGD ini dijadikan **cetak biru (blueprint)** unt
 - Array pemetaan kolom (`KOLOM_FORM`) harus selalu sinkron 1:1 antara klausa `INSERT` dan `UPDATE`.
 - Jalankan skrip audit kolom `NOT NULL` sebelum rilis untuk mencegah runtime integrity constraint violation.
 
+---
+
+## Penyesuaian UI Pengkajian Awal Medis IGD (2026-09-10)
+
+- `RMPenilaianAwalMedisIGD.java` diselaraskan dengan tampilan Pengkajian Awal Keperawatan IGD dan gambar referensi pengguna.
+- Form input dibagi menjadi 21 bagian individual dengan side rail, indikator kelengkapan, header kartu, navigasi bagian, dan action bar bawah yang konsisten.
+- Kartu identitas pasien, header Tanggal/Dokter/Anamnesis/Keterangan Anamnesis, serta tampilan checklist Intervensi Pre Hospital dirapikan.
+- Perubahan dibatasi pada susunan dan presentasi UI; alur simpan, ubah, hapus, database, dan cetak tidak diubah.
+- Verifikasi: seluruh 21 bagian berhasil dirender melalui harness visual dan `ant compile` berhasil.
+- Revisi visual lanjutan: area kerja dibuat putih tanpa latar abu-abu, lebar kartu/sidebar disamakan dengan pola Keperawatan IGD, dan jarak vertikal isi diperlonggar.
+
+
+- Revisi checklist Survei Primer — Jalan Napas: chip dua kolom kini memeluk teks, bukan melebar memenuhi kolom.
+- Verifikasi 2026-09-12: build JAR NetBeans berhasil; render 21 bagian berhasil; 105 chip diuji dan tidak ada chip melar. Progres, radio ButtonGroup, serta status UI 'Tandai tidak relevan' tetap reaktif.
+- Perbaikan rail 2026-09-12: listener klik kini dipasang pada panel, aksen, judul, dan hitungan setiap baris; klik di seluruh area baris berpindah ke bagian tujuan.
+- Verifikasi: klik label rail bagian VI memindahkan halaman aktif ke bagian 6.
+
+- Perbaikan regresi checklist 2026-09-12: ruang sisa panel kini diserap pengisi GridBag setelah kolom kedua, sehingga chip dua kolom melekat di kiri dan tetap memeluk teks.
+- Verifikasi: JAR NetBeans berhasil dibangun; render 21 bagian pada 1600x1000 normal; posisi Intervensi Pre Hospital kolom chip 0/119 px tanpa renggang ekstrem; 105 chip tidak melar; progres, ButtonGroup, dan status tidak relevan tetap reaktif.
+
+- Penyelarasan kelompok navigasi 2026-09-12: pasien umum kini tepat **12 kelompok**; kategori `Bayi Baru Lahir` menyisipkan **Penilaian Bayi Baru Lahir** sesudah Survei Primer sehingga menjadi tepat **13 kelompok**.
+- Semua field klinis tetap memakai panel dan objek sumber yang sama; perubahan terbatas pada pengelompokan kartu, rail, badge progres, dan footer navigasi. Jalur simpan/ubah/hapus, SQL, database, cetak, dan ringkasan HTML tidak diubah.
+- Rail dan footer kini dinamis mengikuti jumlah kelompok aktif. Klik panel, aksen, judul, maupun hitungan pada rail berpindah ke kelompok yang dipilih.
+- Verifikasi final: build JAR melalui NetBeans berhasil; render pasien umum membuktikan 12 kelompok, render bayi membuktikan 13 kelompok dengan halaman bayi di urutan 3; harness membuktikan transisi 12 → 13 → 12 dan klik rail; 105 chip tetap tidak melar; progres, `ButtonGroup`, dan status UI `Tandai tidak relevan` tetap reaktif.
+- Graph kode telah diperbarui dengan `graphify update .`.

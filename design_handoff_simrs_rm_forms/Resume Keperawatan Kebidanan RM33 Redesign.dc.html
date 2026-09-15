@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet">
+<style>
+  .ms { font-family:'Material Symbols Rounded'; font-weight:400; font-style:normal; line-height:1; letter-spacing:normal; text-transform:none; display:inline-block; white-space:nowrap; direction:ltr; }
+  body { margin:0; background:#dfe1dd; font-family:'IBM Plex Sans', 'Segoe UI', Helvetica, Arial, sans-serif; }
+  a { color:#0d7a70; text-decoration:none; }
+  a:hover { color:#0a5d55; text-decoration:underline; }
+  input, textarea, select { font-family:inherit; }
+  *::-webkit-scrollbar { width:11px; }
+  *::-webkit-scrollbar-thumb { background:#c1c5c0; }
+  *::-webkit-scrollbar-track { background:#eef0ec; }
+</style>
+</helmet>
+
+<div style="width:1600px; height:900px; overflow:hidden; background:#e8e9e6; font-family:'IBM Plex Sans', 'Segoe UI', Helvetica, Arial, sans-serif; color:#1c1f1d; display:flex; flex-direction:column;">
+
+  <div style="display:flex; align-items:center; gap:10px; height:34px; padding:0 20px; background:#123c3a; color:#dfe9e6; font-size:12.5px; font-weight:600; letter-spacing:0.02em; flex:none;">
+    <span>Resume Keperawatan / Kebidanan</span>
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600; color:#8fb5ae; border:1px solid #2c5a56; border-radius:2px; padding:1px 6px;">RM 33</span>
+    <div style="flex:1"></div>
+    <span style="font-size:11px; color:#8fb5ae;">RSUD Demang Sepulau Raya</span>
+  </div>
+
+  <div style="display:flex; align-items:stretch; height:38px; background:#ffffff; border-bottom:1px solid #cfd3ce; padding:0 8px; flex:none;">
+    <sc-for list="{{ mainTabs }}" as="t" hint-placeholder-count="2">
+      <div onClick="{{ t.onClick }}" style="{{ t.style }}"><span>{{ t.label }}</span><span style="{{ t.badgeStyle }}">{{ t.badge }}</span></div>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ isForm }}" hint-placeholder-val="{{ true }}">
+  <div style="flex:1; min-height:0; display:flex; flex-direction:column;">
+
+    <div style="display:flex; align-items:stretch; gap:16px; background:#ffffff; border-bottom:1px solid #cfd3ce; padding:12px 20px; flex:none;">
+      <div style="width:262px; flex:none; background:#f7f8f5; border:1px solid #e0e2dd; border-radius:2px; padding:10px 12px; display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <span style="font-size:10.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#8b928d;">Identitas Pasien</span>
+          <span style="font-size:9.5px; font-weight:600; letter-spacing:0.06em; padding:2px 6px; border-radius:2px; background:#e8eae5; color:#7b827d;">TERKUNCI</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="{{ avatarStyle }}">SN</div>
+          <div style="display:flex; flex-direction:column; gap:1px; min-width:0;">
+            <span style="font-size:14px; font-weight:600; letter-spacing:-0.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">SITI NURHALIZA</span>
+            <span style="font-size:11px; color:#6c736e;">Perempuan · 58 Th</span>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:2px; padding-top:6px; border-top:1px solid #e4e6e2; font-family:'IBM Plex Mono', monospace; font-size:11px; color:#5d645f;">
+          <div style="display:flex; justify-content:space-between;"><span style="color:#9aa19c;">No. RM</span><span>000112</span></div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:#9aa19c;">No. Rawat</span><span>2026/09/09/000004</span></div>
+          <div style="display:flex; justify-content:space-between;"><span style="color:#9aa19c;">Lokasi</span><span>Mawar 3B</span></div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px 18px; align-content:start; flex:1; min-width:0;">
+        <sc-for list="{{ headerFields }}" as="f" hint-placeholder-count="3">
+          <div style="{{ f.wrapStyle }}">
+            <label style="{{ f.labelStyle }}">{{ f.label }}</label>
+            <div style="{{ f.controlStyle }}">
+              <input type="text" placeholder="{{ f.placeholder }}" value="{{ f.value }}" onChange="{{ f.onChange }}" readonly="{{ f.readOnly }}" style="{{ f.inputStyle }}">
+              <span class="ms" style="{{ f.glyphStyle }}">{{ f.glyph }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="flex:1; min-height:0; display:grid; grid-template-columns:300px minmax(0,1fr); gap:20px; align-items:stretch; padding:16px 20px; background:#e8e9e6;">
+
+      <div style="display:flex; flex-direction:column; gap:12px; min-height:0; overflow-y:auto; padding-right:2px;">
+
+        <div style="background:#ffffff; border:1px solid #dcdfda; border-radius:3px; overflow:hidden; flex:none;">
+          <div style="display:flex; align-items:center; gap:8px; padding:11px 14px; border-bottom:1px solid #eceeea;">
+            <span style="flex:1; font-size:10.5px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#8b928d;">Dari Kamar Inap</span>
+            <span class="ms" style="font-size:15px; color:#a8b0ab;">link</span>
+          </div>
+          <sc-for list="{{ kamarItems }}" as="k" hint-placeholder-count="3">
+            <div style="display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px solid #f2f4f0;">
+              <span style="font-size:12px; color:#3d4441; flex:1; min-width:0;">{{ k.label }}</span>
+              <span style="font-family:'IBM Plex Mono', monospace; font-size:11.5px; font-weight:600; color:#1c1f1d;">{{ k.value }}</span>
+            </div>
+          </sc-for>
+          <div style="padding:10px 14px; font-size:11px; line-height:1.5; color:#8b928d;">Diambil langsung dari kamar_inap saat dibuka dan saat dicetak — tidak disalin ke lembar ini.</div>
+        </div>
+
+        <div style="background:#ffffff; border:1px solid #dcdfda; border-radius:3px; padding:14px 14px 12px; display:flex; flex-direction:column; gap:10px; flex:none;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between;">
+            <span style="font-size:10.5px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#8b928d;">{{ progressCaption }}</span>
+            <span style="font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:15px; color:#1c1f1d;">{{ progressLabel }}</span>
+          </div>
+          <div style="height:6px; background:#e6e8e3; border-radius:3px; overflow:hidden;">
+            <div style="{{ progressStyle }}"></div>
+          </div>
+          <span style="font-size:11px; color:#9aa19c;">{{ progressNote }}</span>
+        </div>
+
+        <div style="background:#ffffff; border:1px solid #dcdfda; border-radius:3px; overflow:hidden; flex:none;">
+          <div style="padding:11px 14px; border-bottom:1px solid #eceeea; font-size:10.5px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#8b928d;">Bagian Pengkajian</div>
+          <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+            <div onClick="{{ n.onClick }}" style="{{ n.style }}">
+              <span style="{{ n.numStyle }}">{{ n.num }}</span>
+              <span style="{{ n.labelStyle }}">{{ n.title }}</span>
+              <span style="{{ n.countStyle }}">{{ n.count }}</span>
+            </div>
+          </sc-for>
+          <div style="padding:10px 14px; font-size:11px; line-height:1.5; color:#8b928d;">Lima baris per blok — batas dari formulir cetak, bukan pembatasan aplikasi.</div>
+        </div>
+
+        <div onClick="{{ viewToggleFn }}" style="{{ viewToggleStyle }}">{{ viewToggleLabel }}</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px; min-width:0; min-height:0; overflow-y:auto; padding-right:4px;">
+        <sc-for list="{{ visibleSections }}" as="sec" hint-placeholder-count="1">
+          <div style="border:1px solid #dcdfda; border-radius:3px; background:#ffffff; overflow:hidden; flex:none;">
+
+            <div style="{{ sec.headerStyle }}">
+              <span style="{{ sec.numBadgeStyle }}">{{ sec.num }}</span>
+              <div style="display:flex; flex-direction:column; gap:2px; min-width:0;">
+                <span style="font-size:14px; font-weight:600; color:#1c1f1d; letter-spacing:-0.01em;">{{ sec.title }}</span>
+                <span style="font-size:11.5px; color:#9aa19c;">{{ sec.subtitle }}</span>
+              </div>
+              <div style="flex:1"></div>
+              <span style="{{ sec.tallyStyle }}">{{ sec.tally }}</span>
+            </div>
+
+            <div style="display:flex; flex-direction:column; padding:6px 24px 22px;">
+              <sc-for list="{{ sec.rows }}" as="row" hint-placeholder-count="5">
+
+                <sc-if value="{{ row.kText }}" hint-placeholder-val="{{ false }}">
+                  <div style="{{ row.rowStyle }}">
+                    <label style="{{ row.labelStyle }}">{{ row.label }}</label>
+                    <div style="display:flex; gap:8px; align-items:center; min-width:0;">
+                      <input type="text" value="{{ row.value }}" onChange="{{ row.onChange }}" placeholder="{{ row.placeholder }}" style="{{ row.inputStyle }}">
+                      <sc-if value="{{ row.badge }}" hint-placeholder-val="{{ false }}">
+                        <span style="{{ row.badgeStyle }}">{{ row.badge }}</span>
+                      </sc-if>
+                      <sc-if value="{{ row.linkLabel }}" hint-placeholder-val="{{ false }}">
+                        <span onClick="{{ row.onLink }}" style="font-size:11.5px; color:#0d7a70; cursor:pointer; white-space:nowrap;" style-hover="text-decoration:underline;">{{ row.linkLabel }}</span>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ row.kArea }}" hint-placeholder-val="{{ false }}">
+                  <div style="{{ row.rowStyle }}">
+                    <label style="{{ row.labelStyle }}">{{ row.label }}</label>
+                    <textarea value="{{ row.value }}" onChange="{{ row.onChange }}" placeholder="{{ row.placeholder }}" style="{{ row.areaStyle }}"></textarea>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ row.kLines }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; flex-direction:column; gap:8px; padding:14px 0;">
+                    <sc-for list="{{ row.items }}" as="li" hint-placeholder-count="5">
+                      <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="{{ li.numStyle }}">{{ li.num }}</span>
+                        <input type="text" placeholder="{{ li.ph }}" value="{{ li.value }}" onChange="{{ li.onChange }}" style="{{ li.inputStyle }}">
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ sec.showStepper }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:center; gap:10px; padding:12px 24px; border-top:1px solid #eceeea; background:#fbfcfa;">
+                <div onClick="{{ prevFn }}" style="{{ prevStyle }}">‹ {{ prevLabel }}</div>
+                <div style="flex:1"></div>
+                <span style="font-size:11.5px; color:#9aa19c;">{{ stepLabel }}</span>
+                <div style="flex:1"></div>
+                <div onClick="{{ nextFn }}" style="{{ nextStyle }}">{{ nextLabel }} ›</div>
+              </div>
+            </sc-if>
+
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isData }}" hint-placeholder-val="{{ true }}">
+  <div style="flex:1; min-height:0; overflow-y:auto; padding:16px 20px; background:#e8e9e6;">
+    <div style="border:1px solid #dcdfda; border-radius:3px; background:#ffffff; overflow:hidden;">
+      <div style="display:flex; align-items:center; gap:12px; padding:13px 18px; border-bottom:1px solid #eceeea; background:#fafbf9;">
+        <div style="display:flex; flex-direction:column; gap:1px;">
+          <span style="font-size:14px; font-weight:600; letter-spacing:-0.01em;">Data Tersimpan</span>
+          <span style="font-size:11.5px; color:#9aa19c;">Satu baris per nomor rawat — klik untuk membuka isinya</span>
+        </div>
+        <div style="flex:1"></div>
+        <div style="display:flex; align-items:center; border:1px solid #cfd3ce; border-radius:2px; background:#fff; padding:0 8px;">
+          <input type="text" placeholder="Cari nama atau nomor rawat" value="{{ cari }}" onChange="{{ setCari }}" style="width:230px; border:none; padding:7px 0; font-size:12.5px; outline:none; background:transparent;">
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:130px 170px minmax(0,1fr) minmax(0,1fr) 150px 86px; gap:12px; padding:9px 24px; background:#f6f8f5; border-bottom:1px solid #eceeea;">
+        <sc-for list="{{ kolomData }}" as="k" hint-placeholder-count="6">
+          <span style="font-size:10.5px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#8b928d;">{{ k }}</span>
+        </sc-for>
+      </div>
+      <sc-for list="{{ barisData }}" as="d" hint-placeholder-count="5">
+        <div onClick="{{ d.onOpen }}" style="{{ d.rowStyle }}" style-hover="background:#f6f8f5;">
+          <span style="font-family:'IBM Plex Mono', monospace; font-size:12px; color:#3d4441;">{{ d.tanggal }}</span>
+          <span style="font-family:'IBM Plex Mono', monospace; font-size:12px; color:#0d7a70;">{{ d.noRawat }}</span>
+          <span style="font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ d.pasien }}</span>
+          <span style="font-size:12.5px; color:#3d4441; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ d.diagnosa }}</span>
+          <span style="font-size:12px; color:#6c736e; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ d.petugas }}</span>
+          <span style="{{ d.statusStyle }}">{{ d.status }}</span>
+        </div>
+      </sc-for>
+      <div style="padding:12px 24px 16px; font-size:11.5px; color:#8b928d;">{{ ringkasData }}</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <div style="display:flex; align-items:center; gap:10px; height:56px; padding:0 20px; background:#ffffff; border-top:1px solid #cfd3ce; flex:none;">
+    <span class="ms" style="font-size:18px; color:#a8b0ab;">assignment_turned_in</span>
+    <span style="font-size:11.5px; color:#8b928d;">{{ footerNote }}</span>
+    <div style="flex:1"></div>
+    <sc-for list="{{ actions }}" as="a" hint-placeholder-count="4">
+      <div style="{{ a.style }}" style-hover="border-color:#9aa19c;">
+        <span class="ms" style="{{ a.glyphStyle }}">{{ a.glyph }}</span>{{ a.label }}
+      </div>
+    </sc-for>
+    <div style="display:flex; align-items:center; gap:7px; border:1px solid #cfd3ce; border-radius:2px; padding:8px 16px; font-size:12.5px; font-weight:500; color:#3d4441; cursor:pointer; background:#fff;" style-hover="border-color:#0d7a70; color:#0d7a70;"><span class="ms" style="font-size:17px;">print</span>Cetak Formulir</div>
+    <div style="{{ saveBtnStyle }}" style-hover="filter:brightness(0.92);">
+      <span class="ms" style="{{ saveGlyphStyle }}">save</span>Simpan
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const HDR = [
+  { key:'hdr_tgl', label:'Tanggal Resume', type:'datetime', mono:true },
+  { key:'hdr_jam', label:'Jam', type:'text', ph:'hh:mm', mono:true },
+  { key:'hdr_petugas', label:'Perawat / Bidan yang Membuat Resume', type:'lookup', ph:'Cari petugas…' }
+];
+
+const ROMAN = ['I','II','III','IV','V','VI'];
+const DX_KAMAR = 'CHF NYHA III + Hipertensi grade II';
+
+const BLOK = [
+  ['dxTimbul', 'Diagnosa Keperawatan / Kebidanan yang Timbul', 'Urut prioritas saat pasien dirawat', 'Diagnosa keperawatan'],
+  ['tindakan', 'Tindakan Keperawatan / Kebidanan', 'Tindakan yang sudah diberikan selama perawatan', 'Tindakan'],
+  ['dxTeratasi', 'Diagnosa yang Sudah Teratasi', 'Diagnosa yang tuntas sebelum pasien pulang', 'Diagnosa teratasi'],
+  ['rencana', 'Rencana Tindak Lanjut / Nasihat Waktu Pulang', 'Yang harus dilakukan pasien dan keluarga di rumah', 'Nasihat pulang']
+];
+
+const DATA_TERSIMPAN = [
+  ['11-09-2026', '2026/09/09/000004', 'Siti Nurhaliza', 'CHF NYHA III + Hipertensi grade II', 'Ns. Dwi Astuti', 'Draft'],
+  ['09-09-2026', '2026/09/02/000018', 'Bambang Irawan', 'Diabetes melitus tipe 2 + selulitis', 'Ns. Dwi Astuti', 'Final'],
+  ['07-09-2026', '2026/08/30/000011', 'Ratna Kusuma', 'Post SC hari ke-3', 'Bd. Maya Sari', 'Final'],
+  ['05-09-2026', '2026/08/28/000007', 'Slamet Widodo', 'PPOK eksaserbasi akut', 'Ns. Rian Pratama', 'Final'],
+  ['02-09-2026', '2026/08/25/000003', 'Nur Hidayah', 'Gastroenteritis akut dehidrasi ringan', 'Ns. Dwi Astuti', 'Final']
+];
+
+class Component extends DCLogic {
+  state = {
+    tab: 'form',
+    cari: '',
+    texts: { hdr_tgl:'10-09-2026', hdr_jam:'11:40', diagnosaMedis: DX_KAMAR, keluhanUtama:'Sesak napas memberat sejak 2 hari, bertambah saat berbaring.' },
+    lines: {
+      dxTimbul: ['Pola napas tidak efektif b.d. penurunan ekspansi paru', 'Kelebihan volume cairan b.d. gangguan mekanisme regulasi', '', '', ''],
+      tindakan: ['Posisi semi-Fowler, O2 nasal kanul 3 lpm', 'Pantau balans cairan tiap 8 jam', 'Timbang berat badan tiap pagi', '', ''],
+      dxTeratasi: ['Pola napas tidak efektif', '', '', '', ''],
+      rencana: ['Kontrol poli jantung 7 hari lagi', 'Batasi garam maksimal 2 g/hari', '', '', '']
+    },
+    active: 'kepala',
+    showAll: false
+  };
+
+  renderVals() {
+    const accent = this.props.accent ?? '#0d7a70';
+    const compact = (this.props.density ?? 'Normal') === 'Rapat';
+    const fieldH = compact ? 28 : 32;
+    const rowPadY = compact ? 7 : 10;
+    const st = this.state;
+
+    const qCari = (st.cari || '').trim().toLowerCase();
+    const barisData = DATA_TERSIMPAN.filter(d => !qCari || d[2].toLowerCase().includes(qCari) || d[1].toLowerCase().includes(qCari))
+      .map(([tanggal, noRawat, pasien, diagnosa, petugas, status], i) => ({
+        tanggal, noRawat, pasien, diagnosa, petugas, status,
+        onOpen: () => this.setState({ tab:'form' }),
+        rowStyle: { display:'grid', gridTemplateColumns:'130px 170px minmax(0,1fr) minmax(0,1fr) 150px 86px', gap:12, alignItems:'center', padding:'11px 24px', borderBottom:'1px solid #f2f4f0', cursor:'pointer', background: i % 2 ? '#fcfdfb' : '#ffffff' },
+        statusStyle: { fontSize:10.5, fontWeight:600, letterSpacing:'0.04em', padding:'2px 7px', borderRadius:2, textAlign:'center', border:'1px solid ' + (status === 'Final' ? '#cfe4de' : '#e0d3bd'), background: status === 'Final' ? '#e9f5f2' : '#f8f2e6', color: status === 'Final' ? '#0d7a70' : '#8a6d3b' }
+      }));
+
+    const setText = (k, v) => this.setState(s => ({ texts: { ...s.texts, [k]: v } }));
+    const setLine = (key, i, v) => this.setState(s => { const arr = [...s.lines[key]]; arr[i] = v; return { lines: { ...s.lines, [key]: arr } }; });
+
+    const rowStyle = { display:'grid', gridTemplateColumns:'232px minmax(0,1fr)', gap:'0 20px', alignItems:'start', padding:`${rowPadY}px 0`, borderBottom:'1px solid #f2f3f0' };
+    const labelStyle = { fontSize:12.5, fontWeight:500, color:'#3d4441', lineHeight:1.45, paddingTop:7, textWrap:'pretty' };
+
+    const inputBase = { height:fieldH, padding:'0 10px', border:'1px solid #cfd3ce', borderRadius:2, fontSize:12.5, outline:'none', background:'#ffffff', color:'#1c1f1d', width:'100%', maxWidth:420, minWidth:0, boxSizing:'border-box' };
+    const areaBase = { resize:'vertical', padding:'9px 11px', border:'1px solid #cfd3ce', borderRadius:2, fontSize:12.5, lineHeight:1.55, outline:'none', background:'#ffffff', color:'#1c1f1d', width:'100%', maxWidth:640, boxSizing:'border-box', fontFamily:'inherit' };
+
+    const R = (row) => ({ ...row, required:true, label: row.label + ' *', labelStyle:{ ...row.labelStyle, color:'#1c1f1d', fontWeight:600 } });
+
+    const dxDiubah = st.texts.diagnosaMedis.trim() !== DX_KAMAR;
+    const mkDiagnosaMedis = () => ({
+      kText:true, label:'Diagnosa Medis', answered: !!st.texts.diagnosaMedis, rowStyle, labelStyle,
+      value: st.texts.diagnosaMedis, onChange:(e)=>setText('diagnosaMedis', e.target.value), placeholder:'—', inputStyle: inputBase,
+      badge: dxDiubah ? 'Diubah perawat' : 'Dari kamar_inap.diagnosa_akhir',
+      badgeStyle: { fontSize:10.5, fontWeight:600, letterSpacing:'0.04em', padding:'2px 7px', borderRadius:2, border:'1px solid ' + (dxDiubah ? '#e0d3bd' : '#cfe4de'), background: dxDiubah ? '#f8f2e6' : '#e9f5f2', color: dxDiubah ? '#8a6d3b' : '#0d7a70' },
+      linkLabel: dxDiubah ? 'Ambil ulang dari kamar inap' : '', onLink: () => setText('diagnosaMedis', DX_KAMAR)
+    });
+
+    const mkArea = (field, label, ph, h=88) => ({
+      kArea:true, label, answered: !!st.texts[field], rowStyle, labelStyle,
+      value: st.texts[field] || '', onChange:(e)=>setText(field, e.target.value), placeholder: ph, areaStyle: { ...areaBase, height:h }
+    });
+
+    const mkLines = (key, ph) => ({
+      kLines:true, answered: st.lines[key].some(v => String(v).trim()), required:false,
+      items: st.lines[key].map((v, i) => ({
+        num: String(i+1), value: v, ph: `${ph} ${i+1}`, onChange: (e) => setLine(key, i, e.target.value),
+        numStyle: { fontFamily:"'IBM Plex Mono', monospace", fontSize:11.5, fontWeight:600, width:22, height:22, borderRadius:2, display:'flex', alignItems:'center', justifyContent:'center', flex:'none', background: v ? '#e9f5f2' : '#f4f6f2', color: v ? accent : '#a8b0ab' },
+        inputStyle: { flex:1, minWidth:0, border:'1px solid #cfd3ce', borderRadius:2, padding:'8px 10px', fontSize:13, color:'#1c1f1d', background:'#fff', outline:'none' }
+      }))
+    });
+
+    const section = (key, idx, title, subtitle, rows) => {
+      const relevant = rows.filter(r => !r.kSub);
+      const reqRows = relevant.filter(r => r.required);
+      const optRows = relevant.filter(r => !r.required);
+      const total = reqRows.length;
+      const answered = reqRows.filter(r => r.answered).length;
+      const optFilled = optRows.filter(r => r.answered).length;
+      const complete = answered === total;
+
+      let tally, tone;
+      if (total === 0) { tally = optFilled ? `${optFilled} baris terisi` : 'Opsional'; tone = optFilled ? 'ok' : 'muted'; }
+      else if (complete) { tally = optFilled ? `Wajib lengkap · ${optFilled} baris` : 'Wajib lengkap'; tone = 'ok'; }
+      else { tally = `${answered}/${total} wajib terisi`; tone = 'pending'; }
+
+      const toneBg = { ok:'#e8f3ed', pending:'#fdf3e7', muted:'#f2f3f0' }[tone];
+      const toneFg = { ok:'#1a6b4c', pending:'#8a5a12', muted:'#9aa19c' }[tone];
+
+      return {
+        key, num: ROMAN[idx], idx, title, subtitle, rows, total, answered, optFilled, tally,
+        headerStyle: { display:'flex', alignItems:'center', gap:14, padding:'16px 24px', borderBottom:'1px solid #eceeea', background:'#fbfcfa' },
+        numBadgeStyle: { minWidth:26, height:26, padding:'0 6px', borderRadius:2, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11.5, fontWeight:700, flex:'none', boxSizing:'border-box', background:accent, color:'#ffffff' },
+        tallyStyle: { fontFamily:"'IBM Plex Mono', monospace", fontSize:11.5, color:toneFg, flex:'none', padding:'4px 9px', borderRadius:2, background:toneBg }
+      };
+    };
+
+    const sections = [
+      section('kepala', 0, 'Kepala Resume', 'Diagnosa medis terisi dari kamar inap, tetap bisa dikoreksi perawat', [
+        R(mkDiagnosaMedis()),
+        R(mkArea('keluhanUtama', 'Keluhan Utama', 'Keluhan yang membawa pasien dirawat…', 76))
+      ]),
+      ...BLOK.map(([key, title, sub, ph], i) => section(key, i+1, title, sub, [mkLines(key, ph)]))
+    ];
+
+    const totalAll = sections.reduce((a,s) => a + s.total, 0);
+    const answeredAll = sections.reduce((a,s) => a + s.answered, 0);
+    const pct = totalAll ? Math.round((answeredAll / totalAll) * 100) : 100;
+    const optFilledAll = sections.reduce((a,s) => a + s.optFilled, 0);
+
+    const activeIdx = Math.max(0, sections.findIndex(s => s.key === st.active));
+    const showAll = st.showAll;
+    const goTo = (k) => this.setState({ active:k, showAll:false });
+
+    const stepBtn = (enabled) => ({
+      height:32, display:'flex', alignItems:'center', gap:6, padding:'0 14px', borderRadius:2, fontSize:12.5, fontWeight:500,
+      border:'1px solid #d8dbd6', background:'#ffffff', color: enabled ? '#3d4441' : '#c1c5c0', cursor: enabled ? 'pointer' : 'default'
+    });
+
+    const glyphFor = (type) => type === 'select' ? 'expand_more' : type === 'lookup' ? 'search' : type === 'ref' ? 'lock' : type === 'datetime' ? 'calendar_month' : '';
+
+    return {
+      isForm: st.tab === 'form',
+      isData: st.tab === 'data',
+      cari: st.cari,
+      setCari: (e) => { const v = e.target.value; this.setState({ cari: v }); },
+      kolomData: ['Tanggal', 'No. Rawat', 'Pasien', 'Diagnosa Medis', 'Petugas', 'Status'],
+      barisData,
+      ringkasData: 'Menampilkan ' + barisData.length + ' dari ' + DATA_TERSIMPAN.length + ' baris tabel resume_keperawatan_ranap. Baris berstatus Draft belum ditandatangani.',
+      mainTabs: [['form','Formulir RM 33','Isian resume'],['data','Data Tersimpan','5 resume']].map(([k,l,b]) => ({
+        label:l,
+        badge:b,
+        badgeStyle: { fontSize:10.5, color:'#a8b0ab', fontWeight:400 },
+        onClick: () => this.setState({ tab:k }),
+        style: st.tab===k
+          ? { display:'flex', alignItems:'center', gap:8, padding:'0 16px', fontSize:12.5, cursor:'pointer', fontWeight:600, color:accent, borderBottom:`2px solid ${accent}` }
+          : { display:'flex', alignItems:'center', gap:8, padding:'0 16px', fontSize:12.5, cursor:'pointer', color:'#6c736e', borderBottom:'2px solid transparent' }
+      })),
+      avatarStyle: { width:42, height:42, flex:'none', borderRadius:2, background:'#eaf1f7', border:`1px solid ${accent}33`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:600, color:accent },
+      headerFields: HDR.map(f => {
+        const val = st.texts[f.key] || '';
+        const glyph = glyphFor(f.type);
+        const locked = f.type === 'ref';
+        return {
+          label: f.label, placeholder: f.ph || '—', value: val,
+          readOnly: f.type === 'select' || f.type === 'datetime' || locked,
+          onChange: (e) => setText(f.key, e.target.value), glyph,
+          wrapStyle: { display:'flex', flexDirection:'column', gap:4, minWidth:0 },
+          labelStyle: { fontSize:10.5, fontWeight:600, letterSpacing:'0.05em', textTransform:'uppercase', color:'#9aa19c', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' },
+          controlStyle: { display:'flex', alignItems:'center', height:32, borderRadius:2, border:'1px solid #cfd3ce', background: (f.type==='select'||f.type==='datetime'||locked) ? '#fbfcfa' : '#ffffff', overflow:'hidden' },
+          inputStyle: { flex:1, minWidth:0, height:'100%', border:'none', outline:'none', background:'transparent', padding:'0 10px', fontSize:12.5, color: locked ? '#5d645f' : '#1c1f1d', fontFamily: f.mono ? "'IBM Plex Mono', monospace" : 'inherit', cursor: (f.type==='select'||f.type==='datetime') ? 'pointer' : (locked ? 'default' : 'text') },
+          glyphStyle: { display: glyph ? 'flex' : 'none', alignItems:'center', justifyContent:'center', width:28, height:'100%', flex:'none', fontSize:11, color:'#8b928d', cursor: locked ? 'default' : 'pointer', borderLeft: f.type==='lookup' ? '1px solid #e0e2dd' : 'none', background: f.type==='lookup' ? '#f4f5f2' : 'transparent' }
+        };
+      }),
+      kamarItems: [
+        { label:'Tanggal masuk', value:'02-09-2026' },
+        { label:'Tanggal keluar', value:'10-09-2026' },
+        { label:'Ruangan', value:'Mawar 3B' }
+      ],
+      progressStyle: { width:`${pct}%`, height:'100%', background: pct===100 ? '#1a6b4c' : accent, borderRadius:3 },
+      progressLabel: `${pct}%`,
+      progressCaption: pct === 100 ? 'Semua isian wajib terpenuhi' : 'Isian wajib',
+      progressNote: `${answeredAll}/${totalAll} isian wajib` + (optFilledAll ? ` · ${optFilledAll} baris terisi` : ''),
+      navItems: sections.map(s => {
+        const on = !showAll && s.key === st.active;
+        const done = s.answered === s.total;
+        return {
+          num: s.num, title: s.title,
+          count: s.total === 0 ? '–' : `${s.answered}/${s.total}`,
+          onClick: () => goTo(s.key),
+          style: { display:'flex', alignItems:'center', gap:10, padding:'9px 14px', cursor:'pointer', borderLeft: on ? `3px solid ${accent}` : '3px solid transparent', background: on ? '#f1f7f6' : 'transparent', borderBottom:'1px solid #f4f5f2' },
+          numStyle: { fontFamily:"'IBM Plex Mono', monospace", fontSize:10, fontWeight:600, color: on ? accent : '#b3b8b3', flex:'none', width:30, textAlign:'right' },
+          labelStyle: { fontSize:12, fontWeight: on ? 600 : 400, color: on ? accent : '#3d4441', lineHeight:1.35, flex:1, minWidth:0 },
+          countStyle: { fontFamily:"'IBM Plex Mono', monospace", fontSize:10.5, color: done ? '#1a6b4c' : '#c08a2e', flex:'none' }
+        };
+      }),
+      viewToggleFn: () => this.setState(s => ({ showAll: !s.showAll })),
+      viewToggleStyle: { flex:'none', display:'flex', alignItems:'center', justifyContent:'center', height:34, borderRadius:2, border:`1px solid ${accent}55`, color:accent, fontSize:11.5, fontWeight:600, cursor:'pointer', background:'#ffffff' },
+      viewToggleLabel: showAll ? 'Tampilkan Per Bagian' : 'Tampilkan Semua Bagian',
+      visibleSections: (showAll ? sections : [sections[activeIdx]]).map((s, i, arr) => ({
+        ...s, showStepper: !showAll || i === arr.length - 1
+      })),
+      prevFn: () => activeIdx > 0 && goTo(sections[activeIdx-1].key),
+      nextFn: () => activeIdx < sections.length-1 && goTo(sections[activeIdx+1].key),
+      prevLabel: activeIdx > 0 ? sections[activeIdx-1].title : 'Awal',
+      nextLabel: activeIdx < sections.length-1 ? sections[activeIdx+1].title : 'Akhir',
+      prevStyle: stepBtn(activeIdx > 0),
+      nextStyle: stepBtn(activeIdx < sections.length-1),
+      stepLabel: `Bagian ${activeIdx+1} dari ${sections.length}`,
+      saveBtnStyle: { height:36, display:'flex', alignItems:'center', gap:8, padding:'0 20px', borderRadius:2, background:accent, color:'#ffffff', fontSize:12.5, fontWeight:600, cursor:'pointer' },
+      saveGlyphStyle: { fontSize:17, lineHeight:1 },
+      actions: [
+        { label:'Baru', glyph:'add', tone:null },
+        { label:'Ganti', glyph:'edit', tone:null },
+        { label:'Hapus', glyph:'delete', tone:'#a8442e' },
+        { label:'Keluar', glyph:'logout', tone:null }
+      ].map(a => ({
+        label:a.label, glyph:a.glyph,
+        style: { height:36, display:'flex', alignItems:'center', gap:7, padding:'0 14px', border:'1px solid #cfd3ce', borderRadius:2, fontSize:12.5, color: a.tone || '#3d4441', cursor:'pointer', background:'#ffffff' },
+        glyphStyle: { fontSize:13, lineHeight:1, color: a.tone || '#8b928d' }
+      })),
+      footerNote: pct === 100 ? 'Isian wajib lengkap · siap disimpan' : `Isian wajib ${answeredAll}/${totalAll} · ${totalAll - answeredAll} belum terisi`
+    };
+  }
+}
+</script>
+</body>
+</html>

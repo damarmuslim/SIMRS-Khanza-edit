@@ -179,7 +179,7 @@
 						<printWhenExpression><![CDATA[new Boolean("Ya".equals($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement>
-					<textFieldExpression><![CDATA["X"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="20" y="14" width="240" height="12" uuid="a1b2c3d4-0001-4000-8000-000000000015"/>
@@ -195,7 +195,7 @@
 						<printWhenExpression><![CDATA[new Boolean("Tidak".equals($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement>
-					<textFieldExpression><![CDATA["X"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="292" y="14" width="277" height="12" uuid="a1b2c3d4-0001-4000-8000-000000000018"/>
@@ -310,7 +310,7 @@
 					<printWhenExpression><![CDATA[new Boolean("Lanjut aturan pakai sama".equals($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="6" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["X"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="299" y="1" width="134" height="10" uuid="a1b2c3d4-0001-4000-8000-000000000029"/>
@@ -326,7 +326,7 @@
 					<printWhenExpression><![CDATA[new Boolean("Lanjut aturan pakai berubah".equals($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="6" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["X"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="299" y="12" width="134" height="10" uuid="a1b2c3d4-0001-4000-8000-00000000002c"/>
@@ -342,7 +342,7 @@
 					<printWhenExpression><![CDATA[new Boolean("Stop".equals($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="6" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["X"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="299" y="23" width="134" height="10" uuid="a1b2c3d4-0001-4000-8000-00000000002f"/>
@@ -401,7 +401,7 @@
 						<printWhenExpression><![CDATA[new Boolean("Status Pasien di Rekam Medis".equals($P{pSumberInformasi}))]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement>
-					<textFieldExpression><![CDATA["X"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="20" y="16" width="257" height="12" uuid="a1b2c3d4-0001-4000-8000-000000000037"/>
@@ -418,7 +418,7 @@
 						<printWhenExpression><![CDATA[new Boolean("Pasien/Keluarga Pasien".equals($P{pSumberInformasi}))]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement>
-					<textFieldExpression><![CDATA["X"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="20" y="32" width="257" height="12" uuid="a1b2c3d4-0001-4000-8000-00000000003a"/>
@@ -435,7 +435,7 @@
 						<printWhenExpression><![CDATA[new Boolean("Lain-lain".equals($P{pSumberInformasi}))]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement>
-					<textFieldExpression><![CDATA["X"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="20" y="48" width="60" height="12" uuid="a1b2c3d4-0001-4000-8000-00000000003d"/>

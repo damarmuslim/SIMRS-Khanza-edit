@@ -39,3 +39,30 @@ tmp-cek/
 # Lembar/PDF; sebelumnya report/rptLembarSkriningRalan.pdf sudah terlanjur
 # masuk repo lewat jalur yang sama.
 /report/*.pdf
+
+# NetBeans local/private settings
+nbproject/private/
+
+# Claude local settings
+.claude/settings.local.json
+
+# Local logs / crash dumps
+logs/
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+# Backup files
+*.bak
+
+# Local diagnostic outputs
+hasil-cek-detail.txt
+hasil-kategori.txt
+medis-hal-*.png
+
+# Screenshot hasil desain/render - jangan upload karena berpotensi memuat data pasien
+design_handoff_simrs_rm_forms/screenshots/
+
+# Claude local settings
+.claude/settings.json
+.claude/settings.local.json

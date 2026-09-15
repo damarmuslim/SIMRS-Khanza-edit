@@ -10,6 +10,27 @@
  */
 
 package rekammedis;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.FlowLayout;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Component;
+import java.awt.BasicStroke;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.AbstractButton;
+import javax.swing.JScrollPane;
+import javax.swing.BorderFactory;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import kepegawaian.DlgCariPetugas;
 import fungsi.WarnaTable;
@@ -63,41 +84,62 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         widget.IconStyle.pasang(this);
         initRekonsiliasiTambahan();
 
-        DlgTambahObatRekonsiliasi.setSize(700,163);
+        initModernModalTambahObat();
 
-        // [RM 03-06A] "Aturan Pakai" & "Waktu Pemberian Terakhir" dihapus dari
-        // fungsi Tambah (tidak ada padanannya di kolom tabel formulir fisik) -
-        // tabMode dipangkas dari 7 kolom jadi 5. Lihat jg
-        // initRekonsiliasiTambahan() (sembunyikan+reflow field di
-        // DlgTambahObatRekonsiliasi), BtnSimpanRekonActionPerformed
-        // (addRow 5 kolom), & BtnSimpanActionPerformed (kolom cara_pemberian/
-        // waktu_pemberian_terakhir di DB tetap ada, tapi selalu diisi null
-        // utk baris baru - additive-safe, tidak perlu migrasi SQL).
         tabMode=new DefaultTableModel(null,new Object[]{
-            "Nama Obat","Dosis Obat","Frekuensi","Tindak Lanjut","Perubahan Aturan Pakai"}){
+            "","NAMA OBAT","DOSIS OBAT","FREKUENSI","TINDAK LANJUT","PERUBAHAN ATURAN PAKAI"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbPemeriksaan.setModel(tabMode);
-
-        //tbObat.setDefaultRenderer(Object.class, new WarnaTable(panelJudul.getBackground(),tbObat.getBackground()));
         tbPemeriksaan.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbPemeriksaan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tbPemeriksaan.setRowHeight(32);
+        tbPemeriksaan.setShowGrid(false);
+        tbPemeriksaan.setIntercellSpacing(new Dimension(0, 1));
+        tbPemeriksaan.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 
-        for(i = 0; i < 5; i++) {
-            TableColumn column = tbPemeriksaan.getColumnModel().getColumn(i);
-            if(i==0){
-                column.setPreferredWidth(200);
-            }else if(i==1){
-                column.setPreferredWidth(120);
-            }else if(i==2){
-                column.setPreferredWidth(100);
-            }else if(i==3){
-                column.setPreferredWidth(180);
-            }else if(i==4){
-                column.setPreferredWidth(250);
+        tbPemeriksaan.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tbPemeriksaan.getColumnModel().getColumn(0).setPreferredWidth(35);
+        tbPemeriksaan.getColumnModel().getColumn(0).setMaxWidth(35);
+        tbPemeriksaan.getColumnModel().getColumn(0).setMinWidth(35);
+        tbPemeriksaan.getColumnModel().getColumn(1).setPreferredWidth(280);
+        tbPemeriksaan.getColumnModel().getColumn(2).setPreferredWidth(110);
+        tbPemeriksaan.getColumnModel().getColumn(3).setPreferredWidth(110);
+        tbPemeriksaan.getColumnModel().getColumn(4).setPreferredWidth(200);
+        tbPemeriksaan.getColumnModel().getColumn(5).setPreferredWidth(280);
+
+        tbPemeriksaan.getColumnModel().getColumn(0).setCellRenderer(new RadioCellRenderer());
+        tbPemeriksaan.getColumnModel().getColumn(1).setCellRenderer(new BoldTextCellRenderer());
+        tbPemeriksaan.getColumnModel().getColumn(2).setCellRenderer(new ModernTextCellRenderer(false, true));
+        tbPemeriksaan.getColumnModel().getColumn(3).setCellRenderer(new ModernTextCellRenderer(false, true));
+        tbPemeriksaan.getColumnModel().getColumn(4).setCellRenderer(new BadgeCellRenderer());
+        tbPemeriksaan.getColumnModel().getColumn(5).setCellRenderer(new ModernTextCellRenderer(true, false));
+
+        javax.swing.table.DefaultTableCellRenderer tblHeaderRenderer = new javax.swing.table.DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                l.setBackground(new Color(15, 43, 70));
+                l.setForeground(Color.WHITE);
+                l.setFont(new Font("Segoe UI", Font.BOLD, 10));
+                l.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
+                if (column == 2 || column == 3 || column == 4) {
+                    l.setHorizontalAlignment(SwingConstants.CENTER);
+                } else {
+                    l.setHorizontalAlignment(SwingConstants.LEFT);
+                }
+                return l;
             }
+        };
+        for (int c = 0; c < tbPemeriksaan.getColumnCount(); c++) {
+            tbPemeriksaan.getColumnModel().getColumn(c).setHeaderRenderer(tblHeaderRenderer);
         }
-        tbPemeriksaan.setDefaultRenderer(Object.class, new WarnaTable());
+
+        tbPemeriksaan.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                tbPemeriksaan.repaint();
+            }
+        });
 
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));
         NamaObat.setDocument(new batasInput((int)100).getKata(NamaObat));
@@ -111,20 +153,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         ChkJln.setSelected(true);
         jam();
 
-        // [BARU] Restrukturisasi jadi 2 tab ("Input"/"Data Rekonsiliasi
-        // Obat") - lihat initDataRekonsiliasiTab(). internalFrame1 (seluruh
-        // UI input yg sudah dibangun GEN block + initRekonsiliasiTambahan())
-        // di-reparent apa adanya (Swing otomatis lepas dari getContentPane()
-        // lama) - TIDAK ada widget input yg diubah/dipindah isinya.
-        getContentPane().remove(internalFrame1);
-        TabPilihan = new javax.swing.JTabbedPane();
-        TabPilihan.addTab("Input Rekonsiliasi Obat", internalFrame1);
-        initDataRekonsiliasiTab();
-        getContentPane().add(TabPilihan, java.awt.BorderLayout.CENTER);
-        // Lebar dihitung dari kebutuhan tab Data: tabel (870px, 5 kolom) +
-        // panel ringkasan terbuka (470px) + margin - diverifikasi via render
-        // offscreen (1080px sebelumnya kurang, muncul scrollbar horizontal).
-        this.setSize(1400, 680);
+        initModernLayout();
+        this.setSize(1360, 680);
     }
 
     /** This method is called from within the constructor to
@@ -792,9 +822,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null,"Pilih terlebih dahulu pasien yang mau dimasukkan data rekonsiliasinya...");
             BtnTambah.requestFocus();
         }else{
-            DlgTambahObatRekonsiliasi.setLocationRelativeTo(internalFrame1);
-            DlgTambahObatRekonsiliasi.setVisible(true);
             emptTeksTambahRekon();
+            DlgTambahObatRekonsiliasi.setLocationRelativeTo(this);
+            DlgTambahObatRekonsiliasi.setVisible(true);
         }
     }//GEN-LAST:event_BtnTambahActionPerformed
 
@@ -809,6 +839,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
         if(tbPemeriksaan.getSelectedRow()>-1){
             tabMode.removeRow(tbPemeriksaan.getSelectedRow());
+            emptTeksTambahRekon();
+            updateCounterObat();
         }else{
             JOptionPane.showMessageDialog(rootPane,"Silahkan anda pilih data terlebih dahulu..!!");
         }   
@@ -834,11 +866,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        // [BARU] Dulu membuka RMCariRekonsiliasiObat sbg dialog terpisah -
-        // sekarang diarahkan ke tab "Data Rekonsiliasi Obat" di dialog yg
-        // sama (pola sama "Data Triase" RMTriaseIGD). RMCariRekonsiliasiObat
-        // TIDAK dihapus/disentuh (masih dipakai frmUtama.java lewat menu
-        // terpisah).
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TabPilihan.setSelectedIndex(1);
         tampilDataRekonsiliasi();
@@ -851,6 +878,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
     private void BtnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBatalActionPerformed
         Valid.tabelKosong(tabMode);
+        emptTeks();
+        updateCounterObat();
     }//GEN-LAST:event_BtnBatalActionPerformed
 
     private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
@@ -874,29 +903,24 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 if(Sequel.menyimpantf("rekonsiliasi_obat","?,?,?,?,?,?,?,?,?,?,?","No.Rawat",11,new String[]{
                         TNoRekonsialiasi.getText(),TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
                         RekonsiliasiSaat.getSelectedItem().toString(),AlergiObat.getText(),ManifestasiAlergi.getText(),DampakAlergi.getSelectedItem().toString(),KdPetugas.getText(),
-                        // [RM 03-06A] 3 kolom baru - lihat initRekonsiliasiTambahan(). Diletakkan
-                        // di AKHIR array krn kolom baru ditambahkan di ujung tabel (ADD COLUMN
-                        // polos tanpa AFTER) - Sequel.menyimpantf INSERT posisional, urutan array
-                        // harus persis sesuai urutan fisik kolom tabel.
                         pilihRadio(RbObatSebelumAdmisiYa,"Ya",RbObatSebelumAdmisiTidak,"Tidak"),
                         pilihRadio(RbSumberRM,"Status Pasien di Rekam Medis",RbSumberPasien,"Pasien/Keluarga Pasien",RbSumberLain,"Lain-lain"),
                         TSumberLainKet.getText(),
                     })==true){
                         for (i = 0; i < tbPemeriksaan.getRowCount(); i++) {
-                           // [RM 03-06A] tabMode sekarang 5 kolom (Nama Obat/Dosis Obat/
-                           // Frekuensi/Tindak Lanjut/Perubahan Aturan Pakai - Aturan Pakai &
-                           // Waktu Pemberian Terakhir dihapus dari fungsi Tambah). Struktur
-                           // tabel rekonsiliasi_obat_detail_obat TIDAK diubah (additive-safe,
-                           // tanpa migrasi SQL) - kolom cara_pemberian & waktu_pemberian_terakhir
-                           // tetap ada di DB, cuma selalu null utk baris baru krn sudah tidak
-                           // ada sumber datanya lagi di form.
                            Sequel.menyimpan2("rekonsiliasi_obat_detail_obat","?,?,?,?,?,?,?,?",8,new String[]{
-                               TNoRekonsialiasi.getText(),tbPemeriksaan.getValueAt(i,0).toString(),tbPemeriksaan.getValueAt(i,1).toString(),tbPemeriksaan.getValueAt(i,2).toString(),
-                               null,null,tbPemeriksaan.getValueAt(i,3).toString(),tbPemeriksaan.getValueAt(i,4).toString()
+                               TNoRekonsialiasi.getText(),
+                               tbPemeriksaan.getValueAt(i,1).toString(),
+                               tbPemeriksaan.getValueAt(i,2).toString(),
+                               tbPemeriksaan.getValueAt(i,3).toString(),
+                               null,null,
+                               tbPemeriksaan.getValueAt(i,4).toString(),
+                               tbPemeriksaan.getValueAt(i,5).toString()
                            });
                         }
                         Valid.tabelKosong(tabMode);
                         emptTeks();
+                        updateCounterObat();
                 }
             }
         }
@@ -913,19 +937,32 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnKeluarRekonActionPerformed
 
     private void BtnSimpanRekonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanRekonActionPerformed
-        if(NamaObat.getText().trim().equals("")){
-            Valid.textKosong(NamaObat,"Nama Obat");
-        }else if(DosisObat.getText().trim().equals("")){
+        String nm = NamaObat.getText().trim();
+        if (nm.equals("Nama obat...") || nm.equals("Pilih nama obat (klik cari)...")) nm = "";
+        String dos = DosisObat.getText().trim();
+        if (dos.equals("mis. 500mg")) dos = "";
+        String frek = Frekuensi.getText().trim();
+        if (frek.equals("mis. 3x1")) frek = "";
+        String ubah = PerubahanAturanPakai.getText().trim();
+        if (ubah.equals("Kosongkan bila tidak berubah")) ubah = "";
+
+        if(nm.equals("")){
+            javax.swing.JOptionPane.showMessageDialog(DlgTambahObatRekonsiliasi, "Silakan pilih nama obat terlebih dahulu melalui tombol pencarian!");
+            bukaCariObat();
+        }else if(dos.equals("")){
             Valid.textKosong(DosisObat,"Dosis Obat");
-        }else if(Frekuensi.getText().trim().equals("")){
+        }else if(frek.equals("")){
             Valid.textKosong(Frekuensi,"Frekuensi");
         }else{
-            // [RM 03-06A] Aturan Pakai & Waktu Pemberian Terakhir dihapus dari
-            // fungsi ini - lihat catatan di tabMode (konstruktor).
+            String tl = selectedTindakLanjut != null && !selectedTindakLanjut.isEmpty() ? 
+                        selectedTindakLanjut : 
+                        (TindakLanjut != null && TindakLanjut.getSelectedItem() != null ? TindakLanjut.getSelectedItem().toString() : "Lanjut aturan pakai sama");
             tabMode.addRow(new Object[]{
-                NamaObat.getText(),DosisObat.getText(),Frekuensi.getText(),TindakLanjut.getSelectedItem().toString(),PerubahanAturanPakai.getText()
+                "", nm, dos, frek, tl, ubah
             });
             emptTeksTambahRekon();
+            updateCounterObat();
+            DlgTambahObatRekonsiliasi.dispose();
         }
     }//GEN-LAST:event_BtnSimpanRekonActionPerformed
 
@@ -1054,6 +1091,20 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     // GEN-END - lihat initRekonsiliasiTambahan(), dipanggil dari konstruktor
     // setelah initComponents().
     // =====================================================================
+        // Modern UI components matching user's mockup
+    private javax.swing.JPanel pnlTopBar;
+    private javax.swing.JPanel pnlCardPatient;
+    private javax.swing.JLabel lblCardInitials;
+    private javax.swing.JLabel lblCardNama;
+    private javax.swing.JLabel lblCardJk;
+    private javax.swing.JLabel lblCardNoRM;
+    private javax.swing.JLabel lblCardNoRw;
+    private javax.swing.JLabel lblCardTglLahir;
+    private javax.swing.JButton btnSegAdmisi, btnSegTransfer, btnSegPulang;
+    private javax.swing.JPanel pnlGrupAdmisi;
+    private javax.swing.JLabel lblCountObat;
+    private javax.swing.JLabel lblStatusRekon;
+    private javax.swing.JLabel lblFooterMeta;
     private widget.Label lblObatSebelumAdmisi, lblSumberInformasi;
     private widget.RadioButton RbObatSebelumAdmisiYa, RbObatSebelumAdmisiTidak;
     private javax.swing.ButtonGroup bgObatSebelumAdmisi;
@@ -1115,130 +1166,50 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         jLabel6.setVisible(false);
         DampakAlergi.setVisible(false);
 
-        // [BARU, dilaporkan user via screenshot] PanelInput pakai layout
-        // absolut (null) - menyembunyikan field di atas (Alergi Obat dkk)
-        // TIDAK bikin baris di bawahnya otomatis naik (beda dari
-        // GridBagLayout yg mengecualikan komponen invisible dari
-        // perhitungan). Celah kosong besar + "Rekonsiliasi Saat" jadi
-        // mengambang (posisi aslinya di GEN block memang di sebelah kanan
-        // "Dampak Alergi" yg skrg hilang). Diperbaiki dgn menata ULANG semua
-        // field header (lama + baru) jadi grid rapat 28px/baris, mengikuti
-        // pola "Patient Banner" yg sudah dipakai di RMTriaseIGD.java Fase 4:
-        // kartu putih + TitledBorder, label rata kiri x=6, tanpa celah.
-        PanelInput.setBackground(widget.ThemeConfig.SURFACE);
-        javax.swing.border.TitledBorder tbPanelInput = javax.swing.BorderFactory.createTitledBorder("Informasi Pasien & Rekonsiliasi Obat");
-        tbPanelInput.setTitleFont(widget.ThemeConfig.FONT_BOLD);
-        PanelInput.setBorder(tbPanelInput);
-
-        // Baris 1: No.Rawat, No.RM, Nama Pasien, Tgl.Lahir
-        jLabel3.setBounds(6, 22, 75, 23);
-        TNoRw.setBounds(84, 22, 118, 23);
-        TNoRM.setBounds(206, 22, 90, 23);
-        TPasien.setBounds(300, 22, 230, 23);
-        jLabel8.setBounds(542, 22, 70, 23);
-        TglLahir.setBounds(614, 22, 90, 23);
-
-        // Baris 2: J.K., Apoteker
-        jLabel11.setBounds(6, 50, 50, 23);
-        Jk.setBounds(58, 50, 80, 23);
-        jLabel9.setBounds(150, 50, 75, 23);
-        KdPetugas.setBounds(227, 50, 110, 23);
-        NmPetugas.setBounds(339, 50, 250, 23);
-        BtnPetugas.setBounds(591, 50, 28, 23);
-
-        // Baris 3: No.Rekonsiliasi, Tanggal Wawancara
-        jLabel4.setBounds(6, 78, 110, 23);
-        TNoRekonsialiasi.setBounds(118, 78, 140, 23);
-        jLabel15.setBounds(270, 78, 130, 23);
-        Tanggal.setBounds(402, 78, 90, 23);
-        CmbJam.setBounds(494, 78, 50, 23);
-        CmbMenit.setBounds(546, 78, 50, 23);
-        CmbDetik.setBounds(598, 78, 50, 23);
-        ChkJln.setBounds(650, 78, 23, 23);
-
-        // Baris 4: Rekonsiliasi Saat (dulu x=346, terlihat mengambang krn
-        // tetangga aslinya "Dampak Alergi" skrg disembunyikan)
-        jLabel5.setBounds(6, 106, 120, 23);
-        RekonsiliasiSaat.setBounds(132, 106, 160, 23);
-
-        // [KOREKSI] Sebelumnya sempat dikunci ke "Admisi" (dikira RM 03-06A
-        // cuma utk konteks Admisi) - dikoreksi user: rekonsiliasi obat py 3
-        // momen proses (Admisi/Transfer/Discharge), jadi combo TETAP harus
-        // bisa dipilih bebas. Model asli GEN block py 4 opsi ("Admisi",
-        // "Transfer Antar Ruang","Pindah Faskes Lain","Pulang") - dipangkas
-        // jadi 3 sesuai konfirmasi user (Admisi/Transfer/Discharge="Pulang",
-        // istilah Indonesia yg sudah dipakai di enum DB), "Pindah Faskes
-        // Lain" dibuang dari pilihan (BUKAN dihapus dari DB - kolom
-        // rekonsiliasi_obat_saat tetap ENUM lama yg py nilai itu, cuma tidak
-        // lagi ditawarkan di combo - aman, tidak perlu migrasi SQL apapun
-        // krn ke-3 nilai baru ini SUDAH ada di enum lama).
         RekonsiliasiSaat.setModel(new javax.swing.DefaultComboBoxModel(new String[]{
             "Admisi","Transfer Antar Ruang","Pulang"
         }));
 
         jLabel9.setText("Apoteker :");
 
-        // [BARU] "Aturan Pakai" & "Waktu Pemberian Terakhir" dihapus dari
-        // fungsi Tambah Obat - tidak ada padanan kolom di tabel formulir
-        // fisik RM 03-06A ("Cara Pemberian" & "Waktu Pemberian Terakhir"
-        // bukan bagian formulir ini). Disembunyikan (bukan dihapus objeknya,
-        // widget tetap ada di memori - lihat catatan di BtnSimpanActionPerformed
-        // soal DB tetap py kolomnya), lalu 3 field sisanya (Tindak Lanjut &
-        // Perubahan Aturan Pakai) direflow naik mengisi ruang yg kosong.
         jLabel111.setVisible(false);
         AturanPakai.setVisible(false);
         jLabel112.setVisible(false);
         PemberianTerakhir.setVisible(false);
 
-        jLabel108.setBounds(367, 40, 110, 23);
         TindakLanjut.setModel(new javax.swing.DefaultComboBoxModel(new String[]{
             "Lanjut aturan pakai sama","Lanjut aturan pakai berubah","Stop"
         }));
-        TindakLanjut.setBounds(480, 40, 190, 23);
-
-        jLabel113.setBounds(0, 70, 140, 23);
-        PerubahanAturanPakai.setBounds(144, 70, 260, 23);
 
         lblObatSebelumAdmisi = new widget.Label();
-        lblObatSebelumAdmisi.setText("Penggunaan Obat Sebelum Admisi :");
-        lblObatSebelumAdmisi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        PanelInput.add(lblObatSebelumAdmisi);
-        lblObatSebelumAdmisi.setBounds(6, 134, 210, 23);
+        lblObatSebelumAdmisi.setText("Penggunaan Obat Sebelum Admisi");
 
         RbObatSebelumAdmisiYa = new widget.RadioButton();
         RbObatSebelumAdmisiYa.setText("Ya, Dengan Rincian Sebagai Berikut");
-        PanelInput.add(RbObatSebelumAdmisiYa);
-        RbObatSebelumAdmisiYa.setBounds(220, 134, 220, 23);
+        RbObatSebelumAdmisiYa.addActionListener(e -> updateStatusRekon());
 
         RbObatSebelumAdmisiTidak = new widget.RadioButton();
         RbObatSebelumAdmisiTidak.setText("Tidak Menggunakan Obat Sebelum Admisi");
-        PanelInput.add(RbObatSebelumAdmisiTidak);
-        RbObatSebelumAdmisiTidak.setBounds(444, 134, 280, 23);
+        RbObatSebelumAdmisiTidak.addActionListener(e -> updateStatusRekon());
 
         bgObatSebelumAdmisi = new javax.swing.ButtonGroup();
         bgObatSebelumAdmisi.add(RbObatSebelumAdmisiYa);
         bgObatSebelumAdmisi.add(RbObatSebelumAdmisiTidak);
 
         lblSumberInformasi = new widget.Label();
-        lblSumberInformasi.setText("Sumber Informasi :");
-        lblSumberInformasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        PanelInput.add(lblSumberInformasi);
-        lblSumberInformasi.setBounds(6, 160, 115, 23);
+        lblSumberInformasi.setText("Sumber Informasi");
 
         RbSumberRM = new widget.RadioButton();
         RbSumberRM.setText("Status Pasien di Rekam Medis");
-        PanelInput.add(RbSumberRM);
-        RbSumberRM.setBounds(125, 160, 190, 23);
+        RbSumberRM.addActionListener(e -> updateStatusRekon());
 
         RbSumberPasien = new widget.RadioButton();
         RbSumberPasien.setText("Pasien/Keluarga Pasien");
-        PanelInput.add(RbSumberPasien);
-        RbSumberPasien.setBounds(319, 160, 160, 23);
+        RbSumberPasien.addActionListener(e -> updateStatusRekon());
 
         RbSumberLain = new widget.RadioButton();
         RbSumberLain.setText("Lain-lain");
-        PanelInput.add(RbSumberLain);
-        RbSumberLain.setBounds(483, 160, 75, 23);
+        RbSumberLain.addActionListener(e -> updateStatusRekon());
 
         bgSumberInformasi = new javax.swing.ButtonGroup();
         bgSumberInformasi.add(RbSumberRM);
@@ -1246,50 +1217,768 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         bgSumberInformasi.add(RbSumberLain);
 
         TSumberLainKet = new widget.TextBox();
-        PanelInput.add(TSumberLainKet);
-        TSumberLainKet.setBounds(562, 160, 170, 23);
 
-        java.awt.Dimension ukuranLama = PanelInput.getPreferredSize();
-        PanelInput.setPreferredSize(new java.awt.Dimension(ukuranLama.width, 200));
-
-        // [BARU] "Penggunaan Obat Sebelum Admisi" & "Sumber Informasi" cuma
-        // relevan utk formulir fisik RM 03-06A (konteks "saat Admisi") -
-        // dilaporkan user field ini seharusnya tidak muncul saat
-        // RekonsiliasiSaat="Transfer Antar Ruang"/"Pulang". Ditambah
-        // ItemListener supaya toggle visible otomatis tiap combo berubah,
-        // + dipanggil sekali sekarang utk set state awal (default combo =
-        // "Admisi", jadi field ini tampil begitu form pertama dibuka).
         RekonsiliasiSaat.addItemListener((java.awt.event.ItemEvent e) -> {
             if(e.getStateChange()==java.awt.event.ItemEvent.SELECTED){
                 perbaruiVisibilitasFieldAdmisi();
+                updateSegmentedButtons();
+                updateStatusRekon();
             }
         });
-        perbaruiVisibilitasFieldAdmisi();
     }
 
-    /**
-     * [RM 03-06A] "Penggunaan Obat Sebelum Admisi" & "Sumber Informasi"
-     * cuma tampil kalau RekonsiliasiSaat="Admisi" (satu2nya konteks yg
-     * py field ini di formulir fisik) - disembunyikan + dikosongkan kalau
-     * "Transfer Antar Ruang"/"Pulang" dipilih, supaya tidak ada nilai
-     * "nyangkut" dari Admisi ikut tersimpan utk konteks selain Admisi.
-     * Dipanggil dari initRekonsiliasiTambahan() (state awal) dan dari
-     * ItemListener RekonsiliasiSaat (tiap kali combo berubah).
-     */
+    private void initModernLayout() {
+        // 1. Top Header Bar (Dark Teal #0e3d36)
+        pnlTopBar = new JPanel(new BorderLayout());
+        pnlTopBar.setBackground(new Color(14, 61, 54));
+        pnlTopBar.setPreferredSize(new Dimension(1320, 36));
+        pnlTopBar.setBorder(new EmptyBorder(8, 16, 8, 16));
+
+        JLabel lblTitle = new JLabel("Rekonsiliasi Obat");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lblTitle.setForeground(Color.WHITE);
+        pnlTopBar.add(lblTitle, BorderLayout.WEST);
+
+        JLabel lblCode = new JLabel("RM 03-06A");
+        lblCode.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        lblCode.setForeground(new Color(128, 165, 159));
+        pnlTopBar.add(lblCode, BorderLayout.EAST);
+
+        // 2. TabbedPane setup with FlatLaf styling
+        TabPilihan = new javax.swing.JTabbedPane();
+        TabPilihan.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        TabPilihan.putClientProperty("JTabbedPane.tabHeight", 34);
+        TabPilihan.putClientProperty("JTabbedPane.tabInsets", new Insets(0, 16, 0, 16));
+        TabPilihan.putClientProperty("JTabbedPane.underlineColor", new Color(0, 91, 82));
+        TabPilihan.putClientProperty("JTabbedPane.selectedBackground", Color.WHITE);
+        TabPilihan.putClientProperty("JTabbedPane.selectedForeground", new Color(0, 91, 82));
+        TabPilihan.putClientProperty("JTabbedPane.showTabSeparators", false);
+
+        // 3. TAB 1: Reconstruct internalFrame1 (Input Tab)
+        internalFrame1.removeAll();
+        internalFrame1.setBorder(null);
+        internalFrame1.setLayout(new BorderLayout(0, 8));
+        internalFrame1.setBackground(Color.WHITE);
+        internalFrame1.setBorder(new EmptyBorder(10, 16, 10, 16));
+
+        // Top Section: Patient Card (West) + Form Controls (Center)
+        JPanel pnlTopSection = new JPanel(new BorderLayout(14, 0));
+        pnlTopSection.setBackground(Color.WHITE);
+        pnlTopSection.setPreferredSize(new Dimension(1320, 165));
+
+        // LEFT: Patient Identity Card
+        pnlCardPatient = createPatientCard();
+        pnlTopSection.add(pnlCardPatient, BorderLayout.WEST);
+
+        // RIGHT: Header Form Controls
+        JPanel pnlRightHeader = createRightHeaderPanel();
+        pnlTopSection.add(pnlRightHeader, BorderLayout.CENTER);
+
+        internalFrame1.add(pnlTopSection, BorderLayout.NORTH);
+
+        // MIDDLE: Table Section
+        JPanel pnlTableSection = createTableSection();
+        internalFrame1.add(pnlTableSection, BorderLayout.CENTER);
+
+        // BOTTOM: Action Bar & Footer
+        JPanel pnlBottomSection = createBottomSection();
+        internalFrame1.add(pnlBottomSection, BorderLayout.SOUTH);
+
+        // Add Tabs
+        TabPilihan.addTab("Input Rekonsiliasi Obat", internalFrame1);
+        initDataRekonsiliasiTab();
+
+        // Outer layout on JDialog
+        getContentPane().removeAll();
+        JPanel pnlRoot = new JPanel(new BorderLayout(0, 0));
+        pnlRoot.setBackground(Color.WHITE);
+        pnlRoot.add(pnlTopBar, BorderLayout.PAGE_START);
+        pnlRoot.add(TabPilihan, BorderLayout.CENTER);
+        getContentPane().add(pnlRoot, BorderLayout.CENTER);
+
+        // Initial updates
+        perbaruiVisibilitasFieldAdmisi();
+        updateSegmentedButtons();
+        updatePatientCard();
+        updateCounterObat();
+        updateStatusRekon();
+        updateFooterMeta();
+    }
+
+    private JPanel createPatientCard() {
+        JPanel card = new JPanel(null) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
+                g2.setColor(new Color(226, 232, 240));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
+                g2.dispose();
+            }
+        };
+        card.setOpaque(false);
+        card.setPreferredSize(new Dimension(245, 160));
+
+        JLabel lblHeader = new JLabel("IDENTITAS PASIEN");
+        lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        lblHeader.setForeground(new Color(100, 116, 139));
+        lblHeader.setBounds(12, 10, 130, 16);
+        card.add(lblHeader);
+
+        JLabel lblBadge = new JLabel("TERKUNCI", SwingConstants.CENTER) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(241, 245, 249));
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 6, 6);
+                g2.setColor(new Color(226, 232, 240));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 6, 6);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        lblBadge.setFont(new Font("Segoe UI", Font.BOLD, 8));
+        lblBadge.setForeground(new Color(71, 85, 105));
+        lblBadge.setBounds(175, 9, 58, 16);
+        card.add(lblBadge);
+
+        lblCardInitials = new JLabel("-", SwingConstants.CENTER) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(204, 251, 241));
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        lblCardInitials.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblCardInitials.setForeground(new Color(0, 91, 82));
+        lblCardInitials.setBounds(12, 34, 34, 34);
+        card.add(lblCardInitials);
+
+        lblCardNama = new JLabel("Nama Pasien");
+        lblCardNama.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblCardNama.setForeground(new Color(15, 23, 42));
+        lblCardNama.setBounds(54, 34, 180, 18);
+        card.add(lblCardNama);
+
+        lblCardJk = new JLabel("-");
+        lblCardJk.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lblCardJk.setForeground(new Color(100, 116, 139));
+        lblCardJk.setBounds(54, 52, 180, 14);
+        card.add(lblCardJk);
+
+        int y = 78;
+        addCardKeyValue(card, "No. RM", lblCardNoRM = new JLabel("-"), y);
+        addCardKeyValue(card, "No. Rawat", lblCardNoRw = new JLabel("-"), y + 18);
+        addCardKeyValue(card, "Tgl. Lahir", lblCardTglLahir = new JLabel("-"), y + 36);
+
+        return card;
+    }
+
+    private void addCardKeyValue(JPanel p, String key, JLabel valLabel, int y) {
+        JLabel k = new JLabel(key);
+        k.setFont(new Font("Segoe UI", Font.PLAIN, 9));
+        k.setForeground(new Color(100, 116, 139));
+        k.setBounds(12, y, 65, 15);
+        p.add(k);
+
+        valLabel.setFont(new Font("Segoe UI", Font.PLAIN, 9));
+        valLabel.setForeground(new Color(15, 23, 42));
+        valLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        valLabel.setBounds(85, y, 148, 15);
+        p.add(valLabel);
+    }
+
+    private JPanel createRightHeaderPanel() {
+        JPanel p = new JPanel(null);
+        p.setBackground(Color.WHITE);
+
+        // Row 1: 3 fields (Apoteker, No.Rekonsiliasi, Tanggal & Jam Wawancara)
+        JLabel lApoteker = new JLabel("Apoteker");
+        lApoteker.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lApoteker.setForeground(new Color(100, 116, 139));
+        lApoteker.setBounds(0, 0, 120, 14);
+        p.add(lApoteker);
+
+        JPanel pnlApotekerInput = new JPanel(new BorderLayout(2, 0));
+        pnlApotekerInput.setOpaque(false);
+        pnlApotekerInput.setBounds(0, 16, 265, 26);
+        NmPetugas.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        NmPetugas.putClientProperty("Component.arc", 6);
+        NmPetugas.putClientProperty("ModernStyle.active", Boolean.TRUE);
+        BtnPetugas.setPreferredSize(new Dimension(28, 26));
+        BtnPetugas.putClientProperty("Component.arc", 6);
+        pnlApotekerInput.add(NmPetugas, BorderLayout.CENTER);
+        pnlApotekerInput.add(BtnPetugas, BorderLayout.EAST);
+        p.add(pnlApotekerInput);
+
+        JLabel lNoRekon = new JLabel("No.Rekonsiliasi");
+        lNoRekon.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lNoRekon.setForeground(new Color(100, 116, 139));
+        lNoRekon.setBounds(280, 0, 120, 14);
+        p.add(lNoRekon);
+
+        TNoRekonsialiasi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        TNoRekonsialiasi.putClientProperty("Component.arc", 6);
+        TNoRekonsialiasi.putClientProperty("ModernStyle.active", Boolean.TRUE);
+        TNoRekonsialiasi.setBounds(280, 16, 265, 26);
+        p.add(TNoRekonsialiasi);
+
+        JLabel lTglJam = new JLabel("Tanggal & Jam Wawancara");
+        lTglJam.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lTglJam.setForeground(new Color(100, 116, 139));
+        lTglJam.setBounds(560, 0, 180, 14);
+        p.add(lTglJam);
+
+        JPanel pnlTglJam = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 1));
+        pnlTglJam.setOpaque(true);
+        pnlTglJam.setBackground(Color.WHITE);
+        pnlTglJam.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(203, 213, 225), 1),
+            BorderFactory.createEmptyBorder(0, 4, 0, 4)
+        ));
+        pnlTglJam.setBounds(560, 16, 265, 26);
+        Tanggal.setPreferredSize(new Dimension(105, 22));
+        CmbJam.setPreferredSize(new Dimension(50, 22));
+        CmbMenit.setPreferredSize(new Dimension(50, 22));
+        JLabel colon = new JLabel(":");
+        colon.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        pnlTglJam.add(Tanggal);
+        pnlTglJam.add(CmbJam);
+        pnlTglJam.add(colon);
+        pnlTglJam.add(CmbMenit);
+        p.add(pnlTglJam);
+
+        // Row 2: Rekonsiliasi Saat
+        JLabel lSaat = new JLabel("Rekonsiliasi Saat");
+        lSaat.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lSaat.setForeground(new Color(100, 116, 139));
+        lSaat.setBounds(0, 48, 120, 14);
+        p.add(lSaat);
+
+        JPanel segPills = new JPanel(new GridLayout(1, 3, -1, 0));
+        segPills.setBounds(0, 64, 375, 26);
+        segPills.setOpaque(false);
+
+        btnSegAdmisi = createSegmentedButton("Admisi");
+        btnSegTransfer = createSegmentedButton("Transfer Antar Ruang");
+        btnSegPulang = createSegmentedButton("Pulang");
+        segPills.add(btnSegAdmisi);
+        segPills.add(btnSegTransfer);
+        segPills.add(btnSegPulang);
+        p.add(segPills);
+
+        // Row 3: Grup Admisi (Penggunaan Obat Sebelum Admisi & Sumber Informasi)
+        pnlGrupAdmisi = new JPanel(null);
+        pnlGrupAdmisi.setBackground(Color.WHITE);
+        pnlGrupAdmisi.setBounds(0, 96, 950, 65);
+
+        JLabel lObat = new JLabel("Penggunaan Obat Sebelum Admisi");
+        lObat.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lObat.setForeground(new Color(15, 23, 42));
+        lObat.setBounds(0, 0, 250, 15);
+        pnlGrupAdmisi.add(lObat);
+
+        styleRadioButton(RbObatSebelumAdmisiYa, true);
+        RbObatSebelumAdmisiYa.setBounds(0, 17, 210, 20);
+        pnlGrupAdmisi.add(RbObatSebelumAdmisiYa);
+
+        styleRadioButton(RbObatSebelumAdmisiTidak, false);
+        RbObatSebelumAdmisiTidak.setBounds(215, 17, 250, 20);
+        pnlGrupAdmisi.add(RbObatSebelumAdmisiTidak);
+
+        JLabel lSumber = new JLabel("Sumber Informasi");
+        lSumber.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lSumber.setForeground(new Color(15, 23, 42));
+        lSumber.setBounds(480, 0, 200, 15);
+        pnlGrupAdmisi.add(lSumber);
+
+        styleRadioButton(RbSumberRM, false);
+        RbSumberRM.setBounds(480, 17, 180, 20);
+        pnlGrupAdmisi.add(RbSumberRM);
+
+        styleRadioButton(RbSumberPasien, true);
+        RbSumberPasien.setBounds(665, 17, 150, 20);
+        pnlGrupAdmisi.add(RbSumberPasien);
+
+        styleRadioButton(RbSumberLain, false);
+        RbSumberLain.setBounds(820, 17, 80, 20);
+        pnlGrupAdmisi.add(RbSumberLain);
+
+        TSumberLainKet.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        TSumberLainKet.setBounds(480, 39, 160, 22);
+        TSumberLainKet.setBackground(new Color(248, 250, 252));
+        TSumberLainKet.putClientProperty("Component.arc", 6);
+        TSumberLainKet.putClientProperty("ModernStyle.active", Boolean.TRUE);
+        TSumberLainKet.setText("Sebutkan...");
+        TSumberLainKet.setForeground(new Color(148, 163, 184));
+        TSumberLainKet.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if ("Sebutkan...".equals(TSumberLainKet.getText())) {
+                    TSumberLainKet.setText("");
+                    TSumberLainKet.setForeground(new Color(15, 23, 42));
+                }
+            }
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (TSumberLainKet.getText().trim().isEmpty()) {
+                    TSumberLainKet.setText("Sebutkan...");
+                    TSumberLainKet.setForeground(new Color(148, 163, 184));
+                }
+            }
+        });
+        pnlGrupAdmisi.add(TSumberLainKet);
+
+        p.add(pnlGrupAdmisi);
+
+        return p;
+    }
+
+    private JButton createSegmentedButton(final String text) {
+        JButton b = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                boolean isSel = text.equalsIgnoreCase(RekonsiliasiSaat.getSelectedItem() != null ? RekonsiliasiSaat.getSelectedItem().toString() : "");
+                if (isSel) {
+                    g2.setColor(new Color(0, 91, 82));
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                } else {
+                    g2.setColor(Color.WHITE);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                    g2.setColor(new Color(226, 232, 240));
+                    g2.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+                }
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        b.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        b.setFocusPainted(false);
+        b.setContentAreaFilled(false);
+        b.setBorderPainted(false);
+        b.addActionListener(e -> {
+            RekonsiliasiSaat.setSelectedItem(text);
+            updateSegmentedButtons();
+            perbaruiVisibilitasFieldAdmisi();
+            updateStatusRekon();
+        });
+        return b;
+    }
+
+    private void updateSegmentedButtons() {
+        if (btnSegAdmisi == null) return;
+        String saat = RekonsiliasiSaat.getSelectedItem() != null ? RekonsiliasiSaat.getSelectedItem().toString() : "Admisi";
+        btnSegAdmisi.setFont(new Font("Segoe UI", "Admisi".equalsIgnoreCase(saat) ? Font.BOLD : Font.PLAIN, 10));
+        btnSegAdmisi.setForeground("Admisi".equalsIgnoreCase(saat) ? Color.WHITE : new Color(15, 23, 42));
+        btnSegTransfer.setFont(new Font("Segoe UI", "Transfer Antar Ruang".equalsIgnoreCase(saat) ? Font.BOLD : Font.PLAIN, 10));
+        btnSegTransfer.setForeground("Transfer Antar Ruang".equalsIgnoreCase(saat) ? Color.WHITE : new Color(15, 23, 42));
+        btnSegPulang.setFont(new Font("Segoe UI", "Pulang".equalsIgnoreCase(saat) ? Font.BOLD : Font.PLAIN, 10));
+        btnSegPulang.setForeground("Pulang".equalsIgnoreCase(saat) ? Color.WHITE : new Color(15, 23, 42));
+        btnSegAdmisi.repaint();
+        btnSegTransfer.repaint();
+        btnSegPulang.repaint();
+    }
+
+    private JPanel createTableSection() {
+        JPanel p = new JPanel(new BorderLayout(0, 6));
+        p.setBackground(Color.WHITE);
+
+        JPanel pnlTableHeader = new JPanel(new BorderLayout());
+        pnlTableHeader.setBackground(Color.WHITE);
+
+        JPanel pnlTitle = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+        pnlTitle.setBackground(Color.WHITE);
+        JLabel lTitle = new JLabel("DAFTAR OBAT DIREKONSILIASI");
+        lTitle.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lTitle.setForeground(new Color(15, 23, 42));
+        pnlTitle.add(lTitle);
+
+        lblCountObat = new JLabel("0 obat");
+        lblCountObat.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lblCountObat.setForeground(new Color(100, 116, 139));
+        pnlTitle.add(lblCountObat);
+        pnlTableHeader.add(pnlTitle, BorderLayout.WEST);
+
+        JPanel pnlTableBtns = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
+        pnlTableBtns.setBackground(Color.WHITE);
+
+        styleOutlineButton(BtnHapus);
+        BtnHapus.setText("Hapus");
+        BtnHapus.setPreferredSize(new Dimension(75, 26));
+        pnlTableBtns.add(BtnHapus);
+
+        styleSolidTealButton(BtnTambah);
+        BtnTambah.setText("+ Tambah Obat");
+        BtnTambah.setPreferredSize(new Dimension(120, 26));
+        pnlTableBtns.add(BtnTambah);
+
+        pnlTableHeader.add(pnlTableBtns, BorderLayout.EAST);
+        p.add(pnlTableHeader, BorderLayout.NORTH);
+
+        Scroll2.setBorder(BorderFactory.createLineBorder(new Color(241, 245, 249)));
+        Scroll2.getViewport().setBackground(Color.WHITE);
+        p.add(Scroll2, BorderLayout.CENTER);
+
+        return p;
+    }
+
+    private JPanel createBottomSection() {
+        JPanel p = new JPanel(new BorderLayout(0, 6));
+        p.setBackground(Color.WHITE);
+
+        JPanel pnlActRow = new JPanel(new BorderLayout());
+        pnlActRow.setBackground(Color.WHITE);
+
+        JPanel pnlLeftBtns = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+        pnlLeftBtns.setBackground(Color.WHITE);
+
+        styleSolidTealButton(BtnSimpan);
+        BtnSimpan.setText("Simpan");
+        BtnSimpan.setPreferredSize(new Dimension(85, 28));
+        pnlLeftBtns.add(BtnSimpan);
+
+        styleOutlineButton(BtnBatal);
+        BtnBatal.setText("Clear");
+        BtnBatal.setPreferredSize(new Dimension(75, 28));
+        pnlLeftBtns.add(BtnBatal);
+
+        widget.Button btnCetakForm = new widget.Button();
+        styleOutlineButton(btnCetakForm);
+        btnCetakForm.setText("Cetak Form (RM 03-06A)");
+        btnCetakForm.setPreferredSize(new Dimension(180, 28));
+        btnCetakForm.addActionListener(e -> cetakFormDariInput());
+        pnlLeftBtns.add(btnCetakForm);
+
+        pnlActRow.add(pnlLeftBtns, BorderLayout.WEST);
+
+        JPanel pnlRightBtns = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        pnlRightBtns.setBackground(Color.WHITE);
+
+        lblStatusRekon = new JLabel("Rekonsiliasi saat Admisi");
+        lblStatusRekon.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lblStatusRekon.setForeground(new Color(100, 116, 139));
+        pnlRightBtns.add(lblStatusRekon);
+
+        styleOutlineButton(BtnKeluar);
+        BtnKeluar.setText("Keluar");
+        BtnKeluar.setPreferredSize(new Dimension(75, 28));
+        pnlRightBtns.add(BtnKeluar);
+
+        pnlActRow.add(pnlRightBtns, BorderLayout.EAST);
+        p.add(pnlActRow, BorderLayout.NORTH);
+
+        JPanel pnlMetaRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 2));
+        pnlMetaRow.setBackground(Color.WHITE);
+        lblFooterMeta = new JLabel("-");
+        lblFooterMeta.setFont(new Font("Segoe UI", Font.PLAIN, 9));
+        lblFooterMeta.setForeground(new Color(148, 163, 184));
+        pnlMetaRow.add(lblFooterMeta);
+        p.add(pnlMetaRow, BorderLayout.SOUTH);
+
+        return p;
+    }
+
+    private void cetakFormDariInput() {
+        String noRekon = TNoRekonsialiasi.getText().trim();
+        if (noRekon.isEmpty() || noRekon.equals("-")) {
+            JOptionPane.showMessageDialog(null, "Pilih atau simpan terlebih dahulu data rekonsiliasi yang mau dicetak.");
+            return;
+        }
+        String exists = Sequel.cariIsi("select no_rekonsiliasi from rekonsiliasi_obat where no_rekonsiliasi=?", noRekon);
+        if (exists == null || exists.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Simpan data rekonsiliasi ini terlebih dahulu sebelum mencetak.");
+            return;
+        }
+        cetakSatuTahapRekonsiliasi(noRekon);
+    }
+
+    public void updatePatientCard() {
+        if (lblCardNama == null) return;
+        String nama = TPasien.getText().trim();
+        if (nama.isEmpty()) {
+            lblCardInitials.setText("-");
+            lblCardNama.setText("Nama Pasien");
+        } else {
+            lblCardInitials.setText(getInitials(nama));
+            lblCardNama.setText(nama);
+        }
+        lblCardJk.setText(Jk.getText().isEmpty() ? "-" : Jk.getText());
+        lblCardNoRM.setText(TNoRM.getText().isEmpty() ? "-" : TNoRM.getText());
+        lblCardNoRw.setText(TNoRw.getText().isEmpty() ? "-" : TNoRw.getText());
+        lblCardTglLahir.setText(TglLahir.getText().isEmpty() ? "-" : TglLahir.getText());
+    }
+
+    private String getInitials(String name) {
+        if (name == null || name.trim().isEmpty()) return "-";
+        String clean = name.trim().replaceAll("(?i)^(tn\\.|ny\\.|nn\\.|an\\.|by\\.)\\s*", "");
+        String[] words = clean.split("\\s+");
+        if (words.length == 0 || words[0].isEmpty()) return "-";
+        if (words.length == 1) {
+            return words[0].substring(0, Math.min(2, words[0].length())).toUpperCase();
+        } else {
+            return ("" + words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
+        }
+    }
+
+    public void updateCounterObat() {
+        if (lblCountObat != null && tabMode != null) {
+            lblCountObat.setText(tabMode.getRowCount() + " obat");
+        }
+    }
+
+    public void updateStatusRekon() {
+        if (lblStatusRekon == null) return;
+        String saat = RekonsiliasiSaat.getSelectedItem() != null ? RekonsiliasiSaat.getSelectedItem().toString() : "Admisi";
+        String sumber = pilihRadio(RbSumberRM, "Status Pasien di Rekam Medis", RbSumberPasien, "Pasien/Keluarga Pasien", RbSumberLain, "Lain-lain");
+        if (sumber != null && !sumber.isEmpty()) {
+            lblStatusRekon.setText("Rekonsiliasi saat " + saat + " · Sumber: " + sumber);
+        } else {
+            lblStatusRekon.setText("Rekonsiliasi saat " + saat);
+        }
+    }
+
+    public void updateFooterMeta() {
+        if (lblFooterMeta == null) return;
+        String pet = NmPetugas.getText().trim();
+        if (pet.isEmpty() && !akses.getkode().equals("")) {
+            try {
+                pet = Sequel.cariIsi("select nama from pegawai where nik=?", akses.getkode());
+            } catch (Exception e) {}
+        }
+        if (pet == null || pet.isEmpty()) pet = "Petugas Farmasi";
+
+        String tgl = new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        String host = koneksiDB.HOST();
+        if (host == null || host.isEmpty() || host.equals("localhost")) {
+            try {
+                host = java.net.InetAddress.getLocalHost().getHostAddress();
+            } catch (Exception e) {
+                host = "127.0.0.1";
+            }
+        }
+        lblFooterMeta.setText(pet + "   ·   " + tgl + "   ·   " + host);
+    }
+
     private void perbaruiVisibilitasFieldAdmisi(){
         boolean admisi = "Admisi".equals(RekonsiliasiSaat.getSelectedItem());
-        lblObatSebelumAdmisi.setVisible(admisi);
-        RbObatSebelumAdmisiYa.setVisible(admisi);
-        RbObatSebelumAdmisiTidak.setVisible(admisi);
-        lblSumberInformasi.setVisible(admisi);
-        RbSumberRM.setVisible(admisi);
-        RbSumberPasien.setVisible(admisi);
-        RbSumberLain.setVisible(admisi);
-        TSumberLainKet.setVisible(admisi);
+        if(pnlGrupAdmisi != null){
+            pnlGrupAdmisi.setVisible(admisi);
+        }
         if(!admisi){
             bgObatSebelumAdmisi.clearSelection();
             bgSumberInformasi.clearSelection();
             TSumberLainKet.setText("");
+        }
+        updateStatusRekon();
+    }
+
+    // Custom Table Renderers
+    static class RadioCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+            JPanel p = new JPanel() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    int cx = getWidth() / 2;
+                    int cy = getHeight() / 2;
+                    int r = 6;
+                    boolean sel = (row == table.getSelectedRow());
+                    if (sel) {
+                        g2.setColor(new Color(0, 91, 82));
+                        g2.drawOval(cx - r, cy - r, r * 2, r * 2);
+                        g2.fillOval(cx - 3, cy - 3, 6, 6);
+                    } else {
+                        g2.setColor(new Color(203, 213, 225));
+                        g2.drawOval(cx - r, cy - r, r * 2, r * 2);
+                    }
+                    g2.dispose();
+                }
+            };
+            p.setOpaque(true);
+            boolean sel = (row == table.getSelectedRow());
+            p.setBackground(sel ? new Color(240, 253, 250) : Color.WHITE);
+            return p;
+        }
+    }
+
+    static class BoldTextCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+            JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+            l.setFont(new Font("Segoe UI", Font.BOLD, 11));
+            l.setForeground(new Color(15, 23, 42));
+            boolean sel = (row == table.getSelectedRow());
+            l.setBackground(sel ? new Color(240, 253, 250) : Color.WHITE);
+            return l;
+        }
+    }
+
+    private void styleSolidTealButton(widget.Button btn) {
+        btn.setOpaque(false);
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setIcon(null);
+        btn.setMnemonic(0);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btn.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                AbstractButton b = (AbstractButton) c;
+                if (b.getModel().isPressed()) {
+                    g2.setColor(new Color(0, 75, 68));
+                } else if (b.getModel().isRollover()) {
+                    g2.setColor(new Color(0, 105, 95));
+                } else {
+                    g2.setColor(new Color(0, 91, 82));
+                }
+                g2.fillRoundRect(0, 0, c.getWidth(), c.getHeight(), 6, 6);
+                g2.dispose();
+                super.paint(g, c);
+            }
+        });
+    }
+
+    private void styleOutlineButton(widget.Button btn) {
+        btn.setOpaque(false);
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setIcon(null);
+        btn.setMnemonic(0);
+        btn.setForeground(new Color(51, 65, 85));
+        btn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        btn.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                AbstractButton b = (AbstractButton) c;
+                if (b.getModel().isPressed()) {
+                    g2.setColor(new Color(241, 245, 249));
+                } else if (b.getModel().isRollover()) {
+                    g2.setColor(new Color(248, 250, 252));
+                } else {
+                    g2.setColor(Color.WHITE);
+                }
+                g2.fillRoundRect(0, 0, c.getWidth() - 1, c.getHeight() - 1, 6, 6);
+                g2.setColor(new Color(203, 213, 225));
+                g2.drawRoundRect(0, 0, c.getWidth() - 1, c.getHeight() - 1, 6, 6);
+                g2.dispose();
+                super.paint(g, c);
+            }
+        });
+    }
+
+    private static class ModernRadioIcon implements javax.swing.Icon {
+        private final boolean selected;
+        public ModernRadioIcon(boolean selected) { this.selected = selected; }
+        @Override public int getIconWidth() { return 14; }
+        @Override public int getIconHeight() { return 14; }
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(Color.WHITE);
+            g2.fillOval(x + 1, y + 1, 12, 12);
+            g2.setColor(selected ? new Color(0, 91, 82) : new Color(203, 213, 225));
+            g2.setStroke(new BasicStroke(selected ? 1.5f : 1.2f));
+            g2.drawOval(x + 1, y + 1, 12, 12);
+            if (selected) {
+                g2.setColor(new Color(0, 91, 82));
+                g2.fillOval(x + 4, y + 4, 6, 6);
+            }
+            g2.dispose();
+        }
+    }
+
+    private void styleRadioButton(widget.RadioButton rb, boolean isBold) {
+        rb.setOpaque(false);
+        rb.setFont(new Font("Segoe UI", isBold ? Font.BOLD : Font.PLAIN, 10));
+        rb.setForeground(new Color(15, 23, 42));
+        rb.setIcon(new ModernRadioIcon(false));
+        rb.setSelectedIcon(new ModernRadioIcon(true));
+        rb.setFocusPainted(false);
+    }
+
+    static class ModernTextCellRenderer extends DefaultTableCellRenderer {
+        private final boolean isDash;
+        private final boolean isCentered;
+        public ModernTextCellRenderer(boolean isDash, boolean isCentered) {
+            this.isDash = isDash;
+            this.isCentered = isCentered;
+        }
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+            JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+            l.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+            l.setForeground(new Color(15, 23, 42));
+            l.setHorizontalAlignment(isCentered ? SwingConstants.CENTER : SwingConstants.LEFT);
+            l.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+            String text = (value == null) ? "" : value.toString().trim();
+            if (isDash && (text.isEmpty() || text.equals("-"))) {
+                text = "—";
+                l.setForeground(new Color(148, 163, 184));
+            }
+            l.setText(text);
+            boolean sel = (row == table.getSelectedRow());
+            l.setBackground(sel ? new Color(240, 253, 250) : Color.WHITE);
+            return l;
+        }
+    }
+
+    static class BadgeCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+            String val = value == null ? "" : value.toString();
+            final Color bg, fg;
+            if (val.toLowerCase().contains("sama")) {
+                bg = new Color(220, 252, 231); // #dcfce7
+                fg = new Color(21, 128, 61);   // #15803d
+            } else if (val.toLowerCase().contains("berubah")) {
+                bg = new Color(254, 243, 199); // #fef3c7
+                fg = new Color(180, 83, 9);    // #b45309
+            } else {
+                bg = new Color(254, 226, 226); // #fee2e2
+                fg = new Color(185, 28, 28);   // #b91c1c
+            }
+
+            JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 5));
+            p.setOpaque(true);
+            boolean sel = (row == table.getSelectedRow());
+            p.setBackground(sel ? new Color(240, 253, 250) : Color.WHITE);
+
+            JLabel badge = new JLabel(val, SwingConstants.CENTER) {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(bg);
+                    g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 10, 10);
+                    g2.dispose();
+                    super.paintComponent(g);
+                }
+            };
+            badge.setFont(new Font("Segoe UI", Font.BOLD, 10));
+            badge.setForeground(fg);
+            badge.setBorder(new EmptyBorder(2, 8, 2, 8));
+            p.add(badge);
+            return p;
         }
     }
 
@@ -1875,6 +2564,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         TSumberLainKet.setText("");
 
         autoNomor();
+        updatePatientCard();
+        updateCounterObat();
+        updateStatusRekon();
         TNoRekonsialiasi.requestFocus();
     }
     
@@ -1947,6 +2639,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     TPasien.setText(rs.getString("nm_pasien"));
                     Jk.setText(rs.getString("jk"));
                     TglLahir.setText(rs.getString("tgl_lahir"));
+                    updatePatientCard();
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
@@ -1975,18 +2668,312 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(null,"User login bukan petugas...!!");
             }
         } 
+        updateFooterMeta();
     }
 
     private void autoNomor() {
         Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(rekonsiliasi_obat.no_rekonsiliasi,4),signed)),0) from rekonsiliasi_obat where left(rekonsiliasi_obat.tanggal_wawancara,10)='"+Valid.SetTgl(Tanggal.getSelectedItem()+"")+"' ","RO"+Valid.SetTgl(Tanggal.getSelectedItem()+"").replaceAll("-",""),4,TNoRekonsialiasi);           
     }
 
+    private String selectedTindakLanjut = "Lanjut aturan pakai sama";
+    private JButton btnTindakSama;
+    private JButton btnTindakBerubah;
+    private JButton btnTindakStop;
+
+    private JButton createSegmentedTindakLanjutButton(final String text) {
+        JButton b = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                boolean isSel = text.equalsIgnoreCase(selectedTindakLanjut);
+                if (isSel) {
+                    g2.setColor(new Color(0, 91, 82));
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                } else {
+                    g2.setColor(Color.WHITE);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                    g2.setColor(new Color(203, 213, 225));
+                    g2.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+                }
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        b.setOpaque(false);
+        b.setContentAreaFilled(false);
+        b.setBorderPainted(false);
+        b.setFocusPainted(false);
+        b.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        b.addActionListener(e -> {
+            selectedTindakLanjut = text;
+            if (TindakLanjut != null) {
+                try { TindakLanjut.setSelectedItem(text); } catch (Exception ex) {}
+            }
+            updateSegmentedTindakLanjut();
+        });
+        return b;
+    }
+
+    private void updateSegmentedTindakLanjut() {
+        if (btnTindakSama == null) return;
+        boolean sel1 = "Lanjut aturan pakai sama".equalsIgnoreCase(selectedTindakLanjut);
+        boolean sel2 = "Lanjut aturan pakai berubah".equalsIgnoreCase(selectedTindakLanjut);
+        boolean sel3 = "Stop".equalsIgnoreCase(selectedTindakLanjut);
+
+        btnTindakSama.setForeground(sel1 ? Color.WHITE : new Color(51, 65, 85));
+        btnTindakSama.setFont(new Font("Segoe UI", sel1 ? Font.BOLD : Font.PLAIN, 11));
+
+        btnTindakBerubah.setForeground(sel2 ? Color.WHITE : new Color(51, 65, 85));
+        btnTindakBerubah.setFont(new Font("Segoe UI", sel2 ? Font.BOLD : Font.PLAIN, 11));
+
+        btnTindakStop.setForeground(sel3 ? Color.WHITE : new Color(51, 65, 85));
+        btnTindakStop.setFont(new Font("Segoe UI", sel3 ? Font.BOLD : Font.PLAIN, 11));
+
+        btnTindakSama.repaint();
+        btnTindakBerubah.repaint();
+        btnTindakStop.repaint();
+    }
+
+    private void styleModalTextBox(widget.TextBox tb, final String placeholder) {
+        tb.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        tb.setForeground(new Color(15, 23, 42));
+        tb.setBackground(Color.WHITE);
+        tb.putClientProperty("Component.arc", 6);
+        tb.putClientProperty("ModernStyle.active", Boolean.TRUE);
+        tb.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(203, 213, 225), 1),
+            BorderFactory.createEmptyBorder(0, 8, 0, 8)
+        ));
+        tb.setText(placeholder);
+        tb.setForeground(new Color(148, 163, 184));
+        tb.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (placeholder.equals(tb.getText())) {
+                    tb.setText("");
+                    tb.setForeground(new Color(15, 23, 42));
+                }
+            }
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (tb.getText().trim().isEmpty()) {
+                    tb.setText(placeholder);
+                    tb.setForeground(new Color(148, 163, 184));
+                }
+            }
+        });
+    }
+
+    private void initModernModalTambahObat() {
+        DlgTambahObatRekonsiliasi.setSize(560, 320);
+        DlgTambahObatRekonsiliasi.getContentPane().removeAll();
+
+        JPanel pnlRoot = new JPanel(new BorderLayout(0, 0));
+        pnlRoot.setBackground(Color.WHITE);
+        pnlRoot.setBorder(BorderFactory.createLineBorder(new Color(203, 213, 225), 1));
+
+        // 1. Header (North)
+        JPanel pnlHeader = new JPanel(new BorderLayout());
+        pnlHeader.setBackground(Color.WHITE);
+        pnlHeader.setBorder(BorderFactory.createEmptyBorder(14, 18, 6, 14));
+
+        JLabel lblTitle = new JLabel("Tambah Obat Direkonsiliasi");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lblTitle.setForeground(new Color(15, 23, 42));
+        pnlHeader.add(lblTitle, BorderLayout.WEST);
+
+        JButton btnClose = new JButton("\u00D7");
+        btnClose.setFont(new Font("Segoe UI", Font.BOLD, 17));
+        btnClose.setForeground(new Color(148, 163, 184));
+        btnClose.setBorderPainted(false);
+        btnClose.setContentAreaFilled(false);
+        btnClose.setFocusPainted(false);
+        btnClose.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnClose.addActionListener(e -> DlgTambahObatRekonsiliasi.dispose());
+        btnClose.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btnClose.setForeground(new Color(15, 23, 42));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btnClose.setForeground(new Color(148, 163, 184));
+            }
+        });
+        pnlHeader.add(btnClose, BorderLayout.EAST);
+        pnlRoot.add(pnlHeader, BorderLayout.NORTH);
+
+        // 2. Form Content (Center)
+        JPanel pnlForm = new JPanel(null);
+        pnlForm.setBackground(Color.WHITE);
+        pnlForm.setPreferredSize(new Dimension(556, 212));
+
+        // Row 1: Nama Obat & Tombol Pencarian
+        JLabel lNama = new JLabel("Nama Obat (Gunakan Pencarian)");
+        lNama.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lNama.setForeground(new Color(100, 116, 139));
+        lNama.setBounds(18, 2, 200, 14);
+        pnlForm.add(lNama);
+
+        NamaObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        NamaObat.setForeground(new Color(148, 163, 184));
+        NamaObat.setBackground(Color.WHITE);
+        NamaObat.setEditable(false);
+        NamaObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        NamaObat.setToolTipText("Klik untuk mencari nama obat di database formularium");
+        NamaObat.putClientProperty("Component.arc", 6);
+        NamaObat.putClientProperty("ModernStyle.active", Boolean.TRUE);
+        NamaObat.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(203, 213, 225), 1),
+            BorderFactory.createEmptyBorder(0, 8, 0, 8)
+        ));
+        NamaObat.setBounds(18, 18, 484, 28);
+        NamaObat.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                bukaCariObat();
+            }
+        });
+        NamaObat.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER || e.getKeyCode() == java.awt.event.KeyEvent.VK_SPACE) {
+                    bukaCariObat();
+                }
+            }
+        });
+        pnlForm.add(NamaObat);
+
+        JButton btnCariObat = new JButton();
+        btnCariObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png")));
+        btnCariObat.setBounds(506, 18, 32, 28);
+        btnCariObat.setBackground(Color.WHITE);
+        btnCariObat.setBorder(BorderFactory.createLineBorder(new Color(203, 213, 225), 1));
+        btnCariObat.setFocusPainted(false);
+        btnCariObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCariObat.setToolTipText("Cari Obat di Formularium (databarang)");
+        btnCariObat.addActionListener(e -> bukaCariObat());
+        pnlForm.add(btnCariObat);
+
+        // Row 2: Dosis Obat & Frekuensi (2 equal columns)
+        JLabel lDosis = new JLabel("Dosis Obat");
+        lDosis.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lDosis.setForeground(new Color(100, 116, 139));
+        lDosis.setBounds(18, 54, 150, 14);
+        pnlForm.add(lDosis);
+
+        styleModalTextBox(DosisObat, "mis. 500mg");
+        DosisObat.setBounds(18, 70, 254, 28);
+        pnlForm.add(DosisObat);
+
+        JLabel lFrek = new JLabel("Frekuensi");
+        lFrek.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lFrek.setForeground(new Color(100, 116, 139));
+        lFrek.setBounds(284, 54, 150, 14);
+        pnlForm.add(lFrek);
+
+        styleModalTextBox(Frekuensi, "mis. 3x1");
+        Frekuensi.setBounds(284, 70, 254, 28);
+        pnlForm.add(Frekuensi);
+
+        // Row 3: Tindak Lanjut
+        JLabel lTindak = new JLabel("Tindak Lanjut");
+        lTindak.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lTindak.setForeground(new Color(100, 116, 139));
+        lTindak.setBounds(18, 106, 150, 14);
+        pnlForm.add(lTindak);
+
+        JPanel segTindak = new JPanel(null);
+        segTindak.setBounds(18, 122, 520, 28);
+        segTindak.setOpaque(false);
+
+        btnTindakSama = createSegmentedTindakLanjutButton("Lanjut aturan pakai sama");
+        btnTindakSama.setBounds(0, 0, 190, 28);
+
+        btnTindakBerubah = createSegmentedTindakLanjutButton("Lanjut aturan pakai berubah");
+        btnTindakBerubah.setBounds(189, 0, 215, 28);
+
+        btnTindakStop = createSegmentedTindakLanjutButton("Stop");
+        btnTindakStop.setBounds(403, 0, 117, 28);
+
+        segTindak.add(btnTindakSama);
+        segTindak.add(btnTindakBerubah);
+        segTindak.add(btnTindakStop);
+        pnlForm.add(segTindak);
+
+        // Row 4: Perubahan Aturan Pakai
+        JLabel lPerubahan = new JLabel("Perubahan Aturan Pakai");
+        lPerubahan.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lPerubahan.setForeground(new Color(100, 116, 139));
+        lPerubahan.setBounds(18, 158, 200, 14);
+        pnlForm.add(lPerubahan);
+
+        styleModalTextBox(PerubahanAturanPakai, "Kosongkan bila tidak berubah");
+        PerubahanAturanPakai.setBounds(18, 174, 520, 28);
+        pnlForm.add(PerubahanAturanPakai);
+
+        pnlRoot.add(pnlForm, BorderLayout.CENTER);
+
+        // 3. Footer (South)
+        JPanel pnlFooter = new JPanel(new BorderLayout());
+        pnlFooter.setBackground(Color.WHITE);
+        pnlFooter.setBorder(BorderFactory.createEmptyBorder(6, 18, 14, 18));
+
+        styleOutlineButton(BtnKeluarRekon);
+        BtnKeluarRekon.setText("Tutup");
+        BtnKeluarRekon.setPreferredSize(new Dimension(80, 28));
+        pnlFooter.add(BtnKeluarRekon, BorderLayout.WEST);
+
+        styleSolidTealButton(BtnSimpanRekon);
+        BtnSimpanRekon.setText("Simpan");
+        BtnSimpanRekon.setPreferredSize(new Dimension(95, 28));
+        pnlFooter.add(BtnSimpanRekon, BorderLayout.EAST);
+
+        pnlRoot.add(pnlFooter, BorderLayout.SOUTH);
+
+        DlgTambahObatRekonsiliasi.getContentPane().add(pnlRoot, BorderLayout.CENTER);
+
+        emptTeksTambahRekon();
+    }
+
+    private void bukaCariObat() {
+        DlgCariNamaObat dlgObat = new DlgCariNamaObat(null, false);
+        dlgObat.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                if (dlgObat.getTable().getSelectedRow() != -1) {
+                    String nm = dlgObat.getTable().getValueAt(dlgObat.getTable().getSelectedRow(), 1).toString();
+                    NamaObat.setText(nm);
+                    NamaObat.setForeground(new Color(15, 23, 42));
+                    DosisObat.requestFocus();
+                }
+            }
+        });
+        dlgObat.setSize(620, 420);
+        dlgObat.setLocationRelativeTo(DlgTambahObatRekonsiliasi);
+        dlgObat.setVisible(true);
+    }
+
     private void emptTeksTambahRekon() {
-        NamaObat.setText("");
-        DosisObat.setText("");
-        Frekuensi.setText("");
-        PerubahanAturanPakai.setText("");
-        TindakLanjut.setSelectedIndex(0);
+        NamaObat.setText("Pilih nama obat (klik cari)...");
+        NamaObat.setForeground(new Color(148, 163, 184));
+        NamaObat.setEditable(false);
+
+        DosisObat.setText("mis. 500mg");
+        DosisObat.setForeground(new Color(148, 163, 184));
+
+        Frekuensi.setText("mis. 3x1");
+        Frekuensi.setForeground(new Color(148, 163, 184));
+
+        PerubahanAturanPakai.setText("Kosongkan bila tidak berubah");
+        PerubahanAturanPakai.setForeground(new Color(148, 163, 184));
+
+        selectedTindakLanjut = "Lanjut aturan pakai sama";
+        if (TindakLanjut != null) {
+            try { TindakLanjut.setSelectedItem("Lanjut aturan pakai sama"); } catch (Exception e) {}
+        }
+        updateSegmentedTindakLanjut();
         NamaObat.requestFocus();
     }
 }

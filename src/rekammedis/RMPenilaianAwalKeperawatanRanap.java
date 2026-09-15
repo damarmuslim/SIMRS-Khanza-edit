@@ -68,9 +68,18 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
 
     // === Tahap 1 RM 19 Pengkajian Awal Keperawatan Rawat Inap: Riwayat Alergi + Riwayat Kesehatan ===
     private widget.PanelBiasa panelAlergi, panelRiwayatKesehatan, panelAlasanMasuk;
-    private widget.TextBox KeluhanUtama;
+    // Keluhan Utama jadi TextArea mengikuti handoff (mockup: textarea, bukan satu baris).
+    // Aman: semua pemakaiannya hanya getText()/setText(), tanpa batasInput/listener.
+    private widget.TextArea KeluhanUtama;
+    // Pil cara anamnesis (Section 2) - combo GEN Anamnesis tetap jadi sumber data.
+    private javax.swing.JToggleButton pilAutoanamnesis, pilAlloanamnesis;
+    private boolean sedangSinkronPilAnamnesis;
     private widget.CekBox chkAlergiTidakAda, chkAlergiObat, chkAlergiMakanan, chkAlergiLainnya, chkAlergiTidakDiketahui, chkAlergiTandaDipasang;
     private widget.TextBox txtAlergiObatSebutkan, txtAlergiObatReaksi, txtAlergiMakananSebutkan, txtAlergiMakananReaksi, txtAlergiLainnyaSebutkan, txtAlergiLainnyaReaksi, txtAlergiTidakDiketahuiReaksi;
+    private widget.Label lblCatatanAlergi;
+    // Kartu identitas pasien redesign (non-GEN) - lihat plan header RM19.
+    private widget.Label lblKartuInisialRanap, lblKartuNamaRanap, lblKartuInfoRanap;
+    private widget.Label lblValRMRanap, lblValRawatRanap, lblValLokasiRanap;
     private widget.CekBox chkRpdHipertensi, chkRpdDm, chkRpdJantung, chkRpdHepatitis, chkRpdOperasi, chkRpdAnemia, chkRpdAsthma, chkRpdStroke, chkRpdParu, chkRpdLainlain;
     private widget.TextBox txtRpdLainlainSebutkan;
     private widget.CekBox chkRpkHipertensi, chkRpkDm, chkRpkJantung, chkRpkThalasemia, chkRpkLainlain;
@@ -94,6 +103,8 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
     private widget.CekBox chkOtotBantuNafasTidak, chkOtotBantuNafasYa;
     private widget.CekBox chkO2Tidak, chkO2Ya, chkO2Nasal, chkO2Sungkup;
     private widget.TextBox txtO2LiterMenit, txtSaturasiO2;
+    // Mencegah putaran balik saat pil pernafasan menyinkronkan CekBox lama.
+    private boolean sedangSinkronPilPernafasanRanap;
     // c. Status Cardiovaskuler
     private widget.CekBox chkCardioTidakAdaKelainan, chkCardioBradikardi, chkCardioTakikardi, chkCardioMurMur, chkCardioGallop, chkCardioPucatSianosis, chkCardioNyeriDada;
     private widget.TextBox txtCardioLain;
@@ -179,6 +190,45 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
     private widget.CekBox chkDischargeManualYa, chkDischargeManualTidak;
     // --- Tahap 6: Data Penunjang (RM19 section 11, 4 baris bebas, blm ada sama sekali) ---
     private widget.TextBox[] txtDataPenunjang = new widget.TextBox[4];
+
+    // === Infrastruktur kartu/rail redesign visual RM19 (lihat design_handoff_simrs_rm_forms/README.md
+    // & plan drifting-munching-waffle.md). Pola disalin-adaptasi dari method SeksiKep/HalamanKep milik
+    // RMPenilaianAwalKeperawatanIGD.java dgn sufiks "Ranap" - duplikasi DISENGAJA (kedua form independen
+    // secara bisnis, proyek ini condong ke duplikasi-lokal drpd ekstraksi ke widget bersama). Beda dari
+    // IGD: RM19 memetakan 1 SeksiRanap : 1 HalamanRanap (identity mapping) krn mockup mendaftar 18 baris
+    // granular di sidebar, bukan dikelompokkan lewat tabel GRUP_HALAMAN_KEP. ===
+    private static final class SeksiRanap {
+        final String judul;
+        final widget.PanelBiasa strip;
+        final int urutBangun;
+        widget.PanelBiasa panel;
+        SeksiRanap(String judul, widget.PanelBiasa strip, int urutBangun) {
+            this.judul = judul;
+            this.strip = strip;
+            this.urutBangun = urutBangun;
+        }
+    }
+    private final java.util.List<SeksiRanap> seksiRanap = new java.util.ArrayList<>();
+
+    private static final class HalamanRanap {
+        final String judul;
+        final java.util.List<SeksiRanap> anggota = new java.util.ArrayList<>();
+        String subjudul = "";
+        widget.PanelBiasa panel, aksen, pnlBadgeStatus, baris;
+        widget.Label lblBadgeNomor, lblBadgeStatus, lblHitunganRail, lblJudul, lblNomor;
+        int totalWajib = 0, terisiWajib = 0;
+        HalamanRanap(String judul) {
+            this.judul = judul;
+        }
+    }
+    private final java.util.List<HalamanRanap> halamanRanap = new java.util.ArrayList<>();
+    private int halamanAktifRanap = -1;
+    private boolean satuHalamanRanap = true;
+    private widget.PanelBiasa railRanap;
+    private widget.Label lblProgresPersenRanap, lblProgresHintRanap;
+    private javax.swing.JProgressBar progresRanap;
+    private widget.RadioButton rbSatuHalamanRanap, rbSemuaHalamanRanap;
+    private javax.swing.ButtonGroup bgModeHalamanRanap;
 
     /** Creates new form DlgRujuk
      * @param parent
@@ -9067,7 +9117,23 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
         widget.TextBox t = new widget.TextBox();
         induk.add(t);
         t.setBounds(x, y, w, 23);
+        gayaKotakTeksRanap(t);
         return t;
+    }
+
+    /**
+     * Sudut kotak + border #cfd3ce sesuai handoff. HANYA untuk field RM19 ini -
+     * widget.TextBox default melukis glass berujung bulat, dan kelas widget-nya
+     * TIDAK diubah supaya form Khanza lain tetap memakai tampilan bawaannya.
+     * Ukuran tidak disentuh agar bounds/preferredSize pemanggil tetap berlaku.
+     */
+    private void gayaKotakTeksRanap(widget.TextBox t){
+        t.putClientProperty("ModernStyle.active", Boolean.TRUE);
+        t.putClientProperty("JComponent.roundRect", Boolean.FALSE);
+        t.putClientProperty("Component.arc", 0);
+        t.setOpaque(true);
+        t.setBorder(javax.swing.BorderFactory.createLineBorder(
+                new java.awt.Color(0xCF, 0xD3, 0xCE)));
     }
     private widget.Label tambahLabelRiwayat(java.awt.Container induk, String teks, int x, int y, int w){
         widget.Label l = new widget.Label();
@@ -10007,8 +10073,8 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
         txtAlergiTidakDiketahuiReaksi = tambahTeksRiwayat(panelAlergi, xReaksiBox, 134, lebarReaksiBox);
 
         chkAlergiTandaDipasang = tambahCekRiwayat(panelAlergi, "Tanda Alergi dipasang (stiker warna merah)", 10, 162, 390);
-        widget.Label lblCatatanStiker = tambahLabelRiwayat(panelAlergi, "Catatan : Stiker dipasang di gelang identitas pasien", 10, 188, 400);
-        lblCatatanStiker.setFont(lblCatatanStiker.getFont().deriveFont(java.awt.Font.ITALIC, 10f));
+        lblCatatanAlergi = tambahLabelRiwayat(panelAlergi, "Catatan : Stiker dipasang di gelang identitas pasien", 10, 188, 400);
+        lblCatatanAlergi.setFont(lblCatatanAlergi.getFont().deriveFont(java.awt.Font.ITALIC, 10f));
 
         // === Panel kanan: 3. Riwayat Kesehatan ===
         panelRiwayatKesehatan = new widget.PanelBiasa();
@@ -10062,14 +10128,1517 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
         tambahLabelRiwayat(panelAlasanMasuk, "Hubungan :", 265, 50, 70);
         txtHubunganAnamnesis = tambahTeksRiwayat(panelAlasanMasuk, 338, 50, 67);
 
-        tambahLabelRiwayat(panelAlasanMasuk, "a. Keluhan Utama :", 10, 80, 200);
-        KeluhanUtama = tambahTeksRiwayat(panelAlasanMasuk, 10, 104, 405);
+        // KeluhanUtama tidak lagi dipasang ke panel absolut: seksi ini dirakit
+        // ulang bergaya handoff oleh bangunSeksiAlasanMasukRanap().
+        KeluhanUtama = new widget.TextArea();
 
         jLabel30.setText("b. Riwayat Kesehatan Sekarang :");
         panelAlasanMasuk.add(jLabel30);
         jLabel30.setBounds(10, 134, 250, 23);
         panelAlasanMasuk.add(scrollPane1);
         scrollPane1.setBounds(10, 158, 405, 60);
+
+        bangunSemuaSeksiRanap();
+        kelompokkanHalamanRanap();
+        susunHalamanRanap();
+        susunRangkaRanap();
+    }
+
+    // === Sesi 1: kerangka kartu/rail. Isi setiap section direparent bertahap
+    // pada Sesi 2--6; saat ini kartu sengaja kosong agar struktur navigasi bisa
+    // diverifikasi tanpa menyentuh pemetaan simpan(), ganti(), maupun baca data. ===
+    private java.awt.GridBagConstraints ranapConstraint(int gridx, int gridy) {
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx = gridx;
+        c.gridy = gridy;
+        c.anchor = java.awt.GridBagConstraints.WEST;
+        c.insets = new java.awt.Insets(3, 5, 3, 5);
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        return c;
+    }
+
+    private void latarRanap(javax.swing.JComponent panel, java.awt.Color warna) {
+        panel.setOpaque(true);
+        panel.setBackground(warna);
+    }
+
+    /**
+     * PanelBiasa.paintComponent() mengabaikan setBackground() dan melukis gradient
+     * warnaAtas-warnaBawah (default PUTIH), jadi warna solid harus di-set ke kedua
+     * kutub gradient - kalau tidak, latar gelap seperti top bar tertimpa putih.
+     */
+    private void latarSolidRanap(widget.PanelBiasa panel, java.awt.Color warna) {
+        panel.setOpaque(true);
+        panel.setBackground(warna);
+        panel.setWarnaAtas(warna);
+        panel.setWarnaBawah(warna);
+    }
+
+    private widget.PanelBiasa panelKosongRanap() {
+        widget.PanelBiasa panel = new widget.PanelBiasa();
+        panel.setOpaque(false);
+        panel.setBorder(null);
+        panel.setLayout(new java.awt.GridBagLayout());
+        return panel;
+    }
+
+    private widget.PanelBiasa buatHeaderStripRanap(String judul) {
+        widget.PanelBiasa strip = new widget.PanelBiasa();
+        strip.setOpaque(false);
+        strip.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 6, 0));
+        strip.setLayout(new java.awt.GridBagLayout());
+        widget.Label label = new widget.Label();
+        label.setText(judul == null ? "" : judul.toUpperCase());
+        label.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11).deriveFont(10.5f));
+        label.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        javax.swing.JPanel garis = new javax.swing.JPanel();
+        garis.setOpaque(true);
+        garis.setBackground(widget.ThemeConfig.BORDER_SOFT);
+        garis.setPreferredSize(new java.awt.Dimension(10, 1));
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = java.awt.GridBagConstraints.WEST;
+        strip.add(label, c);
+        c.gridx = 1;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor = java.awt.GridBagConstraints.CENTER;
+        c.insets = new java.awt.Insets(0, 10, 0, 0);
+        strip.add(garis, c);
+        return strip;
+    }
+
+    private int tambahBarisJudulRanap(widget.PanelBiasa panel, int row, String judul) {
+        java.awt.GridBagConstraints c = ranapConstraint(0, row);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weightx = 1.0;
+        c.insets = new java.awt.Insets(row == 0 ? 4 : 14, 5, 6, 5);
+        widget.PanelBiasa strip = buatHeaderStripRanap(judul);
+        panel.add(strip, c);
+        seksiRanap.add(new SeksiRanap(judul, strip, seksiRanap.size()));
+        return row + 1;
+    }
+
+    private void daftarkanSeksiRanap(String judul, widget.PanelBiasa panel) {
+        for (int i = seksiRanap.size() - 1; i >= 0; i--) {
+            SeksiRanap s = seksiRanap.get(i);
+            if (s.panel == null && s.judul.equals(judul)) {
+                s.panel = panel;
+                return;
+            }
+        }
+        throw new IllegalStateException("Section RM19 tidak terdaftar: " + judul);
+    }
+
+    private void bangunSeksiRanap(String judul, String subjudul) {
+        widget.PanelBiasa panel = panelKosongRanap();
+        tambahBarisJudulRanap(panel, 0, judul);
+        daftarkanSeksiRanap(judul, panel);
+    }
+
+    /** Lepas komponen dari layout absolut lama tanpa membuat objek baru. */
+    private void reparentKeRanap(java.awt.Component komponen) {
+        if (komponen != null && komponen.getParent() != null) {
+            komponen.getParent().remove(komponen);
+        }
+    }
+
+    private int tambahBarisFieldRanap(widget.PanelBiasa panel, int row, String label,
+            java.awt.Component kontrol) {
+        widget.PanelBiasa baris = new widget.PanelBiasa();
+        baris.setOpaque(false);
+        baris.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, widget.ThemeConfig.BORDER_SOFT),
+                javax.swing.BorderFactory.createEmptyBorder(7, 0, 7, 0)));
+        baris.setLayout(new java.awt.GridBagLayout());
+        widget.Label lbl = new widget.Label();
+        lbl.setText(label);
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbl.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+        lbl.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lbl.setPreferredSize(new java.awt.Dimension(205, 23));
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx = 0; c.gridy = 0; c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        c.insets = new java.awt.Insets(2, 0, 0, 12);
+        baris.add(lbl, c);
+        reparentKeRanap(kontrol);
+        if (kontrol.getPreferredSize() == null || kontrol.getPreferredSize().width < 80) {
+            kontrol.setPreferredSize(new java.awt.Dimension(140, 23));
+        }
+        c.gridx = 1; c.weightx = 1.0; c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor = java.awt.GridBagConstraints.NORTHWEST; c.insets = new java.awt.Insets(0, 0, 0, 0);
+        baris.add(kontrol, c);
+        c.gridx = 2; c.weightx = 1.0; c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        baris.add(javax.swing.Box.createGlue(), c);
+        java.awt.GridBagConstraints host = ranapConstraint(0, row);
+        host.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        host.weightx = 1.0;
+        host.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        host.insets = new java.awt.Insets(0, 0, 0, 0);
+        panel.add(baris, host);
+        return row + 1;
+    }
+
+    private void bangunSeksiPanelLamaRanap(String judul, widget.PanelBiasa panelLama) {
+        reparentKeRanap(panelLama);
+        panelLama.setBorder(null);
+        panelLama.setPreferredSize(new java.awt.Dimension(850, panelLama.getHeight()));
+        widget.PanelBiasa panel = panelKosongRanap();
+        int row = tambahBarisJudulRanap(panel, 0, judul);
+        java.awt.GridBagConstraints c = ranapConstraint(0, row);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(0, 0, 4, 0);
+        panel.add(panelLama, c);
+        daftarkanSeksiRanap(judul, panel);
+    }
+
+    /** Menyamakan TextBox rincian alergi dengan input selebar satu sel pada mockup RM19. */
+    private void gayaFieldAlergiRanap(widget.TextBox field) {
+        java.awt.Dimension ukuran = new java.awt.Dimension(180, 23);
+        field.putClientProperty("ModernStyle.active", Boolean.TRUE);
+        field.putClientProperty("JComponent.roundRect", Boolean.FALSE);
+        field.putClientProperty("Component.arc", 0);
+        field.setSize(ukuran);
+        field.setPreferredSize(ukuran);
+        field.setMinimumSize(new java.awt.Dimension(108, 23));
+        field.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 23));
+        field.setVisible(true);
+        field.setEnabled(true);
+        field.setOpaque(true);
+        // border input sesuai mockup #cfd3ce, radius kecil
+        field.setBorder(javax.swing.BorderFactory.createLineBorder(
+                new java.awt.Color(0xCF, 0xD3, 0xCE)));
+    }
+
+    /** Sel alergi: chip checkbox dan satu field rincian selebar satu kolom. */
+    private widget.PanelBiasa buatSelAlergiRanap(widget.CekBox pilihan,
+            widget.TextBox sebutkan, widget.TextBox reaksi) {
+        widget.PanelBiasa sel = panelKosongRanap();
+        sel.setLayout(new javax.swing.BoxLayout(sel, javax.swing.BoxLayout.Y_AXIS));
+
+        /* --- chip checkbox dengan border kecil --- */
+        widget.PanelBiasa chip = panelKosongRanap();
+        chip.setLayout(new java.awt.GridBagLayout());
+        chip.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+                javax.swing.BorderFactory.createEmptyBorder(5, 7, 5, 7)));
+
+        reparentKeRanap(pilihan);
+        pilihan.setPreferredSize(new java.awt.Dimension(180, 23));
+        java.awt.GridBagConstraints c = ranapConstraint(0, 0);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        chip.add(pilihan, c);
+        chip.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, chip.getPreferredSize().height));
+        chip.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        sel.add(chip);
+
+        /*
+         * Opsi umum menampilkan field "sebutkan". Tidak Diketahui tidak punya
+         * field tersebut, sehingga field reaksinya dipakai sebagai input tunggal.
+         * Field reaksi lain tetap hidup untuk menjaga data lama saat simpan ulang.
+         */
+        widget.TextBox fieldTampil = sebutkan != null ? sebutkan : reaksi;
+        if (reaksi != null && reaksi != fieldTampil) {
+            reparentKeRanap(reaksi);
+            reaksi.setVisible(false);
+        }
+        if (fieldTampil != null) {
+            sel.add(javax.swing.Box.createVerticalStrut(3));
+            reparentKeRanap(fieldTampil);
+            gayaFieldAlergiRanap(fieldTampil);
+            fieldTampil.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            sel.add(fieldTampil);
+        }
+        return sel;
+    }
+
+    /** Grid tiga kolom untuk isi alergi, dengan pengisi agar lebar kartu stabil. */
+    private widget.PanelBiasa buatGridAlergiRanap(java.awt.Component[][] items) {
+        widget.PanelBiasa grid = panelKosongRanap();
+        int maxKolom = 0;
+        for (int row = 0; row < items.length; row++) {
+            maxKolom = Math.max(maxKolom, items[row].length);
+            for (int kol = 0; kol < items[row].length; kol++) {
+                java.awt.Component item = items[row][kol];
+                if (item == null) {
+                    continue;
+                }
+                java.awt.GridBagConstraints c = ranapConstraint(kol, row);
+                c.weightx = 1.0;
+                c.weighty = 0;
+                c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+                c.insets = new java.awt.Insets(row == 0 ? 0 : 7, kol == 0 ? 0 : 7, 0, 0);
+                grid.add(item, c);
+            }
+        }
+        java.awt.GridBagConstraints pengisi = ranapConstraint(maxKolom, 0);
+        pengisi.gridheight = Math.max(1, items.length);
+        pengisi.weightx = 0.01;
+        pengisi.weighty = 1.0;
+        pengisi.fill = java.awt.GridBagConstraints.BOTH;
+        pengisi.insets = new java.awt.Insets(0, 0, 0, 0);
+        grid.add(javax.swing.Box.createGlue(), pengisi);
+        return grid;
+    }
+
+    /** Membuat chip tunggal dari CekBox lama tanpa mengubah sumber data RM19. */
+    private widget.PanelBiasa buatChipPernafasanRanap(widget.CekBox cek) {
+        widget.PanelBiasa chip = panelKosongRanap();
+        chip.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+                javax.swing.BorderFactory.createEmptyBorder(4, 7, 4, 7)));
+        chip.setLayout(new java.awt.GridBagLayout());
+        reparentKeRanap(cek);
+        java.awt.GridBagConstraints c = ranapConstraint(0, 0);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        chip.add(cek, c);
+        return chip;
+    }
+
+    private widget.PanelBiasa buatBarisInputPernafasanRanap(String label, widget.TextBox input,
+            String satuan) {
+        widget.PanelBiasa baris = panelKosongRanap();
+        baris.setLayout(new java.awt.GridBagLayout());
+        widget.Label lbl = new widget.Label();
+        lbl.setText(label);
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbl.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+        lbl.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        java.awt.GridBagConstraints c = ranapConstraint(0, 0);
+        c.insets = new java.awt.Insets(0, 0, 0, 8);
+        baris.add(lbl, c);
+        reparentKeRanap(input);
+        gayaKotakTeksRanap(input);
+        input.setPreferredSize(new java.awt.Dimension(100, 23));
+        c = ranapConstraint(1, 0);
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.weightx = 1.0;
+        baris.add(input, c);
+        if (satuan != null && !satuan.isEmpty()) {
+            widget.Label lblSatuan = new widget.Label();
+            lblSatuan.setText(satuan);
+            lblSatuan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            c = ranapConstraint(2, 0);
+            c.insets = new java.awt.Insets(0, 7, 0, 0);
+            baris.add(lblSatuan, c);
+        }
+        return baris;
+    }
+
+    /** Mengaktifkan input hanya ketika penanda klinisnya dipilih. */
+    private void buatGateInputRanap(final widget.TextBox input, final widget.CekBox gate) {
+        if (Boolean.TRUE.equals(input.getClientProperty("gatePernafasanRanap"))) {
+            return;
+        }
+        input.putClientProperty("gatePernafasanRanap", Boolean.TRUE);
+        final java.awt.event.ItemListener sinkron = new java.awt.event.ItemListener() {
+            @Override
+            public void itemStateChanged(java.awt.event.ItemEvent e) {
+                boolean aktif = gate.isSelected();
+                input.setEditable(aktif);
+                input.setEnabled(aktif);
+                input.setBackground(aktif ? java.awt.Color.WHITE : new java.awt.Color(0xF7, 0xF8, 0xF5));
+                input.setBorder(javax.swing.BorderFactory.createLineBorder(
+                        aktif ? new java.awt.Color(0xCF, 0xD3, 0xCE) : new java.awt.Color(0xE6, 0xE8, 0xE3)));
+                input.setToolTipText(aktif ? null : "Pilih Ya untuk mengisi");
+            }
+        };
+        gate.addItemListener(sinkron);
+        sinkron.itemStateChanged(null);
+    }
+
+    /** Pil Tidak/Ya yang tetap menyimpan nilai ke dua CekBox RM19 lama. */
+    private widget.PanelBiasa pasangPilTidakYaRanap(final widget.CekBox tidak,
+            final widget.CekBox ya) {
+        widget.PanelBiasa host = panelKosongRanap();
+        host.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        final javax.swing.JToggleButton pilTidak = new javax.swing.JToggleButton("Tidak");
+        final javax.swing.JToggleButton pilYa = new javax.swing.JToggleButton("Ya");
+        javax.swing.ButtonGroup grup = new javax.swing.ButtonGroup();
+        grup.add(pilTidak);
+        grup.add(pilYa);
+        pasangPilRanap(pilTidak);
+        pasangPilRanap(pilYa);
+        pilTidak.setSelected(tidak.isSelected());
+        pilYa.setSelected(ya.isSelected());
+        java.awt.event.ItemListener dariPil = new java.awt.event.ItemListener() {
+            @Override
+            public void itemStateChanged(java.awt.event.ItemEvent e) {
+                if (sedangSinkronPilPernafasanRanap || e.getStateChange() != java.awt.event.ItemEvent.SELECTED) {
+                    return;
+                }
+                sedangSinkronPilPernafasanRanap = true;
+                try {
+                    tidak.setSelected(pilTidak.isSelected());
+                    ya.setSelected(pilYa.isSelected());
+                } finally {
+                    sedangSinkronPilPernafasanRanap = false;
+                }
+            }
+        };
+        pilTidak.addItemListener(dariPil);
+        pilYa.addItemListener(dariPil);
+        java.awt.event.ItemListener dariCek = new java.awt.event.ItemListener() {
+            @Override
+            public void itemStateChanged(java.awt.event.ItemEvent e) {
+                if (sedangSinkronPilPernafasanRanap) {
+                    return;
+                }
+                sedangSinkronPilPernafasanRanap = true;
+                try {
+                    pilTidak.setSelected(tidak.isSelected());
+                    pilYa.setSelected(ya.isSelected());
+                } finally {
+                    sedangSinkronPilPernafasanRanap = false;
+                }
+            }
+        };
+        tidak.addItemListener(dariCek);
+        ya.addItemListener(dariCek);
+        host.add(pilTidak);
+        host.add(pilYa);
+        return host;
+    }
+
+    private int tambahGrupPernafasanRanap(widget.PanelBiasa panel, int row, String judul,
+            java.awt.Component isi, boolean latarLembut) {
+        widget.PanelBiasa grup = panelKosongRanap();
+        if (latarLembut) {
+            latarSolidRanap(grup, new java.awt.Color(0xF6, 0xF8, 0xF5));
+        }
+        grup.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, widget.ThemeConfig.BORDER_SOFT),
+                javax.swing.BorderFactory.createEmptyBorder(8, 8, 9, 8)));
+        grup.setLayout(new java.awt.GridBagLayout());
+        widget.Label label = new widget.Label();
+        label.setText(judul);
+        label.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+        label.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        java.awt.GridBagConstraints c = ranapConstraint(0, 0);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weightx = 1.0;
+        c.insets = new java.awt.Insets(0, 0, 6, 0);
+        grup.add(label, c);
+        c = ranapConstraint(0, 1);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        grup.add(isi, c);
+        c = ranapConstraint(0, row++);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(0, 5, 0, 5);
+        panel.add(grup, c);
+        return row;
+    }
+
+    private void bangunSeksiPernafasanRanap() {
+        final String judul = "Fungsi Pernafasan";
+        widget.PanelBiasa panel = panelKosongRanap();
+        int row = tambahBarisJudulRanap(panel, 0, judul);
+
+        widget.PanelBiasa airway = panelKosongRanap();
+        airway.setLayout(new javax.swing.BoxLayout(airway, javax.swing.BoxLayout.Y_AXIS));
+        airway.add(buatGridAlergiRanap(new java.awt.Component[][] {{
+            buatChipPernafasanRanap(chkAirwayNormal), buatChipPernafasanRanap(chkAirwayOropharingeal),
+            buatChipPernafasanRanap(chkAirwaySekret)}, {buatChipPernafasanRanap(chkAirwayTumor),
+            buatChipPernafasanRanap(chkAirwayTrajeostomy), buatChipPernafasanRanap(chkAirwayRTT)}}));
+        airway.add(javax.swing.Box.createVerticalStrut(7));
+        airway.add(buatBarisInputPernafasanRanap("Ukuran RTT", txtAirwayRTTUkuran, ""));
+        buatGateInputRanap(txtAirwayRTTUkuran, chkAirwayRTT);
+        row = tambahGrupPernafasanRanap(panel, row, "AIRWAY", airway, false);
+
+        widget.PanelBiasa breathing = panelKosongRanap();
+        breathing.setLayout(new javax.swing.BoxLayout(breathing, javax.swing.BoxLayout.Y_AXIS));
+        breathing.add(buatGridAlergiRanap(new java.awt.Component[][] {{
+            buatChipPernafasanRanap(chkBreathingNormal), buatChipPernafasanRanap(chkBreathingSesakDyspnea),
+            buatChipPernafasanRanap(chkBreathingBatuk)}, {buatChipPernafasanRanap(chkBreathingTakipneu),
+            buatChipPernafasanRanap(chkBreathingBatukDarah), buatChipPernafasanRanap(chkBreathingSleepApnea)},
+            {buatChipPernafasanRanap(chkBunyiParuOrthopnea), buatChipPernafasanRanap(chkBreathingLain), null}}));
+        breathing.add(javax.swing.Box.createVerticalStrut(7));
+        breathing.add(buatBarisInputPernafasanRanap("Keterangan lain", txtBreathingLain, ""));
+        row = tambahGrupPernafasanRanap(panel, row, "BREATHING", breathing, false);
+
+        widget.PanelBiasa bunyi = panelKosongRanap();
+        bunyi.setLayout(new javax.swing.BoxLayout(bunyi, javax.swing.BoxLayout.Y_AXIS));
+        bunyi.add(buatGridAlergiRanap(new java.awt.Component[][] {{
+            buatChipPernafasanRanap(chkBunyiParuNormal), buatChipPernafasanRanap(chkBreathingNgorok),
+            buatChipPernafasanRanap(chkBunyiParuStidor)}, {buatChipPernafasanRanap(chkBunyiParuRonkhiKanan),
+            buatChipPernafasanRanap(chkBunyiParuRonkhiKiri), buatChipPernafasanRanap(chkBunyiParuWheezingKanan)},
+            {buatChipPernafasanRanap(chkBunyiParuWheezingKiri), buatChipPernafasanRanap(chkBunyiParuLain), null}}));
+        bunyi.add(javax.swing.Box.createVerticalStrut(7));
+        bunyi.add(buatBarisInputPernafasanRanap("Keterangan lain", txtBunyiParuLain, ""));
+        row = tambahGrupPernafasanRanap(panel, row, "BUNYI PARU", bunyi, false);
+
+        widget.PanelBiasa bantuan = panelKosongRanap();
+        bantuan.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints c = ranapConstraint(0, 0);
+        c.insets = new java.awt.Insets(0, 0, 6, 12);
+        bantuan.add(new javax.swing.JLabel("Kesulitan bernafas"), c);
+        c = ranapConstraint(1, 0);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        bantuan.add(pasangPilTidakYaRanap(chkKesulitanBernafasTidak, chkKesulitanBernafasYa), c);
+        c = ranapConstraint(0, 1);
+        c.insets = new java.awt.Insets(0, 0, 6, 12);
+        bantuan.add(new javax.swing.JLabel("Pakai otot bantu nafas"), c);
+        c = ranapConstraint(1, 1);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        bantuan.add(pasangPilTidakYaRanap(chkOtotBantuNafasTidak, chkOtotBantuNafasYa), c);
+        c = ranapConstraint(0, 2);
+        c.insets = new java.awt.Insets(0, 0, 6, 12);
+        bantuan.add(new javax.swing.JLabel("Terpasang O₂"), c);
+        c = ranapConstraint(1, 2);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        bantuan.add(pasangPilTidakYaRanap(chkO2Tidak, chkO2Ya), c);
+        c = ranapConstraint(0, 3);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(2, 0, 0, 0);
+        widget.PanelBiasa nilaiO2 = panelKosongRanap();
+        nilaiO2.setLayout(new java.awt.GridLayout(1, 2, 12, 0));
+        nilaiO2.add(buatBarisInputPernafasanRanap("Liter/menit", txtO2LiterMenit, "l/m"));
+        nilaiO2.add(buatBarisInputPernafasanRanap("Saturasi O₂", txtSaturasiO2, "%"));
+        bantuan.add(nilaiO2, c);
+        c = ranapConstraint(0, 4);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(8, 0, 0, 0);
+        bantuan.add(buatGridAlergiRanap(new java.awt.Component[][] {{
+            buatChipPernafasanRanap(chkO2Nasal), buatChipPernafasanRanap(chkO2Sungkup)}}), c);
+        buatGateInputRanap(txtO2LiterMenit, chkO2Ya);
+        buatGateInputRanap(txtSaturasiO2, chkO2Ya);
+        row = tambahGrupPernafasanRanap(panel, row, "KESULITAN BERNAFAS & BANTUAN O₂", bantuan, true);
+
+        c = ranapConstraint(0, row);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weighty = 1.0;
+        c.fill = java.awt.GridBagConstraints.BOTH;
+        panel.add(javax.swing.Box.createGlue(), c);
+        daftarkanSeksiRanap(judul, panel);
+    }
+
+    private void bangunSeksiAlergiRanap() {
+        final String judul = "Riwayat Alergi / Reaksi";
+        widget.PanelBiasa panel = panelKosongRanap();
+        int row = tambahBarisJudulRanap(panel, 0, judul);
+
+        widget.Label label = new widget.Label();
+        label.setText("Riwayat Alergi / Reaksi *");
+        label.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        label.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+        label.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+        label.setPreferredSize(new java.awt.Dimension(205, 23));
+
+        widget.PanelBiasa isi = buatGridAlergiRanap(new java.awt.Component[][] {
+            {buatSelAlergiRanap(chkAlergiTidakAda, null, null),
+                buatSelAlergiRanap(chkAlergiObat, txtAlergiObatSebutkan, txtAlergiObatReaksi),
+                buatSelAlergiRanap(chkAlergiMakanan, txtAlergiMakananSebutkan, txtAlergiMakananReaksi)},
+            {buatSelAlergiRanap(chkAlergiLainnya, txtAlergiLainnyaSebutkan, txtAlergiLainnyaReaksi),
+                buatSelAlergiRanap(chkAlergiTidakDiketahui, null, txtAlergiTidakDiketahuiReaksi), null}
+        });
+
+        widget.PanelBiasa baris = panelKosongRanap();
+        java.awt.GridBagConstraints c = ranapConstraint(0, 0);
+        c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        c.insets = new java.awt.Insets(5, 0, 0, 18);
+        baris.add(label, c);
+        c = ranapConstraint(1, 0);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        baris.add(isi, c);
+
+        c = ranapConstraint(0, row++);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(0, 5, 8, 5);
+        panel.add(baris, c);
+
+        widget.PanelBiasa tanda = panelKosongRanap();
+        tanda.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, widget.ThemeConfig.BORDER_SOFT),
+                javax.swing.BorderFactory.createEmptyBorder(7, 0, 0, 0)));
+        reparentKeRanap(chkAlergiTandaDipasang);
+        chkAlergiTandaDipasang.setPreferredSize(new java.awt.Dimension(290, 23));
+        c = ranapConstraint(0, 0);
+        c.insets = new java.awt.Insets(0, 0, 0, 12);
+        tanda.add(chkAlergiTandaDipasang, c);
+        reparentKeRanap(lblCatatanAlergi);
+        lblCatatanAlergi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        c = ranapConstraint(1, 0);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(2, 0, 0, 0);
+        tanda.add(lblCatatanAlergi, c);
+
+        c = ranapConstraint(0, row++);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(0, 5, 8, 5);
+        panel.add(tanda, c);
+
+        c = ranapConstraint(0, row);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weighty = 1.0;
+        c.fill = java.awt.GridBagConstraints.BOTH;
+        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        panel.add(javax.swing.Box.createGlue(), c);
+        daftarkanSeksiRanap(judul, panel);
+    }
+
+    /* ===== Pil pilihan tunggal (Section 2) =====
+     * Salin-adaptasi pasangChipKep()/warnaiChipKep()/BorderChipKep dari
+     * RMPenilaianAwalKeperawatanIGD - duplikasi lokal disengaja, sesuai
+     * konvensi proyek (kedua form independen). Token warna memakai palet
+     * yang sudah ada, tidak membuat palet kedua. */
+    private static final java.awt.Color PIL_PILIH_BG_RANAP = new java.awt.Color(0xE6, 0xF2, 0xF3);
+    private static final java.awt.Color PIL_HOVER_BG_RANAP = new java.awt.Color(0xEE, 0xF1, 0xEC);
+    private static final java.awt.Color PIL_GARIS_RANAP = new java.awt.Color(0xD8, 0xDB, 0xD6);
+
+    private static final class BorderPilRanap implements javax.swing.border.Border {
+        private java.awt.Color garis = PIL_GARIS_RANAP;
+
+        void setGaris(java.awt.Color c) { garis = c; }
+
+        @Override
+        public java.awt.Insets getBorderInsets(java.awt.Component c) {
+            return new java.awt.Insets(4, 12, 4, 12);
+        }
+
+        @Override
+        public boolean isBorderOpaque() { return false; }
+
+        @Override
+        public void paintBorder(java.awt.Component c, java.awt.Graphics g, int x, int y, int w, int h) {
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+            g2.setColor(garis);
+            if ((c instanceof javax.swing.AbstractButton) && ((javax.swing.AbstractButton) c).isSelected()) {
+                g2.setStroke(new java.awt.BasicStroke(1.5f));
+            }
+            g2.drawRect(x, y, w - 1, h - 1);
+            g2.dispose();
+        }
+    }
+
+    private void pasangPilRanap(final javax.swing.JToggleButton t) {
+        // Penanda supaya aman dipanggil dua kali - tanpa ini tiap pemanggilan
+        // menambah satu listener baru.
+        if (Boolean.TRUE.equals(t.getClientProperty("pilRanap"))) {
+            return;
+        }
+        t.putClientProperty("pilRanap", Boolean.TRUE);
+        t.setOpaque(true);
+        t.setContentAreaFilled(true);
+        t.setFocusPainted(false);
+        // FlatLaf memakai nilai default UI saat melukis JToggleButton; latar
+        // normal dikunci di level style agar tidak kembali abu-abu.
+        t.putClientProperty("FlatLaf.style", "background: #FFFFFF; disabledBackground: #FFFFFF;");
+        // WAJIB dan harus SESUDAH UI terpasang: installDefaults() mematikan
+        // borderPainted, sehingga border tetap mengubah insets tapi TIDAK
+        // PERNAH dilukis - pil terlihat seperti tombol biasa yang spasinya lega.
+        t.setBorderPainted(true);
+        t.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        t.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        final BorderPilRanap bd = new BorderPilRanap();
+        t.setBorder(bd);
+        java.awt.Dimension ukuran = t.getPreferredSize();
+        t.setPreferredSize(new java.awt.Dimension(ukuran.width, 26));
+        warnaiPilRanap(t, bd, false);
+        // itemStateChanged, bukan actionPerformed: anggota ButtonGroup yang
+        // TER-DESELEKSI tidak pernah memancarkan action, jadi pil lama akan
+        // tertinggal menyala kalau dipantau lewat action.
+        t.addItemListener(new java.awt.event.ItemListener() {
+            @Override
+            public void itemStateChanged(java.awt.event.ItemEvent e) {
+                warnaiPilRanap(t, bd, false);
+                // Hanya dua pil anamnesis yang menulis ke ComboBox GEN Anamnesis.
+                // Pil Tidak/Ya pernafasan memakai sumber CekBox masing-masing.
+                if (t.isSelected() && (t == pilAutoanamnesis || t == pilAlloanamnesis)) {
+                    sinkronComboDariPilRanap();
+                }
+            }
+        });
+        t.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) { warnaiPilRanap(t, bd, true); }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) { warnaiPilRanap(t, bd, false); }
+        });
+    }
+
+    private void warnaiPilRanap(javax.swing.JToggleButton t, BorderPilRanap bd, boolean hover) {
+        if (t.isSelected()) {
+            t.setForeground(widget.ThemeConfig.PRIMARY);
+            t.setBackground(PIL_PILIH_BG_RANAP);
+            bd.setGaris(widget.ThemeConfig.PRIMARY);
+        } else if (hover) {
+            t.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+            t.setBackground(PIL_HOVER_BG_RANAP);
+            bd.setGaris(PIL_GARIS_RANAP);
+        } else {
+            t.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+            t.setBackground(java.awt.Color.WHITE);
+            bd.setGaris(PIL_GARIS_RANAP);
+        }
+        t.repaint();
+    }
+
+    /** Pil dipilih -> tulis ke combo Anamnesis (GEN) yang jadi sumber data. */
+    private void sinkronComboDariPilRanap() {
+        if (sedangSinkronPilAnamnesis) {
+            return;
+        }
+        sedangSinkronPilAnamnesis = true;
+        try {
+            Anamnesis.setSelectedItem(pilAlloanamnesis.isSelected() ? "Alloanamnesis" : "Autoanamnesis");
+        } finally {
+            sedangSinkronPilAnamnesis = false;
+        }
+    }
+
+    /** Combo Anamnesis berubah (mis. saat record dimuat) -> pil menyesuaikan. */
+    private void sinkronPilDariComboRanap() {
+        if (sedangSinkronPilAnamnesis || pilAutoanamnesis == null) {
+            return;
+        }
+        sedangSinkronPilAnamnesis = true;
+        try {
+            boolean allo = String.valueOf(Anamnesis.getSelectedItem()).toLowerCase().contains("allo");
+            pilAlloanamnesis.setSelected(allo);
+            pilAutoanamnesis.setSelected(!allo);
+        } finally {
+            sedangSinkronPilAnamnesis = false;
+        }
+    }
+
+    private widget.PanelBiasa buatPilAnamnesisRanap() {
+        widget.PanelBiasa wadah = panelKosongRanap();
+        pilAutoanamnesis = new javax.swing.JToggleButton("Autoanamnesis");
+        pilAlloanamnesis = new javax.swing.JToggleButton("Alloanamnesis");
+        javax.swing.ButtonGroup grup = new javax.swing.ButtonGroup();
+        grup.add(pilAutoanamnesis);
+        grup.add(pilAlloanamnesis);
+        pasangPilRanap(pilAutoanamnesis);
+        pasangPilRanap(pilAlloanamnesis);
+
+        java.awt.GridBagConstraints c = ranapConstraint(0, 0);
+        c.insets = new java.awt.Insets(0, 0, 0, 8);
+        wadah.add(pilAutoanamnesis, c);
+        c = ranapConstraint(1, 0);
+        wadah.add(pilAlloanamnesis, c);
+        c = ranapConstraint(2, 0);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        wadah.add(javax.swing.Box.createGlue(), c);
+
+        // Combo GEN tetap terpasang sebagai sumber data, hanya disembunyikan.
+        reparentKeRanap(Anamnesis);
+        Anamnesis.setVisible(false);
+        c = ranapConstraint(3, 0);
+        wadah.add(Anamnesis, c);
+        Anamnesis.addItemListener(new java.awt.event.ItemListener() {
+            @Override
+            public void itemStateChanged(java.awt.event.ItemEvent e) {
+                if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+                    sinkronPilDariComboRanap();
+                }
+            }
+        });
+        sinkronPilDariComboRanap();
+        return wadah;
+    }
+
+    /** Textarea berbingkai kotak sesuai handoff, dibungkus scroll. */
+    private widget.ScrollPane buatAreaRanap(widget.TextArea area, String placeholder, int tinggi) {
+        reparentKeRanap(area);
+        area.setOpaque(true);
+        area.setBackground(java.awt.Color.WHITE);
+        area.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setPlaceholder(placeholder);
+        widget.ScrollPane scroll = new widget.ScrollPane();
+        scroll.setViewportView(area);
+        scroll.setBorder(javax.swing.BorderFactory.createLineBorder(
+                new java.awt.Color(0xCF, 0xD3, 0xCE)));
+        scroll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setPreferredSize(new java.awt.Dimension(430, tinggi));
+        scroll.getViewport().setOpaque(true);
+        scroll.getViewport().setBackground(java.awt.Color.WHITE);
+        return scroll;
+    }
+
+    private void bangunSeksiAlasanMasukRanap() {
+        final String judul = "Alasan Masuk Rumah Sakit";
+        widget.PanelBiasa panel = panelKosongRanap();
+        int row = tambahBarisJudulRanap(panel, 0, judul);
+
+        row = tambahBarisFieldRanap(panel, row, "Cara anamnesis *", buatPilAnamnesisRanap());
+        gayaFieldAlergiRanap(txtNamaKeluargaAnamnesis);
+        row = tambahBarisFieldRanap(panel, row, "Nama keluarga", txtNamaKeluargaAnamnesis);
+        gayaFieldAlergiRanap(txtHubunganAnamnesis);
+        row = tambahBarisFieldRanap(panel, row, "Hubungan dengan pasien", txtHubunganAnamnesis);
+        // KetAnamnesis tidak ada di mockup, tetapi ikut ditulis ke DB dan kolom
+        // tabel lalu dibaca balik - kalau disembunyikan, nilainya tersimpan tapi
+        // tidak bisa diisi pengguna (regresi yang sama dengan Pengkaji/DPJP).
+        gayaFieldAlergiRanap(KetAnamnesis);
+        row = tambahBarisFieldRanap(panel, row, "Keterangan anamnesis", KetAnamnesis);
+
+        row = tambahBarisFieldRanap(panel, row, "Keluhan utama *",
+                buatAreaRanap(KeluhanUtama, "Keluhan yang membawa pasien dirawat", 52));
+        // RPS + scrollPane1 GEN: objeknya TIDAK diganti karena
+        // Valid.textKosong(RPS,...) memfokuskannya saat validasi simpan.
+        reparentKeRanap(RPS);
+        RPS.setOpaque(true);
+        RPS.setBackground(java.awt.Color.WHITE);
+        RPS.setPlaceholder("Kronologi keluhan sampai masuk rumah sakit");
+        reparentKeRanap(scrollPane1);
+        scrollPane1.setViewportView(RPS);
+        scrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(
+                new java.awt.Color(0xCF, 0xD3, 0xCE)));
+        scrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane1.setPreferredSize(new java.awt.Dimension(430, 60));
+        scrollPane1.getViewport().setOpaque(true);
+        scrollPane1.getViewport().setBackground(java.awt.Color.WHITE);
+        row = tambahBarisFieldRanap(panel, row, "Riwayat penyakit sekarang *", scrollPane1);
+
+        java.awt.GridBagConstraints c = ranapConstraint(0, row);
+        c.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        c.weighty = 1.0;
+        c.fill = java.awt.GridBagConstraints.BOTH;
+        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        panel.add(javax.swing.Box.createGlue(), c);
+        daftarkanSeksiRanap(judul, panel);
+    }
+
+    private void bangunSeksiTandaVitalRanap() {
+        final String judul = "Tanda Vital dan Kesadaran";
+        widget.PanelBiasa panel = panelKosongRanap();
+        int row = tambahBarisJudulRanap(panel, 0, judul);
+        row = tambahBarisFieldRanap(panel, row, "Tingkat kesadaran", TingkatKesadaran);
+        row = tambahBarisFieldRanap(panel, row, "Lingkar lengan atas (cm)", LLA);
+        row = tambahBarisFieldRanap(panel, row, "GCS — Eye (E)", GCSE);
+        row = tambahBarisFieldRanap(panel, row, "GCS — Motor (M)", GCSM);
+        row = tambahBarisFieldRanap(panel, row, "GCS — Verbal (V)", GCSV);
+        row = tambahBarisFieldRanap(panel, row, "Tekanan darah (mmHg)", TD);
+        row = tambahBarisFieldRanap(panel, row, "Nadi (x/menit)", Nadi);
+        row = tambahBarisFieldRanap(panel, row, "Frekuensi nafas (x/menit)", RR);
+        row = tambahBarisFieldRanap(panel, row, "Suhu (°C)", Suhu);
+        row = tambahBarisFieldRanap(panel, row, "Saturasi oksigen — SpO2 (%)", SpO2);
+        row = tambahBarisFieldRanap(panel, row, "Berat badan (kg)", BB);
+        row = tambahBarisFieldRanap(panel, row, "Tinggi badan (cm)", TB);
+        daftarkanSeksiRanap(judul, panel);
+    }
+
+    private void bangunSemuaSeksiRanap() {
+        seksiRanap.clear();
+        bangunSeksiAlergiRanap();
+        bangunSeksiAlasanMasukRanap();
+        bangunSeksiPanelLamaRanap("Riwayat Kesehatan", panelRiwayatKesehatan);
+        bangunSeksiTandaVitalRanap();
+        bangunSeksiPernafasanRanap();
+        bangunSeksiRanap("Status Cardiovaskuler", "");
+        bangunSeksiRanap("Fungsi Gastrointestinal", "");
+        bangunSeksiRanap("Fungsi Perkemihan", "");
+        bangunSeksiRanap("Status Neurosensori", "Pendengaran, penglihatan, wicara, orientasi, memori, konsentrasi");
+        bangunSeksiRanap("Fungsi Ekstremitas", "");
+        bangunSeksiRanap("Kulit dan Kelamin", "");
+        bangunSeksiRanap("Status Psiko-Sosial-Ekonomi dan Spiritual", "Menggantikan blok riwayat psikologis lama");
+        bangunSeksiRanap("Penapisan Nyeri", "P · Q · R · S · T sebagai isian bebas sesuai formulir fisik");
+        bangunSeksiRanap("Status Fungsional", "Menggantikan skala Morse dan Sydney pada form lama");
+        bangunSeksiRanap("Status Reproduksi dan Skala Branden", "Bagian baru — sebelumnya tidak ada di form maupun tabel");
+        bangunSeksiRanap("Kebutuhan Edukasi", "Bahasa, cara belajar, hambatan, pendidikan, dan topik");
+        bangunSeksiRanap("Perencanaan Pulang", "Tujuh komponen tetap plus satu baris yang namanya diketik sendiri");
+        bangunSeksiRanap("Data Penunjang", "Empat baris sesuai formulir cetak");
+    }
+
+    private void kelompokkanHalamanRanap() {
+        halamanRanap.clear();
+        for (SeksiRanap s : seksiRanap) {
+            if (s.panel == null) {
+                continue;
+            }
+            HalamanRanap h = new HalamanRanap(s.judul);
+            h.anggota.add(s);
+            halamanRanap.add(h);
+        }
+    }
+
+    /** Top bar RM19 sesuai handoff: judul, badge kode formulir, dan nama rumah sakit. */
+    private widget.PanelBiasa buatBannerRanap() {
+        TNoRw.setVisible(false);
+        TNoRM.setVisible(false);
+        TPasien.setVisible(false);
+        widget.PanelBiasa banner = new widget.PanelBiasa();
+        latarSolidRanap(banner, new java.awt.Color(0x12, 0x3C, 0x3A));
+        banner.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 20, 0, 20));
+        banner.setLayout(new java.awt.GridBagLayout());
+        banner.setPreferredSize(new java.awt.Dimension(10, 34));
+
+        widget.Label judul = new widget.Label();
+        judul.setText("Pengkajian Awal Keperawatan Rawat Inap — Umum");
+        judul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        judul.setForeground(new java.awt.Color(0xDF, 0xE9, 0xE6));
+
+        widget.Label kode = new widget.Label();
+        kode.setText("RM 19");
+        kode.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        kode.setFont(new java.awt.Font("Monospaced", java.awt.Font.BOLD, 10));
+        kode.setForeground(new java.awt.Color(0x8F, 0xB5, 0xAE));
+        kode.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0x2C, 0x5A, 0x56)),
+                javax.swing.BorderFactory.createEmptyBorder(1, 6, 1, 6)));
+
+        widget.Label rumahSakit = new widget.Label();
+        rumahSakit.setText("RSUD Demang Sepulau Raya");
+        rumahSakit.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        rumahSakit.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+        rumahSakit.setForeground(new java.awt.Color(0x8F, 0xB5, 0xAE));
+
+        java.awt.GridBagConstraints c = ranapConstraint(0, 0);
+        c.anchor = java.awt.GridBagConstraints.WEST;
+        c.insets = new java.awt.Insets(0, 0, 0, 10);
+        banner.add(judul, c);
+        c = ranapConstraint(1, 0);
+        c.anchor = java.awt.GridBagConstraints.WEST;
+        banner.add(kode, c);
+        c = ranapConstraint(2, 0);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        banner.add(javax.swing.Box.createHorizontalGlue(), c);
+        c = ranapConstraint(3, 0);
+        c.anchor = java.awt.GridBagConstraints.EAST;
+        banner.add(rumahSakit, c);
+        return banner;
+    }
+
+    /** Kartu identitas pasien terkunci pada bagian teratas rail navigasi RM19. */
+    private widget.PanelBiasa buatKartuIdentitasRanap() {
+        widget.PanelBiasa kartu = new widget.PanelBiasa();
+        latarSolidRanap(kartu, new java.awt.Color(0xF7, 0xF8, 0xF5));
+        kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xE0, 0xE2, 0xDD)),
+                javax.swing.BorderFactory.createEmptyBorder(10, 12, 10, 12)));
+        kartu.setLayout(new java.awt.GridBagLayout());
+        kartu.setPreferredSize(new java.awt.Dimension(262, 143));
+
+        widget.Label judul = new widget.Label();
+        judul.setText("IDENTITAS PASIEN");
+        judul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+        judul.setForeground(new java.awt.Color(0x8B, 0x92, 0x8D));
+
+        widget.Label terkunci = new widget.Label();
+        terkunci.setText("TERKUNCI");
+        terkunci.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        terkunci.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 9));
+        terkunci.setForeground(new java.awt.Color(0x7B, 0x82, 0x7D));
+        terkunci.setOpaque(true);
+        terkunci.setBackground(new java.awt.Color(0xE8, 0xEA, 0xE5));
+        terkunci.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 6, 2, 6));
+
+        javax.swing.JPanel barisAtas = new javax.swing.JPanel(new java.awt.BorderLayout());
+        barisAtas.setOpaque(false);
+        barisAtas.add(judul, java.awt.BorderLayout.WEST);
+        barisAtas.add(terkunci, java.awt.BorderLayout.EAST);
+
+        // Avatar bulat sesuai mockup: label melukis oval #e3ece9 sendiri lalu super
+        // menggambar teks inisial di atasnya (opaque=false agar tak ada kotak).
+        lblKartuInisialRanap = new widget.Label() {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
+                        java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new java.awt.Color(0xE3, 0xEC, 0xE9));
+                g2.fillOval(0, 0, getWidth() - 1, getHeight() - 1);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        lblKartuInisialRanap.setText("—");
+        lblKartuInisialRanap.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblKartuInisialRanap.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
+        lblKartuInisialRanap.setOpaque(false);
+        lblKartuInisialRanap.setForeground(new java.awt.Color(0x0D, 0x7A, 0x70));
+        lblKartuInisialRanap.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
+        lblKartuInisialRanap.setPreferredSize(new java.awt.Dimension(42, 42));
+        lblKartuInisialRanap.setBorder(null);
+
+        lblKartuNamaRanap = new widget.Label();
+        lblKartuNamaRanap.setText("—");
+        lblKartuNamaRanap.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuNamaRanap.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
+        lblKartuNamaRanap.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+
+        lblKartuInfoRanap = new widget.Label();
+        lblKartuInfoRanap.setText("—");
+        lblKartuInfoRanap.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuInfoRanap.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        lblKartuInfoRanap.setForeground(new java.awt.Color(0x6C, 0x73, 0x6E));
+
+        javax.swing.JPanel namaDanInfo = new javax.swing.JPanel();
+        namaDanInfo.setOpaque(false);
+        namaDanInfo.setLayout(new javax.swing.BoxLayout(namaDanInfo, javax.swing.BoxLayout.Y_AXIS));
+        namaDanInfo.add(lblKartuNamaRanap);
+        namaDanInfo.add(javax.swing.Box.createVerticalStrut(2));
+        namaDanInfo.add(lblKartuInfoRanap);
+
+        javax.swing.JPanel identitasUtama = new javax.swing.JPanel(new java.awt.BorderLayout(10, 0));
+        identitasUtama.setOpaque(false);
+        identitasUtama.add(lblKartuInisialRanap, java.awt.BorderLayout.WEST);
+        identitasUtama.add(namaDanInfo, java.awt.BorderLayout.CENTER);
+
+        lblValRMRanap = new widget.Label();
+        lblValRawatRanap = new widget.Label();
+        lblValLokasiRanap = new widget.Label();
+        lblValRMRanap.setText("—");
+        lblValRawatRanap.setText("—");
+        lblValLokasiRanap.setText("—");
+
+        javax.swing.JPanel nomor = new javax.swing.JPanel(new java.awt.GridLayout(3, 1, 0, 2));
+        nomor.setOpaque(false);
+        nomor.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0,
+                        new java.awt.Color(0xE4, 0xE6, 0xE2)),
+                javax.swing.BorderFactory.createEmptyBorder(6, 0, 0, 0)));
+        nomor.add(buatBarisNomorRanap("No. RM", lblValRMRanap));
+        nomor.add(buatBarisNomorRanap("No. Rawat", lblValRawatRanap));
+        nomor.add(buatBarisNomorRanap("Lokasi", lblValLokasiRanap));
+
+        java.awt.GridBagConstraints c = ranapConstraint(0, 0);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        kartu.add(barisAtas, c);
+        c = ranapConstraint(0, 1);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(8, 0, 8, 0);
+        kartu.add(identitasUtama, c);
+        c = ranapConstraint(0, 2);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        kartu.add(nomor, c);
+
+        sinkronKartuIdentitasRanap();
+        return kartu;
+    }
+
+    private javax.swing.JPanel buatBarisNomorRanap(String teks, widget.Label nilai) {
+        javax.swing.JPanel baris = new javax.swing.JPanel(new java.awt.BorderLayout(10, 0));
+        baris.setOpaque(false);
+        widget.Label label = new widget.Label();
+        label.setText(teks);
+        label.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 11));
+        label.setForeground(new java.awt.Color(0x9A, 0xA1, 0x9C));
+        nilai.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        nilai.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 11));
+        nilai.setForeground(new java.awt.Color(0x5D, 0x64, 0x5F));
+        baris.add(label, java.awt.BorderLayout.WEST);
+        baris.add(nilai, java.awt.BorderLayout.EAST);
+        return baris;
+    }
+
+    private void sinkronKartuIdentitasRanap() {
+        if (lblKartuNamaRanap == null) {
+            return;
+        }
+        String nama = TPasien.getText().trim();
+        lblKartuNamaRanap.setText(nama.isEmpty() ? "—" : nama);
+        StringBuilder inisial = new StringBuilder();
+        for (String bagian : nama.split("\\s+")) {
+            if (!bagian.isEmpty() && inisial.length() < 2) {
+                inisial.append(Character.toUpperCase(bagian.charAt(0)));
+            }
+        }
+        lblKartuInisialRanap.setText(inisial.length() == 0 ? "—" : inisial.toString());
+
+        String jkMentah = Jk.getText().trim();
+        String jkTampil;
+        if ("L".equalsIgnoreCase(jkMentah) || jkMentah.toLowerCase().startsWith("laki")) {
+            jkTampil = "Laki-Laki";
+        } else if ("P".equalsIgnoreCase(jkMentah) || jkMentah.toLowerCase().startsWith("perempuan")) {
+            jkTampil = "Perempuan";
+        } else {
+            jkTampil = jkMentah.isEmpty() ? "—" : jkMentah;
+        }
+        String umur = umurPasienRanap();
+        lblKartuInfoRanap.setText(jkTampil + (umur.isEmpty() ? "" : " · " + umur));
+        lblValRMRanap.setText(TNoRM.getText().trim().isEmpty() ? "—" : TNoRM.getText().trim());
+        lblValRawatRanap.setText(TNoRw.getText().trim().isEmpty() ? "—" : TNoRw.getText().trim());
+    }
+
+    private String umurPasienRanap() {
+        try {
+            String lahir = TglLahir.getText().trim();
+            if (lahir.length() < 10) {
+                return "";
+            }
+            java.time.LocalDate tanggalLahir = java.time.LocalDate.parse(lahir.substring(0, 10));
+            java.time.LocalDate tanggalAsesmen;
+            try {
+                tanggalAsesmen = java.time.LocalDate.parse(
+                        TglAsuhan.getSelectedItem().toString().substring(0, 10),
+                        java.time.format.DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            } catch (Exception e) {
+                tanggalAsesmen = java.time.LocalDate.now();
+            }
+            if (tanggalLahir.isAfter(tanggalAsesmen)) {
+                return "";
+            }
+            java.time.Period usia = java.time.Period.between(tanggalLahir, tanggalAsesmen);
+            StringBuilder tampil = new StringBuilder();
+            if (usia.getYears() > 0) {
+                tampil.append(usia.getYears()).append(" Th");
+            }
+            if (usia.getMonths() > 0) {
+                if (tampil.length() > 0) tampil.append(" ");
+                tampil.append(usia.getMonths()).append(" Bl");
+            }
+            if (tampil.length() == 0) {
+                tampil.append(usia.getDays()).append(" Hr");
+            }
+            return tampil.toString();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    /** Label kecil di atas field, pola kotak header handoff. */
+    private javax.swing.JPanel buatKotakHeaderRanap(String teks, java.awt.Component field) {
+        javax.swing.JPanel kotak = new javax.swing.JPanel(new java.awt.BorderLayout(0, 4));
+        kotak.setOpaque(false);
+        widget.Label label = new widget.Label();
+        label.setText(teks);
+        label.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+        label.setForeground(new java.awt.Color(0x8B, 0x92, 0x8D));
+        kotak.add(label, java.awt.BorderLayout.NORTH);
+        kotak.add(field, java.awt.BorderLayout.CENTER);
+        return kotak;
+    }
+
+    /** Pasangan [nama master][tombol cari] - nilai HANYA dari dialog master. */
+    private javax.swing.JPanel buatLookupHeaderRanap(widget.TextBox nama, widget.Button tombol) {
+        reparentKeRanap(nama);
+        reparentKeRanap(tombol);
+        gayaFieldHeaderRanap(nama);
+        // Aturan baku: petugas/dokter dipilih dari master, tidak pernah diketik.
+        nama.setEditable(false);
+        tombol.setPreferredSize(new java.awt.Dimension(28, 26));
+        tombol.setToolTipText("Cari dari data master");
+        javax.swing.JPanel baris = new javax.swing.JPanel(new java.awt.BorderLayout(4, 0));
+        baris.setOpaque(false);
+        baris.add(nama, java.awt.BorderLayout.CENTER);
+        baris.add(tombol, java.awt.BorderLayout.EAST);
+        return baris;
+    }
+
+    /** Field header bersudut kotak sesuai handoff (border #cfd3ce), bukan glass bulat. */
+    private void gayaFieldHeaderRanap(javax.swing.JComponent field) {
+        field.putClientProperty("ModernStyle.active", Boolean.TRUE);
+        field.putClientProperty("JComponent.roundRect", Boolean.FALSE);
+        field.putClientProperty("Component.arc", 0);
+        field.setOpaque(true);
+        field.setPreferredSize(new java.awt.Dimension(150, 26));
+        field.setMinimumSize(new java.awt.Dimension(90, 26));
+        field.setBorder(javax.swing.BorderFactory.createLineBorder(
+                new java.awt.Color(0xCF, 0xD3, 0xCE)));
+    }
+
+    /**
+     * Baris header form: kartu identitas pasien di kiri, field khusus RM19 di kanan.
+     * Komponen GEN (NmPetugas/NmPetugas2/NmDokter/TglAsuhan) ter-orphan oleh
+     * FormInput.removeAll() di susunHalamanRanap(), jadi dipasang ulang di sini -
+     * tanpa itu pengkaji/DPJP/tanggal ikut tersimpan tapi tak bisa diisi pengguna.
+     */
+    private widget.PanelBiasa buatHeaderPasienRanap() {
+        widget.PanelBiasa header = new widget.PanelBiasa();
+        latarSolidRanap(header, widget.ThemeConfig.SURFACE);
+        header.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0,
+                        new java.awt.Color(0xCF, 0xD3, 0xCE)),
+                javax.swing.BorderFactory.createEmptyBorder(12, 20, 12, 20)));
+        header.setLayout(new java.awt.GridBagLayout());
+
+        widget.PanelBiasa grid = panelKosongRanap();
+        gayaFieldHeaderRanap(TglAsuhan);
+        reparentKeRanap(TglAsuhan);
+        java.awt.Component[] sel = {
+            buatKotakHeaderRanap("PENGKAJI 1", buatLookupHeaderRanap(NmPetugas, BtnPetugas)),
+            buatKotakHeaderRanap("PENGKAJI 2", buatLookupHeaderRanap(NmPetugas2, BtnPetugas2)),
+            buatKotakHeaderRanap("DOKTER PENANGGUNG JAWAB (DPJP)", buatLookupHeaderRanap(NmDokter, BtnDPJP)),
+            buatKotakHeaderRanap("TANGGAL & JAM PENGKAJIAN", TglAsuhan)
+        };
+        for (int i = 0; i < sel.length; i++) {
+            java.awt.GridBagConstraints g = ranapConstraint(i % 2, i / 2);
+            g.weightx = 1.0;
+            g.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            g.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            g.insets = new java.awt.Insets(i / 2 == 0 ? 0 : 10, i % 2 == 0 ? 0 : 16, 0, 0);
+            grid.add(sel[i], g);
+        }
+
+        java.awt.GridBagConstraints c = ranapConstraint(0, 0);
+        c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        c.fill = java.awt.GridBagConstraints.VERTICAL;
+        c.insets = new java.awt.Insets(0, 0, 0, 18);
+        header.add(buatKartuIdentitasRanap(), c);
+        c = ranapConstraint(1, 0);
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        header.add(grid, c);
+
+        pasangSinkronKartuRanap();
+        return header;
+    }
+
+    /** Kartu identitas ikut berubah saat isRawat() mengisi field sumber tersembunyi. */
+    private void pasangSinkronKartuRanap() {
+        javax.swing.event.DocumentListener pemantau = new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) { sinkronKartuIdentitasRanap(); }
+            @Override
+            public void removeUpdate(DocumentEvent e) { sinkronKartuIdentitasRanap(); }
+            @Override
+            public void changedUpdate(DocumentEvent e) { sinkronKartuIdentitasRanap(); }
+        };
+        TNoRw.getDocument().addDocumentListener(pemantau);
+        TNoRM.getDocument().addDocumentListener(pemantau);
+        TPasien.getDocument().addDocumentListener(pemantau);
+        Jk.getDocument().addDocumentListener(pemantau);
+        TglLahir.getDocument().addDocumentListener(pemantau);
+    }
+
+    private void susunHalamanRanap() {
+        FormInput.removeAll();
+        FormInput.setLayout(new java.awt.GridBagLayout());
+        latarRanap(FormInput, widget.ThemeConfig.BACKGROUND);
+        FormInput.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 14, 12, 14));
+        FormInput.setPreferredSize(null);
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx = 0;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.anchor = java.awt.GridBagConstraints.NORTH;
+        int gy = 0;
+        for (int i = 0; i < halamanRanap.size(); i++) {
+            HalamanRanap h = halamanRanap.get(i);
+            buatHalamanRanap(h, i);
+            c.gridy = gy++;
+            c.insets = new java.awt.Insets(i == 0 ? 0 : 12, 0, 0, 0);
+            FormInput.add(h.panel, c);
+        }
+        c.gridy = gy;
+        c.weighty = 1.0;
+        c.fill = java.awt.GridBagConstraints.BOTH;
+        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        FormInput.add(javax.swing.Box.createGlue(), c);
+        FormInput.revalidate();
+        FormInput.repaint();
+    }
+
+    private void buatHalamanRanap(HalamanRanap h, int idx) {
+        widget.PanelBiasa kartu = new widget.PanelBiasa();
+        latarRanap(kartu, widget.ThemeConfig.SURFACE);
+        kartu.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT));
+        kartu.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        kartu.add(buatStripHalamanRanap(h, idx), c);
+        c.gridy = 1;
+        c.insets = new java.awt.Insets(0, 12, 10, 12);
+        kartu.add(h.anggota.get(0).panel, c);
+        c.gridy = 2;
+        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        kartu.add(buatNavigasiBawahRanap(idx), c);
+        h.anggota.get(0).strip.setVisible(false);
+        h.panel = kartu;
+    }
+
+    private widget.PanelBiasa buatStripHalamanRanap(HalamanRanap h, int idx) {
+        widget.PanelBiasa strip = new widget.PanelBiasa();
+        latarRanap(strip, widget.ThemeConfig.SURFACE_ALT);
+        strip.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, widget.ThemeConfig.BORDER_SOFT));
+        strip.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 12, 10));
+        widget.Label badge = new widget.Label();
+        badge.setText(String.valueOf(idx + 1));
+        badge.setOpaque(true);
+        badge.setBackground(widget.ThemeConfig.PRIMARY);
+        badge.setForeground(java.awt.Color.WHITE);
+        badge.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        badge.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        badge.setPreferredSize(new java.awt.Dimension(26, 26));
+        widget.Label judul = new widget.Label();
+        judul.setText(h.judul);
+        judul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+        judul.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+        strip.add(badge);
+        strip.add(judul);
+        h.lblBadgeNomor = badge;
+        return strip;
+    }
+
+    private widget.PanelBiasa buatNavigasiBawahRanap(final int idx) {
+        widget.PanelBiasa nav = new widget.PanelBiasa();
+        latarRanap(nav, widget.ThemeConfig.SURFACE);
+        nav.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, widget.ThemeConfig.BORDER_SOFT));
+        nav.setLayout(new java.awt.BorderLayout());
+        nav.setPreferredSize(new java.awt.Dimension(10, 42));
+        widget.Button prev = new widget.Button();
+        prev.setText("‹ Sebelumnya");
+        prev.setEnabled(idx > 0);
+        prev.addActionListener((java.awt.event.ActionEvent e) -> { sorotHalamanRanap(idx - 1); keHalamanRanap(idx - 1); });
+        widget.Label posisi = new widget.Label();
+        posisi.setText("Bagian " + (idx + 1) + " dari " + halamanRanap.size());
+        posisi.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        posisi.setForeground(widget.ThemeConfig.TEXT_FAINT);
+        widget.Button next = new widget.Button();
+        next.setText("Berikutnya ›");
+        next.setEnabled(idx < halamanRanap.size() - 1);
+        next.addActionListener((java.awt.event.ActionEvent e) -> { sorotHalamanRanap(idx + 1); keHalamanRanap(idx + 1); });
+        nav.add(prev, java.awt.BorderLayout.WEST);
+        nav.add(posisi, java.awt.BorderLayout.CENTER);
+        nav.add(next, java.awt.BorderLayout.EAST);
+        return nav;
+    }
+
+    private void isiRailRanap() {
+        railRanap.removeAll();
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx = 0;
+        c.weightx = 1.0;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        int gy = 0;
+        // Kartu identitas pindah ke baris header (buatHeaderPasienRanap) - jangan
+        // dipanggil dua kali, labelnya di-new ulang tiap panggil sehingga salinan
+        // pertama jadi basi (sinkron hanya menyentuh referensi terakhir).
+        c.gridy = gy++;
+        c.insets = new java.awt.Insets(12, 12, 8, 12);
+        railRanap.add(buatKartuProgresRanap(), c);
+        String[] kepala = { "ANAMNESIS & VITAL", "PEMERIKSAAN FISIK", "PSIKOSOSIAL & RENCANA" };
+        for (int i = 0; i < halamanRanap.size(); i++) {
+            if (i == 0 || i == 4 || i == 11) {
+                widget.Label grup = new widget.Label();
+                grup.setText(i == 0 ? kepala[0] : (i == 4 ? kepala[1] : kepala[2]));
+                grup.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+                grup.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+                grup.setForeground(widget.ThemeConfig.TEXT_MUTED);
+                c.gridy = gy++;
+                c.insets = new java.awt.Insets(8, 14, 4, 12);
+                railRanap.add(grup, c);
+            }
+            c.gridy = gy++;
+            c.insets = new java.awt.Insets(0, 8, 0, 8);
+            railRanap.add(buatBarisRailRanap(i), c);
+        }
+        c.gridy = gy++;
+        c.insets = new java.awt.Insets(10, 10, 10, 10);
+        railRanap.add(buatToggleModeRanap(), c);
+        c.gridy = gy;
+        c.weighty = 1.0;
+        c.fill = java.awt.GridBagConstraints.BOTH;
+        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        railRanap.add(javax.swing.Box.createGlue(), c);
+        if (!halamanRanap.isEmpty()) {
+            halamanAktifRanap = 0;
+            terapkanModeHalamanRanap();
+            sorotHalamanRanap(0);
+        }
+    }
+
+    private widget.PanelBiasa buatKartuProgresRanap() {
+        widget.PanelBiasa kartu = new widget.PanelBiasa();
+        latarRanap(kartu, widget.ThemeConfig.SURFACE_ALT);
+        kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
+                javax.swing.BorderFactory.createEmptyBorder(10, 12, 10, 12)));
+        kartu.setLayout(new java.awt.GridBagLayout());
+        widget.Label judul = new widget.Label();
+        judul.setText("ISIAN WAJIB");
+        judul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+        judul.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lblProgresPersenRanap = new widget.Label();
+        lblProgresPersenRanap.setText("0%");
+        lblProgresPersenRanap.setFont(new java.awt.Font("Monospaced", java.awt.Font.BOLD, 15));
+        lblProgresPersenRanap.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        progresRanap = new javax.swing.JProgressBar(0, 100);
+        progresRanap.setValue(0);
+        progresRanap.setPreferredSize(new java.awt.Dimension(200, 6));
+        progresRanap.setBorder(null);
+        progresRanap.setForeground(widget.ThemeConfig.PRIMARY);
+        lblProgresHintRanap = new widget.Label();
+        lblProgresHintRanap.setText("Sesi 1 · struktur kartu sedang disusun");
+        lblProgresHintRanap.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblProgresHintRanap.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 10));
+        lblProgresHintRanap.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.gridx = 0; c.gridy = 0; c.weightx = 1.0; c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        kartu.add(judul, c);
+        c.gridx = 1; c.weightx = 0.0; c.fill = java.awt.GridBagConstraints.NONE;
+        kartu.add(lblProgresPersenRanap, c);
+        c.gridx = 0; c.gridy = 1; c.gridwidth = 2; c.weightx = 1.0; c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c.insets = new java.awt.Insets(6, 0, 0, 0);
+        kartu.add(progresRanap, c);
+        c.gridy = 2;
+        kartu.add(lblProgresHintRanap, c);
+        return kartu;
+    }
+
+    private widget.PanelBiasa buatBarisRailRanap(final int idx) {
+        final HalamanRanap h = halamanRanap.get(idx);
+        widget.PanelBiasa baris = new widget.PanelBiasa();
+        latarRanap(baris, widget.ThemeConfig.SURFACE);
+        baris.setLayout(new java.awt.BorderLayout(8, 0));
+        baris.setBorder(javax.swing.BorderFactory.createEmptyBorder(7, 9, 7, 9));
+        baris.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        widget.Label nomor = new widget.Label();
+        nomor.setText(String.format("%02d", idx + 1));
+        nomor.setPreferredSize(new java.awt.Dimension(22, 18));
+        nomor.setFont(new java.awt.Font("Monospaced", java.awt.Font.BOLD, 11));
+        nomor.setForeground(widget.ThemeConfig.TEXT_FAINT);
+        widget.Label judul = new widget.Label();
+        judul.setText(h.judul);
+        judul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        judul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        judul.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+        widget.PanelBiasa aksen = new widget.PanelBiasa();
+        latarRanap(aksen, widget.ThemeConfig.SURFACE);
+        aksen.setBorder(null);
+        aksen.setPreferredSize(new java.awt.Dimension(3, 10));
+        baris.add(aksen, java.awt.BorderLayout.WEST);
+        widget.PanelBiasa isi = new widget.PanelBiasa();
+        isi.setOpaque(false);
+        isi.setLayout(new java.awt.BorderLayout(8, 0));
+        isi.add(nomor, java.awt.BorderLayout.WEST);
+        isi.add(judul, java.awt.BorderLayout.CENTER);
+        baris.add(isi, java.awt.BorderLayout.CENTER);
+        h.baris = baris; h.aksen = aksen; h.lblNomor = nomor; h.lblJudul = judul;
+        baris.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override public void mouseClicked(java.awt.event.MouseEvent e) { sorotHalamanRanap(idx); keHalamanRanap(idx); }
+        });
+        return baris;
+    }
+
+    private widget.PanelBiasa buatToggleModeRanap() {
+        widget.PanelBiasa panel = new widget.PanelBiasa();
+        panel.setOpaque(false);
+        panel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
+        rbSatuHalamanRanap = new widget.RadioButton();
+        rbSatuHalamanRanap.setText("Satu bagian");
+        rbSemuaHalamanRanap = new widget.RadioButton();
+        rbSemuaHalamanRanap.setText("Semua bagian");
+        bgModeHalamanRanap = new javax.swing.ButtonGroup();
+        bgModeHalamanRanap.add(rbSatuHalamanRanap);
+        bgModeHalamanRanap.add(rbSemuaHalamanRanap);
+        rbSatuHalamanRanap.setSelected(satuHalamanRanap);
+        rbSemuaHalamanRanap.setSelected(!satuHalamanRanap);
+        java.awt.event.ActionListener ubah = (java.awt.event.ActionEvent e) -> {
+            satuHalamanRanap = rbSatuHalamanRanap.isSelected();
+            terapkanModeHalamanRanap();
+            keHalamanRanap(Math.max(0, halamanAktifRanap));
+        };
+        rbSatuHalamanRanap.addActionListener(ubah);
+        rbSemuaHalamanRanap.addActionListener(ubah);
+        panel.add(rbSatuHalamanRanap);
+        panel.add(rbSemuaHalamanRanap);
+        return panel;
+    }
+
+    private void sorotHalamanRanap(int idx) {
+        if (idx < 0 || idx >= halamanRanap.size()) return;
+        for (HalamanRanap h : halamanRanap) {
+            if (h.baris == null) continue;
+            latarRanap(h.baris, widget.ThemeConfig.SURFACE);
+            latarRanap(h.aksen, widget.ThemeConfig.SURFACE);
+            h.lblJudul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+            h.lblJudul.setForeground(widget.ThemeConfig.TEXT_NORMAL);
+            h.lblNomor.setForeground(widget.ThemeConfig.TEXT_FAINT);
+        }
+        halamanAktifRanap = idx;
+        HalamanRanap aktif = halamanRanap.get(idx);
+        latarRanap(aktif.baris, widget.ThemeConfig.SURFACE_ALT);
+        latarRanap(aktif.aksen, widget.ThemeConfig.PRIMARY);
+        aktif.lblJudul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+        aktif.lblJudul.setForeground(widget.ThemeConfig.PRIMARY);
+        aktif.lblNomor.setForeground(widget.ThemeConfig.PRIMARY);
+        railRanap.repaint();
+    }
+
+    private void terapkanModeHalamanRanap() {
+        int aktif = Math.max(0, halamanAktifRanap);
+        for (int i = 0; i < halamanRanap.size(); i++) {
+            if (halamanRanap.get(i).panel != null) halamanRanap.get(i).panel.setVisible(!satuHalamanRanap || i == aktif);
+        }
+        FormInput.revalidate();
+        FormInput.repaint();
+    }
+
+    private void keHalamanRanap(int idx) {
+        if (idx < 0 || idx >= halamanRanap.size()) return;
+        if (satuHalamanRanap) {
+            terapkanModeHalamanRanap();
+            scrollInput.getVerticalScrollBar().setValue(0);
+        } else if (halamanRanap.get(idx).panel != null) {
+            FormInput.scrollRectToVisible(halamanRanap.get(idx).panel.getBounds());
+        }
+    }
+
+    private void susunRangkaRanap() {
+        widget.PanelBiasa banner = buatBannerRanap();
+        railRanap = new widget.PanelBiasa();
+        latarRanap(railRanap, widget.ThemeConfig.SURFACE);
+        railRanap.setLayout(new java.awt.GridBagLayout());
+        widget.ScrollPane scrollRail = new widget.ScrollPane();
+        scrollRail.setViewportView(railRanap);
+        scrollRail.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 1, widget.ThemeConfig.BORDER_SOFT));
+        scrollRail.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollRail.setPreferredSize(new java.awt.Dimension(300, 10));
+        scrollRail.getVerticalScrollBar().setUnitIncrement(16);
+        scrollInput.setBorder(null);
+        scrollInput.getVerticalScrollBar().setUnitIncrement(16);
+        internalFrame2.removeAll();
+        internalFrame2.setLayout(new java.awt.BorderLayout());
+        internalFrame2.add(buatHeaderPasienRanap(), java.awt.BorderLayout.NORTH);
+        internalFrame2.add(scrollRail, java.awt.BorderLayout.WEST);
+        internalFrame2.add(scrollInput, java.awt.BorderLayout.CENTER);
+        isiRailRanap();
+        internalFrame2.revalidate();
+        internalFrame2.repaint();
+
+        // Top bar diletakkan di atas TabRawat (internalFrame1), bukan di dalam tab,
+        // supaya tab Input/Data Pengkajian tampil DI BAWAH top bar. TitledBorder GEN
+        // dilepas runtime agar banner menempel rapi di paling atas.
+        internalFrame1.setBorder(null);
+        internalFrame1.add(banner, java.awt.BorderLayout.PAGE_START);
+        internalFrame1.revalidate();
+        internalFrame1.repaint();
     }
 
     /** "Ya"/"Tidak" dari status centang - item Riwayat Alergi/RPD/RPK independen, boleh dicentang lebih dari satu. */
@@ -11766,10 +13335,14 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
         try {
             ps=koneksi.prepareStatement(
                     "select pasien.nm_pasien, if(pasien.jk='L','Laki-Laki','Perempuan') as jk,pasien.tgl_lahir,pasien.agama,"+
-                    "bahasa_pasien.nama_bahasa,pasien.pnd,pasien.pekerjaan,reg_periksa.tgl_registrasi,reg_periksa.jam_reg "+
+                    "bahasa_pasien.nama_bahasa,pasien.pnd,pasien.pekerjaan,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
+                    "kamar.kd_kamar,bangsal.nm_bangsal "+
                     "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join bahasa_pasien on bahasa_pasien.id=pasien.bahasa_pasien "+
-                    "where pasien.no_rkm_medis=?");
+                    "left join kamar_inap on reg_periksa.no_rawat=kamar_inap.no_rawat "+
+                    "left join kamar on kamar_inap.kd_kamar=kamar.kd_kamar "+
+                    "left join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
+                    "where pasien.no_rkm_medis=? order by kamar_inap.tgl_masuk desc, kamar_inap.jam_masuk desc limit 1");
             try {
                 ps.setString(1,TNoRM.getText());
                 rs=ps.executeQuery();
@@ -11783,6 +13356,13 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
                     PendidikanPasien.setText(rs.getString("pnd"));
                     PekerjaanPasien.setText(rs.getString("pekerjaan"));
                     TanggalRegistrasi.setText(rs.getString("tgl_registrasi")+" "+rs.getString("jam_reg"));
+                    String bangsal = rs.getString("nm_bangsal");
+                    String kdKamar = rs.getString("kd_kamar");
+                    String lokasi = (bangsal!=null?bangsal:"") + (kdKamar!=null?" ("+kdKamar+")":"");
+                    if(lblValLokasiRanap!=null){
+                        lblValLokasiRanap.setText(lokasi.trim().isEmpty()?"—":lokasi.trim());
+                    }
+                    sinkronKartuIdentitasRanap();
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);

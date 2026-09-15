@@ -1034,6 +1034,7 @@ import rekammedis.RMPenilaianAwalMedisRalanRehabMedik;
 import rekammedis.RMPenilaianAwalMedisRalanTHT;
 import rekammedis.RMPenilaianAwalMedisRalanUrologi;
 import rekammedis.RMAsesmenMedisRanap;
+import rekammedis.RMAsesmenMedisRanap20_1;
 import rekammedis.RMRingkasanPasienMasukKeluar;
 import rekammedis.RMAsesmenPendidikanPasien;
 import rekammedis.RMResumeKeperawatanKebidanan;
@@ -1273,8 +1274,7 @@ public class frmUtama extends javax.swing.JFrame {
         //this.setSize(screen.width,screen.height);
         edAdmin.setDocument(new batasInput((byte)100).getKata(edAdmin));
         edPwd.setDocument(new batasInput((byte)100).getKata(edPwd));
-        DlgLogin.setSize(420,660);
-        DlgLogin.setLocationRelativeTo(null);
+        initModernLoginCard();
         jMenu1.setOpaque(false);
         jMenu5.setOpaque(false);
         jMenu6.setOpaque(false);
@@ -8564,10 +8564,14 @@ public class frmUtama extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnCancelActionPerformed
 
     private void chkTampilkanPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkTampilkanPasswordActionPerformed
-        edPwd.setEchoChar(chkTampilkanPassword.isSelected() ? (char)0 : '\u25cf');
-        // Ikon mata di ujung kanan field: mata terbuka saat password
-        // tersembunyi (ajakan menampilkan), mata tertutup saat tampil.
-        edPwd.putClientProperty("JTextField.trailingIcon", ikonMata(!chkTampilkanPassword.isSelected()));
+        boolean tampil = chkTampilkanPassword.isSelected();
+        edPwd.setEchoChar(tampil ? (char)0 : '\u25cf');
+        try {
+            String svg = tampil ? "/picture/icons/login/eye_off_outline.svg" : "/picture/icons/login/eye_outline.svg";
+            edPwd.putClientProperty("JTextField.trailingIcon", widget.SvgIconLoader.load(svg, 16, "#64748B"));
+        } catch (Exception e) {
+            edPwd.putClientProperty("JTextField.trailingIcon", ikonMata(!tampil));
+        }
     }//GEN-LAST:event_chkTampilkanPasswordActionPerformed
 
     private void lblLupaPasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLupaPasswordMouseClicked
@@ -8616,6 +8620,7 @@ public class frmUtama extends javax.swing.JFrame {
                 break;
             case "Log In":
                 isTutup();
+                DlgLogin.setLocationRelativeTo(this);
                 DlgLogin.setVisible(true);
                 edAdmin.requestFocus();
                 break;
@@ -18464,6 +18469,20 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         this.setCursor(Cursor.getDefaultCursor());
     }
 
+    private void btnAsesmenMedisRanap20_1ActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        RMAsesmenMedisRanap20_1 aplikasi=new RMAsesmenMedisRanap20_1(this,false);
+        aplikasi.isCek();
+        aplikasi.emptTeks();
+        aplikasi.setTampil();
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+
     private void btnPenilaianAwalMedisRanapKandunganActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
         DlgHome.dispose();
@@ -24706,7 +24725,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             btnPCRAICRAPersyaratanHarusDipenuhi,btnKirimQRTelaahFarmasiSatuSehat,btnKirimAllergiSatuSehat,btnKonsultasiPerawat,btnMappingProsedurSmartKlaimBPJS,btnMappingPenyakitSmartKlaimBPJS,btnKirimFHIRSmartKlaimBPJS,
             btnSuratPermintaanBinrohtal,btnSuratPermintaanPerlindunganDariKekerasan,btnSuratPermohonanPrivasi,btnSuratPermintaanSecondOpinion,btnSuratKeteranganBerobat,btnSuratPenolakanResusitasi,btnCatatanObservasiRuangOperasi,
             btnHasilUSGAbdomen,btnIntervensiNyeriFarmakologi,btnIntervensiNyeriNonFarmakologi,btnSuratPengajuanCutiPerawatan,btnChecklistKriteriaMasukIsolasi,btnMapingTarifTindakanRalanKPTLSatuSehat,
-            btnMapingTarifTindakanRanapKPTLSatuSehat,btnMapingTarifTindakanRadiologiKPTLSatuSehat,btnMapingTarifTindakanLabKPTLSatuSehat,btnMapingTarifTindakanOperasiKPTLSatuSehat,btnMapingTarifKamarKPTLSatuSehat,btnAsesmenMedisRanap,btnRingkasanPasienMasukKeluar,btnAsesmenPendidikanPasien,btnResumeKeperawatanKebidanan;
+            btnMapingTarifTindakanRanapKPTLSatuSehat,btnMapingTarifTindakanRadiologiKPTLSatuSehat,btnMapingTarifTindakanLabKPTLSatuSehat,btnMapingTarifTindakanOperasiKPTLSatuSehat,btnMapingTarifKamarKPTLSatuSehat,btnAsesmenMedisRanap,btnAsesmenMedisRanap20_1,btnRingkasanPasienMasukKeluar,btnAsesmenPendidikanPasien,btnResumeKeperawatanKebidanan;
     
     private javax.swing.ImageIcon skalakanIkon(java.awt.Image src, int w, int h){
         return new javax.swing.ImageIcon(src.getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH));
@@ -28812,6 +28831,8 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
 
             if(akses.getasesmen_medis_ranap()==true){
                 Panelmenu.add(btnAsesmenMedisRanap);
+                jmlmenu++;
+                Panelmenu.add(btnAsesmenMedisRanap20_1);
                 jmlmenu++;
             }
 
@@ -34849,6 +34870,8 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
 
         if(akses.getasesmen_medis_ranap()==true){
             Panelmenu.add(btnAsesmenMedisRanap);
+            jmlmenu++;
+            Panelmenu.add(btnAsesmenMedisRanap20_1);
             jmlmenu++;
         }
 
@@ -42437,6 +42460,10 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                 Panelmenu.add(btnAsesmenMedisRanap);
                 jmlmenu++;
             }
+            if(btnAsesmenMedisRanap20_1.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
+                Panelmenu.add(btnAsesmenMedisRanap20_1);
+                jmlmenu++;
+            }
         }
 
         if(akses.getringkasan_pasien_masuk_keluar()==true){
@@ -48157,6 +48184,14 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     }
 
     private void initKhanzaLanjutan() {
+        btnAsesmenMedisRanap20_1 = new widget.ButtonBig();
+        btnAsesmenMedisRanap20_1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/1360815295_medical_case.png")));
+        btnAsesmenMedisRanap20_1.setText("Asesmen Medis Ranap (RM 20-1)");
+        btnAsesmenMedisRanap20_1.setIconTextGap(0);
+        btnAsesmenMedisRanap20_1.setName("btnAsesmenMedisRanap20_1");
+        btnAsesmenMedisRanap20_1.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnAsesmenMedisRanap20_1.addActionListener(this::btnAsesmenMedisRanap20_1ActionPerformed);
+
         // Tombol RM 17-01 sengaja dibangun DI SINI, bukan di initKhanza():
         // method itu sudah mepet batas KERAS JVM 64 KB bytecode per method dan
         // sempat menabraknya saat tombol RM 20 ditambahkan (lihat PROGRESS.md).
@@ -51449,5 +51484,239 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnMapingTarifKamarKPTLSatuSehat.setName("btnMapingTarifKamarKPTLSatuSehat"); 
         btnMapingTarifKamarKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
         btnMapingTarifKamarKPTLSatuSehat.addActionListener(this::btnMapingTarifKamarKPTLSatuSehatActionPerformed);
+    }
+
+    private static class CircularLogoBadge extends javax.swing.JPanel {
+        private java.awt.Image logoImg;
+
+        public CircularLogoBadge(java.awt.Image img) {
+            this.logoImg = img;
+            setOpaque(false);
+            setPreferredSize(new java.awt.Dimension(54, 54));
+        }
+
+        @Override
+        protected void paintComponent(java.awt.Graphics g) {
+            super.paintComponent(g);
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+            g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION, java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+            int size = Math.min(getWidth(), getHeight()) - 4;
+            int x = (getWidth() - size) / 2;
+            int y = (getHeight() - size) / 2;
+
+            // Pale mint/emerald circle background (#ecfdf5)
+            g2.setColor(new java.awt.Color(236, 253, 245));
+            g2.fillOval(x, y, size, size);
+
+            // Subtle border ring (#a7f3d0)
+            g2.setColor(new java.awt.Color(167, 243, 208));
+            g2.setStroke(new java.awt.BasicStroke(1.5f));
+            g2.drawOval(x, y, size, size);
+
+            // Draw hospital logo inside
+            if (logoImg != null) {
+                java.awt.Shape oldClip = g2.getClip();
+                g2.setClip(new java.awt.geom.Ellipse2D.Double(x + 3, y + 3, size - 6, size - 6));
+                g2.drawImage(logoImg, x + 3, y + 3, size - 6, size - 6, null);
+                g2.setClip(oldClip);
+            }
+            g2.dispose();
+        }
+    }
+
+    private void initModernLoginCard() {
+        try {
+            int cardBodyW = 400;
+            int cardBodyH = 490;
+            int pad = 14;
+            int totalW = cardBodyW + (pad * 2);
+            int totalH = cardBodyH + (pad * 2);
+
+            DlgLogin.setSize(totalW, totalH);
+            DlgLogin.setLocationRelativeTo(null);
+            DlgLogin.setBackground(new java.awt.Color(0, 0, 0, 0));
+
+            pnlLoginBg.removeAll();
+            pnlLoginBg.setLayout(null);
+            pnlLoginBg.setOpaque(false);
+            pnlLoginBg.setBounds(0, 0, totalW, totalH);
+
+            pnlLoginCard.removeAll();
+            pnlLoginCard.setRadius(16);
+            pnlLoginCard.setPad(pad);
+            pnlLoginCard.setWarna(java.awt.Color.WHITE);
+            pnlLoginCard.setWarnaGaris(new java.awt.Color(226, 232, 240));
+            pnlLoginCard.setAlphaShadow(32);
+            pnlLoginCard.setBounds(0, 0, totalW, totalH);
+            pnlLoginCard.setLayout(null);
+            pnlLoginBg.add(pnlLoginCard);
+
+            // Inner content panel
+            javax.swing.JPanel content = new javax.swing.JPanel(null);
+            content.setOpaque(false);
+            content.setBounds(pad, pad, cardBodyW, cardBodyH);
+
+            // 1. HEADER
+            java.awt.Image logo = null;
+            try {
+                java.io.File f = new java.io.File("setting/logo.jpg");
+                if (!f.exists()) f = new java.io.File("setting/logo.png");
+                if (f.exists()) {
+                    logo = javax.imageio.ImageIO.read(f);
+                } else if (lblLoginLogo.getIcon() instanceof javax.swing.ImageIcon) {
+                    logo = ((javax.swing.ImageIcon) lblLoginLogo.getIcon()).getImage();
+                }
+            } catch (Exception e) {}
+
+            CircularLogoBadge badge = new CircularLogoBadge(logo);
+            badge.setBounds(24, 20, 54, 54);
+            content.add(badge);
+
+            lblLoginJudul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+            lblLoginJudul.setForeground(new java.awt.Color(100, 116, 139));
+            lblLoginJudul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            lblLoginJudul.setText("SIMRS KHANZA");
+            lblLoginJudul.setBounds(90, 18, 290, 15);
+            content.add(lblLoginJudul);
+
+            lblLoginWelcome.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 17));
+            lblLoginWelcome.setForeground(new java.awt.Color(15, 23, 42));
+            lblLoginWelcome.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            lblLoginWelcome.setText("Masuk ke Sistem");
+            lblLoginWelcome.setBounds(90, 35, 290, 24);
+            content.add(lblLoginWelcome);
+
+            lblLoginSubtitle.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+            lblLoginSubtitle.setForeground(new java.awt.Color(100, 116, 139));
+            lblLoginSubtitle.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            lblLoginSubtitle.setText("Gunakan akun pegawai RSUD Demang Sepulau Raya");
+            lblLoginSubtitle.setBounds(90, 60, 290, 16);
+            content.add(lblLoginSubtitle);
+
+            // Divider 1
+            javax.swing.JPanel div1 = new javax.swing.JPanel();
+            div1.setBackground(new java.awt.Color(241, 245, 249));
+            div1.setBounds(0, 92, cardBodyW, 1);
+            content.add(div1);
+
+            // 2. BODY FORM
+            jLabel4.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+            jLabel4.setForeground(new java.awt.Color(100, 116, 139));
+            jLabel4.setText("ID ADMIN");
+            jLabel4.setBounds(24, 112, 352, 14);
+            content.add(jLabel4);
+
+            edAdmin.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+            edAdmin.setForeground(new java.awt.Color(15, 23, 42));
+            edAdmin.setBackground(java.awt.Color.WHITE);
+            edAdmin.setBounds(24, 130, 352, 40);
+            edAdmin.putClientProperty("Component.arc", 10);
+            edAdmin.putClientProperty("JTextField.arc", 10);
+            edAdmin.putClientProperty("ModernStyle.active", Boolean.TRUE);
+            edAdmin.setBorder(javax.swing.UIManager.getBorder("TextField.border"));
+            edAdmin.putClientProperty("JTextField.placeholderText", "Masukkan ID Admin");
+            try {
+                javax.swing.Icon userIcon = widget.SvgIconLoader.load("/picture/icons/login/user_outline.svg", 16, "#64748B");
+                edAdmin.putClientProperty("JTextField.leadingIcon", userIcon);
+            } catch (Exception e) {}
+            content.add(edAdmin);
+
+            jLabel5.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+            jLabel5.setForeground(new java.awt.Color(100, 116, 139));
+            jLabel5.setText("PASSWORD");
+            jLabel5.setBounds(24, 186, 352, 14);
+            content.add(jLabel5);
+
+            edPwd.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+            edPwd.setForeground(new java.awt.Color(15, 23, 42));
+            edPwd.setBackground(java.awt.Color.WHITE);
+            edPwd.setBounds(24, 204, 352, 40);
+            edPwd.putClientProperty("Component.arc", 10);
+            edPwd.putClientProperty("JTextField.arc", 10);
+            edPwd.putClientProperty("ModernStyle.active", Boolean.TRUE);
+            edPwd.setBorder(javax.swing.UIManager.getBorder("PasswordField.border"));
+            edPwd.putClientProperty("JTextField.placeholderText", "Masukkan Password");
+            try {
+                javax.swing.Icon lockIcon = widget.SvgIconLoader.load("/picture/icons/login/lock_outline.svg", 16, "#64748B");
+                javax.swing.Icon eyeIcon = widget.SvgIconLoader.load("/picture/icons/login/eye_outline.svg", 16, "#64748B");
+                edPwd.putClientProperty("JTextField.leadingIcon", lockIcon);
+                edPwd.putClientProperty("JTextField.trailingIcon", eyeIcon);
+            } catch (Exception e) {}
+            content.add(edPwd);
+
+            // Row 3: Checkbox & Link Lupa Password
+            chkTampilkanPassword.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+            chkTampilkanPassword.setForeground(new java.awt.Color(71, 85, 105));
+            chkTampilkanPassword.setOpaque(false);
+            chkTampilkanPassword.setFocusPainted(false);
+            chkTampilkanPassword.setText("Tampilkan password");
+            chkTampilkanPassword.setBounds(22, 258, 170, 22);
+            content.add(chkTampilkanPassword);
+
+            lblLupaPassword.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
+            lblLupaPassword.setForeground(new java.awt.Color(0, 121, 107));
+            lblLupaPassword.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+            lblLupaPassword.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            lblLupaPassword.setText("Lupa password?");
+            lblLupaPassword.setBounds(224, 258, 152, 22);
+            content.add(lblLupaPassword);
+
+            // Row 4: Masuk Button
+            BtnLogin.setText("Masuk");
+            BtnLogin.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
+            BtnLogin.setForeground(java.awt.Color.WHITE);
+            BtnLogin.setBackground(new java.awt.Color(0, 91, 82));
+            BtnLogin.setBounds(24, 296, 352, 42);
+            BtnLogin.setFocusPainted(false);
+            BtnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            BtnLogin.putClientProperty("JButton.buttonType", "roundRect");
+            BtnLogin.putClientProperty("Component.arc", 10);
+            try {
+                javax.swing.Icon loginIcon = widget.SvgIconLoader.load("/picture/icons/login/login_white.svg", 16, "#FFFFFF");
+                BtnLogin.setIcon(loginIcon);
+                BtnLogin.setIconTextGap(8);
+            } catch (Exception e) {}
+            content.add(BtnLogin);
+
+            // Row 5: Batal Button
+            BtnCancel.setText("Batal");
+            BtnCancel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+            BtnCancel.setForeground(new java.awt.Color(51, 65, 85));
+            BtnCancel.setBackground(java.awt.Color.WHITE);
+            BtnCancel.setBounds(24, 348, 352, 40);
+            BtnCancel.setFocusPainted(false);
+            BtnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            BtnCancel.putClientProperty("JButton.buttonType", "roundRect");
+            BtnCancel.putClientProperty("Component.arc", 10);
+            BtnCancel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(203, 213, 225), 1, true));
+            content.add(BtnCancel);
+
+            // Divider 2
+            javax.swing.JPanel div2 = new javax.swing.JPanel();
+            div2.setBackground(new java.awt.Color(241, 245, 249));
+            div2.setBounds(0, 412, cardBodyW, 1);
+            content.add(div2);
+
+            // 3. FOOTER
+            javax.swing.JLabel lblFooterIcon = new javax.swing.JLabel();
+            lblFooterIcon.setBounds(24, 434, 16, 16);
+            try {
+                javax.swing.Icon footerLock = widget.SvgIconLoader.load("/picture/icons/login/lock_footer.svg", 14, "#94A3B8");
+                lblFooterIcon.setIcon(footerLock);
+            } catch (Exception e) {}
+            content.add(lblFooterIcon);
+
+            javax.swing.JLabel lblFooter = new javax.swing.JLabel("Seluruh percobaan masuk tercatat dalam log audit sistem.");
+            lblFooter.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+            lblFooter.setForeground(new java.awt.Color(100, 116, 139));
+            lblFooter.setBounds(46, 432, 330, 20);
+            content.add(lblFooter);
+
+            pnlLoginCard.add(content);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

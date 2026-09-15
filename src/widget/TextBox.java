@@ -87,6 +87,20 @@ public class TextBox extends TextBoxGlass {
         }
     }
 
+    @Override
+    protected void paintBorder(java.awt.Graphics g) {
+        Object arc = getClientProperty("Component.arc");
+        Object roundRect = getClientProperty("JComponent.roundRect");
+        Object modern = getClientProperty("ModernStyle.active");
+        if (arc == null && roundRect == null && !Boolean.TRUE.equals(modern)) {
+            super.paintBorder(g);
+            return;
+        }
+        if (getBorder() != null) {
+            getBorder().paintBorder(this, g, 0, 0, getWidth(), getHeight());
+        }
+    }
+
     private String placeholder = "";
 
     public void setPlaceholder(String placeholder) {

@@ -12180,8 +12180,23 @@ public class DlgKamarInap extends javax.swing.JDialog {
         mnAsesmen.addActionListener(this::MnAsesmenMedisRanapActionPerformed);
         MnPenilaianAwal.insert(mnAsesmen, 5);
 
+        // RM 20-1 - Asesmen Medis Rawat Inap (Lanjutan), disisipkan tepat di
+        // bawah RM 20 (indeks 6). Dibangun di LUAR blok GEN.
+        javax.swing.JMenuItem mnAsesmen20_1 = new javax.swing.JMenuItem();
+        mnAsesmen20_1.setBackground(new java.awt.Color(255, 255, 254));
+        mnAsesmen20_1.setFont(new java.awt.Font("Segoe UI", 0, 11));
+        mnAsesmen20_1.setForeground(new java.awt.Color(50, 50, 50));
+        mnAsesmen20_1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png")));
+        mnAsesmen20_1.setText("Asesmen Medis Ranap (RM 20-1)");
+        mnAsesmen20_1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        mnAsesmen20_1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        mnAsesmen20_1.setName("MnAsesmenMedisRanap20_1");
+        mnAsesmen20_1.setPreferredSize(new java.awt.Dimension(240, 26));
+        mnAsesmen20_1.addActionListener(this::MnAsesmenMedisRanap20_1ActionPerformed);
+        MnPenilaianAwal.insert(mnAsesmen20_1, 6);
+
         // RM 21 - Asesmen & Perencanaan Pendidikan Pasien, disisipkan tepat di
-        // bawah RM 20 (indeks 6). Dibangun di LUAR blok GEN dengan alasan yang
+        // bawah RM 20-1 (indeks 7). Dibangun di LUAR blok GEN dengan alasan yang
         // sama seperti item RM 20 di atas: seluruh MnPenilaianAwal.add(...)
         // bawaan berada di dalam initComponents() yang tidak boleh diedit tangan.
         javax.swing.JMenuItem mnPendidikan = new javax.swing.JMenuItem();
@@ -12195,10 +12210,10 @@ public class DlgKamarInap extends javax.swing.JDialog {
         mnPendidikan.setName("mnPendidikan");
         mnPendidikan.setPreferredSize(new java.awt.Dimension(230, 26));
         mnPendidikan.addActionListener(this::MnAsesmenPendidikanPasienActionPerformed);
-        MnPenilaianAwal.insert(mnPendidikan, 6);
+        MnPenilaianAwal.insert(mnPendidikan, 7);
 
         // RM 33 - Resume Keperawatan / Kebidanan, disisipkan tepat di bawah
-        // RM 21 (indeks 7). Alasan dibangun di LUAR blok GEN sama seperti dua
+        // RM 21 (indeks 8). Alasan dibangun di LUAR blok GEN sama seperti dua
         // item di atas.
         javax.swing.JMenuItem mnResumeKep = new javax.swing.JMenuItem();
         mnResumeKep.setBackground(new java.awt.Color(255, 255, 254));
@@ -12211,7 +12226,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         mnResumeKep.setName("mnResumeKep");
         mnResumeKep.setPreferredSize(new java.awt.Dimension(250, 26));
         mnResumeKep.addActionListener(this::MnResumeKeperawatanActionPerformed);
-        MnPenilaianAwal.insert(mnResumeKep, 7);
+        MnPenilaianAwal.insert(mnResumeKep, 8);
     }
 
     /**
@@ -12282,6 +12297,31 @@ public class DlgKamarInap extends javax.swing.JDialog {
             if(tbKamIn.getSelectedRow()>-1){
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 rekammedis.RMAsesmenMedisRanap form=new rekammedis.RMAsesmenMedisRanap(null,false);
+                form.isCek();
+                form.emptTeks();
+                if(R1.isSelected()==true){
+                    form.setNoRm(norawat.getText(),new Date());
+                }else if(R2.isSelected()==true){
+                    form.setNoRm(norawat.getText(),DTPCari2.getDate());
+                }else if(R3.isSelected()==true){
+                    form.setNoRm(norawat.getText(),DTPCari4.getDate());
+                }
+                form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                form.setLocationRelativeTo(internalFrame1);
+                form.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }
+
+    private void MnAsesmenMedisRanap20_1ActionPerformed(java.awt.event.ActionEvent evt) {
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else{
+            if(tbKamIn.getSelectedRow()>-1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                rekammedis.RMAsesmenMedisRanap20_1 form=new rekammedis.RMAsesmenMedisRanap20_1(null,false);
                 form.isCek();
                 form.emptTeks();
                 if(R1.isSelected()==true){
