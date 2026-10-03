@@ -55,6 +55,9 @@ replay_pid*.log
 # Backup files
 *.bak
 
+# Backup metadata Git saat perapihan checkout. Hanya untuk pemulihan lokal.
+.git-legacy-*/
+
 # Local diagnostic outputs
 hasil-cek-detail.txt
 hasil-kategori.txt
