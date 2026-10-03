@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -133,7 +134,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
         
         HTMLEditorKit kit = new HTMLEditorKit();
-        LoadHTML.setEditable(true);
+        LoadHTML.setEditable(false);
         LoadHTML.setEditorKit(kit);
         StyleSheet styleSheet = kit.getStyleSheet();
         styleSheet.addRule(
@@ -167,6 +168,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         susunRangkaMedis();
         buatKotakMedis(FormInput);
         buatKotakMedis(barPasienMedis);
+        rapikanBarPencarianMedis();
+        pasangScrollBertingkatTextAreaMedis(FormInput);
         pasangSemuaListenerProgresMedis();
         hitungProgresMedis();
     }
@@ -1527,6 +1530,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             Valid.textKosong(BtnDokter,"Dokter");
         }else if(KeluhanUtama.getText().trim().equals("")){
             Valid.textKosong(KeluhanUtama,"Anamnesis");
+        }else if(!diagnosisMedisValid()){
+            return;
         }else{
             if(akses.getkode().equals("Admin Utama")){
                 simpan();
@@ -1593,6 +1598,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             Valid.textKosong(BtnDokter,"Dokter");
         }else if(KeluhanUtama.getText().trim().equals("")){
             Valid.textKosong(KeluhanUtama,"Anamnesis");
+        }else if(!diagnosisMedisValid()){
+            return;
         }else{
             if(tbObat.getSelectedRow()>-1){
                 if(akses.getkode().equals("Admin Utama")){
@@ -2083,12 +2090,13 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
 
             String qryCetak =
                 "select penilaian_medis_igd.*, reg_periksa.no_rkm_medis, pasien.nm_pasien, pasien.tgl_lahir, "+
-                "if(pasien.jk='L','Laki-Laki','Perempuan') as jk, dokter.nm_dokter, dokter.no_ijn_praktek, "+
+                "if(pasien.jk='L','Laki-Laki','Perempuan') as jk, dokter.nm_dokter, coalesce(pegawai_dokter.nik,dokter.kd_dokter) as nip_dokter, dokter.no_ijn_praktek, "+
                 "TIMESTAMPDIFF(YEAR,pasien.tgl_lahir,CURDATE()) as umur, reg_periksa.tgl_registrasi, reg_periksa.jam_reg, "+
                 "konsul_dokter.nm_dokter as konsul_nm_dokter, poliklinik.nm_poli as konsul_nm_poli "+
                 "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                 "inner join penilaian_medis_igd on reg_periksa.no_rawat=penilaian_medis_igd.no_rawat "+
                 "inner join dokter on penilaian_medis_igd.kd_dokter=dokter.kd_dokter "+
+                "left join pegawai pegawai_dokter on pegawai_dokter.nik=dokter.kd_dokter "+
                 "left join dokter konsul_dokter on konsul_dokter.kd_dokter=penilaian_medis_igd.konsul_kd_dokter "+
                 "left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli "+
                 "where penilaian_medis_igd.no_rawat='"+tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()+"'";
@@ -2335,7 +2343,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     // Field baru di bawah ini murni tampilan, tidak pernah dibaca/ditulis
     // oleh getData()/tampil()/emptTeks()/simpan().
     // =====================================================================
-    private widget.Label lblKartuNama, lblKartuInfo, lblKartuRM, lblKartuRawat, lblKartuInisial;
+    private widget.Label lblKartuNama, lblKartuInfo, lblKartuRM, lblKartuRawat, lblKartuLokasi;
+    private AvatarBulatMedis avatarKartuMedis;
     private widget.PanelBiasa barPasienMedis;
     private widget.PanelBiasa railMedis;
     private widget.ScrollPane scrollRailMedis;
@@ -2384,7 +2393,6 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         int totalWajib = 0;
         int terisiWajib = 0;
         boolean tidakRelevan = false;
-        widget.Label lblBadgeNomor;
         widget.PanelBiasa pnlBadgeStatus;
         widget.Label lblBadgeStatus;
         widget.Button btnTidakRelevan;
@@ -2400,6 +2408,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private boolean halamanMedisSiap = false;
     private boolean menyusunHalamanMedis = false;
     private int halamanAktifMedis = -1;
+    private int lebarHalamanAktualMedis = -1;
     private boolean satuHalamanMedis = true;
 
     // -- A. Intervensi Pre Hospital --
@@ -2480,8 +2489,14 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private widget.TextArea PemeriksaanLainnya;
 
     // -- M. Diagnosis (Kerja/Banding) --
-    private widget.CekBox CekDiagnosaKerja; private widget.TextArea TDiagnosaKerja;
-    private widget.CekBox CekDiagnosaBanding; private widget.TextArea TDiagnosaBanding;
+    private widget.CekBox CekDiagnosaKerja; private widget.TextBox KdDiagnosaKerja, TDiagnosaKerja;
+    private widget.Button BtnDiagnosaKerja;
+    private widget.PanelBiasa panelLookupDiagnosaKerjaMedis;
+    private widget.CekBox CekDiagnosaBanding;
+    private widget.Button BtnTambahDiagnosaBanding, BtnHapusDiagnosaBanding;
+    private widget.PanelBiasa panelDaftarDiagnosaBandingMedis;
+    private DefaultTableModel tabModeDiagnosaBandingMedis;
+    private widget.Table tbDiagnosaBandingMedis;
 
     // -- N. Konsul dr. Spesialis --
     // Dokter & Unit/Poli konsul dipilih lewat dialog pencarian (pola sama
@@ -2530,11 +2545,11 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         // sekali (masih di dalam initComponents()/GEN block, tidak diedit).
         // "Tatalaksana" jadi "Rencana/Tindakan/Terapi" sesuai istilah RM 03-2
         // - field & datanya (widget Tatalaksana, kolom DB `tata`) tetap sama.
-        jLabel99.setText("VIII. RIWAYAT KESEHATAN");
-        jLabel94.setText("IX. PEMERIKSAAN FISIK");
-        jLabel100.setText("X. STATUS LOKALIS");
-        jLabel101.setText("XV. PEMERIKSAAN PENUNJANG");
-        jLabel103.setText("XVII. RENCANA/TINDAKAN/TERAPI");
+        jLabel99.setText("RIWAYAT KESEHATAN");
+        jLabel94.setText("PEMERIKSAAN FISIK");
+        jLabel100.setText("STATUS LOKALIS");
+        jLabel101.setText("PEMERIKSAAN PENUNJANG");
+        jLabel103.setText("RENCANA/TINDAKAN/TERAPI");
     }
 
     private widget.Label labelRm032(String teks){
@@ -2598,9 +2613,14 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private java.awt.GridBagConstraints rm032Constraint(int gridx,int gridy){
         java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
         c.gridx = gridx; c.gridy = gridy;
-        c.anchor = java.awt.GridBagConstraints.WEST;
+        c.anchor = (gridx == 0) ? java.awt.GridBagConstraints.NORTHWEST : java.awt.GridBagConstraints.WEST;
         c.insets = new java.awt.Insets(3,5,3,5);
         c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        if(gridx == 0){
+            c.weightx = 0.0;
+        }else{
+            c.weightx = 1.0;
+        }
         return c;
     }
 
@@ -2624,9 +2644,18 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private int tambahBarisRm032Field(widget.PanelBiasa panel,int row,String label,java.awt.Component field){
         widget.Label lbl = new widget.Label();
         lbl.setText(label+" :");
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbl.setPreferredSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, 23));
+        lbl.setMinimumSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, 23));
         java.awt.GridBagConstraints c1 = rm032Constraint(0,row);
+        c1.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        c1.weightx = 0.0;
+        c1.insets = new java.awt.Insets(6,10,6,10);
         panel.add(lbl,c1);
         java.awt.GridBagConstraints c2 = rm032Constraint(1,row);
+        c2.insets = new java.awt.Insets(6,10,6,10);
+        c2.weightx = 1.0;
+        c2.fill = java.awt.GridBagConstraints.HORIZONTAL;
         panel.add(field,c2);
         return row+1;
     }
@@ -2637,9 +2666,12 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         widget.Label label = labelRm032(judul+" :");
         label.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         label.setFont(label.getFont().deriveFont(java.awt.Font.BOLD));
+        label.setPreferredSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, 23));
+        label.setMinimumSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, 23));
         java.awt.GridBagConstraints cLabel = rm032Constraint(0,row);
-        cLabel.insets = new java.awt.Insets(9,10,9,20);
-        if(tinggi){ cLabel.anchor = java.awt.GridBagConstraints.NORTHWEST; }
+        cLabel.insets = new java.awt.Insets(9,10,9,10);
+        cLabel.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        cLabel.weightx = 0.0;
         panel.add(label,cLabel);
         java.awt.GridBagConstraints cField = rm032Constraint(1,row);
         cField.insets = new java.awt.Insets(9,10,9,10);
@@ -2869,12 +2901,15 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         cVital.weightx = 1.0;
         cVital.fill = java.awt.GridBagConstraints.HORIZONTAL;
         panelKeadaanUmumMedis.add(vital,cVital);
-        widget.Label labelVital = labelRm032("Tanda Vital & Antropometri");
+        widget.Label labelVital = labelRm032("Tanda Vital & Antropometri :");
         labelVital.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         labelVital.setFont(labelVital.getFont().deriveFont(java.awt.Font.BOLD));
+        labelVital.setPreferredSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, 23));
+        labelVital.setMinimumSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, 23));
         java.awt.GridBagConstraints cLabelVital = rm032Constraint(0,row++);
         cLabelVital.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        cLabelVital.insets = new java.awt.Insets(13,10,9,20);
+        cLabelVital.weightx = 0.0;
+        cLabelVital.insets = new java.awt.Insets(13,10,9,10);
         panelKeadaanUmumMedis.add(labelVital,cLabelVital);
 
         scrollPane5.setPreferredSize(new java.awt.Dimension(640,120));
@@ -2917,7 +2952,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         PanelWall.setMaximumSize(new java.awt.Dimension(640,237));
         PanelWall.setBorder(javax.swing.BorderFactory.createDashedBorder(
                 widget.ThemeConfig.BORDER_SOFT, 1f, 3f));
-        scrollPane8.setPreferredSize(new java.awt.Dimension(640,110));
+        scrollPane8.setPreferredSize(new java.awt.Dimension(640,160));
+        scrollPane8.setMinimumSize(new java.awt.Dimension(320,150));
 
         final String[] regio = {
             "Kepala Lateral", "Tubuh Anterior", "Tubuh Posterior",
@@ -3015,8 +3051,9 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     /** Menahan GridBagLayout agar isi halaman tetap mulai dari sisi atas. */
     private void tambahGlueVertikalMedis(widget.PanelBiasa panel, int row){
         java.awt.GridBagConstraints glue = new java.awt.GridBagConstraints();
-        glue.gridx=2; glue.gridy=row; glue.gridheight=java.awt.GridBagConstraints.REMAINDER;
-        glue.weightx=1.0; glue.weighty=1.0; glue.fill=java.awt.GridBagConstraints.BOTH;
+        glue.gridx=0; glue.gridy=row; glue.gridwidth=2;
+        glue.gridheight=java.awt.GridBagConstraints.REMAINDER;
+        glue.weightx=0.0; glue.weighty=1.0; glue.fill=java.awt.GridBagConstraints.BOTH;
         panel.add(javax.swing.Box.createGlue(),glue);
     }
 
@@ -3030,7 +3067,11 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         // widget.Label bawaan rata kanan; seluruh judul Survei Primer rata kiri.
         lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbl.setFont(lbl.getFont().deriveFont(java.awt.Font.BOLD));
+        lbl.setPreferredSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, 23));
+        lbl.setMinimumSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, 23));
         java.awt.GridBagConstraints c1 = rm032Constraint(0,row);
+        c1.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        c1.weightx = 0.0;
         boolean checklist = field instanceof javax.swing.JComponent && (
                 Boolean.TRUE.equals(((javax.swing.JComponent)field).getClientProperty("checklistJalanNapas")) ||
                 Boolean.TRUE.equals(((javax.swing.JComponent)field).getClientProperty("checklistSurveiPrimer")));
@@ -3048,10 +3089,15 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         // atas seperti Intervensi Diberikan, bukan berada di tengah daftar.
         if(checklist){
             c1.anchor = java.awt.GridBagConstraints.NORTHWEST;
-            c1.insets = new java.awt.Insets(13,10,9,20);
+            c1.insets = new java.awt.Insets(13,10,9,10);
+        } else {
+            c1.insets = new java.awt.Insets(9,10,9,10);
         }
         panel.add(lbl,c1);
         java.awt.GridBagConstraints c2 = rm032Constraint(1,row);
+        c2.insets = new java.awt.Insets(9,10,9,10);
+        c2.weightx = 1.0;
+        c2.fill = java.awt.GridBagConstraints.HORIZONTAL;
         panel.add(field,c2);
         return row+1;
     }
@@ -3084,7 +3130,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         int row = 0;
 
         // -- A. Intervensi Pre Hospital --
-        row = tambahBarisRm032Judul(panelRm032Atas, row, "I. INTERVENSI PRE HOSPITAL");
+        row = tambahBarisRm032Judul(panelRm032Atas, row, "INTERVENSI PRE HOSPITAL");
         CekPreCervicalCollar = new widget.CekBox(); CekPreCervicalCollar.setText("Cervical Collar");
         CekPreDefibrilasi = new widget.CekBox(); CekPreDefibrilasi.setText("Defibrilasi");
         CekPreVtp = new widget.CekBox(); CekPreVtp.setText("VTP");
@@ -3107,7 +3153,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         row = tambahBarisRm032Field(panelRm032Atas, row, "Obat (Pre Hospital)", TPreObatKet);
 
         // -- B. Survei Primer - Jalan Napas --
-        row = tambahBarisRm032Judul(panelRm032Atas, row, "II. SURVEI PRIMER - JALAN NAPAS");
+        row = tambahBarisRm032Judul(panelRm032Atas, row, "SURVEI PRIMER - JALAN NAPAS");
         CekJnPaten = new widget.CekBox(); CekJnPaten.setText("Paten");
         CekJnObstruksiPartial = new widget.CekBox(); CekJnObstruksiPartial.setText("Obstruksi Partial");
         CekJnStridor = new widget.CekBox(); CekJnStridor.setText("Stridor");
@@ -3130,7 +3176,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             panelPilihan(bgJnKesimpulan,RbJnAman,RbJnMengancamJiwa));
 
         // -- C. Survei Primer - Pernapasan --
-        row = tambahBarisRm032Judul(panelRm032Atas, row, "III. SURVEI PRIMER - PERNAPASAN");
+        row = tambahBarisRm032Judul(panelRm032Atas, row, "SURVEI PRIMER - PERNAPASAN");
         bgNapPola = new javax.swing.ButtonGroup();
         RbNapSpontan = new widget.RadioButton(); RbNapSpontan.setText("Spontan");
         RbNapTidakSpontan = new widget.RadioButton(); RbNapTidakSpontan.setText("Tidak Spontan");
@@ -3164,7 +3210,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         row = tambahBarisRm032SurveiPrimer(panelRm032Atas, row, "Kesimpulan Pernapasan", panelPilihan(bgNapKesimpulan,RbNapAman,RbNapMengancamJiwa));
 
         // -- D. Survei Primer - Sirkulasi --
-        row = tambahBarisRm032Judul(panelRm032Atas, row, "IV. SURVEI PRIMER - SIRKULASI");
+        row = tambahBarisRm032Judul(panelRm032Atas, row, "SURVEI PRIMER - SIRKULASI");
         bgSirNadi = new javax.swing.ButtonGroup();
         RbSirReguler = new widget.RadioButton(); RbSirReguler.setText("Reguler");
         RbSirIrreguler = new widget.RadioButton(); RbSirIrreguler.setText("Irreguler");
@@ -3213,37 +3259,28 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         panelBayiBaruLahir = new widget.PanelBiasa();
         panelBayiBaruLahir.setLayout(new java.awt.GridBagLayout());
         int rowBbl = 0;
-        java.awt.GridBagConstraints cBbl;
+        TApgarCukupBulan = new widget.TextBox(); TApgarCukupBulan.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        rowBbl = tambahBarisRm032Field(panelBayiBaruLahir,rowBbl,"Cukup Bulan",TApgarCukupBulan);
 
-        cBbl = rm032Constraint(0,rowBbl); panelBayiBaruLahir.add(labelRm032("Cukup Bulan :"),cBbl);
-        TApgarCukupBulan = new widget.TextBox(); TApgarCukupBulan.setPreferredSize(new java.awt.Dimension(200,23));
-        cBbl = rm032Constraint(1,rowBbl); panelBayiBaruLahir.add(TApgarCukupBulan,cBbl); rowBbl++;
+        TApgarCairanAmnionJernih = new widget.TextBox(); TApgarCairanAmnionJernih.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        rowBbl = tambahBarisRm032Field(panelBayiBaruLahir,rowBbl,"Cairan Amnion Jernih",TApgarCairanAmnionJernih);
 
-        cBbl = rm032Constraint(0,rowBbl); panelBayiBaruLahir.add(labelRm032("Cairan Amnion Jernih :"),cBbl);
-        TApgarCairanAmnionJernih = new widget.TextBox(); TApgarCairanAmnionJernih.setPreferredSize(new java.awt.Dimension(200,23));
-        cBbl = rm032Constraint(1,rowBbl); panelBayiBaruLahir.add(TApgarCairanAmnionJernih,cBbl); rowBbl++;
+        TApgarPernapasanMenangis = new widget.TextBox(); TApgarPernapasanMenangis.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        rowBbl = tambahBarisRm032Field(panelBayiBaruLahir,rowBbl,"Pernapasan/Menangis",TApgarPernapasanMenangis);
 
-        cBbl = rm032Constraint(0,rowBbl); panelBayiBaruLahir.add(labelRm032("Pernapasan/Menangis :"),cBbl);
-        TApgarPernapasanMenangis = new widget.TextBox(); TApgarPernapasanMenangis.setPreferredSize(new java.awt.Dimension(200,23));
-        cBbl = rm032Constraint(1,rowBbl); panelBayiBaruLahir.add(TApgarPernapasanMenangis,cBbl); rowBbl++;
+        TApgarTonusOtot = new widget.TextBox(); TApgarTonusOtot.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        rowBbl = tambahBarisRm032Field(panelBayiBaruLahir,rowBbl,"Tonus Otot",TApgarTonusOtot);
 
-        cBbl = rm032Constraint(0,rowBbl); panelBayiBaruLahir.add(labelRm032("Tonus Otot :"),cBbl);
-        TApgarTonusOtot = new widget.TextBox(); TApgarTonusOtot.setPreferredSize(new java.awt.Dimension(200,23));
-        cBbl = rm032Constraint(1,rowBbl); panelBayiBaruLahir.add(TApgarTonusOtot,cBbl); rowBbl++;
+        TPatPenampilan = new widget.TextBox(); TPatPenampilan.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        rowBbl = tambahBarisRm032Field(panelBayiBaruLahir,rowBbl,"Penampilan (PAT)",TPatPenampilan);
 
-        cBbl = rm032Constraint(0,rowBbl); panelBayiBaruLahir.add(labelRm032("Penampilan (PAT) :"),cBbl);
-        TPatPenampilan = new widget.TextBox(); TPatPenampilan.setPreferredSize(new java.awt.Dimension(200,23));
-        cBbl = rm032Constraint(1,rowBbl); panelBayiBaruLahir.add(TPatPenampilan,cBbl); rowBbl++;
+        TPatUsahaNapas = new widget.TextBox(); TPatUsahaNapas.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        rowBbl = tambahBarisRm032Field(panelBayiBaruLahir,rowBbl,"Usaha Napas (PAT)",TPatUsahaNapas);
 
-        cBbl = rm032Constraint(0,rowBbl); panelBayiBaruLahir.add(labelRm032("Usaha Napas (PAT) :"),cBbl);
-        TPatUsahaNapas = new widget.TextBox(); TPatUsahaNapas.setPreferredSize(new java.awt.Dimension(200,23));
-        cBbl = rm032Constraint(1,rowBbl); panelBayiBaruLahir.add(TPatUsahaNapas,cBbl); rowBbl++;
+        TPatPerfusiKulit = new widget.TextBox(); TPatPerfusiKulit.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        rowBbl = tambahBarisRm032Field(panelBayiBaruLahir,rowBbl,"Perfusi Kulit (PAT)",TPatPerfusiKulit);
 
-        cBbl = rm032Constraint(0,rowBbl); panelBayiBaruLahir.add(labelRm032("Perfusi Kulit (PAT) :"),cBbl);
-        TPatPerfusiKulit = new widget.TextBox(); TPatPerfusiKulit.setPreferredSize(new java.awt.Dimension(200,23));
-        cBbl = rm032Constraint(1,rowBbl); panelBayiBaruLahir.add(TPatPerfusiKulit,cBbl); rowBbl++;
-
-        java.awt.GridBagConstraints cBblOuter = rm032Constraint(0,row); cBblOuter.gridwidth=2;
+        java.awt.GridBagConstraints cBblOuter = rm032Constraint(0,row); cBblOuter.gridwidth=2; cBblOuter.weightx=1.0;
         panelRm032Atas.add(panelBayiBaruLahir, cBblOuter);
         row++;
         // Sembunyikan panel Bayi Baru Lahir SEBELUM ukuran panelRm032Atas
@@ -3254,12 +3291,18 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         perbaruiVisibilitasBayiBaruLahir();
 
         // -- F. Disabilitas --
-        row = tambahBarisRm032Judul(panelRm032Atas, row, "VI. DISABILITAS");
+        row = tambahBarisRm032Judul(panelRm032Atas, row, "DISABILITAS");
         widget.PanelBiasa panelGcs = new widget.PanelBiasa(new java.awt.GridLayout(1,3,16,0));
         panelGcs.setOpaque(false);
         TGcsE = new widget.TextBox(); TGcsE.setPreferredSize(new java.awt.Dimension(110,TINGGI_FIELD_MEDIS));
+        TGcsE.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TGcsE.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.BOLD, 12));
         TGcsV = new widget.TextBox(); TGcsV.setPreferredSize(new java.awt.Dimension(110,TINGGI_FIELD_MEDIS));
+        TGcsV.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TGcsV.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.BOLD, 12));
         TGcsM = new widget.TextBox(); TGcsM.setPreferredSize(new java.awt.Dimension(110,TINGGI_FIELD_MEDIS));
+        TGcsM.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TGcsM.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.BOLD, 12));
         panelGcs.add(kolomFieldSurveiPrimer("E (Eye)", TGcsE));
         panelGcs.add(kolomFieldSurveiPrimer("V (Verbal)", TGcsV));
         panelGcs.add(kolomFieldSurveiPrimer("M (Motorik)", TGcsM));
@@ -3275,7 +3318,9 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         widget.PanelBiasa panelDiameter = new widget.PanelBiasa(new java.awt.GridLayout(1,2,16,0));
         panelDiameter.setOpaque(false);
         TDiameterPupilKiri = new widget.TextBox(); TDiameterPupilKiri.setPreferredSize(new java.awt.Dimension(190,TINGGI_FIELD_MEDIS));
+        TDiameterPupilKiri.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         TDiameterPupilKanan = new widget.TextBox(); TDiameterPupilKanan.setPreferredSize(new java.awt.Dimension(190,TINGGI_FIELD_MEDIS));
+        TDiameterPupilKanan.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         panelDiameter.add(kolomFieldSurveiPrimer("Kiri (mm)", TDiameterPupilKiri));
         panelDiameter.add(kolomFieldSurveiPrimer("Kanan (mm)", TDiameterPupilKanan));
         row = tambahBarisRm032SurveiPrimer(panelRm032Atas, row, "Diameter Pupil (mm)", panelDiameter);
@@ -3301,7 +3346,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         row = tambahBarisRm032SurveiPrimer(panelRm032Atas, row, "Lateralisasi", panelPilihan(bgLateralisasi,RbLateralisasiKanan,RbLateralisasiKiri,RbLateralisasiTidakAda));
 
         // -- G. Eksposur --
-        row = tambahBarisRm032Judul(panelRm032Atas, row, "VII. EKSPOSUR");
+        row = tambahBarisRm032Judul(panelRm032Atas, row, "EKSPOSUR");
         CekEksDeformitas = new widget.CekBox(); CekEksDeformitas.setText("Deformitas");
         CekEksEkskoriasi = new widget.CekBox(); CekEksEkskoriasi.setText("Ekskoriasi");
         CekEksContusio = new widget.CekBox(); CekEksContusio.setText("Contusio");
@@ -3325,7 +3370,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         row = 0;
 
         // -- H. Kepala Leher --
-        row = tambahBarisRm032Judul(panelRm032Tengah, row, "XI. KEPALA LEHER");
+        row = tambahBarisRm032Judul(panelRm032Tengah, row, "KEPALA LEHER");
         bgKonjungtiva = new javax.swing.ButtonGroup();
         RbKonjungtivaPucat = new widget.RadioButton(); RbKonjungtivaPucat.setText("Pucat");
         RbKonjungtivaPink = new widget.RadioButton(); RbKonjungtivaPink.setText("Pink");
@@ -3347,7 +3392,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         row = tambahBarisRm032Field(panelRm032Tengah, row, "Mukosa", panelPilihan(bgMukosaMulut,RbMukosaKering,RbMukosaBasah));
 
         // -- I. Leher rinci --
-        row = tambahBarisRm032Judul(panelRm032Tengah, row, "XII. LEHER");
+        row = tambahBarisRm032Judul(panelRm032Tengah, row, "LEHER");
         bgDeviasiTrakea = new javax.swing.ButtonGroup();
         RbDeviasiKanan = new widget.RadioButton(); RbDeviasiKanan.setText("Kanan");
         RbDeviasiKiri = new widget.RadioButton(); RbDeviasiKiri.setText("Kiri");
@@ -3370,7 +3415,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         row = tambahBarisRm032Field(panelRm032Tengah, row, "Tiroid", panelPilihan(bgTiroid,RbTiroidTeraba,RbTiroidTidak));
 
         // -- J. Thorax --
-        row = tambahBarisRm032Judul(panelRm032Tengah, row, "XIII. THORAX");
+        row = tambahBarisRm032Judul(panelRm032Tengah, row, "THORAX");
         TJantung = new widget.TextArea(); TJantung.setRows(2); TJantung.setColumns(40);
         widget.ScrollPane scrollJantung = new widget.ScrollPane(); scrollJantung.setViewportView(TJantung);
         row = tambahBarisRm032Field(panelRm032Tengah, row, "Jantung", scrollJantung);
@@ -3379,7 +3424,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         row = tambahBarisRm032Field(panelRm032Tengah, row, "Paru", scrollParu);
 
         // -- K. Abdomen & Pelvis --
-        row = tambahBarisRm032Judul(panelRm032Tengah, row, "XIV. ABDOMEN & PELVIS");
+        row = tambahBarisRm032Judul(panelRm032Tengah, row, "ABDOMEN & PELVIS");
         TPunggungPinggang = new widget.TextArea(); TPunggungPinggang.setRows(2); TPunggungPinggang.setColumns(40);
         widget.ScrollPane scrollPunggung = new widget.ScrollPane(); scrollPunggung.setViewportView(TPunggungPinggang);
         row = tambahBarisRm032Field(panelRm032Tengah, row, "Punggung & Pinggang", scrollPunggung);
@@ -3396,29 +3441,78 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         panelRm032Diagnosis.setLayout(new java.awt.GridBagLayout());
         int rowDiagnosis = 0;
 
-        rowDiagnosis = tambahBarisRm032Judul(panelRm032Diagnosis, rowDiagnosis, "XVI. DIAGNOSIS");
-        CekDiagnosaKerja = new widget.CekBox(); CekDiagnosaKerja.setText("Diagnosa Kerja");
-        TDiagnosaKerja = new widget.TextArea(); TDiagnosaKerja.setRows(2); TDiagnosaKerja.setColumns(40);
-        widget.ScrollPane scrollDiagnosaKerja = new widget.ScrollPane(); scrollDiagnosaKerja.setViewportView(TDiagnosaKerja);
-        // BorderLayout (bukan FlowLayout) supaya field lookup ikut melebar
-        // saat panelDiagnosaKerja distretch weightx=1.0 oleh
-        // rapikanKontenBagianMedis() - FlowLayout sebelumnya membuat isian
-        // menciut ke lebar alaminya walau pembungkusnya sudah lebar (ketahuan
-        // dari render Halaman 10 yang terlihat sempit).
-        scrollDiagnosaKerja.setPreferredSize(new java.awt.Dimension(560,60));
-        widget.PanelBiasa panelDiagnosaKerja = new widget.PanelBiasa(new java.awt.BorderLayout(8,0));
-        panelDiagnosaKerja.add(CekDiagnosaKerja, java.awt.BorderLayout.WEST);
-        panelDiagnosaKerja.add(scrollDiagnosaKerja, java.awt.BorderLayout.CENTER);
+        rowDiagnosis = tambahBarisRm032Judul(panelRm032Diagnosis, rowDiagnosis, "DIAGNOSIS");
+        CekDiagnosaKerja = new widget.CekBox(); CekDiagnosaKerja.setText("Tetapkan diagnosis kerja dari ICD-10");
+        KdDiagnosaKerja = new widget.TextBox(); KdDiagnosaKerja.setEditable(false);
+        KdDiagnosaKerja.setPreferredSize(new java.awt.Dimension(92,TINGGI_FIELD_MEDIS));
+        TDiagnosaKerja = new widget.TextBox(); TDiagnosaKerja.setEditable(false);
+        TDiagnosaKerja.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        BtnDiagnosaKerja = tombolPencarianDiagnosisMedis("Cari atau ganti diagnosis kerja ICD-10");
+        panelLookupDiagnosaKerjaMedis = new widget.PanelBiasa(new java.awt.BorderLayout(6,0));
+        panelLookupDiagnosaKerjaMedis.add(KdDiagnosaKerja,java.awt.BorderLayout.WEST);
+        panelLookupDiagnosaKerjaMedis.add(TDiagnosaKerja,java.awt.BorderLayout.CENTER);
+        panelLookupDiagnosaKerjaMedis.add(BtnDiagnosaKerja,java.awt.BorderLayout.EAST);
+        widget.PanelBiasa panelDiagnosaKerja = new widget.PanelBiasa(new java.awt.BorderLayout(0,6));
+        panelDiagnosaKerja.add(CekDiagnosaKerja, java.awt.BorderLayout.NORTH);
+        panelDiagnosaKerja.add(panelLookupDiagnosaKerjaMedis, java.awt.BorderLayout.CENTER);
         rowDiagnosis = tambahBarisRm032Field(panelRm032Diagnosis, rowDiagnosis, "Diagnosa Kerja", panelDiagnosaKerja);
 
-        CekDiagnosaBanding = new widget.CekBox(); CekDiagnosaBanding.setText("Diagnosa Banding");
-        TDiagnosaBanding = new widget.TextArea(); TDiagnosaBanding.setRows(2); TDiagnosaBanding.setColumns(40);
-        widget.ScrollPane scrollDiagnosaBanding = new widget.ScrollPane(); scrollDiagnosaBanding.setViewportView(TDiagnosaBanding);
-        scrollDiagnosaBanding.setPreferredSize(new java.awt.Dimension(560,60));
-        widget.PanelBiasa panelDiagnosaBanding = new widget.PanelBiasa(new java.awt.BorderLayout(8,0));
-        panelDiagnosaBanding.add(CekDiagnosaBanding, java.awt.BorderLayout.WEST);
-        panelDiagnosaBanding.add(scrollDiagnosaBanding, java.awt.BorderLayout.CENTER);
+        CekDiagnosaBanding = new widget.CekBox(); CekDiagnosaBanding.setText("Tambahkan diagnosis pembanding dari ICD-10");
+        tabModeDiagnosaBandingMedis = new DefaultTableModel(null,new Object[]{"Kode ICD-10","Diagnosis Pembanding"}){
+            @Override public boolean isCellEditable(int rowIndex,int columnIndex){ return false; }
+        };
+        tbDiagnosaBandingMedis = new widget.Table();
+        tbDiagnosaBandingMedis.setModel(tabModeDiagnosaBandingMedis);
+        tbDiagnosaBandingMedis.setRowHeight(24);
+        tbDiagnosaBandingMedis.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        tbDiagnosaBandingMedis.getColumnModel().getColumn(0).setPreferredWidth(105);
+        tbDiagnosaBandingMedis.getColumnModel().getColumn(0).setMaxWidth(140);
+        widget.ScrollPane scrollDiagnosaBanding = new widget.ScrollPane();
+        scrollDiagnosaBanding.setViewportView(tbDiagnosaBandingMedis);
+        scrollDiagnosaBanding.setPreferredSize(new java.awt.Dimension(0,92));
+        BtnTambahDiagnosaBanding = tombolPencarianDiagnosisMedis("Tambah diagnosis pembanding ICD-10");
+        BtnTambahDiagnosaBanding.setText("Tambah ICD-10");
+        BtnTambahDiagnosaBanding.setIcon(widget.IconStyle.muat("plus.svg",14,widget.IconStyle.HIJAU));
+        gayaTombolCardFooterMedis(BtnTambahDiagnosaBanding,132);
+        BtnTambahDiagnosaBanding.setBorderPainted(true);
+        BtnTambahDiagnosaBanding.setFocusPainted(false);
+        BtnHapusDiagnosaBanding = new widget.Button();
+        BtnHapusDiagnosaBanding.setText("Hapus Pilihan");
+        BtnHapusDiagnosaBanding.setIcon(widget.IconStyle.muat("trash.svg",14,widget.IconStyle.MERAH));
+        gayaTombolCardFooterMedis(BtnHapusDiagnosaBanding,128);
+        BtnHapusDiagnosaBanding.setBorderPainted(true);
+        BtnHapusDiagnosaBanding.setFocusPainted(false);
+        widget.PanelBiasa panelAksiDiagnosaBanding = new widget.PanelBiasa(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,6,0));
+        panelAksiDiagnosaBanding.add(BtnTambahDiagnosaBanding);
+        panelAksiDiagnosaBanding.add(BtnHapusDiagnosaBanding);
+        panelDaftarDiagnosaBandingMedis = new widget.PanelBiasa(new java.awt.BorderLayout(0,6));
+        panelDaftarDiagnosaBandingMedis.add(panelAksiDiagnosaBanding,java.awt.BorderLayout.NORTH);
+        panelDaftarDiagnosaBandingMedis.add(scrollDiagnosaBanding,java.awt.BorderLayout.CENTER);
+        widget.PanelBiasa panelDiagnosaBanding = new widget.PanelBiasa(new java.awt.BorderLayout(0,6));
+        panelDiagnosaBanding.add(CekDiagnosaBanding, java.awt.BorderLayout.NORTH);
+        panelDiagnosaBanding.add(panelDaftarDiagnosaBandingMedis, java.awt.BorderLayout.CENTER);
         rowDiagnosis = tambahBarisRm032Field(panelRm032Diagnosis, rowDiagnosis, "Diagnosa Banding", panelDiagnosaBanding);
+
+        CekDiagnosaKerja.addActionListener(e -> {
+            perbaruiVisibilitasDiagnosisMedis();
+            if(CekDiagnosaKerja.isSelected() && KdDiagnosaKerja.getText().trim().isEmpty()){
+                bukaPencarianDiagnosisMedis(false,true);
+            }else if(!CekDiagnosaKerja.isSelected()){
+                KdDiagnosaKerja.setText(""); TDiagnosaKerja.setText("");
+            }
+        });
+        BtnDiagnosaKerja.addActionListener(e -> bukaPencarianDiagnosisMedis(false,false));
+        CekDiagnosaBanding.addActionListener(e -> {
+            perbaruiVisibilitasDiagnosisMedis();
+            if(CekDiagnosaBanding.isSelected() && tabModeDiagnosaBandingMedis.getRowCount()==0){
+                bukaPencarianDiagnosisMedis(true,true);
+            }else if(!CekDiagnosaBanding.isSelected()){
+                tabModeDiagnosaBandingMedis.setRowCount(0);
+            }
+        });
+        BtnTambahDiagnosaBanding.addActionListener(e -> bukaPencarianDiagnosisMedis(true,false));
+        BtnHapusDiagnosaBanding.addActionListener(e -> hapusDiagnosisBandingTerpilihMedis());
+        perbaruiVisibilitasDiagnosisMedis();
 
         // ===== Panel BAWAH: sisanya (Konsul dr. Spesialis .. Tanda Vital
         // Terakhir), tetap ditempel di bawah semua konten. =====
@@ -3427,11 +3521,11 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         row = 0;
 
         // -- N. Konsul dr. Spesialis --
-        row = tambahBarisRm032Judul(panelRm032, row, "XVIII. KONSUL DR. SPESIALIS");
-        KonsulKdDokter = new widget.TextBox(); KonsulKdDokter.setPreferredSize(new java.awt.Dimension(70,23)); KonsulKdDokter.setEditable(false);
-        KonsulNmDokter = new widget.TextBox(); KonsulNmDokter.setPreferredSize(new java.awt.Dimension(220,23)); KonsulNmDokter.setEditable(false);
+        row = tambahBarisRm032Judul(panelRm032, row, "KONSUL DR. SPESIALIS");
+        KonsulKdDokter = new widget.TextBox(); KonsulKdDokter.setPreferredSize(new java.awt.Dimension(90,TINGGI_FIELD_MEDIS)); KonsulKdDokter.setEditable(false);
+        KonsulNmDokter = new widget.TextBox(); KonsulNmDokter.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS)); KonsulNmDokter.setEditable(false);
         BtnKonsulDokter = new widget.Button();
-        BtnKonsulDokter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png")));
+        BtnKonsulDokter.setIcon(widget.IconStyle.muat("search.svg",14,widget.IconStyle.ABU_MUDA));
         BtnKonsulDokter.addActionListener((java.awt.event.ActionEvent evt) -> {
             DlgCariDokter dlg = new DlgCariDokter(null,false);
             dlg.addWindowListener(new WindowAdapter() {
@@ -3448,15 +3542,17 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             dlg.setLocationRelativeTo(internalFrame1);
             dlg.setVisible(true);
         });
-        widget.PanelBiasa panelKonsulDokter = new widget.PanelBiasa();
-        panelKonsulDokter.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
-        panelKonsulDokter.add(KonsulKdDokter); panelKonsulDokter.add(KonsulNmDokter); panelKonsulDokter.add(BtnKonsulDokter);
+        BtnKonsulDokter.setPreferredSize(new java.awt.Dimension(TINGGI_FIELD_MEDIS,TINGGI_FIELD_MEDIS));
+        widget.PanelBiasa panelKonsulDokter = new widget.PanelBiasa(new java.awt.BorderLayout(5,0));
+        panelKonsulDokter.add(KonsulKdDokter,java.awt.BorderLayout.WEST);
+        panelKonsulDokter.add(KonsulNmDokter,java.awt.BorderLayout.CENTER);
+        panelKonsulDokter.add(BtnKonsulDokter,java.awt.BorderLayout.EAST);
         row = tambahBarisRm032Field(panelRm032, row, "Dokter Konsul", panelKonsulDokter);
 
-        KonsulKdPoli = new widget.TextBox(); KonsulKdPoli.setPreferredSize(new java.awt.Dimension(70,23)); KonsulKdPoli.setEditable(false);
-        KonsulNmPoli = new widget.TextBox(); KonsulNmPoli.setPreferredSize(new java.awt.Dimension(220,23)); KonsulNmPoli.setEditable(false);
+        KonsulKdPoli = new widget.TextBox(); KonsulKdPoli.setPreferredSize(new java.awt.Dimension(90,TINGGI_FIELD_MEDIS)); KonsulKdPoli.setEditable(false);
+        KonsulNmPoli = new widget.TextBox(); KonsulNmPoli.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS)); KonsulNmPoli.setEditable(false);
         BtnKonsulUnit = new widget.Button();
-        BtnKonsulUnit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png")));
+        BtnKonsulUnit.setIcon(widget.IconStyle.muat("search.svg",14,widget.IconStyle.ABU_MUDA));
         BtnKonsulUnit.addActionListener((java.awt.event.ActionEvent evt) -> {
             simrskhanza.DlgCariPoli dlg = new simrskhanza.DlgCariPoli(null,false);
             dlg.addWindowListener(new WindowAdapter() {
@@ -3473,31 +3569,31 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             dlg.setLocationRelativeTo(internalFrame1);
             dlg.setVisible(true);
         });
-        widget.PanelBiasa panelKonsulUnit = new widget.PanelBiasa();
-        panelKonsulUnit.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
-        panelKonsulUnit.add(KonsulKdPoli); panelKonsulUnit.add(KonsulNmPoli); panelKonsulUnit.add(BtnKonsulUnit);
+        BtnKonsulUnit.setPreferredSize(new java.awt.Dimension(TINGGI_FIELD_MEDIS,TINGGI_FIELD_MEDIS));
+        widget.PanelBiasa panelKonsulUnit = new widget.PanelBiasa(new java.awt.BorderLayout(5,0));
+        panelKonsulUnit.add(KonsulKdPoli,java.awt.BorderLayout.WEST);
+        panelKonsulUnit.add(KonsulNmPoli,java.awt.BorderLayout.CENTER);
+        panelKonsulUnit.add(BtnKonsulUnit,java.awt.BorderLayout.EAST);
         row = tambahBarisRm032Field(panelRm032, row, "Unit/Poli Konsul", panelKonsulUnit);
 
         // -- O. Edukasi --
-        row = tambahBarisRm032Judul(panelRm032, row, "XIX. EDUKASI");
+        row = tambahBarisRm032Judul(panelRm032, row, "EDUKASI");
         CekEdukasiDiberikan = new widget.CekBox(); CekEdukasiDiberikan.setText("Diberikan kepada Pasien/Keluarga");
-        // Dibungkus FlowLayout spt panelEdukasiTidakBisa di bawah - tanpa ini
-        // chip melar mengisi lebar kolom GridBagLayout yg ditentukan baris
-        // tetangganya (panelEdukasiTidakBisa, ~500px), krn fill=HORIZONTAL
-        // di rm032Constraint() menyamakan lebar SEMUA baris di kolom field.
-        // Ketahuan dari CekLebarMedisDetail (chip MELAR=1) + render Halaman 9.
+        // Chip dibungkus FlowLayout agar tidak melar mengikuti kolom field.
+        // Baris alasan di bawah memakai BorderLayout supaya keterangannya
+        // mengambil seluruh sisa lebar tanpa ikut melebarkan chip.
         widget.PanelBiasa panelEdukasiDiberikan = new widget.PanelBiasa(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,0,0));
         panelEdukasiDiberikan.add(CekEdukasiDiberikan);
         row = tambahBarisRm032Field(panelRm032, row, "Edukasi Diberikan", panelEdukasiDiberikan);
         CekEdukasiTidakBisa = new widget.CekBox(); CekEdukasiTidakBisa.setText("Tidak dapat memberikan edukasi karena");
-        TEdukasiTidakBisaKet = new widget.TextBox(); TEdukasiTidakBisaKet.setPreferredSize(new java.awt.Dimension(250,23));
-        widget.PanelBiasa panelEdukasiTidakBisa = new widget.PanelBiasa();
-        panelEdukasiTidakBisa.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,0));
-        panelEdukasiTidakBisa.add(CekEdukasiTidakBisa); panelEdukasiTidakBisa.add(TEdukasiTidakBisaKet);
+        TEdukasiTidakBisaKet = new widget.TextBox(); TEdukasiTidakBisaKet.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        widget.PanelBiasa panelEdukasiTidakBisa = new widget.PanelBiasa(new java.awt.BorderLayout(8,0));
+        panelEdukasiTidakBisa.add(CekEdukasiTidakBisa,java.awt.BorderLayout.WEST);
+        panelEdukasiTidakBisa.add(TEdukasiTidakBisaKet,java.awt.BorderLayout.CENTER);
         row = tambahBarisRm032Field(panelRm032, row, "Edukasi Tidak Diberikan", panelEdukasiTidakBisa);
 
         // -- P. Kondisi Saat Pulang --
-        row = tambahBarisRm032Judul(panelRm032, row, "XX. KONDISI SAAT PULANG");
+        row = tambahBarisRm032Judul(panelRm032, row, "KONDISI SAAT PULANG");
         bgKondisiPulang = new javax.swing.ButtonGroup();
         RbKondisiMembaik = new widget.RadioButton(); RbKondisiMembaik.setText("Membaik");
         RbKondisiMemburuk = new widget.RadioButton(); RbKondisiMemburuk.setText("Memburuk");
@@ -3520,7 +3616,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         // Antropometri" di Keadaan Umum lewat selTandaVitalMedis()) sesuai
         // mockup, bukan lagi 4 baris vertikal terpisah. Instance TextBox
         // tetap sama, hanya susunannya yang berubah.
-        row = tambahBarisRm032Judul(panelRm032, row, "XXI. TANDA VITAL TERAKHIR");
+        row = tambahBarisRm032Judul(panelRm032, row, "TANDA VITAL TERAKHIR");
         TTdAkhir = new widget.TextBox();
         TNadiAkhir = new widget.TextBox();
         TRrAkhir = new widget.TextBox();
@@ -3629,6 +3725,176 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         FormInput.setPreferredSize(new java.awt.Dimension(870, yBawah + ukuranRm032.height + 20));
     }
 
+    private widget.Button tombolPencarianDiagnosisMedis(String tooltip){
+        widget.Button tombol = new widget.Button();
+        tombol.setIcon(widget.IconStyle.muat("search.svg",14,widget.IconStyle.ABU_MUDA));
+        tombol.setToolTipText(tooltip);
+        tombol.setPreferredSize(new java.awt.Dimension(38,TINGGI_FIELD_MEDIS));
+        return tombol;
+    }
+
+    /** Pencarian diagnosis pada bagian ini selalu memakai master ICD-10 (tabel penyakit). */
+    private void bukaPencarianDiagnosisMedis(final boolean diagnosisBanding,final boolean batalkanJikaKosong){
+        final laporan.DlgCariPenyakit penyakit = new laporan.DlgCariPenyakit(null,false);
+        penyakit.addWindowListener(new WindowAdapter(){
+            @Override public void windowClosed(WindowEvent e){
+                int baris = penyakit.getTable().getSelectedRow();
+                if(baris >= 0){
+                    String kode = penyakit.getTable().getValueAt(baris,0).toString();
+                    String nama = penyakit.getTable().getValueAt(baris,1).toString();
+                    if(diagnosisBanding){
+                        tambahDiagnosisBandingMedis(kode,nama);
+                    }else{
+                        KdDiagnosaKerja.setText(kode);
+                        TDiagnosaKerja.setText(nama);
+                    }
+                }else if(batalkanJikaKosong){
+                    if(diagnosisBanding && tabModeDiagnosaBandingMedis.getRowCount()==0){
+                        CekDiagnosaBanding.setSelected(false);
+                    }else if(!diagnosisBanding && KdDiagnosaKerja.getText().trim().isEmpty()){
+                        CekDiagnosaKerja.setSelected(false);
+                    }
+                }
+                perbaruiVisibilitasDiagnosisMedis();
+                hitungProgresMedis();
+            }
+        });
+        penyakit.isCek();
+        penyakit.emptTeks();
+        penyakit.setSize(Math.max(760,internalFrame1.getWidth()-40),Math.max(520,internalFrame1.getHeight()-40));
+        penyakit.setLocationRelativeTo(internalFrame1);
+        penyakit.setVisible(true);
+    }
+
+    private void tambahDiagnosisBandingMedis(String kode,String nama){
+        for(int i=tabModeDiagnosaBandingMedis.getRowCount()-1;i>=0;i--){
+            if(tabModeDiagnosaBandingMedis.getValueAt(i,0).toString().trim().isEmpty()){
+                tabModeDiagnosaBandingMedis.removeRow(i);
+            }
+        }
+        for(int i=0;i<tabModeDiagnosaBandingMedis.getRowCount();i++){
+            if(kode.equals(tabModeDiagnosaBandingMedis.getValueAt(i,0).toString())){
+                tbDiagnosaBandingMedis.setRowSelectionInterval(i,i);
+                return;
+            }
+        }
+        tabModeDiagnosaBandingMedis.addRow(new Object[]{kode,nama});
+        CekDiagnosaBanding.setSelected(true);
+    }
+
+    private void hapusDiagnosisBandingTerpilihMedis(){
+        int[] baris = tbDiagnosaBandingMedis.getSelectedRows();
+        for(int i=baris.length-1;i>=0;i--){ tabModeDiagnosaBandingMedis.removeRow(baris[i]); }
+        if(tabModeDiagnosaBandingMedis.getRowCount()==0){ CekDiagnosaBanding.setSelected(false); }
+        perbaruiVisibilitasDiagnosisMedis();
+        hitungProgresMedis();
+    }
+
+    private void perbaruiVisibilitasDiagnosisMedis(){
+        if(panelLookupDiagnosaKerjaMedis==null || panelDaftarDiagnosaBandingMedis==null){ return; }
+        panelLookupDiagnosaKerjaMedis.setVisible(CekDiagnosaKerja.isSelected());
+        panelDaftarDiagnosaBandingMedis.setVisible(CekDiagnosaBanding.isSelected());
+        panelRm032Diagnosis.revalidate();
+        panelRm032Diagnosis.repaint();
+        SwingUtilities.invokeLater(() -> {
+            if(halamanMedisSiap){ terapkanModeHalamanMedis(); }
+        });
+    }
+
+    private String teksDiagnosisKerjaMedis(){
+        String kode = KdDiagnosaKerja.getText().trim();
+        String nama = TDiagnosaKerja.getText().trim();
+        return kode.isEmpty() ? nama : kode+" - "+nama;
+    }
+
+    private String teksDiagnosisBandingMedis(){
+        StringBuilder teks = new StringBuilder();
+        for(int i=0;i<tabModeDiagnosaBandingMedis.getRowCount();i++){
+            if(teks.length()>0){ teks.append("; "); }
+            String kode = tabModeDiagnosaBandingMedis.getValueAt(i,0).toString().trim();
+            String nama = tabModeDiagnosaBandingMedis.getValueAt(i,1).toString().trim();
+            teks.append(kode.isEmpty() ? nama : kode+" - "+nama);
+        }
+        return teks.toString();
+    }
+
+    private void muatDiagnosisBandingMedis(String noRawat,String teksLama) throws SQLException{
+        tabModeDiagnosaBandingMedis.setRowCount(0);
+        PreparedStatement psDiagnosis = koneksi.prepareStatement(
+            "select d.kd_penyakit,p.nm_penyakit from penilaian_medis_igd_diagnosa_banding d "+
+            "inner join penyakit p on p.kd_penyakit=d.kd_penyakit where d.no_rawat=? order by d.urutan,d.kd_penyakit");
+        try{
+            psDiagnosis.setString(1,noRawat);
+            ResultSet rsDiagnosis = psDiagnosis.executeQuery();
+            try{
+                while(rsDiagnosis.next()){
+                    tabModeDiagnosaBandingMedis.addRow(new Object[]{rsDiagnosis.getString(1),rsDiagnosis.getString(2)});
+                }
+            }finally{
+                rsDiagnosis.close();
+            }
+        }finally{
+            psDiagnosis.close();
+        }
+        if(tabModeDiagnosaBandingMedis.getRowCount()==0 && teksLama!=null && !teksLama.trim().isEmpty()){
+            tabModeDiagnosaBandingMedis.addRow(new Object[]{"",teksLama.trim()});
+        }
+    }
+
+    private boolean diagnosisMedisValid(){
+        if(CekDiagnosaKerja.isSelected() && KdDiagnosaKerja.getText().trim().isEmpty()){
+            JOptionPane.showMessageDialog(null,"Silakan pilih diagnosis kerja dari master ICD-10.");
+            BtnDiagnosaKerja.requestFocus();
+            return false;
+        }
+        if(CekDiagnosaBanding.isSelected() && tabModeDiagnosaBandingMedis.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Silakan pilih minimal satu diagnosis pembanding dari master ICD-10.");
+            BtnTambahDiagnosaBanding.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Teruskan roda mouse ke halaman utama saat TextArea sudah mencapai batas
+     * atas/bawah. TextArea tetap dapat menggulir isinya sendiri selama masih
+     * ada isi yang belum terlihat.
+     */
+    private void pasangScrollBertingkatTextAreaMedis(java.awt.Component komponen){
+        if(komponen instanceof javax.swing.JScrollPane){
+            final javax.swing.JScrollPane scrollDalam = (javax.swing.JScrollPane)komponen;
+            java.awt.Component isi = scrollDalam.getViewport().getView();
+            if(isi instanceof javax.swing.JTextArea
+                    && !Boolean.TRUE.equals(scrollDalam.getClientProperty("scrollBertingkatMedis"))){
+                scrollDalam.putClientProperty("scrollBertingkatMedis",Boolean.TRUE);
+                scrollDalam.addMouseWheelListener((java.awt.event.MouseWheelEvent evt) -> {
+                    javax.swing.JScrollBar barDalam = scrollDalam.getVerticalScrollBar();
+                    int arah = evt.getWheelRotation();
+                    boolean bisaKeAtas = arah < 0 && barDalam.getValue() > barDalam.getMinimum();
+                    boolean bisaKeBawah = arah > 0
+                            && barDalam.getValue()+barDalam.getVisibleAmount() < barDalam.getMaximum();
+                    if(bisaKeAtas || bisaKeBawah){ return; }
+
+                    java.awt.Container induk = scrollDalam.getParent();
+                    while(induk!=null && !(induk instanceof javax.swing.JScrollPane)){
+                        induk = induk.getParent();
+                    }
+                    if(induk instanceof javax.swing.JScrollPane){
+                        javax.swing.JScrollBar barLuar = ((javax.swing.JScrollPane)induk).getVerticalScrollBar();
+                        int unit = Math.max(16,barLuar.getUnitIncrement(arah));
+                        barLuar.setValue(barLuar.getValue()+(evt.getUnitsToScroll()*unit));
+                        evt.consume();
+                    }
+                });
+            }
+        }
+        if(komponen instanceof java.awt.Container){
+            for(java.awt.Component anak : ((java.awt.Container)komponen).getComponents()){
+                pasangScrollBertingkatTextAreaMedis(anak);
+            }
+        }
+    }
+
     /**
      * [Bagian C] Selipkan 5 judul section LEGACY (jLabel99/94/100/101/103) ke
      * posisi yg benar dalam seksiMedis - satu-satunya bagian yg TIDAK lewat
@@ -3660,6 +3926,10 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
 
     /** Tinggi seragam field & tombol di bar pasien. */
     private static final int TINGGI_FIELD_MEDIS = 32;
+    /** Tinggi field banner mengikuti Pengkajian Awal Keperawatan IGD. */
+    private static final int TINGGI_FIELD_HEADER_MEDIS = 26;
+    /** Lebar seragam kolom label kiri (232px) sesuai design handoff. */
+    private static final int LEBAR_LABEL_KIRI_MEDIS = 232;
     private static final java.awt.Color WARNA_BORDER_KOTAK_MEDIS = new java.awt.Color(0xD8, 0xDB, 0xD6);
     private static final javax.swing.border.Border BORDER_KOTAK_TEXTFIELD_MEDIS =
         javax.swing.BorderFactory.createCompoundBorder(
@@ -3922,20 +4192,61 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                 +(n.isEmpty() ? "&mdash;" : escHtmlMedis(n))+"</font></html>";
     }
 
+    /** Komponen bulat yang menggambar inisial nama pasien pada kartu identitas. */
+    private static final class AvatarBulatMedis extends javax.swing.JComponent {
+        private String inisial = "?";
+
+        void setInisial(String s){
+            inisial = s;
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(java.awt.Graphics g){
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D)g.create();
+            g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING,
+                    java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            int diameter = Math.max(0, Math.min(getWidth(), getHeight()) - 1);
+            int x = (getWidth() - diameter) / 2;
+            int y = (getHeight() - diameter) / 2;
+            g2.setColor(widget.ThemeConfig.ACCENT);
+            g2.fillOval(x, y, diameter, diameter);
+            g2.setColor(java.awt.Color.WHITE);
+            g2.setFont(getFont());
+            java.awt.FontMetrics fm = g2.getFontMetrics();
+            int lebarTeks = fm.stringWidth(inisial);
+            int tx = x + (diameter - lebarTeks) / 2;
+            int ty = y + (diameter - fm.getHeight()) / 2 + fm.getAscent();
+            g2.drawString(inisial, tx, ty);
+            g2.dispose();
+        }
+    }
+
+    private static String inisialDariNamaMedis(String nama){
+        StringBuilder inisial = new StringBuilder();
+        if(nama!=null){
+            for(String bagian : nama.trim().split("\\s+")){
+                if(!bagian.isEmpty() && inisial.length()<2){
+                    inisial.append(Character.toUpperCase(bagian.charAt(0)));
+                }
+            }
+        }
+        return inisial.length()==0 ? "?" : inisial.toString();
+    }
+
     /** Isi label kartu identitas dari TextBox tersembunyi (display-only). */
     private void sinkronKartuMedis(){
         if(lblKartuNama==null){ return; }
         String nama = TPasien.getText()==null ? "" : TPasien.getText().trim();
         lblKartuNama.setText(nama.isEmpty() ? "—" : nama);
-        if(lblKartuInisial!=null){
-            StringBuilder inisial = new StringBuilder();
-            for(String bagian : nama.split("\\s+")){
-                if(!bagian.isEmpty() && inisial.length()<2){ inisial.append(Character.toUpperCase(bagian.charAt(0))); }
-            }
-            lblKartuInisial.setText(inisial.length()==0 ? "—" : inisial.toString());
+        if(avatarKartuMedis!=null){
+            avatarKartuMedis.setInisial(inisialDariNamaMedis(nama));
         }
         lblKartuRM.setText(barisNomorMedis("No. RM", TNoRM.getText()));
         lblKartuRawat.setText(barisNomorMedis("No. Rawat", TNoRw.getText()));
+        if(lblKartuLokasi!=null){
+            lblKartuLokasi.setText(barisNomorMedis("Lokasi", "IGD"));
+        }
         if(lblKartuInfo!=null){
             String jk = jkPanjangMedis(Jk.getText());
             String umur = umurDariTglLahirMedis(TglLahir.getText());
@@ -3953,7 +4264,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private void tandaiReadOnlyMedis(javax.swing.JComponent c){
         if(c==null){ return; }
         c.setOpaque(true);
-        c.setBackground(widget.ThemeConfig.SURFACE_ALT);
+        c.setBackground(java.awt.Color.WHITE);
     }
 
     /** Satu sel banner: label kecil di atas field (field dipaksa tinggi seragam). */
@@ -3964,10 +4275,12 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         widget.Label l = new widget.Label();
         l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         l.setText(wajib ? "<html>"+label+" <font color='#B3261E'>*</font></html>" : label);
-        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
         l.setForeground(widget.ThemeConfig.TEXT_MUTED);
         sel.add(l, java.awt.BorderLayout.NORTH);
-        field.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
+        int lebarField = field.getPreferredSize()!=null && field.getPreferredSize().width>0
+                ? field.getPreferredSize().width : 0;
+        field.setPreferredSize(new java.awt.Dimension(lebarField,TINGGI_FIELD_HEADER_MEDIS));
         sel.add(field, java.awt.BorderLayout.CENTER);
         return sel;
     }
@@ -3975,8 +4288,22 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     /** Pasangan [field lookup]. */
     private widget.PanelBiasa hdrLookupMedis(widget.TextBox tf, widget.Button btn){
         widget.PanelBiasa p = new widget.PanelBiasa();
-        p.setOpaque(false);
-        p.setLayout(new java.awt.BorderLayout(4,0));
+        p.setOpaque(true);
+        p.setBackground(java.awt.Color.WHITE);
+        p.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT));
+        p.setLayout(new java.awt.BorderLayout(0,0));
+        p.setPreferredSize(new java.awt.Dimension(220,TINGGI_FIELD_HEADER_MEDIS));
+        tf.setPreferredSize(new java.awt.Dimension(180,TINGGI_FIELD_HEADER_MEDIS));
+        tf.setBackground(java.awt.Color.WHITE);
+        tf.setOpaque(true);
+        tf.setBorder(javax.swing.BorderFactory.createEmptyBorder(2,8,2,4));
+        tf.putClientProperty("lookupField", Boolean.TRUE);
+        btn.setPreferredSize(new java.awt.Dimension(TINGGI_FIELD_HEADER_MEDIS+2,TINGGI_FIELD_HEADER_MEDIS));
+        btn.setBackground(java.awt.Color.WHITE);
+        btn.setGlassColor(java.awt.Color.WHITE);
+        btn.setRoundRect(false);
+        btn.setBorder(javax.swing.BorderFactory.createMatteBorder(0,1,0,0,widget.ThemeConfig.BORDER_SOFT));
+        btn.putClientProperty("JButton.buttonType", "square");
         p.add(tf, java.awt.BorderLayout.CENTER);
         p.add(btn, java.awt.BorderLayout.EAST);
         return p;
@@ -4024,36 +4351,25 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT),
             javax.swing.BorderFactory.createEmptyBorder(12,14,12,14)));
         kartu.setLayout(new java.awt.GridBagLayout());
-        widget.PanelBiasa kepalaKartu = new widget.PanelBiasa(new java.awt.BorderLayout());
-        kepalaKartu.setOpaque(false);
         widget.Label judulKartu = new widget.Label();
         judulKartu.setText("IDENTITAS PASIEN");
         judulKartu.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         judulKartu.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
         judulKartu.setForeground(widget.ThemeConfig.TEXT_MUTED);
-        widget.Label terkunci = new widget.Label();
-        terkunci.setText("TERKUNCI");
-        terkunci.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        terkunci.setOpaque(true);
-        terkunci.setBackground(new java.awt.Color(0xEA,0xED,0xE8));
-        terkunci.setForeground(widget.ThemeConfig.TEXT_MUTED);
-        terkunci.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 9));
-        terkunci.setBorder(javax.swing.BorderFactory.createEmptyBorder(2,6,2,6));
-        kepalaKartu.add(judulKartu, java.awt.BorderLayout.WEST);
-        kepalaKartu.add(terkunci, java.awt.BorderLayout.EAST);
+        widget.Label badgeKunci = new widget.Label();
+        badgeKunci.setText("  TERKUNCI  ");
+        badgeKunci.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        badgeKunci.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 9));
+        badgeKunci.setOpaque(true);
+        badgeKunci.setBackground(widget.ThemeConfig.BORDER_SOFT);
+        badgeKunci.setForeground(widget.ThemeConfig.TEXT_MUTED);
 
-        widget.PanelBiasa identitasUtama = new widget.PanelBiasa(new java.awt.BorderLayout(10,0));
-        identitasUtama.setOpaque(false);
-        lblKartuInisial = new widget.Label();
-        lblKartuInisial.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblKartuInisial.setOpaque(true);
-        lblKartuInisial.setBackground(new java.awt.Color(0xE7,0xF3,0xF1));
-        lblKartuInisial.setForeground(widget.ThemeConfig.PRIMARY);
-        lblKartuInisial.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
-        lblKartuInisial.setPreferredSize(new java.awt.Dimension(40,40));
-        widget.PanelBiasa namaDanInfo = new widget.PanelBiasa();
-        namaDanInfo.setOpaque(false);
-        namaDanInfo.setLayout(new javax.swing.BoxLayout(namaDanInfo, javax.swing.BoxLayout.Y_AXIS));
+        avatarKartuMedis = new AvatarBulatMedis();
+        java.awt.Dimension ukuranAvatar = new java.awt.Dimension(40,40);
+        avatarKartuMedis.setPreferredSize(ukuranAvatar);
+        avatarKartuMedis.setMinimumSize(ukuranAvatar);
+        avatarKartuMedis.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
+
         lblKartuNama = new widget.Label();
         lblKartuNama.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblKartuNama.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 15));
@@ -4062,28 +4378,43 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         lblKartuInfo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblKartuInfo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
         lblKartuInfo.setForeground(widget.ThemeConfig.TEXT_MUTED);
-        namaDanInfo.add(lblKartuNama);
-        namaDanInfo.add(lblKartuInfo);
-        identitasUtama.add(lblKartuInisial, java.awt.BorderLayout.WEST);
-        identitasUtama.add(namaDanInfo, java.awt.BorderLayout.CENTER);
         lblKartuRM = new widget.Label();
         lblKartuRM.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblKartuRM.setForeground(widget.ThemeConfig.TEXT_MUTED);
         lblKartuRawat = new widget.Label();
         lblKartuRawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblKartuRawat.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        lblKartuLokasi = new widget.Label();
+        lblKartuLokasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuLokasi.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
         java.awt.GridBagConstraints k = new java.awt.GridBagConstraints();
-        k.gridx=0; k.gridy=0; k.anchor=java.awt.GridBagConstraints.WEST;
+        k.gridx=0; k.gridy=0; k.gridheight=6;
+        k.anchor=java.awt.GridBagConstraints.NORTHWEST;
+        k.fill=java.awt.GridBagConstraints.NONE; k.weightx=0.0;
+        k.insets=new java.awt.Insets(0,0,0,10);
+        kartu.add(avatarKartuMedis,k);
+
+        k.gridx=1; k.gridy=0; k.gridheight=1; k.gridwidth=1;
+        k.anchor=java.awt.GridBagConstraints.WEST;
         k.fill=java.awt.GridBagConstraints.HORIZONTAL; k.weightx=1.0;
-        kartu.add(kepalaKartu,k);
-        k.gridy=1; k.insets=new java.awt.Insets(8,0,0,0); kartu.add(identitasUtama,k);
-        k.gridy=2; k.insets=new java.awt.Insets(8,0,0,0); kartu.add(lblKartuRM,k);
-        k.gridy=3; k.insets=new java.awt.Insets(3,0,0,0); kartu.add(lblKartuRawat,k);
-        widget.Label lokasi = new widget.Label();
-        lokasi.setText(barisNomorMedis("Lokasi", "IGD"));
-        lokasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        k.gridy=4; kartu.add(lokasi,k);
-        k.gridy=5; k.weighty=1.0; k.fill=java.awt.GridBagConstraints.BOTH; k.insets=new java.awt.Insets(0,0,0,0);
+        k.insets=new java.awt.Insets(0,0,0,0);
+        kartu.add(judulKartu,k);
+
+        k.gridx=2; k.weightx=0.0; k.fill=java.awt.GridBagConstraints.NONE;
+        k.anchor=java.awt.GridBagConstraints.EAST;
+        kartu.add(badgeKunci,k);
+
+        k.gridx=1; k.gridwidth=2; k.weightx=1.0;
+        k.anchor=java.awt.GridBagConstraints.WEST;
+        k.fill=java.awt.GridBagConstraints.HORIZONTAL;
+        k.gridy=1; k.insets=new java.awt.Insets(7,0,0,0); kartu.add(lblKartuNama,k);
+        k.gridy=2; k.insets=new java.awt.Insets(2,0,0,0); kartu.add(lblKartuInfo,k);
+        k.gridy=3; k.insets=new java.awt.Insets(7,0,0,0); kartu.add(lblKartuRM,k);
+        k.gridy=4; k.insets=new java.awt.Insets(3,0,0,0); kartu.add(lblKartuRawat,k);
+        k.gridy=5; k.insets=new java.awt.Insets(3,0,0,0); kartu.add(lblKartuLokasi,k);
+        k.gridx=0; k.gridwidth=3; k.gridy=6; k.weighty=1.0;
+        k.fill=java.awt.GridBagConstraints.BOTH; k.insets=new java.awt.Insets(0,0,0,0);
         kartu.add(javax.swing.Box.createGlue(),k);
 
         javax.swing.event.DocumentListener sinkron = new javax.swing.event.DocumentListener(){
@@ -4103,8 +4434,16 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         grid.setOpaque(false);
         grid.setLayout(new java.awt.GridBagLayout());
 
-        NmDokter.setPreferredSize(new java.awt.Dimension(0,TINGGI_FIELD_MEDIS));
-        BtnDokter.setPreferredSize(new java.awt.Dimension(TINGGI_FIELD_MEDIS,TINGGI_FIELD_MEDIS));
+        try{
+            com.formdev.flatlaf.extras.FlatSVGIcon ikonCari =
+                    new com.formdev.flatlaf.extras.FlatSVGIcon("icon/search.svg",13,13);
+            ikonCari.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(
+                    warna -> widget.ThemeConfig.TEXT_MUTED));
+            BtnDokter.setIcon(ikonCari);
+        }catch(Throwable ex){
+            // Ikon bawaan NetBeans tetap dipakai bila SVG tidak tersedia.
+        }
+        BtnDokter.setText("");
         tandaiReadOnlyMedis(NmDokter);
 
         java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
@@ -4118,14 +4457,14 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
 
         // ---- rakit banner: kartu (kiri, lebar tetap) + grid (kanan, fleksibel) ----
         // Samakan proporsi header dengan Pengkajian Awal Keperawatan IGD.
-        java.awt.Dimension dk = new java.awt.Dimension(310,120);
+        java.awt.Dimension dk = new java.awt.Dimension(310,138);
         kartu.setMinimumSize(dk); kartu.setPreferredSize(dk);
         java.awt.GridBagConstraints f = new java.awt.GridBagConstraints();
         f.gridx=0; f.gridy=0; f.fill=java.awt.GridBagConstraints.VERTICAL; f.weighty=1.0;
         f.insets=new java.awt.Insets(0,0,0,16);
         banner.add(kartu,f);
         f.gridx=1; f.weightx=1.0; f.fill=java.awt.GridBagConstraints.HORIZONTAL;
-        f.anchor=java.awt.GridBagConstraints.CENTER; f.insets=new java.awt.Insets(0,0,0,0);
+        f.anchor=java.awt.GridBagConstraints.NORTH; f.insets=new java.awt.Insets(0,0,0,0);
         banner.add(grid,f);
         return banner;
     }
@@ -4291,12 +4630,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
      * legacy itu sendiri (di luar GEN, tapi tetap posisi asli form lama).
      */
     private static final int LEBAR_HALAMAN_MEDIS = 1230;
-
-    private String nomorRomawiMedis(int angka){
-        String[] romawi = {"I","II","III","IV","V","VI","VII","VIII","IX","X",
-            "XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI"};
-        return angka>=1 && angka<=romawi.length ? romawi[angka-1] : String.valueOf(angka);
-    }
+    private static final int MARGIN_HALAMAN_MEDIS = 14;
 
     /**
      * Samakan field Medis IGD dengan Pengkajian Awal Keperawatan IGD:
@@ -4348,14 +4682,26 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         }
     }
 
+    /** Samakan ukuran dan bentuk bar pencarian dengan Awal Keperawatan IGD. */
+    private void rapikanBarPencarianMedis(){
+        DTPCari1.setPreferredSize(new java.awt.Dimension(125,26));
+        DTPCari2.setPreferredSize(new java.awt.Dimension(125,26));
+        TCari.setPreferredSize(new java.awt.Dimension(205,26));
+        TCari.putClientProperty("JTextField.placeholderText", "Ketik kata kunci...");
+        BtnCari.setPreferredSize(new java.awt.Dimension(28,26));
+        buatKotakMedis(panelGlass9);
+        panelGlass9.revalidate();
+        panelGlass9.repaint();
+    }
+
     private String judulBersihMedis(String judul){
         if(judul==null){ return ""; }
         return judul.replaceFirst("^[IVX]+\\.\\s*", "").trim();
     }
 
     /**
-     * Bungkus konten satu halaman dgn kartu sederhana (badge nomor + judul
-     * + isi). SENGAJA jauh lebih sederhana dari buatHalamanKep() milik
+     * Bungkus konten satu halaman dgn kartu sederhana (judul, status, dan isi).
+     * SENGAJA jauh lebih sederhana dari buatHalamanKep() milik
      * Keperawatan (badge status/tidakRelevan/nav bawah itu Bagian E - di
      * luar cakupan 3b Medis).
      */
@@ -4369,16 +4715,6 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         strip.setBorder(javax.swing.BorderFactory.createCompoundBorder(
             javax.swing.BorderFactory.createMatteBorder(0,0,1,0, widget.ThemeConfig.BORDER_SOFT),
             javax.swing.BorderFactory.createEmptyBorder(10,16,10,16)));
-
-        widget.Label badge = new widget.Label();
-        badge.setText(nomorRomawiMedis(idx+1));
-        badge.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        badge.setOpaque(true);
-        badge.setBackground(h.tidakRelevan ? new java.awt.Color(0xA0,0xAE,0xC0) : widget.ThemeConfig.PRIMARY);
-        badge.setForeground(java.awt.Color.WHITE);
-        badge.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 11));
-        badge.setPreferredSize(new java.awt.Dimension(26,26));
-        h.lblBadgeNomor = badge;
 
         widget.PanelBiasa blokJudul = new widget.PanelBiasa();
         blokJudul.setOpaque(false);
@@ -4431,7 +4767,6 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         h.btnTidakRelevan = btnRel;
         kanan.add(btnRel);
 
-        strip.add(badge, java.awt.BorderLayout.WEST);
         strip.add(blokJudul, java.awt.BorderLayout.CENTER);
         strip.add(kanan, java.awt.BorderLayout.EAST);
 
@@ -4585,26 +4920,26 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     }
 
     private static final String[] JUDUL_HALAMAN_MEDIS = {
-        "I. Intervensi Pre Hospital",
-        "II. Survei Primer – Jalan Napas",
-        "III. Survei Primer – Pernapasan",
-        "IV. Survei Primer – Sirkulasi",
-        "VI. Disabilitas",
-        "VII. Eksposur",
-        "VIII. Riwayat Kesehatan",
-        "IX. Pemeriksaan Fisik",
-        "X. Status Lokalis",
-        "XI. Kepala Leher",
-        "XII. Leher",
-        "XIII. Thorax",
-        "XIV. Abdomen & Pelvis",
-        "XV. Pemeriksaan Penunjang",
-        "XVI. Diagnosis",
-        "XVII. Rencana/Tindakan/Terapi",
-        "XVIII. Konsul Dr. Spesialis",
-        "XIX. Edukasi",
-        "XX. Kondisi Saat Pulang",
-        "XXI. Tanda Vital Terakhir",
+        "Intervensi Pre Hospital",
+        "Survei Primer – Jalan Napas",
+        "Survei Primer – Pernapasan",
+        "Survei Primer – Sirkulasi",
+        "Disabilitas",
+        "Eksposur",
+        "Riwayat Kesehatan",
+        "Pemeriksaan Fisik",
+        "Status Lokalis",
+        "Kepala Leher",
+        "Leher",
+        "Thorax",
+        "Abdomen & Pelvis",
+        "Pemeriksaan Penunjang",
+        "Diagnosis",
+        "Rencana/Tindakan/Terapi",
+        "Konsul Dr. Spesialis",
+        "Edukasi",
+        "Kondisi Saat Pulang",
+        "Tanda Vital Terakhir",
     };
 
     private static final String[] SUBJUDUL_HALAMAN_MEDIS = {
@@ -4661,22 +4996,57 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         return panel;
     }
 
-    /** Pemeriksaan Penunjang mengikuti pola satu label kiri dan satu textarea
-     *  kanan. Keempat textarea tetap memakai instance legacy yang sama. */
+    private widget.PanelBiasa selAreaTeksMedis(String judul, java.awt.Component area, int tinggiArea){
+        widget.PanelBiasa p = new widget.PanelBiasa(new java.awt.BorderLayout(0, 5));
+        p.setOpaque(false);
+        widget.Label lbl = labelRm032(judul);
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbl.setFont(lbl.getFont().deriveFont(java.awt.Font.BOLD, 11.5f));
+        lbl.setForeground(widget.ThemeConfig.TEXT);
+        if(area!=null){
+            area.setPreferredSize(new java.awt.Dimension(300, tinggiArea));
+        }
+        p.add(lbl, java.awt.BorderLayout.NORTH);
+        if(area!=null){
+            p.add(area, java.awt.BorderLayout.CENTER);
+        }
+        return p;
+    }
+
+    private widget.PanelBiasa buatDualPaneMedis(String labelKiri, java.awt.Component compKiri,
+            String labelKanan, java.awt.Component compKanan, int tinggiArea){
+        widget.PanelBiasa panel = new widget.PanelBiasa(new java.awt.GridLayout(1, 2, 14, 0));
+        panel.setOpaque(false);
+        panel.add(selAreaTeksMedis(labelKiri, compKiri, tinggiArea));
+        panel.add(selAreaTeksMedis(labelKanan, compKanan, tinggiArea));
+        return panel;
+    }
+
+    /** Pemeriksaan Penunjang mengikuti pola dual-pane 2x2 seperti desain:
+     *  Baris 1: EKG & Radiologi, Baris 2: Laborat & Pemeriksaan Lainnya.
+     *  Keempat textarea tetap memakai instance legacy yang sama. */
     private widget.PanelBiasa siapkanKontenPenunjangMedis(widget.PanelBiasa pitaLama){
         widget.PanelBiasa panel = new widget.PanelBiasa(new java.awt.GridBagLayout());
         latarMedis(panel, widget.ThemeConfig.SURFACE);
         javax.swing.JScrollPane lainnya = scrollDariAreaMedis(PemeriksaanLainnya);
-        javax.swing.JScrollPane[] scroll = {scrollPane9,scrollPane10,scrollPane11,lainnya};
-        for(javax.swing.JScrollPane s : scroll){
-            if(s!=null){ s.setPreferredSize(new java.awt.Dimension(640,84)); }
-        }
-        int row=0;
-        row = tambahBarisHalamanLegacyMedis(panel,row,"EKG",scrollPane9,true);
-        row = tambahBarisHalamanLegacyMedis(panel,row,"Radiologi",scrollPane10,true);
-        row = tambahBarisHalamanLegacyMedis(panel,row,"Laborat",scrollPane11,true);
-        row = tambahBarisHalamanLegacyMedis(panel,row,"Pemeriksaan Lainnya",lainnya,true);
-        tambahGlueVertikalMedis(panel,row);
+
+        int row = 0;
+        widget.PanelBiasa baris1 = buatDualPaneMedis("EKG", scrollPane9, "Radiologi", scrollPane10, 84);
+        widget.PanelBiasa baris2 = buatDualPaneMedis("Laborat", scrollPane11, "Pemeriksaan Lainnya", lainnya, 84);
+
+        java.awt.GridBagConstraints c1 = new java.awt.GridBagConstraints();
+        c1.gridx = 0; c1.gridy = row++; c1.gridwidth = 2; c1.weightx = 1.0;
+        c1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c1.insets = new java.awt.Insets(10, 10, 8, 10);
+        panel.add(baris1, c1);
+
+        java.awt.GridBagConstraints c2 = new java.awt.GridBagConstraints();
+        c2.gridx = 0; c2.gridy = row++; c2.gridwidth = 2; c2.weightx = 1.0;
+        c2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        c2.insets = new java.awt.Insets(8, 10, 10, 10);
+        panel.add(baris2, c2);
+
+        tambahGlueVertikalMedis(panel, row);
         return panel;
     }
 
@@ -4802,18 +5172,65 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         halamanMedis.add(h);
     }
 
+    private widget.PanelBiasa buatSubDividerMedis(String teksJudul){
+        widget.PanelBiasa p = new widget.PanelBiasa(new java.awt.BorderLayout(0, 4));
+        p.setOpaque(false);
+        widget.Label lbl = labelRm032(teksJudul);
+        lbl.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lbl.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 11));
+        lbl.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        p.add(lbl, java.awt.BorderLayout.CENTER);
+        p.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, widget.ThemeConfig.BORDER_SOFT),
+                javax.swing.BorderFactory.createEmptyBorder(6, 10, 6, 10)));
+        return p;
+    }
+
+    private String getSubJudulSumberMedis(int sumberIdx){
+        switch(sumberIdx){
+            case 1: return "A — AIRWAY (JALAN NAPAS)";
+            case 2: return "B — BREATHING (PERNAPASAN)";
+            case 3: return "C — CIRCULATION (SIRKULASI)";
+            case 4: return "D — DISABILITY (DISABILITAS)";
+            case 5: return "E — EXPOSURE (EKSPOSUR)";
+            case 9: return "KEPALA";
+            case 10: return "LEHER RINCI";
+            case 15: return "RENCANA / TINDAKAN / TERAPI";
+            case 16: return "KONSUL DOKTER SPESIALIS";
+            case 17: return "EDUKASI PASIEN / KELUARGA";
+            case 18: return "KONDISI SAAT PULANG";
+            case 19: return "TANDA VITAL TERAKHIR";
+            default:
+                if(sumberIdx >= 0 && sumberIdx < seksiMedis.size()){
+                    return seksiMedis.get(sumberIdx).judul;
+                }
+                return "";
+        }
+    }
+
     private widget.PanelBiasa bungkusKontenKelompokMedis(int[] sumber, widget.PanelBiasa tambahan){
         widget.PanelBiasa isi = new widget.PanelBiasa(new java.awt.GridBagLayout());
         latarMedis(isi, widget.ThemeConfig.SURFACE);
         int y=0;
-        for(int i : sumber){
-            // Judul kartu sudah mewakili seluruh kelompok. Menambahkan pemisah
-            // per sumber di sini membuat Kepala/Leher dan kelompok penutup
-            // tampak seperti judul berada di atas field, bukan baris form.
-            java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
-            c.gridx=0; c.gridy=y++; c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
-            if(y>1){ c.insets = new java.awt.Insets(12,0,0,0); }
-            isi.add(kontenSumberMedis[i],c);
+        boolean multiSumber = sumber!=null && sumber.length > 1;
+        if(sumber!=null){
+            for(int i : sumber){
+                if(multiSumber){
+                    String subJudul = getSubJudulSumberMedis(i);
+                    if(!subJudul.isEmpty()){
+                        widget.PanelBiasa divider = buatSubDividerMedis(subJudul);
+                        java.awt.GridBagConstraints cDiv = new java.awt.GridBagConstraints();
+                        cDiv.gridx = 0; cDiv.gridy = y++; cDiv.weightx = 1.0;
+                        cDiv.fill = java.awt.GridBagConstraints.HORIZONTAL;
+                        cDiv.insets = new java.awt.Insets(y > 1 ? 16 : 4, 0, 4, 0);
+                        isi.add(divider, cDiv);
+                    }
+                }
+                java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+                c.gridx=0; c.gridy=y++; c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+                c.insets = new java.awt.Insets(0,0,0,0);
+                isi.add(kontenSumberMedis[i],c);
+            }
         }
         if(tambahan!=null){
             java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
@@ -4892,7 +5309,10 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             c.insets = new java.awt.Insets(9,10,9,10);
             if(c.gridx==0 && komponen instanceof javax.swing.JLabel && c.gridwidth==1){
                 java.awt.Dimension lama = komponen.getPreferredSize();
-                komponen.setPreferredSize(new java.awt.Dimension(210, Math.max(23, lama.height)));
+                komponen.setPreferredSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, Math.max(23, lama.height)));
+                komponen.setMinimumSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, Math.max(23, lama.height)));
+                c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+                c.weightx = 0.0;
                 if(bagian==9 || bagian==10){
                     javax.swing.JLabel label = (javax.swing.JLabel)komponen;
                     label.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -4938,9 +5358,12 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             label.setText("<html><b>Intervensi Diberikan</b> <font color='#C2413B'>*</font></html>");
             label.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             label.setForeground(widget.ThemeConfig.TEXT);
+            label.setPreferredSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, 23));
+            label.setMinimumSize(new java.awt.Dimension(LEBAR_LABEL_KIRI_MEDIS, 23));
             java.awt.GridBagConstraints cl = new java.awt.GridBagConstraints();
             cl.gridx=0; cl.gridy=ci.gridy; cl.anchor=java.awt.GridBagConstraints.NORTHWEST;
-            cl.insets=new java.awt.Insets(13,10,9,20);
+            cl.weightx = 0.0;
+            cl.insets=new java.awt.Insets(13,10,9,10);
             panel.add(label, cl);
             rapikanChecklistIntervensiMedis((java.awt.Container) kandidatIntervensi);
         }
@@ -5035,28 +5458,54 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
      */
     private void terapkanModeHalamanMedis(){
         if(halamanMedis.isEmpty()){ return; }
-        int lebar = LEBAR_HALAMAN_MEDIS;
+        int lebar = lebarHalamanResponsifMedis();
+        lebarHalamanAktualMedis = lebar;
         if(satuHalamanMedis){
             int aktif = Math.max(0, halamanAktifMedis);
             for(int i=0;i<halamanMedis.size();i++){
                 HalamanMedis h = halamanMedis.get(i);
                 boolean aktifIni = (i==aktif);
                 h.konten.setVisible(aktifIni);
-                if(aktifIni){ h.konten.setBounds(14,16,lebar,h.konten.getPreferredSize().height); }
+                if(aktifIni){ h.konten.setBounds(MARGIN_HALAMAN_MEDIS,16,lebar,h.konten.getPreferredSize().height); }
             }
             javax.swing.JComponent kontenAktif = halamanMedis.get(aktif).konten;
-            FormInput.setPreferredSize(new java.awt.Dimension(lebar+28, kontenAktif.getPreferredSize().height+32));
+            FormInput.setPreferredSize(new java.awt.Dimension(
+                    lebar+(MARGIN_HALAMAN_MEDIS*2), kontenAktif.getPreferredSize().height+32));
         } else {
             int runningY = 16;
             for(HalamanMedis h : halamanMedis){
                 h.konten.setVisible(true);
-                h.konten.setBounds(14, runningY, lebar, h.konten.getPreferredSize().height);
+                h.konten.setBounds(MARGIN_HALAMAN_MEDIS, runningY, lebar, h.konten.getPreferredSize().height);
                 runningY += h.konten.getPreferredSize().height + 18;
             }
-            FormInput.setPreferredSize(new java.awt.Dimension(lebar+28, runningY));
+            FormInput.setPreferredSize(new java.awt.Dimension(
+                    lebar+(MARGIN_HALAMAN_MEDIS*2), runningY));
         }
         FormInput.revalidate();
         FormInput.repaint();
+    }
+
+    /**
+     * Kartu memakai lebar viewport yang tersedia agar scroll horizontal tidak
+     * diperlukan. Pada layar lebar ukuran tetap dibatasi 1230 px supaya ritme
+     * baca sama dengan handoff; pada layar lebih kecil kartu ikut menyusut.
+     */
+    private int lebarHalamanResponsifMedis(){
+        if(scrollInput==null || scrollInput.getViewport()==null){
+            return LEBAR_HALAMAN_MEDIS;
+        }
+        int lebarViewport = scrollInput.getViewport().getExtentSize().width;
+        if(lebarViewport<=0){ return LEBAR_HALAMAN_MEDIS; }
+        return Math.max(1, Math.min(LEBAR_HALAMAN_MEDIS,
+                lebarViewport-(MARGIN_HALAMAN_MEDIS*2)));
+    }
+
+    /** Hitung ulang bounds hanya ketika lebar viewport benar-benar berubah. */
+    private void sesuaikanLebarHalamanMedis(){
+        if(halamanMedis.isEmpty()){ return; }
+        int lebarBaru = lebarHalamanResponsifMedis();
+        if(lebarBaru==lebarHalamanAktualMedis){ return; }
+        terapkanModeHalamanMedis();
     }
 
     /**
@@ -5427,10 +5876,6 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                 h.pnlBadgeStatus.repaint();
             }
 
-            if(h.lblBadgeNomor != null){
-                h.lblBadgeNomor.setBackground(h.tidakRelevan ? new java.awt.Color(0xA0,0xAE,0xC0) : widget.ThemeConfig.PRIMARY);
-                h.lblBadgeNomor.repaint();
-            }
         }
 
         int persen = totalWajibSemua>0 ? (totalTerisiWajib*100)/totalWajibSemua : 100;
@@ -5538,7 +5983,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                     break;
                 case 14:
                     wajib = 1;
-                    if(TDiagnosaKerja!=null && !TDiagnosaKerja.getText().trim().isEmpty()){ terisi++; }
+                    if(KdDiagnosaKerja!=null && !KdDiagnosaKerja.getText().trim().isEmpty()){ terisi++; }
                     break;
                 case 15:
                     wajib = 1;
@@ -5591,7 +6036,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private void pasangSemuaListenerProgresMedis(){
         javax.swing.text.JTextComponent[] texts = {
             KeluhanUtama, TD, Nadi, RR, Suhu, TGcsE, TGcsV, TGcsM,
-            TJantung, TParu, TDiagnosaKerja, Tatalaksana,
+            TJantung, TParu, KdDiagnosaKerja, TDiagnosaKerja, Tatalaksana,
             TTdAkhir, TNadiAkhir, TRrAkhir, TSuhuAkhir
         };
         for(javax.swing.text.JTextComponent t : texts){
@@ -5683,47 +6128,10 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         TabRawat.setForeground(widget.ThemeConfig.TEXT_NORMAL);
     }
 
-    /**
-     * Simpan bergaya solid teal (mockup: aksen #0d7a70, satu-satunya tombol
-     * penuh warna di action bar, ditaruh paling kanan) - bukan varian outline
-     * putih spt tombol lain hasil gayaTombolCardFooterMedis().
-     */
-    private void gayaTombolSimpanSolidMedis(final widget.Button b, int lebar){
-        final java.awt.Color aksen = new java.awt.Color(0x0D, 0x7A, 0x70);
-        final java.awt.Color aksenHover = new java.awt.Color(0x0B, 0x66, 0x5E);
-        b.setOpaque(true);
-        b.setContentAreaFilled(true);
-        b.setBackground(aksen);
-        b.setGlassColor(aksen);
-        b.setForeground(java.awt.Color.WHITE);
-        b.setRoundRect(false);
-        b.putClientProperty("Component.arc", 4);
-        b.putClientProperty("Button.arc", 4);
-        b.putClientProperty("JButton.buttonType", "square");
-        b.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
-        b.setIconTextGap(6);
-        b.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        b.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        b.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 14, 4, 14));
-        b.setPreferredSize(new java.awt.Dimension(lebar, 32));
-        for(java.awt.event.MouseListener ml : b.getMouseListeners().clone()){
-            b.removeMouseListener(ml);
-        }
-        b.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override public void mouseEntered(java.awt.event.MouseEvent e) {
-                if(b.isEnabled()){ b.setBackground(aksenHover); b.setGlassColor(aksenHover); }
-            }
-            @Override public void mouseExited(java.awt.event.MouseEvent e) {
-                b.setBackground(aksen); b.setGlassColor(aksen);
-            }
-        });
-    }
-
     /** Restyle action bar bawah (panelGlass8) agar tombol berwujud card yang jelas. */
     private void initActionBarMedis(){
         BtnSimpan.setText("Simpan");
-        gayaTombolSimpanSolidMedis(BtnSimpan, 96);
+        gayaTombolCardFooterMedis(BtnSimpan, 92);
         gayaTombolCardFooterMedis(BtnBatal, 86);
         gayaTombolCardFooterMedis(BtnEdit, 86);
         gayaTombolCardFooterMedis(BtnHapus, 88);
@@ -5731,8 +6139,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         gayaTombolCardFooterMedis(BtnAll, 90);
         gayaTombolCardFooterMedis(BtnKeluar, 90);
 
-        BtnHapus.setForeground(new java.awt.Color(0xB9, 0x1C, 0x1C));
-        BtnKeluar.setForeground(new java.awt.Color(0xB9, 0x1C, 0x1C));
+        BtnHapus.setForeground(widget.ThemeConfig.DANGER);
+        BtnKeluar.setForeground(widget.ThemeConfig.DANGER);
 
         // Pasang icon SVG modern dari IconStyle jika belum terpasang
         widget.IconStyle.pasang(panelGlass8);
@@ -5745,21 +6153,20 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         lblProgresBawahMedis.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11).deriveFont(11.5f));
         lblProgresBawahMedis.setForeground(widget.ThemeConfig.TEXT_MUTED);
 
-        // Urutan mengikuti mockup: klaster outline (Baru/Ganti/Hapus/Keluar/
-        // Cetak) di kiri, lalu Simpan solid sendirian paling kanan sebagai
-        // satu-satunya aksi bertekanan tinggi. BtnAll ("Semua") tak ada di
-        // mockup - itu tombol cari pasien generik (lihat BtnAllActionPerformed),
-        // bukan toggle "Tampilkan Semua Bagian", jadi tetap di klaster kiri.
+        // Aksi transaksi tetap berkelompok di kiri. Status dan Keluar berada
+        // di kanan, dengan Keluar sebagai tombol terakhir agar konsisten dengan
+        // keputusan UI global. BtnAll ("Semua") adalah tombol cari pasien,
+        // bukan toggle "Tampilkan Semua Bagian", sehingga tetap di kiri.
         widget.PanelBiasa kiri = new widget.PanelBiasa();
         kiri.setOpaque(false);
         kiri.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 8));
-        kiri.add(BtnBatal); kiri.add(BtnEdit); kiri.add(BtnHapus);
-        kiri.add(BtnKeluar); kiri.add(BtnPrint); kiri.add(BtnAll);
+        kiri.add(BtnSimpan); kiri.add(BtnBatal); kiri.add(BtnEdit);
+        kiri.add(BtnHapus); kiri.add(BtnPrint); kiri.add(BtnAll);
         widget.PanelBiasa kanan = new widget.PanelBiasa();
         kanan.setOpaque(false);
         kanan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 12, 8));
         kanan.add(lblProgresBawahMedis);
-        kanan.add(BtnSimpan);
+        kanan.add(BtnKeluar);
 
         panelGlass8.removeAll();
         panelGlass8.setLayout(new java.awt.BorderLayout());
@@ -5803,6 +6210,12 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         // Area kerja putih bersih; pengguna meminta tanpa latar abu-abu.
         latarMedis(FormInput, widget.ThemeConfig.SURFACE);
         scrollInput.getViewport().setBackground(widget.ThemeConfig.SURFACE);
+        scrollInput.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollInput.getViewport().addComponentListener(new java.awt.event.ComponentAdapter(){
+            @Override public void componentResized(java.awt.event.ComponentEvent e){
+                sesuaikanLebarHalamanMedis();
+            }
+        });
 
         widget.PanelBiasa sidebar = new widget.PanelBiasa(new java.awt.BorderLayout());
         latarMedis(sidebar, widget.ThemeConfig.SURFACE);
@@ -5826,6 +6239,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         isiRailMedis();
         internalFrame2.revalidate();
         internalFrame2.repaint();
+        javax.swing.SwingUtilities.invokeLater(() -> sesuaikanLebarHalamanMedis());
     }
 
     /**
@@ -6018,8 +6432,9 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         PemeriksaanLainnya.setText("");
 
         // -- M. Diagnosis (Kerja/Banding) --
-        CekDiagnosaKerja.setSelected(false); TDiagnosaKerja.setText("");
-        CekDiagnosaBanding.setSelected(false); TDiagnosaBanding.setText("");
+        CekDiagnosaKerja.setSelected(false); KdDiagnosaKerja.setText(""); TDiagnosaKerja.setText("");
+        CekDiagnosaBanding.setSelected(false); tabModeDiagnosaBandingMedis.setRowCount(0);
+        perbaruiVisibilitasDiagnosisMedis();
 
         // -- N. Konsul dr. Spesialis --
         KonsulKdDokter.setText(""); KonsulNmDokter.setText(""); KonsulKdPoli.setText(""); KonsulNmPoli.setText("");
@@ -6063,6 +6478,38 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                "<td valign='middle' width='65%' bgcolor='"+warna+"' color='#ffffff'>"+((nilai==null||nilai.trim().isEmpty())?"-":nilai)+"</td></tr>";
     }
 
+    /** Nilai dan satuan tanpa menghasilkan teks satuan menggantung saat nilai kosong. */
+    private String nilaiSatuanRingkasan(String nilai,String satuan){
+        if(nilai==null||nilai.trim().isEmpty()){
+            return "-";
+        }
+        return nilai.trim()+(satuan==null||satuan.isEmpty()?"":" "+satuan);
+    }
+
+    /**
+     * Grid ringkas dua kelompok per baris untuk angka klinis yang tidak nyaman
+     * dibaca bila dirangkai sebagai satu kalimat panjang dengan pemisah koma.
+     */
+    private String gridDuaKolomRingkasan(String[][] item){
+        StringBuilder grid = new StringBuilder();
+        grid.append("<tr class='isi'><td colspan='2' valign='top' cellpadding='0' cellspacing='0'>")
+            .append("<table width='100%' border='0' cellpadding='3px' cellspacing='0'>");
+        for(int i=0;i<item.length;i+=2){
+            grid.append("<tr>")
+                .append("<td width='22%' bgcolor='#F7F9F8'>").append(item[i][0]).append("</td>")
+                .append("<td width='28%'><b>").append(item[i][1]).append("</b></td>");
+            if(i+1<item.length){
+                grid.append("<td width='22%' bgcolor='#F7F9F8'>").append(item[i+1][0]).append("</td>")
+                    .append("<td width='28%'><b>").append(item[i+1][1]).append("</b></td>");
+            }else{
+                grid.append("<td width='22%' bgcolor='#F7F9F8'>&nbsp;</td><td width='28%'>&nbsp;</td>");
+            }
+            grid.append("</tr>");
+        }
+        grid.append("</table></td></tr>");
+        return grid.toString();
+    }
+
     /** Gabungan teks item checkbox yg tercentang (dipisah koma), "-" kalau tidak ada yg dicentang. */
     private String cekList(javax.swing.AbstractButton... cek){
         StringBuilder sb = new StringBuilder();
@@ -6099,7 +6546,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         h.append(baris("Dokter",KdDokter.getText()+" "+NmDokter.getText()));
         h.append(baris("Tgl Asuhan",TglAsuhan.getSelectedItem()==null?"-":TglAsuhan.getSelectedItem().toString()));
 
-        h.append(judulBaris("I. RIWAYAT KESEHATAN"));
+        h.append(judulBaris("RIWAYAT KESEHATAN"));
         h.append(baris("Anamnesis",Anamnesis.getSelectedItem()==null?"-":Anamnesis.getSelectedItem().toString()));
         h.append(baris("Hubungan",Hubungan.getText()));
         h.append(baris("Keluhan Utama",KeluhanUtama.getText()));
@@ -6112,7 +6559,15 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         h.append(judulBaris("PEMERIKSAAN FISIK"));
         h.append(baris("Keadaan",Keadaan.getSelectedItem()==null?"-":Keadaan.getSelectedItem().toString()));
         h.append(baris("Kesadaran",Kesadaran.getSelectedItem()==null?"-":Kesadaran.getSelectedItem().toString()));
-        h.append(baris("Tanda Vital","TD "+TD.getText()+", Nadi "+Nadi.getText()+", RR "+RR.getText()+", Suhu "+Suhu.getText()+", SpO2 "+SPO.getText()+", BB "+BB.getText()+", TB "+TB.getText()));
+        h.append(gridDuaKolomRingkasan(new String[][]{
+            {"Tekanan Darah",nilaiSatuanRingkasan(TD.getText(),"mmHg")},
+            {"Nadi",nilaiSatuanRingkasan(Nadi.getText(),"x/menit")},
+            {"Pernapasan",nilaiSatuanRingkasan(RR.getText(),"x/menit")},
+            {"Suhu",nilaiSatuanRingkasan(Suhu.getText(),"°C")},
+            {"SpO2",nilaiSatuanRingkasan(SPO.getText(),"%")},
+            {"Berat Badan",nilaiSatuanRingkasan(BB.getText(),"kg")},
+            {"Tinggi Badan",nilaiSatuanRingkasan(TB.getText(),"cm")}
+        }));
         h.append(baris("Ket. Fisik",KetFisik.getText()));
         h.append(baris("Ket. Lokalis",KetLokalis.getText()));
 
@@ -6121,28 +6576,28 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         h.append(baris("Radiologi",Radiologi.getText()));
         h.append(baris("Laborat",Laborat.getText()));
 
-        h.append(judulBaris("A. INTERVENSI PRE HOSPITAL"));
+        h.append(judulBaris("INTERVENSI PRE HOSPITAL"));
         h.append(baris("Tindakan",cekList(CekPreCervicalCollar,CekPreDefibrilasi,CekPreVtp,CekPreBalutBidai,CekPreNgt,CekPreRjp,CekPreIntubasi,CekPreDekompresiWsd,CekPreKateterUrin,CekPreInfus,CekPreTidakAda)));
         h.append(baris("Ket. Obat",TPreObatKet.getText()));
 
-        h.append(judulBaris("B. SURVEI PRIMER - JALAN NAPAS"));
+        h.append(judulBaris("SURVEI PRIMER - JALAN NAPAS"));
         h.append(baris("Kondisi",cekList(CekJnPaten,CekJnObstruksiPartial,CekJnStridor,CekJnSnoring,CekJnGurgling,CekJnWheezing,CekJnObstruksiTotal,CekJnTraumaJalanNapas,CekJnFasialLeherInhalasi,CekJnRisikoAspirasi,CekJnBendaAsing)));
         h.append(baris("Kesimpulan",pilihan(RbJnAman,RbJnMengancamJiwa)));
 
-        h.append(judulBaris("C. SURVEI PRIMER - PERNAPASAN"));
+        h.append(judulBaris("SURVEI PRIMER - PERNAPASAN"));
         h.append(baris("Pola / Reguler / Gerakan Dada",pilihan(RbNapSpontan,RbNapTidakSpontan)+" / "+pilihan(RbNapReguler,RbNapIrreguler)+" / "+pilihan(RbNapSimetris,RbNapAsimetris)));
         h.append(baris("Jejas",cekList(CekNapJejasKanan,CekNapJejasKiri)));
         h.append(baris("Tipe Napas",cekList(CekNapTipeNormal,CekNapTipeTakipneu,CekNapTipeKussmaul,CekNapTipeHiperventilasi,CekNapTipeBiot,CekNapTipeCheyneStoke,CekNapTipeApneustic,CekNapTipeRetraktif,CekNapTipeFlare)));
         h.append(baris("Kesimpulan",pilihan(RbNapAman,RbNapMengancamJiwa)));
 
-        h.append(judulBaris("D. SURVEI PRIMER - SIRKULASI"));
+        h.append(judulBaris("SURVEI PRIMER - SIRKULASI"));
         h.append(baris("Nadi",pilihan(RbSirReguler,RbSirIrreguler)+", "+pilihan(RbSirKuat,RbSirLemah)));
         h.append(baris("Kulit",pilihan(RbSirKulitNormal,RbSirKulitPucat)+", "+pilihan(RbSirJaundice,RbSirCyanosis)+(CekSirBerkeringat.isSelected()?", Berkeringat":"")));
         h.append(baris("Akral",pilihan(RbSirHangat,RbSirDingin)+", "+pilihan(RbSirKering,RbSirBasah)));
         h.append(baris("CRT",pilihan(RbSirCrtKurang2,RbSirCrtLebih2)));
         h.append(baris("Kesimpulan",pilihan(RbSirAman,RbSirMengancamJiwa)));
 
-        h.append(judulBaris("E. KATEGORI PASIEN"));
+        h.append(judulBaris("KATEGORI PASIEN"));
         String kategoriPasienStr = KategoriPasien.getSelectedItem()==null?"":KategoriPasien.getSelectedItem().toString();
         h.append(baris("Kategori Pasien",kategoriPasienStr));
         if("Bayi Baru Lahir".equals(kategoriPasienStr)){
@@ -6150,62 +6605,76 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             h.append(baris("PAT","Penampilan: "+TPatPenampilan.getText()+", Usaha Napas: "+TPatUsahaNapas.getText()+", Perfusi Kulit: "+TPatPerfusiKulit.getText()));
         }
 
-        h.append(judulBaris("F. DISABILITAS"));
+        h.append(judulBaris("DISABILITAS"));
         h.append(baris("GCS","E"+TGcsE.getText()+" V"+TGcsV.getText()+" M"+TGcsM.getText()));
         h.append(baris("Pupil",pilihan(RbPupilIsokor,RbPupilAnisokor)+" (Kiri: "+TDiameterPupilKiri.getText()+", Kanan: "+TDiameterPupilKanan.getText()+")"));
         h.append(baris("Reflek Cahaya","Kiri: "+pilihan(RbReflekKiriPositif,RbReflekKiriNegatif)+", Kanan: "+pilihan(RbReflekKananPositif,RbReflekKananNegatif)));
         h.append(baris("Meningeal Signs",TMeningealSigns.getText()));
         h.append(baris("Lateralisasi",pilihan(RbLateralisasiKanan,RbLateralisasiKiri,RbLateralisasiTidakAda)));
 
-        h.append(judulBaris("G. EKSPOSUR"));
+        h.append(judulBaris("EKSPOSUR"));
         h.append(baris("Kondisi",cekList(CekEksDeformitas,CekEksEkskoriasi,CekEksContusio,CekEksAbrasi,CekEksPenetrasi,CekEksBurn,CekEksTenderness,CekEksLaserasi,CekEksSwelling,CekEksTidakTampakJelas)));
 
-        h.append(judulBaris("H. KEPALA LEHER"));
+        h.append(judulBaris("KEPALA LEHER"));
         h.append(baris("Konjungtiva / Sklera",pilihan(RbKonjungtivaPucat,RbKonjungtivaPink)+" / "+pilihan(RbSkleraIkterik,RbSkleraTidakIkterik)));
         h.append(baris("Bibir/Lidah / Mukosa Mulut",pilihan(RbBibirLidahSianosis,RbBibirLidahTidakSianosis)+" / "+pilihan(RbMukosaKering,RbMukosaBasah)));
 
-        h.append(judulBaris("I. LEHER RINCI"));
+        h.append(judulBaris("LEHER RINCI"));
         h.append(baris("Deviasi Trakea",pilihan(RbDeviasiKanan,RbDeviasiKiri,RbDeviasiTidakAda)));
         h.append(baris("JVP / LNN / Tiroid",pilihan(RbJvpMeningkat,RbJvpTidak)+" / "+pilihan(RbLnnTeraba,RbLnnTidak)+" / "+pilihan(RbTiroidTeraba,RbTiroidTidak)));
 
-        h.append(judulBaris("J. THORAX"));
+        h.append(judulBaris("THORAX"));
         h.append(baris("Jantung",TJantung.getText()));
         h.append(baris("Paru",TParu.getText()));
 
-        h.append(judulBaris("K. ABDOMEN & PELVIS"));
+        h.append(judulBaris("ABDOMEN & PELVIS"));
         h.append(baris("Punggung/Pinggang",TPunggungPinggang.getText()));
         h.append(baris("Ekstremitas & Pelvis",TEkstremitasPelvis.getText()));
 
-        h.append(judulBaris("L. PEMERIKSAAN LAINNYA"));
+        h.append(judulBaris("PEMERIKSAAN LAINNYA"));
         h.append(baris("Keterangan",PemeriksaanLainnya.getText()));
 
-        h.append(judulBaris("M. DIAGNOSIS"));
-        h.append(baris("Diagnosa Kerja",(CekDiagnosaKerja.isSelected()?"[X] ":"[ ] ")+TDiagnosaKerja.getText()));
-        h.append(baris("Diagnosa Banding",(CekDiagnosaBanding.isSelected()?"[X] ":"[ ] ")+TDiagnosaBanding.getText()));
+        h.append(judulBaris("DIAGNOSIS"));
+        h.append(baris("Diagnosa Kerja",(CekDiagnosaKerja.isSelected()?"[X] ":"[ ] ")+teksDiagnosisKerjaMedis()));
+        h.append(baris("Diagnosa Banding",(CekDiagnosaBanding.isSelected()?"[X] ":"[ ] ")+teksDiagnosisBandingMedis()));
 
-        h.append(judulBaris("N. KONSUL DR. SPESIALIS"));
+        h.append(judulBaris("KONSUL DR. SPESIALIS"));
         h.append(baris("Dokter",KonsulKdDokter.getText().trim().isEmpty()?"-":KonsulKdDokter.getText()+" "+KonsulNmDokter.getText()));
         h.append(baris("Unit/Poli",KonsulKdPoli.getText().trim().isEmpty()?"-":KonsulKdPoli.getText()+" "+KonsulNmPoli.getText()));
 
-        h.append(judulBaris("O. EDUKASI"));
+        h.append(judulBaris("EDUKASI"));
         h.append(baris("Status",CekEdukasiDiberikan.isSelected()?"Diberikan":(CekEdukasiTidakBisa.isSelected()?"Tidak Bisa ("+TEdukasiTidakBisaKet.getText()+")":"-")));
 
-        h.append(judulBaris("P. KONDISI SAAT PULANG"));
+        h.append(judulBaris("KONDISI SAAT PULANG"));
         String kondisiPulangStr = pilihan(RbKondisiMembaik,RbKondisiMemburuk,RbKondisiTetap,RbKondisiMeninggal,RbKondisiDoa);
         h.append(barisWarna("Kondisi Pulang",kondisiPulangStr+(RbKondisiMeninggal.isSelected()?(", Meninggal "+DTPKondisiPulangJam.getTampil()):""),
             RbKondisiMeninggal.isSelected()||RbKondisiDoa.isSelected()||RbKondisiMemburuk.isSelected()?"#AA0000":"#00AA00"));
 
-        h.append(judulBaris("Q. TANDA VITAL TERAKHIR"));
-        h.append(baris("Tanda Vital","TD "+TTdAkhir.getText()+", Nadi "+TNadiAkhir.getText()+", RR "+TRrAkhir.getText()+", Suhu "+TSuhuAkhir.getText()));
+        h.append(judulBaris("TANDA VITAL TERAKHIR"));
+        h.append(gridDuaKolomRingkasan(new String[][]{
+            {"Tekanan Darah",nilaiSatuanRingkasan(TTdAkhir.getText(),"mmHg")},
+            {"Nadi",nilaiSatuanRingkasan(TNadiAkhir.getText(),"x/menit")},
+            {"Pernapasan",nilaiSatuanRingkasan(TRrAkhir.getText(),"x/menit")},
+            {"Suhu",nilaiSatuanRingkasan(TSuhuAkhir.getText(),"°C")}
+        }));
 
         LoadHTML.setText(
             "<html><table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
             h.toString()+
             "</table></html>"
         );
-        // JEditorPane scroll ke bawah dokumen setelah setText() (kuirk Swing
-        // baku) - paksa kembali ke atas, sama pola RMPenilaianAwalKeperawatanIGD.
+        posisikanRingkasanHtmlKeAtas();
+    }
+
+    /** Pastikan ringkasan dibuka dari awal setelah layout HTML selesai. */
+    private void posisikanRingkasanHtmlKeAtas(){
         LoadHTML.setCaretPosition(0);
+        ScrollHTML.getViewport().setViewPosition(new java.awt.Point(0, 0));
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            LoadHTML.setCaretPosition(0);
+            ScrollHTML.getVerticalScrollBar().setValue(ScrollHTML.getVerticalScrollBar().getMinimum());
+            ScrollHTML.getViewport().setViewPosition(new java.awt.Point(0, 0));
+        });
     }
 
     private void getData() {
@@ -6458,9 +6927,11 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
 
                         // -- M. Diagnosis (Kerja/Banding) --
                         CekDiagnosaKerja.setSelected("Ya".equals(rsData.getString("diagnosa_kerja_cek")));
+                        KdDiagnosaKerja.setText(rsData.getString("diagnosa_kerja_kd"));
                         TDiagnosaKerja.setText(rsData.getString("diagnosa_kerja"));
                         CekDiagnosaBanding.setSelected("Ya".equals(rsData.getString("diagnosa_banding_cek")));
-                        TDiagnosaBanding.setText(rsData.getString("diagnosa_banding"));
+                        muatDiagnosisBandingMedis(noRawat,rsData.getString("diagnosa_banding"));
+                        perbaruiVisibilitasDiagnosisMedis();
 
                         // -- N. Konsul dr. Spesialis --
                         KonsulKdDokter.setText(rsData.getString("konsul_kd_dokter"));
@@ -6637,7 +7108,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
 
         "pemeriksaan_lainnya",
 
-        "diagnosa_kerja_cek","diagnosa_kerja","diagnosa_banding_cek","diagnosa_banding",
+        "diagnosa_kerja_cek","diagnosa_kerja_kd","diagnosa_kerja","diagnosa_banding_cek","diagnosa_banding",
 
         "konsul_kd_dokter","konsul_kd_poli",
 
@@ -6735,7 +7206,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
 
             PemeriksaanLainnya.getText(),
 
-            ya(CekDiagnosaKerja),TDiagnosaKerja.getText(),ya(CekDiagnosaBanding),TDiagnosaBanding.getText(),
+            ya(CekDiagnosaKerja),KdDiagnosaKerja.getText(),TDiagnosaKerja.getText(),
+            ya(CekDiagnosaBanding),teksDiagnosisBandingMedis(),
 
             KonsulKdDokter.getText(),KonsulKdPoli.getText(),
 
@@ -6745,6 +7217,33 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
 
             TTdAkhir.getText(),TNadiAkhir.getText(),TRrAkhir.getText(),TSuhuAkhir.getText()
         };
+    }
+
+    private void simpanDiagnosisBandingMedis(String noRawat) throws SQLException{
+        PreparedStatement psHapusDiagnosis = koneksi.prepareStatement(
+            "delete from penilaian_medis_igd_diagnosa_banding where no_rawat=?");
+        try{
+            psHapusDiagnosis.setString(1,noRawat);
+            psHapusDiagnosis.executeUpdate();
+        }finally{
+            psHapusDiagnosis.close();
+        }
+        PreparedStatement psSimpanDiagnosis = koneksi.prepareStatement(
+            "insert into penilaian_medis_igd_diagnosa_banding(no_rawat,kd_penyakit,urutan) values(?,?,?)");
+        try{
+            int urutan = 1;
+            for(int i=0;i<tabModeDiagnosaBandingMedis.getRowCount();i++){
+                String kode = tabModeDiagnosaBandingMedis.getValueAt(i,0).toString().trim();
+                if(kode.isEmpty()){ continue; }
+                psSimpanDiagnosis.setString(1,noRawat);
+                psSimpanDiagnosis.setString(2,kode);
+                psSimpanDiagnosis.setInt(3,urutan++);
+                psSimpanDiagnosis.addBatch();
+            }
+            psSimpanDiagnosis.executeBatch();
+        }finally{
+            psSimpanDiagnosis.close();
+        }
     }
 
     private void ganti() {
@@ -6759,7 +7258,29 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         System.arraycopy(nilai,0,param,0,nilai.length);
         param[nilai.length] = tbObat.getValueAt(tbObat.getSelectedRow(),0).toString();
 
-        if(Sequel.mengedittf("penilaian_medis_igd","no_rawat=?",set.toString(),param.length,param)==true){
+        boolean autoCommitLama = true;
+        boolean sukses = false;
+        try{
+            autoCommitLama = koneksi.getAutoCommit();
+            if(autoCommitLama){ koneksi.setAutoCommit(false); }
+            if(!Sequel.mengedittf("penilaian_medis_igd","no_rawat=?",set.toString(),param.length,param)){
+                throw new SQLException("Pembaruan data induk RM 03-2 gagal");
+            }
+            simpanDiagnosisBandingMedis(param[param.length-1]);
+            if(autoCommitLama){ koneksi.commit(); }
+            sukses = true;
+        }catch(Exception e){
+            if(autoCommitLama){
+                try{ koneksi.rollback(); }catch(Exception rollbackError){ System.out.println("Notif rollback Ganti RM 03-2 : "+rollbackError); }
+            }
+            System.out.println("Notif Ganti RM 03-2 : "+e);
+            JOptionPane.showMessageDialog(null,"Maaf, gagal mengganti data penilaian medis IGD.");
+        }finally{
+            if(autoCommitLama){
+                try{ koneksi.setAutoCommit(true); }catch(Exception e){ System.out.println("Notif autoCommit Ganti RM 03-2 : "+e); }
+            }
+        }
+        if(sukses){
             tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),0);
             tbObat.setValueAt(TNoRM.getText(),tbObat.getSelectedRow(),1);
             tbObat.setValueAt(TPasien.getText(),tbObat.getSelectedRow(),2);
@@ -6796,7 +7317,10 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         System.arraycopy(nilai,0,param,1,nilai.length);
 
         boolean sukses = false;
+        boolean autoCommitLama = true;
         try{
+            autoCommitLama = koneksi.getAutoCommit();
+            if(autoCommitLama){ koneksi.setAutoCommit(false); }
             PreparedStatement psSimpan = koneksi.prepareStatement(
                 "insert into penilaian_medis_igd ("+kolom+") values ("+placeholder+")");
             try{
@@ -6804,13 +7328,22 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                     psSimpan.setString(i+1,param[i]);
                 }
                 psSimpan.executeUpdate();
-                sukses = true;
             } finally {
                 if(psSimpan!=null){ psSimpan.close(); }
             }
+            simpanDiagnosisBandingMedis(TNoRw.getText());
+            if(autoCommitLama){ koneksi.commit(); }
+            sukses = true;
         }catch(Exception e){
+            if(autoCommitLama){
+                try{ koneksi.rollback(); }catch(Exception rollbackError){ System.out.println("Notif rollback Simpan RM 03-2 : "+rollbackError); }
+            }
             System.out.println("Notif Simpan RM 03-2 : "+e);
             JOptionPane.showMessageDialog(null,"Maaf, gagal menyimpan data. Kemungkinan No.Rawat yang sama sudah dimasukkan sebelumnya...!");
+        }finally{
+            if(autoCommitLama){
+                try{ koneksi.setAutoCommit(true); }catch(Exception e){ System.out.println("Notif autoCommit Simpan RM 03-2 : "+e); }
+            }
         }
 
         if(sukses){

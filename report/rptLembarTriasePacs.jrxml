@@ -765,11 +765,20 @@ where data_triase_igd.no_rawat = $P{norawat}]]>
 				</jr:QRCode>
 			</componentElement>
 			<textField isBlankWhenNull="true">
-				<reportElement x="374" y="678" width="190" height="12"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7.5"/></textElement>
-				<textFieldExpression><![CDATA["( " + ($F{petugas_nama}==null?"..................................................":$F{petugas_nama}) + " )"]]></textFieldExpression>
+				<reportElement x="374" y="676" width="190" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{petugas_nama}==null?"":$F{petugas_nama}]]></textFieldExpression>
 			</textField>
-			<staticText><reportElement x="374" y="691" width="190" height="11"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[Tanda Tangan dan Nama]]></text></staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="374" y="689" width="190" height="11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
+				<textFieldExpression><![CDATA[$P{nikpetugas}==null||$P{nikpetugas}.trim().isEmpty()?"":"NIP : "+$P{nikpetugas}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="374" y="701" width="190" height="11" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
+				<textFieldExpression><![CDATA[$P{noijinpraktek}==null||$P{noijinpraktek}.trim().isEmpty()?"":"No. SIP : "+$P{noijinpraktek}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 </jasperReport>

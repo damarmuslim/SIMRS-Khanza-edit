@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.0.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="609" pageHeight="935" columnWidth="569" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="34c13d5a-cd6b-451e-8001-9fd298d2274a">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="612" pageHeight="1008" columnWidth="558" leftMargin="27" rightMargin="27" topMargin="20" bottomMargin="20" uuid="34c13d5a-cd6b-451e-8001-9fd298d2274a">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -15,12 +15,13 @@
 	<parameter name="finger" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[select penilaian_medis_igd.*, reg_periksa.no_rkm_medis, pasien.nm_pasien, pasien.tgl_lahir,
-if(pasien.jk='L','Laki-Laki','Perempuan') as jk, dokter.nm_dokter, dokter.no_ijn_praktek,
+if(pasien.jk='L','Laki-Laki','Perempuan') as jk, dokter.nm_dokter, coalesce(pegawai_dokter.nik,dokter.kd_dokter) as nip_dokter, dokter.no_ijn_praktek,
 TIMESTAMPDIFF(YEAR, pasien.tgl_lahir, CURDATE()) as umur, reg_periksa.tgl_registrasi, reg_periksa.jam_reg,
 konsul_dokter.nm_dokter as konsul_nm_dokter, poliklinik.nm_poli as konsul_nm_poli
 from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis
 inner join penilaian_medis_igd on reg_periksa.no_rawat=penilaian_medis_igd.no_rawat
 inner join dokter on penilaian_medis_igd.kd_dokter=dokter.kd_dokter
+left join pegawai pegawai_dokter on pegawai_dokter.nik=dokter.kd_dokter
 left join dokter konsul_dokter on konsul_dokter.kd_dokter=penilaian_medis_igd.konsul_kd_dokter
 left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 	</queryString>
@@ -35,6 +36,7 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 	<field name="tanggal" class="java.sql.Timestamp"/>
 	<field name="kd_dokter" class="java.lang.String"/>
 	<field name="nm_dokter" class="java.lang.String"/>
+	<field name="nip_dokter" class="java.lang.String"/>
 	<field name="no_ijn_praktek" class="java.lang.String"/>
 	<field name="anamnesis" class="java.lang.String"/>
 	<field name="hubungan" class="java.lang.String"/>
@@ -162,40 +164,40 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 	<field name="nadi_akhir" class="java.lang.String"/>
 	<field name="rr_akhir" class="java.lang.String"/>
 	<field name="suhu_akhir" class="java.lang.String"/>
-	<detail>
-		<band height="52">
+	<title>
+		<band height="52" splitType="Prevent">
 			<image scaleImage="FillFrame" isUsingCache="true" onErrorType="Blank">
 				<reportElement positionType="Float" x="1" y="2" width="45" height="45"/>
 				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="50" y="1" width="295" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="11"/>
+					<font fontName="Times New Roman" size="11"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="50" y="16" width="295" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{alamatrs}+", "+$P{kotars}+", "+$P{propinsirs}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="50" y="27" width="295" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{kontakrs}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="50" y="38" width="295" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["E-mail : "+$P{emailrs}]]></textFieldExpression>
@@ -206,15 +208,15 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="354" y="1" width="62" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[No. RM :]]></text>
 			</staticText>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="419" y="1" width="132" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{no_rkm_medis}]]></textFieldExpression>
@@ -222,7 +224,7 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="354" y="12" width="62" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Nama :]]></text>
@@ -230,7 +232,7 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="419" y="12" width="132" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nm_pasien}+($F{jk}==null?"":" ("+$F{jk}+")")]]></textFieldExpression>
@@ -238,15 +240,15 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="354" y="23" width="62" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Tgl Lahir/Umur :]]></text>
 			</staticText>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="419" y="23" width="132" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{tgl_lahir}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_lahir}))+($F{umur}==null?"":" / "+$F{umur}+" th")]]></textFieldExpression>
@@ -254,15 +256,15 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="354" y="34" width="62" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Tgl Masuk RS :]]></text>
 			</staticText>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="419" y="34" width="132" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
+					<font fontName="Times New Roman" size="7"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{tgl_registrasi}==null?"-":new java.text.SimpleDateFormat("dd-MM-yyyy").format($F{tgl_registrasi}))+($F{jam_reg}==null?"":" "+new java.text.SimpleDateFormat("HH:mm").format($F{jam_reg}))]]></textFieldExpression>
@@ -274,11 +276,13 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="42">
+	</title>
+	<detail>
+		<band height="42" splitType="Prevent">
 			<staticText>
 				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="556" height="17" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9" isBold="true"/>
+					<font fontName="Times New Roman" size="10" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[PENGKAJIAN AWAL MEDIS GAWAT DARURAT (RM 03-2)]]></text>
@@ -286,7 +290,7 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="3" y="18" width="200" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Mulai Penanganan]]></text>
@@ -294,7 +298,7 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="3" y="29" width="40" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Times New Roman" size="8"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Tanggal]]></text>
@@ -302,15 +306,15 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="43" y="29" width="7" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Times New Roman" size="8"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField pattern="dd/MM/yyyy">
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
 				<reportElement positionType="Float" x="50" y="29" width="130" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tanggal}]]></textFieldExpression>
@@ -318,7 +322,7 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="290" y="29" width="30" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Times New Roman" size="8"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Pukul]]></text>
@@ -326,15 +330,15 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="320" y="29" width="7" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Times New Roman" size="8"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField pattern="HH:mm:ss">
+			<textField isStretchWithOverflow="true" pattern="HH:mm:ss">
 				<reportElement positionType="Float" x="327" y="29" width="100" height="11"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tanggal}]]></textFieldExpression>
@@ -342,27 +346,27 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<line>
 				<reportElement positionType="Float" x="0" y="41" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="42"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="42"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="58">
+		<band height="58" splitType="Prevent">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="555" height="14" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[I. INTERVENSI PRE HOSPITAL]]></text>
@@ -373,131 +377,164 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
-			<textField>
-				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_cervical_collar}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="3" y="17" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="3" y="17" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_cervical_collar}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="15" y="16" width="90" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Cervical Collar]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="115" y="17" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_defibrilasi}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="115" y="17" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="115" y="17" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_defibrilasi}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="127" y="16" width="68" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Defibrilasi]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="205" y="17" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_vtp}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="205" y="17" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="205" y="17" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_vtp}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="217" y="16" width="23" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[VTP]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="250" y="17" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_balut_bidai}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="250" y="17" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="250" y="17" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_balut_bidai}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="262" y="16" width="68" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Balut Bidai]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="340" y="17" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_ngt}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="340" y="17" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="340" y="17" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_ngt}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="352" y="16" width="23" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[NGT]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="385" y="17" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_rjp}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="385" y="17" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="385" y="17" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_rjp}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="397" y="16" width="23" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[RJP]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="430" y="17" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_intubasi}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="430" y="17" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="430" y="17" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_intubasi}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="442" y="16" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Intubasi]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_dekompresi_wsd}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="3" y="30" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="3" y="30" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_dekompresi_wsd}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="15" y="29" width="85" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Dekompresi/WSD]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="110" y="30" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_kateter_urin}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="110" y="30" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="110" y="30" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_kateter_urin}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="122" y="29" width="74" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Kateter Urin]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="206" y="30" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_infus}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="206" y="30" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="206" y="30" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_infus}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="218" y="29" width="34" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Infus]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="262" y="30" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{pre_tidak_ada}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="262" y="30" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="262" y="30" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{pre_tidak_ada}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="274" y="29" width="57" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Tidak Ada]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="43" width="549" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Obat/Cairan yang diberikan : "+$F{pre_obat_ket}]]></textFieldExpression>
@@ -505,27 +542,27 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<line>
 				<reportElement positionType="Float" x="0" y="57" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="58"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="58"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="185">
+		<band height="185" splitType="Prevent">
 			<staticText>
 				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="556" height="15" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[SURVEI PRIMER]]></text>
@@ -533,7 +570,7 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="3" y="16" width="176" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[JALAN NAPAS]]></text>
@@ -541,7 +578,7 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="190" y="16" width="176" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[PERNAPASAN]]></text>
@@ -549,593 +586,740 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<staticText>
 				<reportElement positionType="Float" x="376" y="16" width="176" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[SIRKULASI]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="29" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_paten}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="29" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="29" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_paten}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="28" width="34" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="28" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Paten]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="39" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_obstruksi_partial}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="39" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="39" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_obstruksi_partial}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="38" width="102" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="38" width="102" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Obstruksi Partial]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="49" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_stridor}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="49" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="49" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_stridor}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="48" width="46" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="48" width="46" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Stridor]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="59" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_snoring}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="59" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="59" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_snoring}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="58" width="46" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="58" width="46" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Snoring]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="69" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_gurgling}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="69" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="69" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_gurgling}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="68" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="68" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Gurgling]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="79" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_wheezing}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="79" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="79" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_wheezing}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="78" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="78" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Wheezing]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="89" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_obstruksi_total}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="89" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="89" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_obstruksi_total}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="88" width="90" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="88" width="90" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Obstruksi Total]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="99" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_trauma_jalan_napas}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="99" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="99" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_trauma_jalan_napas}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="98" width="107" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="98" width="107" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Trauma Jalan Napas]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="109" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_fasial_leher_inhalasi}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="109" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="109" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_fasial_leher_inhalasi}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="108" width="124" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="108" width="124" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Fasial/Leher/Inhalasi]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="119" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_risiko_aspirasi}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="119" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="119" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_risiko_aspirasi}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="118" width="90" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="118" width="90" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Risiko Aspirasi]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="129" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{jn_benda_asing}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="129" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="129" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{jn_benda_asing}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="128" width="68" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="128" width="68" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Benda Asing]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="3" y="138" width="100" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="8" y="138" width="100" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Kesimpulan :]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="150" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Aman".equals($F{jn_kesimpulan})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="8" y="150" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="150" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Aman".equals($F{jn_kesimpulan})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="15" y="149" width="29" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="20" y="149" width="29" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Aman]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="52" y="150" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Mengancam Jiwa".equals($F{jn_kesimpulan})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="57" y="150" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="57" y="150" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Mengancam Jiwa".equals($F{jn_kesimpulan})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="64" y="149" width="85" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="69" y="149" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Mengancam Jiwa]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="190" y="29" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Spontan".equals($F{nap_pola})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="195" y="29" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="29" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Spontan".equals($F{nap_pola})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="28" width="46" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="207" y="28" width="46" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Spontan]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="256" y="29" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Tidak Spontan".equals($F{nap_pola})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="278" y="29" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="278" y="29" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Tidak Spontan".equals($F{nap_pola})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="268" y="28" width="79" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="290" y="28" width="78" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Tidak Spontan]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="190" y="39" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Reguler".equals($F{nap_reguler})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="195" y="39" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="39" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Reguler".equals($F{nap_reguler})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="38" width="46" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="207" y="38" width="46" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Reguler]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="256" y="39" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Irreguler".equals($F{nap_reguler})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="278" y="39" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="278" y="39" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Irreguler".equals($F{nap_reguler})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="268" y="38" width="57" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="290" y="38" width="78" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Irreguler]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="190" y="49" width="100" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="195" y="49" width="100" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
 				<text><![CDATA[Gerakan Dada :]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="190" y="60" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Simetris".equals($F{nap_gerakan_dada})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="195" y="60" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="60" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Simetris".equals($F{nap_gerakan_dada})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="59" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="207" y="59" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Simetris]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="261" y="60" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Asimetris".equals($F{nap_gerakan_dada})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="278" y="60" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="278" y="60" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Asimetris".equals($F{nap_gerakan_dada})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="273" y="59" width="57" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="290" y="59" width="78" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Asimetris]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="190" y="70" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_jejas_kanan}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="195" y="70" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="70" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_jejas_kanan}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="69" width="68" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="207" y="69" width="68" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Jejas Kanan]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="278" y="70" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_jejas_kiri}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="278" y="70" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="278" y="70" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_jejas_kiri}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="290" y="69" width="62" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="290" y="69" width="78" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Jejas Kiri]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="190" y="80" width="120" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="195" y="80" width="120" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
 				<text><![CDATA[Tipe Pernapasan :]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="190" y="91" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_tipe_normal}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="195" y="91" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="91" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_tipe_normal}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="90" width="40" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="207" y="90" width="40" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Normal]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="250" y="91" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_tipe_takipneu}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="278" y="91" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="278" y="91" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_tipe_takipneu}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="262" y="90" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="290" y="90" width="78" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Takipneu]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="190" y="101" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_tipe_kussmaul}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="195" y="101" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="101" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_tipe_kussmaul}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="100" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="207" y="100" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Kussmaul]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="261" y="101" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_tipe_hiperventilasi}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="278" y="101" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="278" y="101" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_tipe_hiperventilasi}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="273" y="100" width="85" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="290" y="100" width="78" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Hiperventilasi]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="190" y="111" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_tipe_biot}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="195" y="111" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="111" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_tipe_biot}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="110" width="29" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="207" y="110" width="29" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Biot]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="239" y="111" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_tipe_cheyne_stoke}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="278" y="111" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="278" y="111" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_tipe_cheyne_stoke}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="251" y="110" width="74" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="290" y="110" width="78" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Cheyne Stoke]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="190" y="121" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_tipe_apneustic}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="195" y="121" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="121" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_tipe_apneustic}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="120" width="57" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="207" y="120" width="57" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Apneustic]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="267" y="121" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_tipe_retraktif}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="278" y="121" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="278" y="121" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_tipe_retraktif}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="279" y="120" width="57" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="290" y="120" width="78" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Retraktif]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="190" y="131" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{nap_tipe_flare}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="195" y="131" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="131" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{nap_tipe_flare}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="130" width="34" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="207" y="130" width="34" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Flare]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="190" y="141" width="100" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="195" y="141" width="100" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Kesimpulan :]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="190" y="153" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Aman".equals($F{nap_kesimpulan})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="195" y="153" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="153" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Aman".equals($F{nap_kesimpulan})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="152" width="29" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="207" y="152" width="29" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Aman]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="239" y="153" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Mengancam Jiwa".equals($F{nap_kesimpulan})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="278" y="153" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="278" y="153" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Mengancam Jiwa".equals($F{nap_kesimpulan})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="251" y="152" width="85" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="290" y="152" width="78" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Mengancam Jiwa]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="376" y="28" width="60" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="381" y="28" width="60" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
 				<text><![CDATA[Nadi :]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="39" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Reguler".equals($F{sir_nadi})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="381" y="39" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="381" y="39" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Reguler".equals($F{sir_nadi})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="38" width="46" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="393" y="38" width="46" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Reguler]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="442" y="39" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Irreguler".equals($F{sir_nadi})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="455" y="39" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="455" y="39" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Irreguler".equals($F{sir_nadi})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="454" y="38" width="57" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="467" y="38" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Irreguler]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="49" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Kuat".equals($F{sir_nadi_kekuatan})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="381" y="49" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="381" y="49" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Kuat".equals($F{sir_nadi_kekuatan})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="48" width="29" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="393" y="48" width="29" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Kuat]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="425" y="49" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Lemah".equals($F{sir_nadi_kekuatan})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="455" y="49" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="455" y="49" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Lemah".equals($F{sir_nadi_kekuatan})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="437" y="48" width="34" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="467" y="48" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Lemah]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="376" y="59" width="100" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="381" y="59" width="100" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
 				<text><![CDATA[Kulit/Mukosa :]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="70" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Normal".equals($F{sir_kulit_warna})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="381" y="70" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="381" y="70" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Normal".equals($F{sir_kulit_warna})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="69" width="40" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="393" y="69" width="40" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Normal]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="436" y="70" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Pucat".equals($F{sir_kulit_warna})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="455" y="70" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="455" y="70" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Pucat".equals($F{sir_kulit_warna})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="448" y="69" width="34" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="467" y="69" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Pucat]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="80" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Jaundice".equals($F{sir_kulit_kondisi})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="381" y="80" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="381" y="80" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Jaundice".equals($F{sir_kulit_kondisi})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="79" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="393" y="79" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Jaundice]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="447" y="80" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Cyanosis".equals($F{sir_kulit_kondisi})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="455" y="80" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="455" y="80" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Cyanosis".equals($F{sir_kulit_kondisi})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="459" y="79" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="467" y="79" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Cyanosis]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="90" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{sir_berkeringat}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="381" y="90" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="381" y="90" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{sir_berkeringat}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="89" width="68" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="393" y="89" width="68" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Berkeringat]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="376" y="100" width="60" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="381" y="100" width="60" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
 				<text><![CDATA[Akral :]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="111" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Hangat".equals($F{sir_akral})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="381" y="111" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="381" y="111" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Hangat".equals($F{sir_akral})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="110" width="40" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="393" y="110" width="40" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Hangat]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="436" y="111" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Dingin".equals($F{sir_akral})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="455" y="111" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="455" y="111" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Dingin".equals($F{sir_akral})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="448" y="110" width="40" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="467" y="110" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Dingin]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="121" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Kering".equals($F{sir_akral_kondisi})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="381" y="121" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="381" y="121" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Kering".equals($F{sir_akral_kondisi})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="120" width="40" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="393" y="120" width="40" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Kering]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="436" y="121" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Basah".equals($F{sir_akral_kondisi})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="455" y="121" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="455" y="121" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Basah".equals($F{sir_akral_kondisi})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="448" y="120" width="34" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="467" y="120" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Basah]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="376" y="131" width="60" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="381" y="131" width="60" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
 				<text><![CDATA[CRT :]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="142" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["<2 detik".equals($F{sir_crt})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="381" y="142" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="381" y="142" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["<2 detik".equals($F{sir_crt})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="141" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="393" y="141" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[<2 detik]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="447" y="142" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[">2 detik".equals($F{sir_crt})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="455" y="142" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="455" y="142" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[">2 detik".equals($F{sir_crt})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="459" y="141" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="467" y="141" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[>2 detik]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="376" y="152" width="100" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="381" y="152" width="100" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Kesimpulan :]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="164" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Aman".equals($F{sir_kesimpulan})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="381" y="164" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="381" y="164" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Aman".equals($F{sir_kesimpulan})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="163" width="29" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="393" y="163" width="29" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Aman]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="425" y="164" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Mengancam Jiwa".equals($F{sir_kesimpulan})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="455" y="164" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="455" y="164" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Mengancam Jiwa".equals($F{sir_kesimpulan})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="437" y="163" width="85" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="467" y="163" width="85" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Mengancam Jiwa]]></text>
 			</staticText>
 
@@ -1154,43 +1338,43 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<line>
 				<reportElement positionType="Float" x="0" y="184" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="185"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="185"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="140">
+		<band height="140" splitType="Prevent">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="2" width="176" height="11"/>
+				<reportElement positionType="Float" x="3" y="2" width="225" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
+					<font fontName="Times New Roman" size="7" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[PENILAIAN BAYI BARU LAHIR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="190" y="2" width="176" height="11"/>
+				<reportElement positionType="Float" x="239" y="2" width="180" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
+					<font fontName="Times New Roman" size="7" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[DISABILITAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="376" y="2" width="176" height="11"/>
+				<reportElement positionType="Float" x="428" y="2" width="125" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
+					<font fontName="Times New Roman" size="7" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[EKSPOSUR]]></text>
@@ -1201,20 +1385,20 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
-			<textField>
-				<reportElement positionType="Float" x="3" y="17" width="176" height="11"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="3" y="17" width="225" height="11"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="7" isBold="false"/>
+					<font fontName="Times New Roman" size="7" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Kategori Pasien : "+$F{kategori_pasien}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="29" width="176" height="105">
+				<reportElement positionType="Float" x="3" y="29" width="225" height="105">
 					<printWhenExpression><![CDATA[$F{kategori_pasien}.equals("Bayi Baru Lahir")]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="7" isBold="false"/>
+					<font fontName="Times New Roman" size="7" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Cukup Bulan : "+$F{apgar_cukup_bulan}+"\n"+
@@ -1227,181 +1411,217 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 "Perfusi Kulit : "+$F{pat_perfusi_kulit}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="190" y="17" width="176" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="239" y="17" width="180" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<textFieldExpression><![CDATA["GCS (E,V,M) : "+$F{gcs_e}+"/"+$F{gcs_v}+"/"+$F{gcs_m}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="190" y="28" width="176" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="239" y="28" width="180" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<textFieldExpression><![CDATA["Kesadaran : "+$F{kesadaran}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement positionType="Float" x="190" y="40" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Isokor".equals($F{pupil})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="239" y="40" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="239" y="40" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Isokor".equals($F{pupil})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="202" y="39" width="40" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="250" y="39" width="40" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Isokor]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="250" y="40" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA["Anisokor".equals($F{pupil})? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="315" y="40" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="315" y="40" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Anisokor".equals($F{pupil})? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="262" y="39" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="326" y="39" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Anisokor]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="190" y="50" width="176" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="239" y="50" width="180" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<textFieldExpression><![CDATA["Diameter Kiri/Kanan : "+$F{diameter_pupil_kiri}+"/"+$F{diameter_pupil_kanan}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="190" y="61" width="176" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="239" y="61" width="180" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<textFieldExpression><![CDATA["Reflek Cahaya Kiri : "+($F{refleks_cahaya_kiri}==null?"-":$F{refleks_cahaya_kiri})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="190" y="72" width="176" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="239" y="72" width="180" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<textFieldExpression><![CDATA["Reflek Cahaya Kanan : "+($F{refleks_cahaya_kanan}==null?"-":$F{refleks_cahaya_kanan})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="190" y="83" width="176" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="239" y="83" width="180" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<textFieldExpression><![CDATA["Meningeal Signs : "+$F{meningeal_signs}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="190" y="94" width="176" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="239" y="94" width="180" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<textFieldExpression><![CDATA["Lateralisasi : "+($F{lateralisasi}==null?"-":$F{lateralisasi})]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement positionType="Float" x="376" y="18" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{eks_deformitas}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="428" y="18" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="428" y="18" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{eks_deformitas}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="17" width="62" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="439" y="17" width="62" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Deformitas]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="28" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{eks_ekskoriasi}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="428" y="28" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="428" y="28" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{eks_ekskoriasi}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="27" width="62" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="439" y="27" width="62" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Ekskoriasi]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="38" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{eks_contusio}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="428" y="38" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="428" y="38" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{eks_contusio}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="37" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="439" y="37" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Contusio]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="48" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{eks_abrasi}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="428" y="48" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="428" y="48" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{eks_abrasi}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="47" width="40" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="439" y="47" width="40" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Abrasi]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="58" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{eks_penetrasi}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="428" y="58" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="428" y="58" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{eks_penetrasi}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="57" width="57" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="439" y="57" width="57" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Penetrasi]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="68" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{eks_burn}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="428" y="68" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="428" y="68" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{eks_burn}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="67" width="29" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="439" y="67" width="29" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Burn]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="78" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{eks_tenderness}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="428" y="78" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="428" y="78" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{eks_tenderness}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="77" width="62" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="439" y="77" width="62" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Tenderness]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="88" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{eks_laserasi}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="428" y="88" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="428" y="88" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{eks_laserasi}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="87" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="439" y="87" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Laserasi]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="98" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{eks_swelling}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="428" y="98" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="428" y="98" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{eks_swelling}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="97" width="51" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="439" y="97" width="51" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Swelling]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="376" y="108" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{eks_tidak_tampak_jelas}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="428" y="108" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="428" y="108" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{eks_tidak_tampak_jelas}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="388" y="107" width="107" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="7"/></textElement>
+				<reportElement positionType="Float" x="439" y="107" width="107" height="11"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<text><![CDATA[Tidak Tampak Jelas]]></text>
 			</staticText>
 
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="184" y="17" width="1" height="117"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="234" y="17" width="1" height="117"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="370" y="17" width="1" height="117"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="423" y="17" width="1" height="117"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
@@ -1409,537 +1629,326 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<line>
 				<reportElement positionType="Float" x="0" y="139" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="140"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="140"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="41">
+		<band height="75" splitType="Prevent">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="2" width="300" height="11"/>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="555" height="14" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[VIII. RIWAYAT KESEHATAN]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="14" width="552" height="25"/>
+				<reportElement positionType="Float" x="3" y="14" width="552" height="58"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Keluhan Utama : "+$F{keluhan_utama}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="40" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="74" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="40"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="75"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="40"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="75"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="48">
+		<band height="140" splitType="Prevent">
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="3" width="552" height="43"/>
+				<reportElement positionType="Float" x="3" y="3" width="552" height="135"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Riwayat Penyakit Sekarang : "+$F{rps}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="47" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="139" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="47"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="140"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="48"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="140"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="31">
+		<band height="70" splitType="Prevent">
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="2" width="273" height="25"/>
+				<reportElement positionType="Float" x="3" y="2" width="273" height="64"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Riwayat Penyakit Dahulu : "+$F{rpd}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="282" y="2" width="273" height="25"/>
+				<reportElement positionType="Float" x="282" y="2" width="273" height="64"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Riwayat Penyakit dalam Keluarga : "+$F{rpk}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="278" y="0" width="1" height="30"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="278" y="0" width="1" height="69"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" x="0" y="30" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="69" width="557" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="30"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="70"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="30"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="70"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="31">
+		<band height="70" splitType="Prevent">
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="3" width="273" height="25"/>
+				<reportElement positionType="Float" x="3" y="3" width="273" height="64"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Riwayat Pengobatan : "+$F{rpo}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="282" y="3" width="273" height="25"/>
+				<reportElement positionType="Float" x="282" y="3" width="273" height="64"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Riwayat Alergi : "+$F{alergi}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="30" width="557" height="1"/>
+				<reportElement positionType="Float" x="0" y="69" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75"/>
+					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="30"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="278" y="0" width="1" height="30"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="30"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-		</band>
-		<band height="175">
-			<line>
-				<reportElement positionType="Float" x="0" y="15" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="247" height="11"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[X. STATUS LOKALIS]]></text>
-			</staticText>
-			<image scaleImage="FillFrame" isUsingCache="true" onErrorType="Blank">
-				<reportElement positionType="Float" x="3" y="19" width="551" height="123"/>
-				<imageExpression><![CDATA[$P{lokalis}]]></imageExpression>
-			</image>
-			<line>
-				<reportElement positionType="Float" x="0" y="145" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="146" width="550" height="27"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Keterangan : "+$F{ket_lokalis}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement positionType="Float" x="0" y="174" width="557" height="1"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="70"/>
 				<graphicElement>
 					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="175"/>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="278" y="0" width="1" height="69"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="175"/>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="70"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="42">
+		<band height="1" splitType="Prevent">
+			<break>
+				<reportElement x="0" y="0" width="557" height="1"/>
+			</break>
+		</band>
+		<band height="220" splitType="Prevent">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="555" height="14" backcolor="#F0F0DC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
+				<text><![CDATA[X. STATUS LOKALIS DAN PEMERIKSAAN FISIK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="4" y="17" width="245" height="11"/>
+				<textElement verticalAlignment="Middle"><font fontName="Times New Roman" size="7.5" isBold="true"/></textElement>
 				<text><![CDATA[XI. KEPALA LEHER]]></text>
 			</staticText>
-			<line>
-				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="22"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Konjungtiva : "+($F{konjungtiva}==null?"-":$F{konjungtiva})+"   Sklera : "+($F{sklera}==null?"-":$F{sklera})+"   Bibir/Lidah : "+($F{bibir_lidah}==null?"-":$F{bibir_lidah})+"   Mukosa Mulut : "+($F{mukosa_mulut}==null?"-":$F{mukosa_mulut})]]></textFieldExpression>
+				<reportElement positionType="Float" x="4" y="29" width="245" height="27"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
+				<textFieldExpression><![CDATA["Konjungtiva : "+($F{konjungtiva}==null?"-":$F{konjungtiva})+"   Sklera : "+($F{sklera}==null?"-":$F{sklera})+"\nBibir/Lidah : "+($F{bibir_lidah}==null?"-":$F{bibir_lidah})+"   Mukosa Mulut : "+($F{mukosa_mulut}==null?"-":$F{mukosa_mulut})]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement positionType="Float" x="0" y="41" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="42"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="42"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-		</band>
-		<band height="42">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
+				<reportElement positionType="Float" x="4" y="59" width="245" height="11"/>
+				<textElement verticalAlignment="Middle"><font fontName="Times New Roman" size="7.5" isBold="true"/></textElement>
 				<text><![CDATA[XII. LEHER]]></text>
 			</staticText>
-			<line>
-				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="22"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Deviasi Trakea : "+($F{deviasi_trakea}==null?"-":$F{deviasi_trakea})+"   JVP : "+($F{jvp}==null?"-":$F{jvp})+"   Pembesaran KGB : "+($F{lnn}==null?"-":$F{lnn})+"   Pembesaran Tiroid : "+($F{tiroid}==null?"-":$F{tiroid})]]></textFieldExpression>
+				<reportElement positionType="Float" x="4" y="71" width="245" height="27"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
+				<textFieldExpression><![CDATA["Deviasi Trakea : "+($F{deviasi_trakea}==null?"-":$F{deviasi_trakea})+"   JVP : "+($F{jvp}==null?"-":$F{jvp})+"\nPembesaran KGB : "+($F{lnn}==null?"-":$F{lnn})+"   Tiroid : "+($F{tiroid}==null?"-":$F{tiroid})]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement positionType="Float" x="0" y="41" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="42"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="42"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-		</band>
-		<band height="42">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
+				<reportElement positionType="Float" x="4" y="101" width="245" height="11"/>
+				<textElement verticalAlignment="Middle"><font fontName="Times New Roman" size="7.5" isBold="true"/></textElement>
 				<text><![CDATA[XIII. THORAX]]></text>
 			</staticText>
-			<line>
-				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="22"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
+				<reportElement positionType="Float" x="4" y="113" width="245" height="27"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<textFieldExpression><![CDATA["Jantung : "+$F{jantung}+"\nParu : "+$F{paru}]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement positionType="Float" x="0" y="41" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="42"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="42"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-		</band>
-		<band height="42">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
+				<reportElement positionType="Float" x="4" y="143" width="245" height="11"/>
+				<textElement verticalAlignment="Middle"><font fontName="Times New Roman" size="7.5" isBold="true"/></textElement>
 				<text><![CDATA[XIV. ABDOMEN & PELVIS]]></text>
 			</staticText>
-			<line>
-				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="552" height="22"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
+				<reportElement positionType="Float" x="4" y="155" width="245" height="27"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="7"/></textElement>
 				<textFieldExpression><![CDATA["Punggung/Pinggang : "+$F{punggung_pinggang}+"\nEkstremitas & Pelvis : "+$F{ekstremitas_pelvis}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="41" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
-				</graphicElement>
+				<reportElement positionType="Float" x="253" y="14" width="1" height="174"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
 			</line>
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
+				<reportElement positionType="Float" x="258" y="18" width="294" height="167"/>
+				<imageExpression><![CDATA[$P{lokalis}]]></imageExpression>
+			</image>
 			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="42"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
+				<reportElement positionType="Float" x="0" y="188" width="557" height="1"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
 			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="42"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="4" y="191" width="548" height="26"/>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
+				<textFieldExpression><![CDATA["Keterangan Status Lokalis : "+$F{ket_lokalis}]]></textFieldExpression>
+			</textField>
+			<line><reportElement positionType="Float" x="0" y="219" width="557" height="1"/><graphicElement><pen lineWidth="0.5"/></graphicElement></line>
+			<line><reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="220"/><graphicElement><pen lineWidth="0.75"/></graphicElement></line>
+			<line><reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="220"/><graphicElement><pen lineWidth="0.75"/></graphicElement></line>
 		</band>
-		<band height="58">
+		<band height="62" splitType="Prevent">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="247" height="11"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="555" height="14" backcolor="#F0F0DC"/>
+				<textElement verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement>
 				<text><![CDATA[XV. PEMERIKSAAN PENUNJANG]]></text>
 			</staticText>
-			<line>
-				<reportElement positionType="Float" x="0" y="14" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="16" width="176" height="27"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["EKG : "+$F{ekg}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="190" y="16" width="176" height="27"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Radiologi : "+$F{rad}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="376" y="16" width="176" height="27"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Laboratorium : "+$F{lab}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="184" y="16" width="1" height="27"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="370" y="16" width="1" height="27"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" x="0" y="44" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="3" y="46" width="552" height="11"/>
-				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Pemeriksaan Lainnya : "+$F{pemeriksaan_lainnya}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement positionType="Float" x="0" y="57" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="58"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="58"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
+			<textField isStretchWithOverflow="true"><reportElement positionType="Float" x="4" y="17" width="270" height="18"/><textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement><textFieldExpression><![CDATA["EKG : "+$F{ekg}]]></textFieldExpression></textField>
+			<textField isStretchWithOverflow="true"><reportElement positionType="Float" x="283" y="17" width="270" height="18"/><textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement><textFieldExpression><![CDATA["Radiologi : "+$F{rad}]]></textFieldExpression></textField>
+			<textField isStretchWithOverflow="true"><reportElement positionType="Float" x="4" y="39" width="270" height="18"/><textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement><textFieldExpression><![CDATA["Laboratorium : "+$F{lab}]]></textFieldExpression></textField>
+			<textField isStretchWithOverflow="true"><reportElement positionType="Float" x="283" y="39" width="270" height="18"/><textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement><textFieldExpression><![CDATA["Pemeriksaan Lainnya : "+$F{pemeriksaan_lainnya}]]></textFieldExpression></textField>
+			<line><reportElement positionType="Float" x="278" y="14" width="1" height="47"/><graphicElement><pen lineWidth="0.5"/></graphicElement></line>
+			<line><reportElement positionType="Float" x="0" y="61" width="557" height="1"/><graphicElement><pen lineWidth="0.5"/></graphicElement></line>
+			<line><reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="62"/><graphicElement><pen lineWidth="0.75"/></graphicElement></line>
+			<line><reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="62"/><graphicElement><pen lineWidth="0.75"/></graphicElement></line>
 		</band>
-		<band height="45">
+		<band height="45" splitType="Prevent">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="247" height="11"/>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="555" height="14" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[XVI. DIAGNOSIS]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="16" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{diagnosa_kerja_cek}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="3" y="16" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="3" y="16" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{diagnosa_kerja_cek}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="15" y="15" width="538" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<textFieldExpression><![CDATA["Diagnosa Kerja : "+$F{diagnosa_kerja}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{diagnosa_banding_cek}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="3" y="30" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="3" y="30" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{diagnosa_banding_cek}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="15" y="29" width="538" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<textFieldExpression><![CDATA["Diagnosa Banding : "+$F{diagnosa_banding}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement positionType="Float" x="0" y="44" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="45"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="45"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="145">
+		<band height="145" splitType="Prevent">
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="17" width="550" height="124"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tata}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="555" height="14" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[XVII. RENCANA/TINDAKAN/TERAPI]]></text>
@@ -1947,27 +1956,27 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<line>
 				<reportElement positionType="Float" x="0" y="144" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="144"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="144"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="42">
+		<band height="42" splitType="Prevent">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="555" height="14" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[XVIII. KONSUL DR. SPESIALIS]]></text>
@@ -1983,7 +1992,7 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 					<printWhenExpression><![CDATA[$F{konsul_nm_dokter}!=null && !$F{konsul_nm_dokter}.equals("")]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Dokter Konsul : "+$F{konsul_nm_dokter}+"\nUnit/Poli Konsul : "+($F{konsul_nm_poli}==null?"-":$F{konsul_nm_poli})]]></textFieldExpression>
@@ -1991,27 +2000,27 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<line>
 				<reportElement positionType="Float" x="0" y="41" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="42"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="42"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="45">
+		<band height="45" splitType="Prevent">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="555" height="14" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[XIX. EDUKASI]]></text>
@@ -2022,52 +2031,58 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
-			<textField>
-				<reportElement positionType="Float" x="3" y="17" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{edukasi_diberikan}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="3" y="17" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="3" y="17" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{edukasi_diberikan}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="15" y="16" width="230" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<text><![CDATA[Edukasi Diberikan kepada Pasien/Keluarga]]></text>
 			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="3" y="30" width="10" height="10"/>
-				<box><pen lineWidth="0.75"/></box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="DejaVu Sans" size="8" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{edukasi_tidak_bisa}.equals("Ya")? "✓" :""]]></textFieldExpression>
+			<rectangle>
+				<reportElement positionType="Float" mode="Transparent" x="3" y="30" width="8" height="8"/>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="3" y="30" width="8" height="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="6.5" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{edukasi_tidak_bisa}.equals("Ya")? "V" :""]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="15" y="29" width="540" height="11"/>
-				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="8"/></textElement>
+				<textElement verticalAlignment="Top"><font fontName="Times New Roman" size="8"/></textElement>
 				<textFieldExpression><![CDATA["Tidak Dapat Memberikan Edukasi Karena : "+$F{edukasi_tidak_bisa_ket}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement positionType="Float" x="0" y="44" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="45"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="45"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="42">
+		<band height="42" splitType="Prevent">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="555" height="14" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[XX. KONDISI SAAT PULANG]]></text>
@@ -2081,7 +2096,7 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="16" width="552" height="22"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Kondisi : "+($F{kondisi_pulang}==null?"-":$F{kondisi_pulang})+
@@ -2090,27 +2105,27 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<line>
 				<reportElement positionType="Float" x="0" y="41" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="42"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="42"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="42">
+		<band height="42" splitType="Prevent">
 			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="300" height="11"/>
+				<reportElement positionType="Float" mode="Opaque" x="1" y="0" width="555" height="14" backcolor="#F0F0DC"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[XXI. TANDA VITAL TERAKHIR]]></text>
@@ -2121,10 +2136,10 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="3" y="16" width="552" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Times New Roman" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["TD : "+$F{td_akhir}+" mmHg    N : "+$F{nadi_akhir}+" x/m    R : "+$F{rr_akhir}+" x/m    S : "+$F{suhu_akhir}+"°"]]></textFieldExpression>
@@ -2132,117 +2147,39 @@ left join poliklinik on poliklinik.kd_poli=penilaian_medis_igd.konsul_kd_poli]]>
 			<line>
 				<reportElement positionType="Float" x="0" y="41" width="557" height="1"/>
 				<graphicElement>
-					<pen lineWidth="0.75" lineStyle="Solid"/>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="42"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<line>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="42"/>
 				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.75" lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 		</band>
-		<band height="95">
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="255" y="-1" width="1" height="94"/>
-				<graphicElement>
-					<pen lineWidth="0.4"/>
-				</graphicElement>
-			</line>
-			<staticText>
-				<reportElement positionType="Float" x="3" y="3" width="60" height="11"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[Tanggal :]]></text>
-			</staticText>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement positionType="Float" mode="Transparent" x="65" y="3" width="185" height="11"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{tanggal}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="3" y="17" width="60" height="11"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[Pukul :]]></text>
-			</staticText>
-			<textField pattern="HH:mm:ss">
-				<reportElement positionType="Float" mode="Transparent" x="65" y="17" width="185" height="11"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{tanggal}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="259" y="3" width="295" height="11"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[Dokter]]></text>
-			</staticText>
+		<band height="180" splitType="Prevent">
+			<line><reportElement positionType="Float" x="255" y="0" width="1" height="179"/><graphicElement><pen lineWidth="0.5"/></graphicElement></line>
+			<staticText><reportElement positionType="Float" x="4" y="5" width="58" height="11"/><textElement verticalAlignment="Middle"><font fontName="Times New Roman" size="8"/></textElement><text><![CDATA[Tanggal :]]></text></staticText>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy"><reportElement positionType="Float" x="65" y="5" width="185" height="11"/><textElement verticalAlignment="Middle"><font fontName="Times New Roman" size="8"/></textElement><textFieldExpression><![CDATA[$F{tanggal}]]></textFieldExpression></textField>
+			<staticText><reportElement positionType="Float" x="4" y="20" width="58" height="11"/><textElement verticalAlignment="Middle"><font fontName="Times New Roman" size="8"/></textElement><text><![CDATA[Pukul :]]></text></staticText>
+			<textField isStretchWithOverflow="true" pattern="HH:mm:ss"><reportElement positionType="Float" x="65" y="20" width="185" height="11"/><textElement verticalAlignment="Middle"><font fontName="Times New Roman" size="8"/></textElement><textFieldExpression><![CDATA[$F{tanggal}]]></textFieldExpression></textField>
+			<staticText><reportElement positionType="Float" x="259" y="5" width="295" height="11"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8" isBold="true"/></textElement><text><![CDATA[Dokter]]></text></staticText>
 			<componentElement>
-				<reportElement positionType="Float" x="362" y="15" width="87" height="40" isRemoveLineWhenBlank="true"/>
-				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
-					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
-				</jr:QRCode>
+				<reportElement positionType="Float" x="377" y="28" width="60" height="60" isRemoveLineWhenBlank="true"/>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H"><jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression></jr:QRCode>
 			</componentElement>
-			<textField>
-				<reportElement positionType="Float" mode="Transparent" x="259" y="56" width="295" height="11"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nm_dokter}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" mode="Transparent" x="259" y="68" width="295" height="12"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{no_ijn_praktek}==null||$F{no_ijn_praktek}.isEmpty()?"-":"No. Ijin Praktek: "+$F{no_ijn_praktek}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" mode="Transparent" x="259" y="80" width="295" height="12"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["NIK: "+($F{kd_dokter}==null?"":$F{kd_dokter})]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement positionType="Float" x="0" y="94" width="557" height="1"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="94"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="94"/>
-				<graphicElement>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
-				</graphicElement>
-			</line>
+			<textField isStretchWithOverflow="true"><reportElement positionType="Float" x="259" y="100" width="295" height="12"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="8"/></textElement><textFieldExpression><![CDATA[$F{nm_dokter}]]></textFieldExpression></textField>
+			<textField isStretchWithOverflow="true"><reportElement positionType="Float" x="259" y="114" width="295" height="12"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="7"/></textElement><textFieldExpression><![CDATA[$F{nip_dokter}==null||$F{nip_dokter}.trim().isEmpty()?"":"NIP : "+$F{nip_dokter}]]></textFieldExpression></textField>
+			<textField isStretchWithOverflow="true"><reportElement positionType="Float" x="259" y="128" width="295" height="12" isRemoveLineWhenBlank="true"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Times New Roman" size="7"/></textElement><textFieldExpression><![CDATA[$F{no_ijn_praktek}==null||$F{no_ijn_praktek}.trim().isEmpty()?"":"No. SIP : "+$F{no_ijn_praktek}]]></textFieldExpression></textField>
+			<line><reportElement positionType="Float" x="0" y="179" width="557" height="1"/><graphicElement><pen lineWidth="0.75"/></graphicElement></line>
+			<line><reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="180"/><graphicElement><pen lineWidth="0.75"/></graphicElement></line>
+			<line><reportElement positionType="Float" stretchType="RelativeToBandHeight" x="556" y="0" width="1" height="180"/><graphicElement><pen lineWidth="0.75"/></graphicElement></line>
 		</band>
 	</detail>
 </jasperReport>

@@ -12,14 +12,19 @@
 package rekammedis;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.CardLayout;
 import java.awt.Insets;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.BasicStroke;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -47,6 +52,10 @@ import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Savepoint;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
@@ -58,6 +67,7 @@ import java.awt.Cursor;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowAdapter;
 import javax.swing.WindowConstants;
+import widget.ThemeConfig;
 
 /**
  *
@@ -87,43 +97,50 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         initModernModalTambahObat();
 
         tabMode=new DefaultTableModel(null,new Object[]{
-            "","NAMA OBAT","DOSIS OBAT","FREKUENSI","TINDAK LANJUT","PERUBAHAN ATURAN PAKAI"}){
+            "","NAMA OBAT","DOSIS OBAT","FREKUENSI","CARA PEMBERIAN","TINDAK LANJUT","PERUBAHAN ATURAN PAKAI","WAKTU TERAKHIR"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbPemeriksaan.setModel(tabMode);
         tbPemeriksaan.setPreferredScrollableViewportSize(new Dimension(500,500));
-        tbPemeriksaan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tbPemeriksaan.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         tbPemeriksaan.setRowHeight(32);
         tbPemeriksaan.setShowGrid(false);
         tbPemeriksaan.setIntercellSpacing(new Dimension(0, 1));
         tbPemeriksaan.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 
-        tbPemeriksaan.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        tbPemeriksaan.getColumnModel().getColumn(0).setPreferredWidth(35);
-        tbPemeriksaan.getColumnModel().getColumn(0).setMaxWidth(35);
-        tbPemeriksaan.getColumnModel().getColumn(0).setMinWidth(35);
-        tbPemeriksaan.getColumnModel().getColumn(1).setPreferredWidth(280);
-        tbPemeriksaan.getColumnModel().getColumn(2).setPreferredWidth(110);
-        tbPemeriksaan.getColumnModel().getColumn(3).setPreferredWidth(110);
-        tbPemeriksaan.getColumnModel().getColumn(4).setPreferredWidth(200);
-        tbPemeriksaan.getColumnModel().getColumn(5).setPreferredWidth(280);
+        tbPemeriksaan.getColumnModel().getColumn(0).setPreferredWidth(32);
+        tbPemeriksaan.getColumnModel().getColumn(0).setMaxWidth(32);
+        tbPemeriksaan.getColumnModel().getColumn(0).setMinWidth(32);
+        tbPemeriksaan.getColumnModel().getColumn(1).setPreferredWidth(250);
+        tbPemeriksaan.getColumnModel().getColumn(2).setPreferredWidth(90);
+        tbPemeriksaan.getColumnModel().getColumn(3).setPreferredWidth(90);
+        tbPemeriksaan.getColumnModel().getColumn(4).setPreferredWidth(120);
+        tbPemeriksaan.getColumnModel().getColumn(5).setPreferredWidth(170);
+        tbPemeriksaan.getColumnModel().getColumn(6).setPreferredWidth(230);
+        tbPemeriksaan.getColumnModel().getColumn(7).setMinWidth(0);
+        tbPemeriksaan.getColumnModel().getColumn(7).setMaxWidth(0);
+        tbPemeriksaan.getColumnModel().getColumn(7).setPreferredWidth(0);
 
         tbPemeriksaan.getColumnModel().getColumn(0).setCellRenderer(new RadioCellRenderer());
         tbPemeriksaan.getColumnModel().getColumn(1).setCellRenderer(new BoldTextCellRenderer());
         tbPemeriksaan.getColumnModel().getColumn(2).setCellRenderer(new ModernTextCellRenderer(false, true));
         tbPemeriksaan.getColumnModel().getColumn(3).setCellRenderer(new ModernTextCellRenderer(false, true));
-        tbPemeriksaan.getColumnModel().getColumn(4).setCellRenderer(new BadgeCellRenderer());
-        tbPemeriksaan.getColumnModel().getColumn(5).setCellRenderer(new ModernTextCellRenderer(true, false));
+        tbPemeriksaan.getColumnModel().getColumn(4).setCellRenderer(new ModernTextCellRenderer(false, true));
+        tbPemeriksaan.getColumnModel().getColumn(5).setCellRenderer(new BadgeCellRenderer());
+        tbPemeriksaan.getColumnModel().getColumn(6).setCellRenderer(new ModernTextCellRenderer(true, false));
 
         javax.swing.table.DefaultTableCellRenderer tblHeaderRenderer = new javax.swing.table.DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                l.setBackground(new Color(15, 43, 70));
-                l.setForeground(Color.WHITE);
+                l.setBackground(new Color(246, 248, 245));
+                l.setForeground(new Color(139, 146, 141));
                 l.setFont(new Font("Segoe UI", Font.BOLD, 10));
-                l.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
-                if (column == 2 || column == 3 || column == 4) {
+                l.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(207, 211, 206)),
+                    BorderFactory.createEmptyBorder(0, 8, 0, 8)
+                ));
+                if (column == 2 || column == 3 || column == 4 || column == 5) {
                     l.setHorizontalAlignment(SwingConstants.CENTER);
                 } else {
                     l.setHorizontalAlignment(SwingConstants.LEFT);
@@ -154,7 +171,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         jam();
 
         initModernLayout();
-        this.setSize(1360, 680);
+        this.setMinimumSize(new Dimension(1180, 650));
+        this.setSize(1360, 720);
     }
 
     /** This method is called from within the constructor to
@@ -838,9 +856,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
         if(tbPemeriksaan.getSelectedRow()>-1){
-            tabMode.removeRow(tbPemeriksaan.getSelectedRow());
-            emptTeksTambahRekon();
-            updateCounterObat();
+            int jawab = JOptionPane.showConfirmDialog(rootPane,
+                    "Hapus obat yang dipilih dari daftar rekonsiliasi?",
+                    "Konfirmasi Hapus Baris",JOptionPane.YES_NO_OPTION);
+            if(jawab==JOptionPane.YES_OPTION){
+                tabMode.removeRow(tbPemeriksaan.getSelectedRow());
+                emptTeksTambahRekon();
+                updateCounterObat();
+            }
         }else{
             JOptionPane.showMessageDialog(rootPane,"Silahkan anda pilih data terlebih dahulu..!!");
         }   
@@ -868,7 +891,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         TabPilihan.setSelectedIndex(1);
-        tampilDataRekonsiliasi();
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnCariActionPerformed
 
@@ -878,13 +900,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
     private void BtnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBatalActionPerformed
         Valid.tabelKosong(tabMode);
+        aturModeEdit(false);
         emptTeks();
         updateCounterObat();
     }//GEN-LAST:event_BtnBatalActionPerformed
 
     private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            emptTeks();
+            BtnBatalActionPerformed(null);
         }else{Valid.pindah(evt, BtnSimpan, BtnHapus);}
     }//GEN-LAST:event_BtnBatalKeyPressed
 
@@ -895,17 +918,36 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             Valid.textKosong(BtnPetugas,"Petugas");
         }else if(TNoRekonsialiasi.getText().trim().equals("")||TNoRekonsialiasi.getText().trim().equals("-")){
             Valid.textKosong(TNoRekonsialiasi,"No.Rekonsiliasi");
+        }else if("Admisi".equals(RekonsiliasiSaat.getSelectedItem()) &&
+                !RbObatSebelumAdmisiYa.isSelected() && !RbObatSebelumAdmisiTidak.isSelected()){
+            JOptionPane.showMessageDialog(rootPane,"Pilih penggunaan obat sebelum admisi.");
+            RbObatSebelumAdmisiYa.requestFocus();
+        }else if("Admisi".equals(RekonsiliasiSaat.getSelectedItem()) &&
+                !RbSumberRM.isSelected() && !RbSumberPasien.isSelected() && !RbSumberLain.isSelected()){
+            JOptionPane.showMessageDialog(rootPane,"Pilih sumber informasi rekonsiliasi.");
+            RbSumberRM.requestFocus();
+        }else if("Admisi".equals(RekonsiliasiSaat.getSelectedItem()) &&
+                RbSumberLain.isSelected() && nilaiKeteranganSumber()==null){
+            Valid.textKosong(TSumberLainKet,"Keterangan Sumber Informasi Lain");
         }else if(tabMode.getRowCount()==0){
             Valid.textKosong(TNoRekonsialiasi,"Data Obat Rekonsiliasi");
         }else{
-            reply = JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau disimpan..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
+            String aksiKonfirmasi = noRekonsiliasiEdit==null ? "disimpan" : "diganti";
+            reply = JOptionPane.showConfirmDialog(rootPane,
+                    "Pastikan data yang akan "+aksiKonfirmasi+" sudah benar.",
+                    noRekonsiliasiEdit==null ? "Konfirmasi Simpan" : "Konfirmasi Ganti",
+                    JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
+                if(noRekonsiliasiEdit!=null){
+                    gantiRekonsiliasiDalamTransaksi();
+                    return;
+                }
                 if(Sequel.menyimpantf("rekonsiliasi_obat","?,?,?,?,?,?,?,?,?,?,?","No.Rawat",11,new String[]{
                         TNoRekonsialiasi.getText(),TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
                         RekonsiliasiSaat.getSelectedItem().toString(),AlergiObat.getText(),ManifestasiAlergi.getText(),DampakAlergi.getSelectedItem().toString(),KdPetugas.getText(),
                         pilihRadio(RbObatSebelumAdmisiYa,"Ya",RbObatSebelumAdmisiTidak,"Tidak"),
                         pilihRadio(RbSumberRM,"Status Pasien di Rekam Medis",RbSumberPasien,"Pasien/Keluarga Pasien",RbSumberLain,"Lain-lain"),
-                        TSumberLainKet.getText(),
+                        nilaiKeteranganSumber(),
                     })==true){
                         for (i = 0; i < tbPemeriksaan.getRowCount(); i++) {
                            Sequel.menyimpan2("rekonsiliasi_obat_detail_obat","?,?,?,?,?,?,?,?",8,new String[]{
@@ -913,9 +955,10 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                                tbPemeriksaan.getValueAt(i,1).toString(),
                                tbPemeriksaan.getValueAt(i,2).toString(),
                                tbPemeriksaan.getValueAt(i,3).toString(),
-                               null,null,
                                tbPemeriksaan.getValueAt(i,4).toString(),
-                               tbPemeriksaan.getValueAt(i,5).toString()
+                               null,
+                               tbPemeriksaan.getValueAt(i,5).toString(),
+                               tbPemeriksaan.getValueAt(i,6).toString()
                            });
                         }
                         Valid.tabelKosong(tabMode);
@@ -943,6 +986,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         if (dos.equals("mis. 500mg")) dos = "";
         String frek = Frekuensi.getText().trim();
         if (frek.equals("mis. 3x1")) frek = "";
+        String cara = AturanPakai.getText().trim();
+        if (cara.equals("mis. Oral / IV") || cara.equals("mis. Oral / IV / Drop")) cara = "";
         String ubah = PerubahanAturanPakai.getText().trim();
         if (ubah.equals("Kosongkan bila tidak berubah")) ubah = "";
 
@@ -953,12 +998,19 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             Valid.textKosong(DosisObat,"Dosis Obat");
         }else if(frek.equals("")){
             Valid.textKosong(Frekuensi,"Frekuensi");
+        }else if(cara.equals("")){
+            Valid.textKosong(AturanPakai,"Cara Pemberian");
+        }else if("Lanjut aturan pakai berubah".equals(selectedTindakLanjut) && ubah.equals("")){
+            Valid.textKosong(PerubahanAturanPakai,"Perubahan Aturan Pakai");
+        }else if(tabMode.getRowCount()>=10){
+            JOptionPane.showMessageDialog(DlgTambahObatRekonsiliasi,
+                    "Form RM 03-06A menyediakan maksimal 10 baris obat.");
         }else{
             String tl = selectedTindakLanjut != null && !selectedTindakLanjut.isEmpty() ? 
                         selectedTindakLanjut : 
                         (TindakLanjut != null && TindakLanjut.getSelectedItem() != null ? TindakLanjut.getSelectedItem().toString() : "Lanjut aturan pakai sama");
             tabMode.addRow(new Object[]{
-                "", nm, dos, frek, tl, ubah
+                "", nm, dos, frek, (cara.isEmpty() ? "-" : cara), tl, ubah
             });
             emptTeksTambahRekon();
             updateCounterObat();
@@ -1093,6 +1145,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     // =====================================================================
         // Modern UI components matching user's mockup
     private javax.swing.JPanel pnlTopBar;
+    private javax.swing.JPanel pnlTopSection;
     private javax.swing.JPanel pnlCardPatient;
     private javax.swing.JLabel lblCardInitials;
     private javax.swing.JLabel lblCardNama;
@@ -1105,6 +1158,10 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private javax.swing.JLabel lblCountObat;
     private javax.swing.JLabel lblStatusRekon;
     private javax.swing.JLabel lblFooterMeta;
+    private javax.swing.JPanel pnlFooterActionCards;
+    private java.awt.CardLayout footerActionLayout;
+    private widget.Button BtnBaruData, BtnGantiData, BtnHapusData;
+    private String noRekonsiliasiEdit;
     private widget.Label lblObatSebelumAdmisi, lblSumberInformasi;
     private widget.RadioButton RbObatSebelumAdmisiYa, RbObatSebelumAdmisiTidak;
     private javax.swing.ButtonGroup bgObatSebelumAdmisi;
@@ -1123,10 +1180,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private widget.TextBox TCariData;
     private widget.Tanggal Tgl1Data, Tgl2Data;
     private widget.Button BtnCariData, BtnAllData;
+    private widget.Label LCountData;
     private widget.Table tbDataRekonsiliasi;
     private widget.PanelBiasa PanelAccor, FormMenu;
     private widget.CekBox ChkAccor;
-    private widget.Label TNoRM1, TPasien1;
+    private widget.TextBox TNoRM1, TPasien1;
     private widget.ScrollPane ScrollHTML;
     private widget.editorpane LoadHTML;
     private widget.Button BtnPrintRekon;
@@ -1134,9 +1192,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     /**
      * [RM 03-06A] Penyesuaian form dgn formulir fisik "REKONSILIASI OBAT"
      * (RSUD Demang Sepulau Raya):
-     * 1) Sembunyikan field yg tidak ada di lembar fisik ini (Alergi Obat/
-     *    Manifestasi Alergi/Dampak Alergi) - TIDAK dihapus, cuma
-     *    setVisible(false) (additive-only, kolom DB tetap ada).
+     * 1) Riwayat alergi dipertahankan sebagai informasi klinis tambahan,
+     *    tetapi diberi penanda jelas bahwa bagian tersebut tidak tercetak
+     *    pada formulir fisik RM 03-06A.
      * 2) "Rekonsiliasi Saat" TETAP bisa dipilih bebas (dikoreksi user -
      *    rekonsiliasi obat py 3 momen proses: Admisi/Transfer/Discharge),
      *    model dipangkas dari 4 opsi jadi 3 ("Admisi"/"Transfer Antar
@@ -1146,26 +1204,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
      *    fisik "Apoteker yang melakukan rekonsiliasi obat").
      * 4) Model combo TindakLanjut (di DlgTambahObatRekonsiliasi) diperluas
      *    dari 2 opsi (Stop/Lanjut) jadi 3 opsi sesuai fisik.
-     * 5) 2 baris baru ditambahkan ke PanelInput (null-layout, .setBounds()
-     *    absolut - konsisten gaya file ini): "Penggunaan Obat Sebelum
-     *    Admisi" & "Sumber Informasi".
-     * 6) PanelInput ditata ulang total jadi kartu "Patient Banner" (putih +
-     *    TitledBorder, grid rapat 28px/baris tanpa celah) - pola sama
-     *    RMTriaseIGD.java Fase 4. WAJIB krn PanelInput pakai null-layout:
-     *    menyembunyikan field (poin 1) TIDAK bikin baris di bawahnya
-     *    otomatis naik, jadi SEMUA field (lama+baru) direposisi eksplisit.
+     * 5) Field "Penggunaan Obat Sebelum Admisi" dan "Sumber Informasi"
+     *    disusun dengan GridBagLayout agar responsif dan dapat benar-benar
+     *    melipat saat tahap Transfer/Pulang dipilih.
+     * 6) Header memakai patient card dan grid field responsif, tanpa
+     *    koordinat absolut yang mudah terpotong pada ukuran layar berbeda.
      * Dipanggil sekali dari constructor, setelah initComponents().
      */
     private void initRekonsiliasiTambahan(){
-        jLabel55.setVisible(false);
-        AlergiObat.setVisible(false);
-        scrollPane2.setVisible(false);
-        jLabel56.setVisible(false);
-        ManifestasiAlergi.setVisible(false);
-        scrollPane3.setVisible(false);
-        jLabel6.setVisible(false);
-        DampakAlergi.setVisible(false);
-
         RekonsiliasiSaat.setModel(new javax.swing.DefaultComboBoxModel(new String[]{
             "Admisi","Transfer Antar Ruang","Pulang"
         }));
@@ -1173,7 +1219,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         jLabel9.setText("Apoteker :");
 
         jLabel111.setVisible(false);
-        AturanPakai.setVisible(false);
         jLabel112.setVisible(false);
         PemberianTerakhir.setVisible(false);
 
@@ -1201,15 +1246,24 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         RbSumberRM = new widget.RadioButton();
         RbSumberRM.setText("Status Pasien di Rekam Medis");
-        RbSumberRM.addActionListener(e -> updateStatusRekon());
+        RbSumberRM.addActionListener(e -> {
+            perbaruiKeteranganSumber();
+            updateStatusRekon();
+        });
 
         RbSumberPasien = new widget.RadioButton();
         RbSumberPasien.setText("Pasien/Keluarga Pasien");
-        RbSumberPasien.addActionListener(e -> updateStatusRekon());
+        RbSumberPasien.addActionListener(e -> {
+            perbaruiKeteranganSumber();
+            updateStatusRekon();
+        });
 
         RbSumberLain = new widget.RadioButton();
         RbSumberLain.setText("Lain-lain");
-        RbSumberLain.addActionListener(e -> updateStatusRekon());
+        RbSumberLain.addActionListener(e -> {
+            perbaruiKeteranganSumber();
+            updateStatusRekon();
+        });
 
         bgSumberInformasi = new javax.swing.ButtonGroup();
         bgSumberInformasi.add(RbSumberRM);
@@ -1228,30 +1282,52 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
 
     private void initModernLayout() {
-        // 1. Top Header Bar (Dark Teal #0e3d36)
+        // 1. Top Header Bar (Dark Teal #123c3a, height 34px)
         pnlTopBar = new JPanel(new BorderLayout());
-        pnlTopBar.setBackground(new Color(14, 61, 54));
-        pnlTopBar.setPreferredSize(new Dimension(1320, 36));
-        pnlTopBar.setBorder(new EmptyBorder(8, 16, 8, 16));
+        pnlTopBar.setBackground(new Color(18, 60, 58));
+        pnlTopBar.setPreferredSize(new Dimension(1320, 34));
+        pnlTopBar.setBorder(new EmptyBorder(0, 16, 0, 16));
+
+        JPanel pnlWestTitle = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 5));
+        pnlWestTitle.setOpaque(false);
 
         JLabel lblTitle = new JLabel("Rekonsiliasi Obat");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 12));
         lblTitle.setForeground(Color.WHITE);
-        pnlTopBar.add(lblTitle, BorderLayout.WEST);
+        pnlWestTitle.add(lblTitle);
 
-        JLabel lblCode = new JLabel("RM 03-06A");
-        lblCode.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        lblCode.setForeground(new Color(128, 165, 159));
-        pnlTopBar.add(lblCode, BorderLayout.EAST);
+        JLabel lblCode = new JLabel("RM 03-06A", SwingConstants.CENTER) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(26, 74, 71));
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 4, 4);
+                g2.setColor(new Color(44, 90, 86));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 4, 4);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        lblCode.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lblCode.setForeground(new Color(143, 181, 174));
+        lblCode.setBorder(new EmptyBorder(1, 6, 1, 6));
+        pnlWestTitle.add(lblCode);
+        pnlTopBar.add(pnlWestTitle, BorderLayout.WEST);
 
-        // 2. TabbedPane setup with FlatLaf styling
+        JLabel lblHospital = new JLabel("RSUD Demang Sepulau Raya");
+        lblHospital.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        lblHospital.setForeground(new Color(143, 181, 174));
+        pnlTopBar.add(lblHospital, BorderLayout.EAST);
+
+        // 2. TabbedPane setup with modern styling
         TabPilihan = new javax.swing.JTabbedPane();
         TabPilihan.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        TabPilihan.putClientProperty("JTabbedPane.tabHeight", 34);
+        TabPilihan.putClientProperty("JTabbedPane.tabHeight", 38);
         TabPilihan.putClientProperty("JTabbedPane.tabInsets", new Insets(0, 16, 0, 16));
-        TabPilihan.putClientProperty("JTabbedPane.underlineColor", new Color(0, 91, 82));
+        TabPilihan.putClientProperty("JTabbedPane.underlineColor", new Color(13, 122, 112));
         TabPilihan.putClientProperty("JTabbedPane.selectedBackground", Color.WHITE);
-        TabPilihan.putClientProperty("JTabbedPane.selectedForeground", new Color(0, 91, 82));
+        TabPilihan.putClientProperty("JTabbedPane.selectedForeground", new Color(13, 122, 112));
         TabPilihan.putClientProperty("JTabbedPane.showTabSeparators", false);
 
         // 3. TAB 1: Reconstruct internalFrame1 (Input Tab)
@@ -1262,11 +1338,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         internalFrame1.setBorder(new EmptyBorder(10, 16, 10, 16));
 
         // Top Section: Patient Card (West) + Form Controls (Center)
-        JPanel pnlTopSection = new JPanel(new BorderLayout(14, 0));
+        pnlTopSection = new JPanel(new BorderLayout(14, 0));
         pnlTopSection.setBackground(Color.WHITE);
         pnlTopSection.setPreferredSize(new Dimension(1320, 165));
 
-        // LEFT: Patient Identity Card
+        // LEFT: Patient Identity Card, mengikuti ukuran dan hierarki visual RM IGD
         pnlCardPatient = createPatientCard();
         pnlTopSection.add(pnlCardPatient, BorderLayout.WEST);
 
@@ -1276,17 +1352,23 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         internalFrame1.add(pnlTopSection, BorderLayout.NORTH);
 
-        // MIDDLE: Table Section
+        // MIDDLE: Table Section & Allergy Card
         JPanel pnlTableSection = createTableSection();
         internalFrame1.add(pnlTableSection, BorderLayout.CENTER);
 
-        // BOTTOM: Action Bar & Footer
+        // BOTTOM: Action Bar & Footer (56px height), dipasang global agar
+        // tetap terlihat pada tab Input maupun Data seperti form IGD.
         JPanel pnlBottomSection = createBottomSection();
-        internalFrame1.add(pnlBottomSection, BorderLayout.SOUTH);
 
         // Add Tabs
         TabPilihan.addTab("Input Rekonsiliasi Obat", internalFrame1);
         initDataRekonsiliasiTab();
+        TabPilihan.addChangeListener((javax.swing.event.ChangeEvent evt) -> {
+            if(TabPilihan.getSelectedIndex()==1){
+                tampilDataRekonsiliasi();
+            }
+            updateFooterUntukTab();
+        });
 
         // Outer layout on JDialog
         getContentPane().removeAll();
@@ -1294,6 +1376,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         pnlRoot.setBackground(Color.WHITE);
         pnlRoot.add(pnlTopBar, BorderLayout.PAGE_START);
         pnlRoot.add(TabPilihan, BorderLayout.CENTER);
+        pnlRoot.add(pnlBottomSection, BorderLayout.PAGE_END);
         getContentPane().add(pnlRoot, BorderLayout.CENTER);
 
         // Initial updates
@@ -1303,46 +1386,36 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         updateCounterObat();
         updateStatusRekon();
         updateFooterMeta();
+        updateFooterUntukTab();
+        buatKotakFieldRekonsiliasi(internalFrame1);
+        buatKotakFieldRekonsiliasi(NamaObat);
+        buatKotakFieldRekonsiliasi(DosisObat);
+        buatKotakFieldRekonsiliasi(Frekuensi);
+        buatKotakFieldRekonsiliasi(AturanPakai);
+        buatKotakFieldRekonsiliasi(PerubahanAturanPakai);
     }
 
     private JPanel createPatientCard() {
-        JPanel card = new JPanel(null) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(Color.WHITE);
-                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
-                g2.setColor(new Color(226, 232, 240));
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
-                g2.dispose();
-            }
-        };
-        card.setOpaque(false);
-        card.setPreferredSize(new Dimension(245, 160));
+        JPanel card = new JPanel(null);
+        card.setOpaque(true);
+        card.setBackground(ThemeConfig.SURFACE_ALT);
+        card.setBorder(BorderFactory.createLineBorder(ThemeConfig.BORDER_SOFT));
+        Dimension ukuranKartu = new Dimension(310, 160);
+        card.setPreferredSize(ukuranKartu);
+        card.setMinimumSize(ukuranKartu);
 
         JLabel lblHeader = new JLabel("IDENTITAS PASIEN");
-        lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 9));
-        lblHeader.setForeground(new Color(100, 116, 139));
-        lblHeader.setBounds(12, 10, 130, 16);
+        lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lblHeader.setForeground(new Color(139, 146, 141));
+        lblHeader.setBounds(14, 11, 150, 16);
         card.add(lblHeader);
 
-        JLabel lblBadge = new JLabel("TERKUNCI", SwingConstants.CENTER) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(241, 245, 249));
-                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 6, 6);
-                g2.setColor(new Color(226, 232, 240));
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 6, 6);
-                g2.dispose();
-                super.paintComponent(g);
-            }
-        };
-        lblBadge.setFont(new Font("Segoe UI", Font.BOLD, 8));
-        lblBadge.setForeground(new Color(71, 85, 105));
-        lblBadge.setBounds(175, 9, 58, 16);
+        JLabel lblBadge = new JLabel("  TERKUNCI  ", SwingConstants.CENTER);
+        lblBadge.setOpaque(true);
+        lblBadge.setBackground(ThemeConfig.BORDER_SOFT);
+        lblBadge.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        lblBadge.setForeground(new Color(123, 130, 125));
+        lblBadge.setBounds(230, 10, 65, 17);
         card.add(lblBadge);
 
         lblCardInitials = new JLabel("-", SwingConstants.CENTER) {
@@ -1350,221 +1423,321 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(204, 251, 241));
-                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
+                int diameter = Math.max(0, Math.min(getWidth(), getHeight()) - 1);
+                int x = (getWidth() - diameter) / 2;
+                int y = (getHeight() - diameter) / 2;
+                g2.setColor(ThemeConfig.ACCENT);
+                g2.fillOval(x, y, diameter, diameter);
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
-        lblCardInitials.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lblCardInitials.setForeground(new Color(0, 91, 82));
-        lblCardInitials.setBounds(12, 34, 34, 34);
+        lblCardInitials.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblCardInitials.setForeground(Color.WHITE);
+        lblCardInitials.setBounds(14, 36, 40, 40);
         card.add(lblCardInitials);
 
         lblCardNama = new JLabel("Nama Pasien");
-        lblCardNama.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lblCardNama.setForeground(new Color(15, 23, 42));
-        lblCardNama.setBounds(54, 34, 180, 18);
+        lblCardNama.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblCardNama.setForeground(new Color(31, 36, 33));
+        lblCardNama.setBounds(64, 36, 231, 20);
         card.add(lblCardNama);
 
         lblCardJk = new JLabel("-");
-        lblCardJk.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lblCardJk.setForeground(new Color(100, 116, 139));
-        lblCardJk.setBounds(54, 52, 180, 14);
+        lblCardJk.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblCardJk.setForeground(new Color(139, 146, 141));
+        lblCardJk.setBounds(64, 58, 231, 16);
         card.add(lblCardJk);
 
-        int y = 78;
+        int y = 88;
         addCardKeyValue(card, "No. RM", lblCardNoRM = new JLabel("-"), y);
-        addCardKeyValue(card, "No. Rawat", lblCardNoRw = new JLabel("-"), y + 18);
-        addCardKeyValue(card, "Tgl. Lahir", lblCardTglLahir = new JLabel("-"), y + 36);
+        addCardKeyValue(card, "No. Rawat", lblCardNoRw = new JLabel("-"), y + 19);
+        addCardKeyValue(card, "Tgl. Lahir", lblCardTglLahir = new JLabel("-"), y + 38);
 
         return card;
     }
 
     private void addCardKeyValue(JPanel p, String key, JLabel valLabel, int y) {
         JLabel k = new JLabel(key);
-        k.setFont(new Font("Segoe UI", Font.PLAIN, 9));
-        k.setForeground(new Color(100, 116, 139));
-        k.setBounds(12, y, 65, 15);
+        k.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        k.setForeground(new Color(139, 146, 141));
+        k.setBounds(14, y, 76, 16);
         p.add(k);
 
-        valLabel.setFont(new Font("Segoe UI", Font.PLAIN, 9));
-        valLabel.setForeground(new Color(15, 23, 42));
+        valLabel.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        valLabel.setForeground(new Color(31, 36, 33));
         valLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        valLabel.setBounds(85, y, 148, 15);
+        valLabel.setBounds(96, y, 199, 16);
         p.add(valLabel);
     }
 
+    /** Samakan bentuk kontrol input dengan RM IGD: sudut siku-siku dan garis datar. */
+    private static void buatKotakFieldRekonsiliasi(Component component) {
+        if (component == null) return;
+        if (component instanceof javax.swing.JComponent) {
+            javax.swing.JComponent jc = (javax.swing.JComponent) component;
+            jc.putClientProperty("Component.arc", 0);
+            jc.putClientProperty("TextComponent.arc", 0);
+            jc.putClientProperty("JTextField.arc", 0);
+            jc.putClientProperty("ComboBox.arc", 0);
+            jc.putClientProperty("JComponent.roundRect", false);
+
+            if (component instanceof javax.swing.text.JTextComponent) {
+                jc.setBackground(Color.WHITE);
+                jc.setOpaque(true);
+                jc.putClientProperty("FlatLaf.style",
+                    "background: #FFFFFF; inactiveBackground: #FFFFFF; disabledBackground: #FFFFFF;");
+            } else if (component instanceof javax.swing.JComboBox) {
+                jc.setBackground(Color.WHITE);
+                jc.setOpaque(true);
+                jc.putClientProperty("FlatLaf.style",
+                    "background: #FFFFFF; disabledBackground: #FFFFFF; buttonBackground: #FFFFFF; editableBackground: #FFFFFF;");
+            } else if (component instanceof uz.ncipro.calendar.JDateTimePicker) {
+                jc.setBackground(Color.WHITE);
+                jc.setOpaque(true);
+                jc.setBorder(BorderFactory.createLineBorder(ThemeConfig.BORDER_SOFT));
+                jc.putClientProperty("FlatLaf.style", "background: #FFFFFF; buttonBackground: #FFFFFF;");
+            }
+        }
+        if (component instanceof Container) {
+            for (Component child : ((Container) component).getComponents()) {
+                buatKotakFieldRekonsiliasi(child);
+            }
+        }
+    }
+
     private JPanel createRightHeaderPanel() {
-        JPanel p = new JPanel(null);
-        p.setBackground(Color.WHITE);
+        JPanel p = new JPanel(new GridBagLayout());
+        p.setBackground(ThemeConfig.SURFACE);
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weighty = 0;
 
-        // Row 1: 3 fields (Apoteker, No.Rekonsiliasi, Tanggal & Jam Wawancara)
-        JLabel lApoteker = new JLabel("Apoteker");
-        lApoteker.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lApoteker.setForeground(new Color(100, 116, 139));
-        lApoteker.setBounds(0, 0, 120, 14);
-        p.add(lApoteker);
-
-        JPanel pnlApotekerInput = new JPanel(new BorderLayout(2, 0));
-        pnlApotekerInput.setOpaque(false);
-        pnlApotekerInput.setBounds(0, 16, 265, 26);
-        NmPetugas.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        NmPetugas.putClientProperty("Component.arc", 6);
-        NmPetugas.putClientProperty("ModernStyle.active", Boolean.TRUE);
-        BtnPetugas.setPreferredSize(new Dimension(28, 26));
-        BtnPetugas.putClientProperty("Component.arc", 6);
+        JPanel pnlApotekerInput = new JPanel(new BorderLayout(0, 0));
+        pnlApotekerInput.setOpaque(true);
+        pnlApotekerInput.setBackground(Color.WHITE);
+        pnlApotekerInput.setBorder(BorderFactory.createLineBorder(ThemeConfig.BORDER_SOFT));
+        pnlApotekerInput.setPreferredSize(new Dimension(220, 30));
+        // Kode/NIP tetap menjadi nilai internal untuk validasi dan penyimpanan,
+        // tetapi tampilan mengikuti form IGD yang hanya memperlihatkan nama.
+        KdPetugas.setEditable(false);
+        KdPetugas.setVisible(false);
+        NmPetugas.setFont(new Font(ThemeConfig.FONT_FAMILY, Font.PLAIN, 11));
+        NmPetugas.setVisible(true);
+        NmPetugas.setEditable(false);
+        NmPetugas.setBackground(Color.WHITE);
+        NmPetugas.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
+        NmPetugas.putClientProperty("lookupField", Boolean.TRUE);
+        BtnPetugas.setPreferredSize(new Dimension(32, 30));
+        BtnPetugas.setBackground(Color.WHITE);
+        BtnPetugas.setGlassColor(Color.WHITE);
+        BtnPetugas.setRoundRect(false);
+        BtnPetugas.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, ThemeConfig.BORDER_SOFT));
+        BtnPetugas.putClientProperty("JButton.buttonType", "square");
         pnlApotekerInput.add(NmPetugas, BorderLayout.CENTER);
         pnlApotekerInput.add(BtnPetugas, BorderLayout.EAST);
-        p.add(pnlApotekerInput);
 
-        JLabel lNoRekon = new JLabel("No.Rekonsiliasi");
-        lNoRekon.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lNoRekon.setForeground(new Color(100, 116, 139));
-        lNoRekon.setBounds(280, 0, 120, 14);
-        p.add(lNoRekon);
-
-        TNoRekonsialiasi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        TNoRekonsialiasi.putClientProperty("Component.arc", 6);
-        TNoRekonsialiasi.putClientProperty("ModernStyle.active", Boolean.TRUE);
-        TNoRekonsialiasi.setBounds(280, 16, 265, 26);
-        p.add(TNoRekonsialiasi);
-
-        JLabel lTglJam = new JLabel("Tanggal & Jam Wawancara");
-        lTglJam.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lTglJam.setForeground(new Color(100, 116, 139));
-        lTglJam.setBounds(560, 0, 180, 14);
-        p.add(lTglJam);
-
-        JPanel pnlTglJam = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 1));
-        pnlTglJam.setOpaque(true);
-        pnlTglJam.setBackground(Color.WHITE);
-        pnlTglJam.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(203, 213, 225), 1),
-            BorderFactory.createEmptyBorder(0, 4, 0, 4)
+        TNoRekonsialiasi.setFont(new Font(ThemeConfig.FONT_FAMILY, Font.PLAIN, 11));
+        TNoRekonsialiasi.setEditable(false);
+        TNoRekonsialiasi.setBackground(Color.WHITE);
+        TNoRekonsialiasi.setPreferredSize(new Dimension(220, 30));
+        TNoRekonsialiasi.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(ThemeConfig.BORDER_SOFT),
+            BorderFactory.createEmptyBorder(0, 8, 0, 8)
         ));
-        pnlTglJam.setBounds(560, 16, 265, 26);
-        Tanggal.setPreferredSize(new Dimension(105, 22));
-        CmbJam.setPreferredSize(new Dimension(50, 22));
-        CmbMenit.setPreferredSize(new Dimension(50, 22));
-        JLabel colon = new JLabel(":");
-        colon.setFont(new Font("Segoe UI", Font.BOLD, 11));
+
+        // Mengikuti konsep Registrasi IGD: [tanggal] Jam : [JJ] [MM] [DD].
+        JPanel pnlTglJam = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 0));
+        pnlTglJam.setOpaque(false);
+        pnlTglJam.setBorder(null);
+        pnlTglJam.setPreferredSize(new Dimension(360, 30));
+        Dimension ukuranTanggal = new Dimension(112, 28);
+        Dimension ukuranJam = new Dimension(62, 28);
+        Tanggal.setPreferredSize(ukuranTanggal);
+        Tanggal.setMinimumSize(ukuranTanggal);
+        CmbJam.setPreferredSize(ukuranJam);
+        CmbJam.setMinimumSize(ukuranJam);
+        CmbMenit.setPreferredSize(ukuranJam);
+        CmbMenit.setMinimumSize(ukuranJam);
+        CmbDetik.setVisible(true);
+        CmbDetik.setPreferredSize(ukuranJam);
+        CmbDetik.setMinimumSize(ukuranJam);
+        JLabel lblJam = new JLabel("Jam :");
+        lblJam.setFont(new Font(ThemeConfig.FONT_FAMILY, Font.PLAIN, 10));
+        lblJam.setForeground(ThemeConfig.TEXT_MUTED);
+        lblJam.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblJam.setPreferredSize(new Dimension(38, 28));
         pnlTglJam.add(Tanggal);
+        pnlTglJam.add(lblJam);
         pnlTglJam.add(CmbJam);
-        pnlTglJam.add(colon);
         pnlTglJam.add(CmbMenit);
-        p.add(pnlTglJam);
+        pnlTglJam.add(CmbDetik);
 
-        // Row 2: Rekonsiliasi Saat
-        JLabel lSaat = new JLabel("Rekonsiliasi Saat");
-        lSaat.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lSaat.setForeground(new Color(100, 116, 139));
-        lSaat.setBounds(0, 48, 120, 14);
-        p.add(lSaat);
+        JPanel[] fieldUtama = {
+            panelFieldRekonsiliasi("APOTEKER", pnlApotekerInput),
+            panelFieldRekonsiliasi("NO. REKONSILIASI", TNoRekonsialiasi),
+            panelFieldRekonsiliasi("TANGGAL & JAM WAWANCARA", pnlTglJam)
+        };
+        for (int kolom = 0; kolom < fieldUtama.length; kolom++) {
+            c.gridx = kolom;
+            c.gridy = 0;
+            c.weightx = 1;
+            c.insets = new Insets(0, kolom == 0 ? 0 : 10, 6, 0);
+            p.add(fieldUtama[kolom], c);
+        }
 
+        JPanel pnlTahap = new JPanel(new BorderLayout(0, 3));
+        pnlTahap.setOpaque(false);
+        pnlTahap.add(labelFieldRekonsiliasi("REKONSILIASI SAAT"), BorderLayout.NORTH);
         JPanel segPills = new JPanel(new GridLayout(1, 3, -1, 0));
-        segPills.setBounds(0, 64, 375, 26);
         segPills.setOpaque(false);
-
+        segPills.setPreferredSize(new Dimension(430, 28));
         btnSegAdmisi = createSegmentedButton("Admisi");
         btnSegTransfer = createSegmentedButton("Transfer Antar Ruang");
         btnSegPulang = createSegmentedButton("Pulang");
         segPills.add(btnSegAdmisi);
         segPills.add(btnSegTransfer);
         segPills.add(btnSegPulang);
-        p.add(segPills);
+        JPanel pnlTahapKiri = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        pnlTahapKiri.setOpaque(false);
+        pnlTahapKiri.add(segPills);
+        pnlTahap.add(pnlTahapKiri, BorderLayout.CENTER);
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 3;
+        c.weightx = 1;
+        c.insets = new Insets(0, 0, 6, 0);
+        p.add(pnlTahap, c);
 
-        // Row 3: Grup Admisi (Penggunaan Obat Sebelum Admisi & Sumber Informasi)
-        pnlGrupAdmisi = new JPanel(null);
-        pnlGrupAdmisi.setBackground(Color.WHITE);
-        pnlGrupAdmisi.setBounds(0, 96, 950, 65);
+        pnlGrupAdmisi = new JPanel(new GridBagLayout());
+        pnlGrupAdmisi.setBackground(ThemeConfig.SURFACE);
+        GridBagConstraints a = new GridBagConstraints();
+        a.gridy = 0;
+        a.fill = GridBagConstraints.HORIZONTAL;
+        a.anchor = GridBagConstraints.NORTHWEST;
+        a.weightx = 1;
 
-        JLabel lObat = new JLabel("Penggunaan Obat Sebelum Admisi");
-        lObat.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        lObat.setForeground(new Color(15, 23, 42));
-        lObat.setBounds(0, 0, 250, 15);
-        pnlGrupAdmisi.add(lObat);
-
-        styleRadioButton(RbObatSebelumAdmisiYa, true);
-        RbObatSebelumAdmisiYa.setBounds(0, 17, 210, 20);
-        pnlGrupAdmisi.add(RbObatSebelumAdmisiYa);
-
+        JPanel pnlObatAdmisi = new JPanel(new BorderLayout(0, 3));
+        pnlObatAdmisi.setOpaque(false);
+        pnlObatAdmisi.add(labelFieldRekonsiliasi("PENGGUNAAN OBAT SEBELUM ADMISI *"), BorderLayout.NORTH);
+        JPanel pilihanObat = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        pilihanObat.setOpaque(false);
+        styleRadioButton(RbObatSebelumAdmisiYa, false);
         styleRadioButton(RbObatSebelumAdmisiTidak, false);
-        RbObatSebelumAdmisiTidak.setBounds(215, 17, 250, 20);
-        pnlGrupAdmisi.add(RbObatSebelumAdmisiTidak);
+        pilihanObat.add(RbObatSebelumAdmisiYa);
+        pilihanObat.add(RbObatSebelumAdmisiTidak);
+        pnlObatAdmisi.add(pilihanObat, BorderLayout.CENTER);
+        a.gridx = 0;
+        a.insets = new Insets(0, 0, 0, 12);
+        pnlGrupAdmisi.add(pnlObatAdmisi, a);
 
-        JLabel lSumber = new JLabel("Sumber Informasi");
-        lSumber.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        lSumber.setForeground(new Color(15, 23, 42));
-        lSumber.setBounds(480, 0, 200, 15);
-        pnlGrupAdmisi.add(lSumber);
-
+        JPanel pnlSumber = new JPanel(new BorderLayout(0, 3));
+        pnlSumber.setOpaque(false);
+        pnlSumber.add(labelFieldRekonsiliasi("SUMBER INFORMASI *"), BorderLayout.NORTH);
+        JPanel pilihanSumber = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        pilihanSumber.setOpaque(false);
         styleRadioButton(RbSumberRM, false);
-        RbSumberRM.setBounds(480, 17, 180, 20);
-        pnlGrupAdmisi.add(RbSumberRM);
-
-        styleRadioButton(RbSumberPasien, true);
-        RbSumberPasien.setBounds(665, 17, 150, 20);
-        pnlGrupAdmisi.add(RbSumberPasien);
-
+        styleRadioButton(RbSumberPasien, false);
         styleRadioButton(RbSumberLain, false);
-        RbSumberLain.setBounds(820, 17, 80, 20);
-        pnlGrupAdmisi.add(RbSumberLain);
-
-        TSumberLainKet.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        TSumberLainKet.setBounds(480, 39, 160, 22);
-        TSumberLainKet.setBackground(new Color(248, 250, 252));
-        TSumberLainKet.putClientProperty("Component.arc", 6);
-        TSumberLainKet.putClientProperty("ModernStyle.active", Boolean.TRUE);
+        pilihanSumber.add(RbSumberRM);
+        pilihanSumber.add(RbSumberPasien);
+        pilihanSumber.add(RbSumberLain);
+        TSumberLainKet.setPreferredSize(new Dimension(175, 26));
+        TSumberLainKet.setFont(new Font(ThemeConfig.FONT_FAMILY, Font.PLAIN, 10));
+        TSumberLainKet.setBackground(ThemeConfig.SURFACE_ALT);
         TSumberLainKet.setText("Sebutkan...");
-        TSumberLainKet.setForeground(new Color(148, 163, 184));
+        TSumberLainKet.setForeground(ThemeConfig.TEXT_FAINT);
+        pilihanSumber.add(TSumberLainKet);
+        pnlSumber.add(pilihanSumber, BorderLayout.CENTER);
+        a.gridx = 1;
+        a.insets = new Insets(0, 0, 0, 0);
+        pnlGrupAdmisi.add(pnlSumber, a);
+
         TSumberLainKet.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusGained(java.awt.event.FocusEvent e) {
                 if ("Sebutkan...".equals(TSumberLainKet.getText())) {
                     TSumberLainKet.setText("");
-                    TSumberLainKet.setForeground(new Color(15, 23, 42));
+                    TSumberLainKet.setForeground(ThemeConfig.TEXT_NORMAL);
                 }
             }
             @Override
             public void focusLost(java.awt.event.FocusEvent e) {
                 if (TSumberLainKet.getText().trim().isEmpty()) {
                     TSumberLainKet.setText("Sebutkan...");
-                    TSumberLainKet.setForeground(new Color(148, 163, 184));
+                    TSumberLainKet.setForeground(ThemeConfig.TEXT_FAINT);
                 }
             }
         });
-        pnlGrupAdmisi.add(TSumberLainKet);
+        c.gridy = 2;
+        c.insets = new Insets(0, 0, 0, 0);
+        p.add(pnlGrupAdmisi, c);
 
-        p.add(pnlGrupAdmisi);
+        // Glue pengisi vertikal agar baris Apoteker, No Rekonsiliasi, dan Rekonsiliasi Saat
+        // selalu terkunci di paling atas (tidak melayang turun ke tengah saat grup Admisi sembunyi).
+        c.gridx = 0;
+        c.gridy = 3;
+        c.gridwidth = 3;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(0, 0, 0, 0);
+        p.add(javax.swing.Box.createGlue(), c);
 
         return p;
     }
 
+    private JLabel labelFieldRekonsiliasi(String teks) {
+        JLabel label = new JLabel(teks);
+        label.setFont(new Font(ThemeConfig.FONT_FAMILY, Font.BOLD, 10));
+        label.setForeground(ThemeConfig.TEXT_FAINT);
+        return label;
+    }
+
+    private JPanel panelFieldRekonsiliasi(String label, Component field) {
+        JPanel panel = new JPanel(new BorderLayout(0, 3));
+        panel.setOpaque(false);
+        panel.add(labelFieldRekonsiliasi(label), BorderLayout.NORTH);
+        panel.add(field, BorderLayout.CENTER);
+        int lebarField = field.getPreferredSize() == null ? 220 : field.getPreferredSize().width;
+        panel.setPreferredSize(new Dimension(Math.max(220, lebarField), 50));
+        return panel;
+    }
+
     private JButton createSegmentedButton(final String text) {
-        JButton b = new JButton(text) {
+        JButton b = new JButton() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                 boolean isSel = text.equalsIgnoreCase(RekonsiliasiSaat.getSelectedItem() != null ? RekonsiliasiSaat.getSelectedItem().toString() : "");
                 if (isSel) {
-                    g2.setColor(new Color(0, 91, 82));
+                    g2.setColor(new Color(13, 122, 112));
                     g2.fillRect(0, 0, getWidth(), getHeight());
                 } else {
                     g2.setColor(Color.WHITE);
                     g2.fillRect(0, 0, getWidth(), getHeight());
-                    g2.setColor(new Color(226, 232, 240));
+                    g2.setColor(new Color(224, 226, 221));
                     g2.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
                 }
+
+                g2.setFont(getFont());
+                g2.setColor(getForeground());
+                FontMetrics fm = g2.getFontMetrics();
+                int textX = (getWidth() - fm.stringWidth(text)) / 2;
+                int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+                g2.drawString(text, textX, textY);
                 g2.dispose();
-                super.paintComponent(g);
             }
         };
+        b.setText(text);
         b.setFont(new Font("Segoe UI", Font.PLAIN, 10));
         b.setFocusPainted(false);
         b.setContentAreaFilled(false);
         b.setBorderPainted(false);
+        b.setCursor(new Cursor(Cursor.HAND_CURSOR));
         b.addActionListener(e -> {
             RekonsiliasiSaat.setSelectedItem(text);
             updateSegmentedButtons();
@@ -1578,42 +1751,175 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         if (btnSegAdmisi == null) return;
         String saat = RekonsiliasiSaat.getSelectedItem() != null ? RekonsiliasiSaat.getSelectedItem().toString() : "Admisi";
         btnSegAdmisi.setFont(new Font("Segoe UI", "Admisi".equalsIgnoreCase(saat) ? Font.BOLD : Font.PLAIN, 10));
-        btnSegAdmisi.setForeground("Admisi".equalsIgnoreCase(saat) ? Color.WHITE : new Color(15, 23, 42));
+        btnSegAdmisi.setForeground("Admisi".equalsIgnoreCase(saat) ? Color.WHITE : new Color(47, 54, 50));
         btnSegTransfer.setFont(new Font("Segoe UI", "Transfer Antar Ruang".equalsIgnoreCase(saat) ? Font.BOLD : Font.PLAIN, 10));
-        btnSegTransfer.setForeground("Transfer Antar Ruang".equalsIgnoreCase(saat) ? Color.WHITE : new Color(15, 23, 42));
+        btnSegTransfer.setForeground("Transfer Antar Ruang".equalsIgnoreCase(saat) ? Color.WHITE : new Color(47, 54, 50));
         btnSegPulang.setFont(new Font("Segoe UI", "Pulang".equalsIgnoreCase(saat) ? Font.BOLD : Font.PLAIN, 10));
-        btnSegPulang.setForeground("Pulang".equalsIgnoreCase(saat) ? Color.WHITE : new Color(15, 23, 42));
+        btnSegPulang.setForeground("Pulang".equalsIgnoreCase(saat) ? Color.WHITE : new Color(47, 54, 50));
         btnSegAdmisi.repaint();
         btnSegTransfer.repaint();
         btnSegPulang.repaint();
     }
 
+    private JPanel createAllergyCard() {
+        JPanel card = new JPanel(new BorderLayout(0, 6)) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
+                g2.setColor(new Color(224, 226, 221));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        card.setOpaque(false);
+        card.setBorder(new EmptyBorder(8, 12, 8, 12));
+        card.setPreferredSize(new Dimension(1000, 116));
+
+        JPanel pnlTitle = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        pnlTitle.setOpaque(false);
+        JLabel lblTitle = new JLabel("INFORMASI KLINIS TAMBAHAN · RIWAYAT ALERGI OBAT (TIDAK TERCETAK DI RM 03-06A)");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lblTitle.setForeground(new Color(139, 146, 141));
+        pnlTitle.add(lblTitle);
+        card.add(pnlTitle, BorderLayout.NORTH);
+
+        JPanel pnlInputs = new JPanel(new GridBagLayout());
+        pnlInputs.setOpaque(false);
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(0, 0, 0, 8);
+        c.weighty = 1.0;
+
+        // Col 1: Obat Penyebab Alergi
+        c.gridx = 0;
+        c.weightx = 0.42;
+        JPanel p1 = new JPanel(new BorderLayout(0, 2));
+        p1.setOpaque(false);
+        JLabel l1 = new JLabel("OBAT PENYEBAB ALERGI");
+        l1.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        l1.setForeground(new Color(139, 146, 141));
+        p1.add(l1, BorderLayout.NORTH);
+
+        AlergiObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        AlergiObat.setForeground(new Color(31, 36, 33));
+        AlergiObat.setRows(3);
+        scrollPane2.setVisible(true);
+        AlergiObat.setVisible(true);
+        scrollPane2.setPreferredSize(new Dimension(240, 56));
+        scrollPane2.setMinimumSize(new Dimension(120, 56));
+        scrollPane2.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(224, 226, 221), 1),
+            BorderFactory.createEmptyBorder(1, 4, 1, 4)
+        ));
+        p1.add(scrollPane2, BorderLayout.CENTER);
+        pnlInputs.add(p1, c);
+
+        // Col 2: Manifestasi Alergi
+        c.gridx = 1;
+        c.weightx = 0.42;
+        JPanel p2 = new JPanel(new BorderLayout(0, 2));
+        p2.setOpaque(false);
+        JLabel l2 = new JLabel("GEJALA / MANIFESTASI KLINIS");
+        l2.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        l2.setForeground(new Color(139, 146, 141));
+        p2.add(l2, BorderLayout.NORTH);
+
+        ManifestasiAlergi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        ManifestasiAlergi.setForeground(new Color(31, 36, 33));
+        ManifestasiAlergi.setRows(3);
+        scrollPane3.setVisible(true);
+        ManifestasiAlergi.setVisible(true);
+        scrollPane3.setPreferredSize(new Dimension(240, 56));
+        scrollPane3.setMinimumSize(new Dimension(120, 56));
+        scrollPane3.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(224, 226, 221), 1),
+            BorderFactory.createEmptyBorder(1, 4, 1, 4)
+        ));
+        p2.add(scrollPane3, BorderLayout.CENTER);
+        pnlInputs.add(p2, c);
+
+        // Col 3: Dampak Alergi
+        c.gridx = 2;
+        c.weightx = 0.16;
+        c.insets = new Insets(0, 0, 0, 0);
+        JPanel p3 = new JPanel(new BorderLayout(0, 2));
+        p3.setOpaque(false);
+        JLabel l3 = new JLabel("DAMPAK ALERGI");
+        l3.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        l3.setForeground(new Color(139, 146, 141));
+        p3.add(l3, BorderLayout.NORTH);
+
+        DampakAlergi.setVisible(true);
+        DampakAlergi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        DampakAlergi.setPreferredSize(new Dimension(110, 30));
+        JPanel pnlDampakInput = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        pnlDampakInput.setOpaque(false);
+        pnlDampakInput.add(DampakAlergi);
+        p3.add(pnlDampakInput, BorderLayout.CENTER);
+        pnlInputs.add(p3, c);
+
+        card.add(pnlInputs, BorderLayout.CENTER);
+        return card;
+    }
+
     private JPanel createTableSection() {
-        JPanel p = new JPanel(new BorderLayout(0, 6));
+        JPanel p = new JPanel(new BorderLayout(0, 8));
         p.setBackground(Color.WHITE);
 
-        JPanel pnlTableHeader = new JPanel(new BorderLayout());
-        pnlTableHeader.setBackground(Color.WHITE);
+        // Card I: Tabel Obat
+        JPanel cardTabel = new JPanel(new BorderLayout(0, 6)) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
+                g2.setColor(new Color(224, 226, 221));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        cardTabel.setOpaque(false);
+        cardTabel.setBorder(new EmptyBorder(8, 12, 8, 12));
 
-        JPanel pnlTitle = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
-        pnlTitle.setBackground(Color.WHITE);
+        JPanel pnlTableHeader = new JPanel(new BorderLayout());
+        pnlTableHeader.setOpaque(false);
+
+        JPanel pnlTitle = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        pnlTitle.setOpaque(false);
         JLabel lTitle = new JLabel("DAFTAR OBAT DIREKONSILIASI");
         lTitle.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        lTitle.setForeground(new Color(15, 23, 42));
+        lTitle.setForeground(new Color(139, 146, 141));
         pnlTitle.add(lTitle);
 
-        lblCountObat = new JLabel("0 obat");
-        lblCountObat.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lblCountObat.setForeground(new Color(100, 116, 139));
+        lblCountObat = new JLabel("0 obat", SwingConstants.CENTER) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(232, 234, 229));
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 6, 6);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        lblCountObat.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        lblCountObat.setForeground(new Color(123, 130, 125));
+        lblCountObat.setBorder(new EmptyBorder(1, 6, 1, 6));
         pnlTitle.add(lblCountObat);
         pnlTableHeader.add(pnlTitle, BorderLayout.WEST);
 
         JPanel pnlTableBtns = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
-        pnlTableBtns.setBackground(Color.WHITE);
+        pnlTableBtns.setOpaque(false);
 
         styleOutlineButton(BtnHapus);
-        BtnHapus.setText("Hapus");
-        BtnHapus.setPreferredSize(new Dimension(75, 26));
+        BtnHapus.setText("Hapus Baris");
+        BtnHapus.setPreferredSize(new Dimension(90, 26));
         pnlTableBtns.add(BtnHapus);
 
         styleSolidTealButton(BtnTambah);
@@ -1622,11 +1928,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         pnlTableBtns.add(BtnTambah);
 
         pnlTableHeader.add(pnlTableBtns, BorderLayout.EAST);
-        p.add(pnlTableHeader, BorderLayout.NORTH);
+        cardTabel.add(pnlTableHeader, BorderLayout.NORTH);
 
-        Scroll2.setBorder(BorderFactory.createLineBorder(new Color(241, 245, 249)));
+        Scroll2.setBorder(BorderFactory.createLineBorder(new Color(224, 226, 221)));
         Scroll2.getViewport().setBackground(Color.WHITE);
-        p.add(Scroll2, BorderLayout.CENTER);
+        cardTabel.add(Scroll2, BorderLayout.CENTER);
+
+        p.add(cardTabel, BorderLayout.CENTER);
+
+        // Card II: Riwayat Alergi Obat
+        JPanel cardAlergi = createAllergyCard();
+        p.add(cardAlergi, BorderLayout.SOUTH);
 
         return p;
     }
@@ -1634,57 +1946,440 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JPanel createBottomSection() {
         JPanel p = new JPanel(new BorderLayout(0, 6));
         p.setBackground(Color.WHITE);
+        p.setPreferredSize(new Dimension(1320, 56));
+        p.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(224, 226, 221)),
+            new EmptyBorder(8, 0, 4, 0)
+        ));
 
         JPanel pnlActRow = new JPanel(new BorderLayout());
         pnlActRow.setBackground(Color.WHITE);
 
-        JPanel pnlLeftBtns = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
-        pnlLeftBtns.setBackground(Color.WHITE);
+        // Aksi di kiri berubah sesuai konteks tab; status dan Keluar tetap di kanan.
+        JPanel pnlInputBtns = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        pnlInputBtns.setBackground(Color.WHITE);
 
-        styleSolidTealButton(BtnSimpan);
+        styleFooterActionButton(BtnSimpan, 100);
         BtnSimpan.setText("Simpan");
-        BtnSimpan.setPreferredSize(new Dimension(85, 28));
-        pnlLeftBtns.add(BtnSimpan);
+        pnlInputBtns.add(BtnSimpan);
 
-        styleOutlineButton(BtnBatal);
-        BtnBatal.setText("Clear");
-        BtnBatal.setPreferredSize(new Dimension(75, 28));
-        pnlLeftBtns.add(BtnBatal);
+        styleFooterActionButton(BtnBatal, 90);
+        BtnBatal.setText("Baru");
+        pnlInputBtns.add(BtnBatal);
 
-        widget.Button btnCetakForm = new widget.Button();
-        styleOutlineButton(btnCetakForm);
-        btnCetakForm.setText("Cetak Form (RM 03-06A)");
-        btnCetakForm.setPreferredSize(new Dimension(180, 28));
-        btnCetakForm.addActionListener(e -> cetakFormDariInput());
-        pnlLeftBtns.add(btnCetakForm);
+        JPanel pnlDataBtns = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        pnlDataBtns.setBackground(Color.WHITE);
 
-        pnlActRow.add(pnlLeftBtns, BorderLayout.WEST);
+        BtnBaruData = new widget.Button();
+        BtnBaruData.setText("Rekonsiliasi Baru");
+        BtnBaruData.setIcon(widget.IconStyle.muat("plus.svg",14,ThemeConfig.PRIMARY));
+        BtnBaruData.setToolTipText("Buka tab Input untuk membuat rekonsiliasi baru");
+        styleFooterActionButton(BtnBaruData, 150);
+        BtnBaruData.addActionListener(e -> mulaiRekonsiliasiBaruDariData());
+        pnlDataBtns.add(BtnBaruData);
 
-        JPanel pnlRightBtns = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        pnlRightBtns.setBackground(Color.WHITE);
+        BtnGantiData = new widget.Button();
+        BtnGantiData.setText("Ganti");
+        BtnGantiData.setIcon(widget.IconStyle.muat("pencil.svg",14,widget.IconStyle.ORANYE));
+        BtnGantiData.setToolTipText("Muat rekonsiliasi terpilih ke tab Input untuk diubah");
+        styleFooterActionButton(BtnGantiData, 92);
+        BtnGantiData.setEnabled(false);
+        BtnGantiData.addActionListener(e -> muatRekonsiliasiTerpilihUntukGanti());
+        pnlDataBtns.add(BtnGantiData);
+
+        BtnHapusData = new widget.Button();
+        BtnHapusData.setText("Hapus");
+        BtnHapusData.setIcon(widget.IconStyle.muat("trash.svg",14,ThemeConfig.DANGER));
+        BtnHapusData.setForeground(ThemeConfig.DANGER);
+        BtnHapusData.setToolTipText("Hapus permanen rekonsiliasi terpilih");
+        styleFooterActionButton(BtnHapusData, 96);
+        BtnHapusData.setForeground(ThemeConfig.DANGER);
+        BtnHapusData.setEnabled(false);
+        BtnHapusData.addActionListener(e -> hapusRekonsiliasiTerpilih());
+        pnlDataBtns.add(BtnHapusData);
+
+        BtnAllData = new widget.Button();
+        BtnAllData.setText("Semua");
+        BtnAllData.setIcon(widget.IconStyle.muat("list.svg",14,widget.IconStyle.ABU));
+        BtnAllData.setToolTipText("Tampilkan semua data rekonsiliasi obat");
+        styleFooterActionButton(BtnAllData, 94);
+        BtnAllData.addActionListener(e -> tampilkanSemuaData());
+        pnlDataBtns.add(BtnAllData);
+
+        footerActionLayout = new CardLayout();
+        pnlFooterActionCards = new JPanel(footerActionLayout);
+        pnlFooterActionCards.setBackground(Color.WHITE);
+        pnlFooterActionCards.add(pnlInputBtns,"input");
+        pnlFooterActionCards.add(pnlDataBtns,"data");
+        pnlActRow.add(pnlFooterActionCards, BorderLayout.WEST);
+
+        JPanel pnlRight = new JPanel(new BorderLayout(12, 0));
+        pnlRight.setBackground(Color.WHITE);
+        JPanel pnlStatus = new JPanel(new GridLayout(2, 1, 0, 2));
+        pnlStatus.setBackground(Color.WHITE);
 
         lblStatusRekon = new JLabel("Rekonsiliasi saat Admisi");
-        lblStatusRekon.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lblStatusRekon.setForeground(new Color(100, 116, 139));
-        pnlRightBtns.add(lblStatusRekon);
+        lblStatusRekon.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lblStatusRekon.setForeground(new Color(47, 54, 50));
+        pnlStatus.add(lblStatusRekon);
 
-        styleOutlineButton(BtnKeluar);
-        BtnKeluar.setText("Keluar");
-        BtnKeluar.setPreferredSize(new Dimension(75, 28));
-        pnlRightBtns.add(BtnKeluar);
-
-        pnlActRow.add(pnlRightBtns, BorderLayout.EAST);
-        p.add(pnlActRow, BorderLayout.NORTH);
-
-        JPanel pnlMetaRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 2));
-        pnlMetaRow.setBackground(Color.WHITE);
         lblFooterMeta = new JLabel("-");
         lblFooterMeta.setFont(new Font("Segoe UI", Font.PLAIN, 9));
-        lblFooterMeta.setForeground(new Color(148, 163, 184));
-        pnlMetaRow.add(lblFooterMeta);
-        p.add(pnlMetaRow, BorderLayout.SOUTH);
+        lblFooterMeta.setForeground(new Color(139, 146, 141));
+        pnlStatus.add(lblFooterMeta);
+        pnlRight.add(pnlStatus, BorderLayout.CENTER);
+
+        styleFooterActionButton(BtnKeluar, 90);
+        BtnKeluar.setText("Keluar");
+        BtnKeluar.setForeground(ThemeConfig.DANGER);
+        pnlRight.add(BtnKeluar, BorderLayout.EAST);
+        pnlActRow.add(pnlRight, BorderLayout.EAST);
+        // Pastikan ikon SVG dan hover aksi konsisten dengan action bar form IGD.
+        widget.IconStyle.pasang(pnlActRow);
+        p.add(pnlActRow, BorderLayout.CENTER);
 
         return p;
+    }
+
+    /** Tombol card footer mengikuti pola action bar RM IGD. */
+    private void styleFooterActionButton(widget.Button button, int width) {
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBackground(Color.WHITE);
+        button.setGlassColor(Color.WHITE);
+        button.setRoundRect(false);
+        button.putClientProperty("Component.arc", 4);
+        button.putClientProperty("Button.arc", 4);
+        button.putClientProperty("JButton.buttonType", "square");
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        button.setIconTextGap(6);
+        button.setHorizontalAlignment(SwingConstants.CENTER);
+        button.setHorizontalTextPosition(SwingConstants.RIGHT);
+        button.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(ThemeConfig.BORDER_SOFT),
+            BorderFactory.createEmptyBorder(4, 12, 4, 12)
+        ));
+        button.setPreferredSize(new Dimension(width, 32));
+    }
+
+    private void updateFooterUntukTab(){
+        if(TabPilihan==null || footerActionLayout==null || pnlFooterActionCards==null){ return; }
+        boolean tabData = TabPilihan.getSelectedIndex()==1;
+        footerActionLayout.show(pnlFooterActionCards,tabData?"data":"input");
+        if(tabData){
+            perbaruiAksiDataTerpilih();
+        }else{
+            updateStatusRekon();
+            updateFooterMeta();
+        }
+        pnlFooterActionCards.revalidate();
+        pnlFooterActionCards.repaint();
+    }
+
+    private void perbaruiAksiDataTerpilih(){
+        boolean terpilih = tbDataRekonsiliasi!=null && tbDataRekonsiliasi.getSelectedRow()>=0;
+        boolean bolehUbah = akses.getrekonsiliasi_obat();
+        if(BtnBaruData!=null){ BtnBaruData.setEnabled(bolehUbah); }
+        if(BtnGantiData!=null){ BtnGantiData.setEnabled(terpilih && bolehUbah); }
+        if(BtnHapusData!=null){ BtnHapusData.setEnabled(terpilih && bolehUbah); }
+        if(lblStatusRekon!=null){
+            lblStatusRekon.setText(terpilih
+                ? "Data Rekonsiliasi · "+tbDataRekonsiliasi.getValueAt(tbDataRekonsiliasi.getSelectedRow(),0)
+                : "Data Rekonsiliasi Obat");
+        }
+        if(lblFooterMeta!=null){
+            lblFooterMeta.setText(terpilih
+                ? tbDataRekonsiliasi.getValueAt(tbDataRekonsiliasi.getSelectedRow(),1).toString()
+                : "Pilih data untuk melihat rincian, mengganti, atau menghapus");
+        }
+    }
+
+    private void aturModeEdit(boolean edit){
+        if(!edit){ noRekonsiliasiEdit=null; }
+        if(BtnSimpan!=null){
+            BtnSimpan.setText(edit?"Simpan Perubahan":"Simpan");
+            BtnSimpan.setPreferredSize(new Dimension(edit?142:100,32));
+        }
+        updateStatusRekon();
+    }
+
+    private void mulaiRekonsiliasiBaruDariData(){
+        if(!akses.getrekonsiliasi_obat()){
+            JOptionPane.showMessageDialog(rootPane,"Anda tidak memiliki hak akses Rekonsiliasi Obat.");
+            return;
+        }
+        if(tabMode.getRowCount()>0){
+            int jawab = JOptionPane.showConfirmDialog(rootPane,
+                    "Daftar obat pada form Input akan dikosongkan. Lanjut membuat rekonsiliasi baru?",
+                    "Konfirmasi Rekonsiliasi Baru",JOptionPane.YES_NO_OPTION);
+            if(jawab!=JOptionPane.YES_OPTION){ return; }
+        }
+        Valid.tabelKosong(tabMode);
+        aturModeEdit(false);
+        emptTeks();
+        TabPilihan.setSelectedIndex(0);
+    }
+
+    private void tampilkanSemuaData(){
+        TCariData.setText("Ketik kata kunci...");
+        TCariData.setForeground(ThemeConfig.TEXT_FAINT);
+        Calendar cal=Calendar.getInstance();
+        cal.add(Calendar.YEAR,-10);
+        Tgl1Data.setDate(cal.getTime());
+        cal.add(Calendar.YEAR,20);
+        Tgl2Data.setDate(cal.getTime());
+        tampilDataRekonsiliasi();
+    }
+
+    private void muatRekonsiliasiTerpilihUntukGanti(){
+        if(!akses.getrekonsiliasi_obat()){
+            JOptionPane.showMessageDialog(rootPane,"Anda tidak memiliki hak akses untuk mengganti rekonsiliasi obat.");
+            return;
+        }
+        if(tbDataRekonsiliasi==null || tbDataRekonsiliasi.getSelectedRow()<0){
+            JOptionPane.showMessageDialog(rootPane,"Pilih data rekonsiliasi yang akan diganti.");
+            return;
+        }
+
+        String noRek = tbDataRekonsiliasi.getValueAt(tbDataRekonsiliasi.getSelectedRow(),0).toString();
+        PreparedStatement psHeader=null, psDetail=null;
+        ResultSet rsHeader=null, rsDetail=null;
+        try{
+            psHeader=koneksi.prepareStatement(
+                "select rekonsiliasi_obat.*,petugas.nama as nama_petugas from rekonsiliasi_obat "+
+                "inner join petugas on rekonsiliasi_obat.nip=petugas.nip where rekonsiliasi_obat.no_rekonsiliasi=?");
+            psHeader.setString(1,noRek);
+            rsHeader=psHeader.executeQuery();
+            if(!rsHeader.next()){
+                JOptionPane.showMessageDialog(rootPane,"Data rekonsiliasi tidak ditemukan.");
+                return;
+            }
+
+            String noRawat=rsHeader.getString("no_rawat");
+            Timestamp tanggalWawancara=rsHeader.getTimestamp("tanggal_wawancara");
+            String saat=rsHeader.getString("rekonsiliasi_obat_saat");
+            String alergi=rsHeader.getString("alergi_obat");
+            String manifestasi=rsHeader.getString("manifestasi_alergi");
+            String dampak=rsHeader.getString("dampak_alergi");
+            String nip=rsHeader.getString("nip");
+            String namaPetugas=rsHeader.getString("nama_petugas");
+            String penggunaan=safeGetString(rsHeader,"penggunaan_obat_sebelum_admisi");
+            String sumber=safeGetString(rsHeader,"sumber_informasi");
+            String sumberLain=safeGetString(rsHeader,"sumber_informasi_lain");
+
+            ArrayList<Object[]> daftarObat=new ArrayList<>();
+            psDetail=koneksi.prepareStatement(
+                "select nama_obat,dosis_obat,frekuensi,cara_pemberian,waktu_pemberian_terakhir,tindak_lanjut,perubahan_aturan_pakai "+
+                "from rekonsiliasi_obat_detail_obat where no_rekonsiliasi=?");
+            psDetail.setString(1,noRek);
+            rsDetail=psDetail.executeQuery();
+            while(rsDetail.next()){
+                daftarObat.add(new Object[]{"",rsDetail.getString("nama_obat"),rsDetail.getString("dosis_obat"),
+                    rsDetail.getString("frekuensi"),rsDetail.getString("cara_pemberian"),
+                    rsDetail.getString("tindak_lanjut"),rsDetail.getString("perubahan_aturan_pakai"),
+                    rsDetail.getString("waktu_pemberian_terakhir")});
+            }
+
+            setNoRm(noRawat);
+            TNoRekonsialiasi.setText(noRek);
+            ChkJln.setSelected(false);
+            if(tanggalWawancara!=null){
+                Date tanggalEdit=new Date(tanggalWawancara.getTime());
+                Tanggal.setDate(tanggalEdit);
+                Calendar kalender=Calendar.getInstance();
+                kalender.setTime(tanggalEdit);
+                CmbJam.setSelectedItem(String.format("%02d",kalender.get(Calendar.HOUR_OF_DAY)));
+                CmbMenit.setSelectedItem(String.format("%02d",kalender.get(Calendar.MINUTE)));
+                CmbDetik.setSelectedItem(String.format("%02d",kalender.get(Calendar.SECOND)));
+            }
+            RekonsiliasiSaat.setSelectedItem(saat);
+            AlergiObat.setText(alergi==null?"":alergi);
+            ManifestasiAlergi.setText(manifestasi==null?"":manifestasi);
+            DampakAlergi.setSelectedItem(dampak==null?"-":dampak);
+            KdPetugas.setText(nip==null?"":nip);
+            NmPetugas.setText(namaPetugas==null?"":namaPetugas);
+
+            bgObatSebelumAdmisi.clearSelection();
+            bgSumberInformasi.clearSelection();
+            if("Ya".equals(penggunaan)){ RbObatSebelumAdmisiYa.setSelected(true); }
+            else if("Tidak".equals(penggunaan)){ RbObatSebelumAdmisiTidak.setSelected(true); }
+            if("Status Pasien di Rekam Medis".equals(sumber)){ RbSumberRM.setSelected(true); }
+            else if("Pasien/Keluarga Pasien".equals(sumber)){ RbSumberPasien.setSelected(true); }
+            else if("Lain-lain".equals(sumber)){ RbSumberLain.setSelected(true); }
+            perbaruiKeteranganSumber();
+            if(RbSumberLain.isSelected() && sumberLain!=null && !sumberLain.trim().isEmpty()){
+                TSumberLainKet.setText(sumberLain);
+                TSumberLainKet.setForeground(ThemeConfig.TEXT_NORMAL);
+            }
+
+            Valid.tabelKosong(tabMode);
+            for(Object[] obat:daftarObat){ tabMode.addRow(obat); }
+            noRekonsiliasiEdit=noRek;
+            aturModeEdit(true);
+            updatePatientCard();
+            updateCounterObat();
+            perbaruiVisibilitasFieldAdmisi();
+            TabPilihan.setSelectedIndex(0);
+            BtnSimpan.requestFocusInWindow();
+        }catch(Exception e){
+            System.out.println("Notif muat Ganti Rekonsiliasi : "+e);
+            JOptionPane.showMessageDialog(rootPane,"Gagal memuat data rekonsiliasi untuk diganti.");
+        }finally{
+            try{ if(rsDetail!=null){rsDetail.close();} }catch(Exception e){}
+            try{ if(psDetail!=null){psDetail.close();} }catch(Exception e){}
+            try{ if(rsHeader!=null){rsHeader.close();} }catch(Exception e){}
+            try{ if(psHeader!=null){psHeader.close();} }catch(Exception e){}
+        }
+    }
+
+    private String tanggalWawancaraForm(){
+        return Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+CmbJam.getSelectedItem()+":"+
+               CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem();
+    }
+
+    private void gantiRekonsiliasiDalamTransaksi(){
+        final String noRekLama=noRekonsiliasiEdit;
+        boolean autoCommitLama=true;
+        Savepoint savepoint=null;
+        PreparedStatement psUpdate=null, psHapusDetail=null, psTambahDetail=null;
+        boolean sukses=false;
+        try{
+            autoCommitLama=koneksi.getAutoCommit();
+            if(autoCommitLama){ koneksi.setAutoCommit(false); }
+            else{ savepoint=koneksi.setSavepoint("ganti_rekonsiliasi_obat"); }
+
+            psUpdate=koneksi.prepareStatement(
+                "update rekonsiliasi_obat set no_rawat=?,tanggal_wawancara=?,rekonsiliasi_obat_saat=?,"+
+                "alergi_obat=?,manifestasi_alergi=?,dampak_alergi=?,nip=?,penggunaan_obat_sebelum_admisi=?,"+
+                "sumber_informasi=?,sumber_informasi_lain=? where no_rekonsiliasi=?");
+            psUpdate.setString(1,TNoRw.getText());
+            psUpdate.setString(2,tanggalWawancaraForm());
+            psUpdate.setString(3,RekonsiliasiSaat.getSelectedItem().toString());
+            psUpdate.setString(4,AlergiObat.getText());
+            psUpdate.setString(5,ManifestasiAlergi.getText());
+            psUpdate.setString(6,DampakAlergi.getSelectedItem().toString());
+            psUpdate.setString(7,KdPetugas.getText());
+            psUpdate.setString(8,pilihRadio(RbObatSebelumAdmisiYa,"Ya",RbObatSebelumAdmisiTidak,"Tidak"));
+            psUpdate.setString(9,pilihRadio(RbSumberRM,"Status Pasien di Rekam Medis",RbSumberPasien,"Pasien/Keluarga Pasien",RbSumberLain,"Lain-lain"));
+            psUpdate.setString(10,nilaiKeteranganSumber());
+            psUpdate.setString(11,noRekLama);
+            if(psUpdate.executeUpdate()!=1){ throw new SQLException("Header rekonsiliasi tidak ditemukan"); }
+
+            psHapusDetail=koneksi.prepareStatement("delete from rekonsiliasi_obat_detail_obat where no_rekonsiliasi=?");
+            psHapusDetail.setString(1,noRekLama);
+            psHapusDetail.executeUpdate();
+
+            psTambahDetail=koneksi.prepareStatement(
+                "insert into rekonsiliasi_obat_detail_obat "+
+                "(no_rekonsiliasi,nama_obat,dosis_obat,frekuensi,cara_pemberian,waktu_pemberian_terakhir,tindak_lanjut,perubahan_aturan_pakai) "+
+                "values (?,?,?,?,?,?,?,?)");
+            for(int baris=0;baris<tabMode.getRowCount();baris++){
+                psTambahDetail.setString(1,noRekLama);
+                psTambahDetail.setString(2,nilaiTabelObat(baris,1));
+                psTambahDetail.setString(3,nilaiTabelObat(baris,2));
+                psTambahDetail.setString(4,nilaiTabelObat(baris,3));
+                psTambahDetail.setString(5,nilaiTabelObat(baris,4));
+                psTambahDetail.setString(6,nilaiTabelObat(baris,7));
+                psTambahDetail.setString(7,nilaiTabelObat(baris,5));
+                psTambahDetail.setString(8,nilaiTabelObat(baris,6));
+                psTambahDetail.addBatch();
+            }
+            psTambahDetail.executeBatch();
+            if(autoCommitLama){ koneksi.commit(); }
+            sukses=true;
+        }catch(Exception e){
+            try{
+                if(autoCommitLama){ koneksi.rollback(); }
+                else if(savepoint!=null){ koneksi.rollback(savepoint); }
+            }catch(Exception rollbackError){ System.out.println("Notif rollback Ganti Rekonsiliasi : "+rollbackError); }
+            System.out.println("Notif Ganti Rekonsiliasi : "+e);
+            JOptionPane.showMessageDialog(rootPane,"Gagal mengganti rekonsiliasi. Tidak ada perubahan yang disimpan.");
+        }finally{
+            try{ if(psTambahDetail!=null){psTambahDetail.close();} }catch(Exception e){}
+            try{ if(psHapusDetail!=null){psHapusDetail.close();} }catch(Exception e){}
+            try{ if(psUpdate!=null){psUpdate.close();} }catch(Exception e){}
+            if(autoCommitLama){
+                try{ koneksi.setAutoCommit(true); }catch(Exception e){ System.out.println("Notif autoCommit Ganti Rekonsiliasi : "+e); }
+            }
+        }
+        if(sukses){
+            String noRawatAktif=TNoRw.getText();
+            JOptionPane.showMessageDialog(rootPane,"Data rekonsiliasi berhasil diganti.");
+            Valid.tabelKosong(tabMode);
+            aturModeEdit(false);
+            emptTeks();
+            TCariData.setText(noRawatAktif);
+            TCariData.setForeground(ThemeConfig.TEXT_NORMAL);
+            TabPilihan.setSelectedIndex(1);
+        }
+    }
+
+    private String nilaiTabelObat(int baris,int kolom){
+        Object nilai=tabMode.getValueAt(baris,kolom);
+        return nilai==null?null:nilai.toString();
+    }
+
+    private void hapusRekonsiliasiTerpilih(){
+        if(!akses.getrekonsiliasi_obat()){
+            JOptionPane.showMessageDialog(rootPane,"Anda tidak memiliki hak akses untuk menghapus rekonsiliasi obat.");
+            return;
+        }
+        if(tbDataRekonsiliasi==null || tbDataRekonsiliasi.getSelectedRow()<0){
+            JOptionPane.showMessageDialog(rootPane,"Pilih data rekonsiliasi yang akan dihapus.");
+            return;
+        }
+        String noRek=tbDataRekonsiliasi.getValueAt(tbDataRekonsiliasi.getSelectedRow(),0).toString();
+        int jawab=JOptionPane.showConfirmDialog(rootPane,
+            "Hapus permanen "+noRek+" beserta detail obat dan data konfirmasinya?\nTindakan ini tidak dapat dibatalkan.",
+            "Konfirmasi Hapus Rekonsiliasi",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+        if(jawab!=JOptionPane.YES_OPTION){ return; }
+
+        boolean autoCommitLama=true;
+        Savepoint savepoint=null;
+        PreparedStatement psKonfirmasi=null, psDetail=null, psHeader=null;
+        boolean sukses=false;
+        try{
+            autoCommitLama=koneksi.getAutoCommit();
+            if(autoCommitLama){ koneksi.setAutoCommit(false); }
+            else{ savepoint=koneksi.setSavepoint("hapus_rekonsiliasi_obat"); }
+
+            psKonfirmasi=koneksi.prepareStatement("delete from rekonsiliasi_obat_konfirmasi where no_rekonsiliasi=?");
+            psKonfirmasi.setString(1,noRek);
+            psKonfirmasi.executeUpdate();
+            psDetail=koneksi.prepareStatement("delete from rekonsiliasi_obat_detail_obat where no_rekonsiliasi=?");
+            psDetail.setString(1,noRek);
+            psDetail.executeUpdate();
+            psHeader=koneksi.prepareStatement("delete from rekonsiliasi_obat where no_rekonsiliasi=?");
+            psHeader.setString(1,noRek);
+            if(psHeader.executeUpdate()!=1){ throw new SQLException("Header rekonsiliasi tidak ditemukan"); }
+
+            if(autoCommitLama){ koneksi.commit(); }
+            sukses=true;
+        }catch(Exception e){
+            try{
+                if(autoCommitLama){ koneksi.rollback(); }
+                else if(savepoint!=null){ koneksi.rollback(savepoint); }
+            }catch(Exception rollbackError){ System.out.println("Notif rollback Hapus Rekonsiliasi : "+rollbackError); }
+            System.out.println("Notif Hapus Rekonsiliasi : "+e);
+            JOptionPane.showMessageDialog(rootPane,"Gagal menghapus rekonsiliasi. Tidak ada data yang dihapus.");
+        }finally{
+            try{ if(psHeader!=null){psHeader.close();} }catch(Exception e){}
+            try{ if(psDetail!=null){psDetail.close();} }catch(Exception e){}
+            try{ if(psKonfirmasi!=null){psKonfirmasi.close();} }catch(Exception e){}
+            if(autoCommitLama){
+                try{ koneksi.setAutoCommit(true); }catch(Exception e){ System.out.println("Notif autoCommit Hapus Rekonsiliasi : "+e); }
+            }
+        }
+        if(sukses){
+            JOptionPane.showMessageDialog(rootPane,"Data rekonsiliasi berhasil dihapus.");
+            TNoRM1.setText("");
+            TPasien1.setText("");
+            LoadHTML.setText("");
+            ChkAccor.setSelected(false);
+            isMenu();
+            tampilDataRekonsiliasi();
+        }
     }
 
     private void cetakFormDariInput() {
@@ -1698,7 +2393,13 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, "Simpan data rekonsiliasi ini terlebih dahulu sebelum mencetak.");
             return;
         }
-        cetakSatuTahapRekonsiliasi(noRekon);
+        String modeCetak = (String) JOptionPane.showInputDialog(null, "Silahkan pilih mode cetak..!",
+                "Cetak Form Rekonsiliasi Obat (RM 03-06A)", JOptionPane.QUESTION_MESSAGE, null,
+                new Object[] { "Lembar", "PDF" }, "Lembar");
+        if (modeCetak == null) {
+            return;
+        }
+        cetakSatuTahapRekonsiliasi(noRekon, modeCetak);
     }
 
     public void updatePatientCard() {
@@ -1737,17 +2438,26 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
     public void updateStatusRekon() {
         if (lblStatusRekon == null) return;
+        if(TabPilihan!=null && TabPilihan.getSelectedIndex()==1){
+            perbaruiAksiDataTerpilih();
+            return;
+        }
         String saat = RekonsiliasiSaat.getSelectedItem() != null ? RekonsiliasiSaat.getSelectedItem().toString() : "Admisi";
         String sumber = pilihRadio(RbSumberRM, "Status Pasien di Rekam Medis", RbSumberPasien, "Pasien/Keluarga Pasien", RbSumberLain, "Lain-lain");
+        String awalan = noRekonsiliasiEdit==null ? "" : "Mode Ganti "+noRekonsiliasiEdit+" · ";
         if (sumber != null && !sumber.isEmpty()) {
-            lblStatusRekon.setText("Rekonsiliasi saat " + saat + " · Sumber: " + sumber);
+            lblStatusRekon.setText(awalan+"Rekonsiliasi saat " + saat + " · Sumber: " + sumber);
         } else {
-            lblStatusRekon.setText("Rekonsiliasi saat " + saat);
+            lblStatusRekon.setText(awalan+"Rekonsiliasi saat " + saat);
         }
     }
 
     public void updateFooterMeta() {
         if (lblFooterMeta == null) return;
+        if(TabPilihan!=null && TabPilihan.getSelectedIndex()==1){
+            perbaruiAksiDataTerpilih();
+            return;
+        }
         String pet = NmPetugas.getText().trim();
         if (pet.isEmpty() && !akses.getkode().equals("")) {
             try {
@@ -1773,12 +2483,38 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         if(pnlGrupAdmisi != null){
             pnlGrupAdmisi.setVisible(admisi);
         }
+        if(pnlTopSection != null){
+            // Tinggi kartu identitas tidak boleh ikut menyusut saat grup Admisi disembunyikan.
+            pnlTopSection.setPreferredSize(new Dimension(1320, 165));
+            pnlTopSection.revalidate();
+        }
         if(!admisi){
             bgObatSebelumAdmisi.clearSelection();
             bgSumberInformasi.clearSelection();
             TSumberLainKet.setText("");
         }
+        perbaruiKeteranganSumber();
         updateStatusRekon();
+    }
+
+    private void perbaruiKeteranganSumber(){
+        if(TSumberLainKet == null){ return; }
+        boolean aktif = RbSumberLain != null && RbSumberLain.isSelected() &&
+                         "Admisi".equals(RekonsiliasiSaat.getSelectedItem());
+        TSumberLainKet.setEnabled(aktif);
+        TSumberLainKet.setEditable(aktif);
+        if(!aktif){
+            TSumberLainKet.setText("");
+        }else if(TSumberLainKet.getText().trim().isEmpty()){
+            TSumberLainKet.setText("Sebutkan...");
+            TSumberLainKet.setForeground(ThemeConfig.TEXT_FAINT);
+        }
+    }
+
+    private String nilaiKeteranganSumber(){
+        if(RbSumberLain == null || !RbSumberLain.isSelected()){ return null; }
+        String nilai = TSumberLainKet.getText().trim();
+        return nilai.equals("Sebutkan...") || nilai.isEmpty() ? null : nilai;
     }
 
     // Custom Table Renderers
@@ -1796,11 +2532,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     int r = 6;
                     boolean sel = (row == table.getSelectedRow());
                     if (sel) {
-                        g2.setColor(new Color(0, 91, 82));
+                        g2.setColor(new Color(13, 122, 112));
                         g2.drawOval(cx - r, cy - r, r * 2, r * 2);
                         g2.fillOval(cx - 3, cy - 3, 6, 6);
                     } else {
-                        g2.setColor(new Color(203, 213, 225));
+                        g2.setColor(new Color(207, 211, 206));
                         g2.drawOval(cx - r, cy - r, r * 2, r * 2);
                     }
                     g2.dispose();
@@ -1808,7 +2544,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             };
             p.setOpaque(true);
             boolean sel = (row == table.getSelectedRow());
-            p.setBackground(sel ? new Color(240, 253, 250) : Color.WHITE);
+            p.setBackground(sel ? new Color(238, 246, 245) : Color.WHITE);
             return p;
         }
     }
@@ -1818,9 +2554,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
             JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
             l.setFont(new Font("Segoe UI", Font.BOLD, 11));
-            l.setForeground(new Color(15, 23, 42));
+            l.setForeground(new Color(31, 36, 33));
             boolean sel = (row == table.getSelectedRow());
-            l.setBackground(sel ? new Color(240, 253, 250) : Color.WHITE);
+            l.setBackground(sel ? new Color(238, 246, 245) : Color.WHITE);
             return l;
         }
     }
@@ -1834,6 +2570,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btn.setMnemonic(0);
         btn.setForeground(Color.WHITE);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
             @Override
             public void paint(Graphics g, JComponent c) {
@@ -1841,11 +2578,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 AbstractButton b = (AbstractButton) c;
                 if (b.getModel().isPressed()) {
-                    g2.setColor(new Color(0, 75, 68));
+                    g2.setColor(new Color(9, 82, 76));
                 } else if (b.getModel().isRollover()) {
-                    g2.setColor(new Color(0, 105, 95));
+                    g2.setColor(new Color(11, 102, 94));
                 } else {
-                    g2.setColor(new Color(0, 91, 82));
+                    g2.setColor(new Color(13, 122, 112));
                 }
                 g2.fillRoundRect(0, 0, c.getWidth(), c.getHeight(), 6, 6);
                 g2.dispose();
@@ -1861,8 +2598,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btn.setFocusPainted(false);
         btn.setIcon(null);
         btn.setMnemonic(0);
-        btn.setForeground(new Color(51, 65, 85));
+        btn.setForeground(new Color(47, 54, 50));
         btn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
             @Override
             public void paint(Graphics g, JComponent c) {
@@ -1870,14 +2608,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 AbstractButton b = (AbstractButton) c;
                 if (b.getModel().isPressed()) {
-                    g2.setColor(new Color(241, 245, 249));
+                    g2.setColor(new Color(235, 237, 233));
                 } else if (b.getModel().isRollover()) {
-                    g2.setColor(new Color(248, 250, 252));
+                    g2.setColor(new Color(244, 245, 242));
                 } else {
                     g2.setColor(Color.WHITE);
                 }
                 g2.fillRoundRect(0, 0, c.getWidth() - 1, c.getHeight() - 1, 6, 6);
-                g2.setColor(new Color(203, 213, 225));
+                g2.setColor(new Color(224, 226, 221));
                 g2.drawRoundRect(0, 0, c.getWidth() - 1, c.getHeight() - 1, 6, 6);
                 g2.dispose();
                 super.paint(g, c);
@@ -1896,11 +2634,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(Color.WHITE);
             g2.fillOval(x + 1, y + 1, 12, 12);
-            g2.setColor(selected ? new Color(0, 91, 82) : new Color(203, 213, 225));
+            g2.setColor(selected ? new Color(13, 122, 112) : new Color(207, 211, 206));
             g2.setStroke(new BasicStroke(selected ? 1.5f : 1.2f));
             g2.drawOval(x + 1, y + 1, 12, 12);
             if (selected) {
-                g2.setColor(new Color(0, 91, 82));
+                g2.setColor(new Color(13, 122, 112));
                 g2.fillOval(x + 4, y + 4, 6, 6);
             }
             g2.dispose();
@@ -1910,7 +2648,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private void styleRadioButton(widget.RadioButton rb, boolean isBold) {
         rb.setOpaque(false);
         rb.setFont(new Font("Segoe UI", isBold ? Font.BOLD : Font.PLAIN, 10));
-        rb.setForeground(new Color(15, 23, 42));
+        rb.setForeground(new Color(31, 36, 33));
         rb.setIcon(new ModernRadioIcon(false));
         rb.setSelectedIcon(new ModernRadioIcon(true));
         rb.setFocusPainted(false);
@@ -1927,17 +2665,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
             JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
             l.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-            l.setForeground(new Color(15, 23, 42));
+            l.setForeground(new Color(31, 36, 33));
             l.setHorizontalAlignment(isCentered ? SwingConstants.CENTER : SwingConstants.LEFT);
             l.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
             String text = (value == null) ? "" : value.toString().trim();
             if (isDash && (text.isEmpty() || text.equals("-"))) {
                 text = "—";
-                l.setForeground(new Color(148, 163, 184));
+                l.setForeground(new Color(139, 146, 141));
             }
             l.setText(text);
             boolean sel = (row == table.getSelectedRow());
-            l.setBackground(sel ? new Color(240, 253, 250) : Color.WHITE);
+            l.setBackground(sel ? new Color(238, 246, 245) : Color.WHITE);
             return l;
         }
     }
@@ -2005,53 +2743,75 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         internalFrameData = new widget.InternalFrame();
         internalFrameData.setLayout(new java.awt.BorderLayout(1,1));
 
-        // ----- Panel cari (PAGE_START) -----
+        // ----- Panel filter data (PAGE_END) -----
         widget.PanelBiasa panelCariData = new widget.PanelBiasa();
-        panelCariData.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,6,6));
-
-        widget.Label lblCariData = new widget.Label();
-        lblCariData.setText("Cari (No.Rawat/No.RM/Nama/Petugas) :");
-        panelCariData.add(lblCariData);
-
-        TCariData = new widget.TextBox();
-        TCariData.setPreferredSize(new java.awt.Dimension(200,23));
-        panelCariData.add(TCariData);
+        panelCariData.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,5,8));
+        panelCariData.setBackground(ThemeConfig.SURFACE);
+        panelCariData.setPreferredSize(new Dimension(44, 44));
+        panelCariData.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 0, 0, 0, ThemeConfig.BORDER_SOFT),
+            BorderFactory.createEmptyBorder(0, 16, 0, 16)
+        ));
 
         widget.Label lblTglData = new widget.Label();
-        lblTglData.setText("Tanggal :");
+        lblTglData.setText("Tgl. Wawancara :");
+        lblTglData.setHorizontalAlignment(SwingConstants.LEFT);
+        lblTglData.setPreferredSize(new Dimension(92,26));
         panelCariData.add(lblTglData);
 
         Tgl1Data = new widget.Tanggal();
         Tgl1Data.setDisplayFormat("dd-MM-yyyy");
         Tgl1Data.setDate(new Date());
+        Tgl1Data.setPreferredSize(new Dimension(125,26));
         panelCariData.add(Tgl1Data);
 
         widget.Label lblSdData = new widget.Label();
-        lblSdData.setText("s/d");
+        lblSdData.setText("s.d.");
+        lblSdData.setHorizontalAlignment(SwingConstants.CENTER);
+        lblSdData.setPreferredSize(new Dimension(24,26));
         panelCariData.add(lblSdData);
 
         Tgl2Data = new widget.Tanggal();
         Tgl2Data.setDisplayFormat("dd-MM-yyyy");
         Tgl2Data.setDate(new Date());
+        Tgl2Data.setPreferredSize(new Dimension(125,26));
         panelCariData.add(Tgl2Data);
 
+        widget.Label lblCariData = new widget.Label();
+        lblCariData.setText("Kata Kunci :");
+        lblCariData.setHorizontalAlignment(SwingConstants.LEFT);
+        lblCariData.setPreferredSize(new Dimension(75,26));
+        panelCariData.add(lblCariData);
+
+        TCariData = new widget.TextBox();
+        TCariData.setPreferredSize(new java.awt.Dimension(205,26));
+        pasangPlaceholderPencarian(TCariData,"Ketik kata kunci...");
+        TCariData.addActionListener(e -> tampilDataRekonsiliasi());
+        panelCariData.add(TCariData);
+
         BtnCariData = new widget.Button();
-        BtnCariData.setText("Cari");
+        BtnCariData.setText("");
+        BtnCariData.setName("BtnCariData");
+        BtnCariData.setIcon(widget.IconStyle.muat("search.svg", 14, ThemeConfig.TEXT_MUTED));
+        BtnCariData.setToolTipText("Cari data rekonsiliasi obat");
+        styleDataFooterIconButton(BtnCariData);
         BtnCariData.addActionListener((java.awt.event.ActionEvent evt) -> tampilDataRekonsiliasi());
         panelCariData.add(BtnCariData);
 
-        BtnAllData = new widget.Button();
-        BtnAllData.setText("Tampil Semua");
-        BtnAllData.addActionListener((java.awt.event.ActionEvent evt) -> {
-            TCariData.setText("");
-            java.util.Calendar cal = java.util.Calendar.getInstance();
-            cal.add(java.util.Calendar.YEAR,-10);
-            Tgl1Data.setDate(cal.getTime());
-            cal.add(java.util.Calendar.YEAR,20);
-            Tgl2Data.setDate(cal.getTime());
-            tampilDataRekonsiliasi();
-        });
-        panelCariData.add(BtnAllData);
+        widget.Label lblRecordData = new widget.Label();
+        lblRecordData.setText("Record :");
+        lblRecordData.setPreferredSize(new Dimension(55, 26));
+        panelCariData.add(lblRecordData);
+
+        LCountData = new widget.Label();
+        LCountData.setText("0");
+        LCountData.setHorizontalAlignment(SwingConstants.LEFT);
+        LCountData.setPreferredSize(new Dimension(50, 26));
+        panelCariData.add(LCountData);
+
+        styleDataFooterField(TCariData);
+        styleDataFooterField(Tgl1Data);
+        styleDataFooterField(Tgl2Data);
 
         // Panel cari ditaruh di PAGE_END (footer) - pola sama panelGlass9 di
         // "Data Triase" RMTriaseIGD.java, bukan di header/PAGE_START.
@@ -2059,18 +2819,31 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         // ----- Tabel bersih: 1 baris = 1 record (CENTER) -----
         tabModeData = new DefaultTableModel(null, new Object[]{
-            "No.Rekonsiliasi","Pasien","Tanggal Wawancara","Rekonsiliasi Saat","Apoteker"
+            "No. Rekonsiliasi","Pasien","Tanggal Wawancara","Rekonsiliasi Saat","Apoteker"
         }){
             @Override public boolean isCellEditable(int rowIndex,int colIndex){ return false; }
         };
         tbDataRekonsiliasi = new widget.Table();
         tbDataRekonsiliasi.setModel(tabModeData);
-        tbDataRekonsiliasi.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tbDataRekonsiliasi.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         tbDataRekonsiliasi.setDefaultRenderer(Object.class, new WarnaTable());
+        tbDataRekonsiliasi.setRowHeight(26);
+        tbDataRekonsiliasi.setFillsViewportHeight(true);
+        tbDataRekonsiliasi.setShowVerticalLines(false);
+        tbDataRekonsiliasi.setShowHorizontalLines(true);
+        tbDataRekonsiliasi.setIntercellSpacing(new Dimension(0, 1));
+        tbDataRekonsiliasi.getTableHeader().setBackground(ThemeConfig.TABLE_HEADER_BG);
+        tbDataRekonsiliasi.getTableHeader().setForeground(ThemeConfig.TABLE_HEADER_TEXT);
+        tbDataRekonsiliasi.getTableHeader().setFont(ThemeConfig.FONT_BOLD);
+        tbDataRekonsiliasi.getTableHeader().setPreferredSize(new Dimension(0, 30));
+        tbDataRekonsiliasi.getTableHeader().setReorderingAllowed(false);
         tbDataRekonsiliasi.addMouseListener(new java.awt.event.MouseAdapter(){
             @Override public void mouseClicked(java.awt.event.MouseEvent evt){
                 tbDataRekonsiliasiMouseClicked(evt);
             }
+        });
+        tbDataRekonsiliasi.getSelectionModel().addListSelectionListener(e -> {
+            if(!e.getValueIsAdjusting()){ perbaruiAksiDataTerpilih(); }
         });
         for(int kolom=0; kolom<5; kolom++){
             TableColumn column = tbDataRekonsiliasi.getColumnModel().getColumn(kolom);
@@ -2105,20 +2878,40 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         FormMenu = new widget.PanelBiasa();
         FormMenu.setBackground(new java.awt.Color(255,255,255));
-        FormMenu.setBorder(null);
+        FormMenu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(1,0,1,0,ThemeConfig.BORDER_SOFT),
+                javax.swing.BorderFactory.createEmptyBorder(0,8,0,4)));
         FormMenu.setPreferredSize(new java.awt.Dimension(115,43));
         FormMenu.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,4,9));
 
         widget.Label lblPasienAccor = new widget.Label();
         lblPasienAccor.setText("Pasien :");
+        lblPasienAccor.setPreferredSize(new java.awt.Dimension(55,23));
         FormMenu.add(lblPasienAccor);
 
-        TNoRM1 = new widget.Label();
-        TNoRM1.setPreferredSize(new java.awt.Dimension(70,23));
+        TNoRM1 = new widget.TextBox();
+        TNoRM1.setEditable(false);
+        TNoRM1.setHighlighter(null);
+        TNoRM1.setName("TNoRM1");
+        TNoRM1.setPreferredSize(new java.awt.Dimension(100,23));
+        buatKotakFieldRekonsiliasi(TNoRM1);
+        TNoRM1.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(ThemeConfig.BORDER_SOFT, 1),
+            javax.swing.BorderFactory.createEmptyBorder(2, 8, 2, 8)
+        ));
         FormMenu.add(TNoRM1);
 
-        TPasien1 = new widget.Label();
-        TPasien1.setPreferredSize(new java.awt.Dimension(140,23));
+        TPasien1 = new widget.TextBox();
+        TPasien1.setEditable(false);
+        TPasien1.setBackground(new java.awt.Color(245, 250, 240));
+        TPasien1.setHighlighter(null);
+        TPasien1.setName("TPasien1");
+        TPasien1.setPreferredSize(new java.awt.Dimension(250,23));
+        buatKotakFieldRekonsiliasi(TPasien1);
+        TPasien1.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(ThemeConfig.BORDER_SOFT, 1),
+            javax.swing.BorderFactory.createEmptyBorder(2, 8, 2, 8)
+        ));
         FormMenu.add(TPasien1);
 
         // [BARU] Cetak form RM 03-06A - pola identik BtnPrint1 RMTriaseIGD
@@ -2142,13 +2935,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         LoadHTML = new widget.editorpane();
         LoadHTML.setBorder(null);
         LoadHTML.setEditable(false);
+        LoadHTML.setBackground(Color.WHITE);
         javax.swing.text.html.HTMLEditorKit kitData = new javax.swing.text.html.HTMLEditorKit();
         LoadHTML.setEditorKit(kitData);
         javax.swing.text.html.StyleSheet styleSheetData = kitData.getStyleSheet();
         styleSheetData.addRule(
-            "table{border-collapse:collapse;font:11px 'Segoe UI';color:#323232;}"+
-            ".isi td{border:1px solid #e2e7dd;padding:2px 5px;background:#ffffff;}"+
-            ".isi2 td{border:1px solid #e2e7dd;padding:2px 5px;background:#ffffff;font-size:10px;}"
+            ".isi td{border-right:1px solid #e2e7dd;font:8.5px tahoma;height:12px;"+
+            "border-bottom:1px solid #e2e7dd;background:#ffffff;color:#323232;}"+
+            ".isi2 td{font:8.5px tahoma;border:none;height:12px;background:#ffffff;color:#323232;}"+
+            ".isi3 td{border-right:1px solid #e2e7dd;font:8.5px tahoma;height:12px;"+
+            "border-top:1px solid #e2e7dd;background:#ffffff;color:#323232;}"+
+            ".isi4 td{font:11px tahoma;height:12px;border-top:1px solid #e2e7dd;background:#ffffff;color:#323232;}"
         );
         LoadHTML.setDocument(kitData.createDefaultDocument());
         ScrollHTML.setViewportView(LoadHTML);
@@ -2165,6 +2962,41 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         isMenu();
     }
 
+    private void styleDataFooterField(javax.swing.JComponent field){
+        field.putClientProperty("Component.arc", 0);
+        field.putClientProperty("TextComponent.arc", 0);
+        field.putClientProperty("JTextField.arc", 0);
+        field.putClientProperty("JComponent.roundRect", false);
+        field.setBackground(Color.WHITE);
+        field.setOpaque(true);
+        field.setBorder(BorderFactory.createLineBorder(ThemeConfig.BORDER_SOFT));
+    }
+
+    private void styleDataFooterIconButton(final widget.Button button){
+        button.setPreferredSize(new Dimension(28,26));
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBackground(Color.WHITE);
+        button.setGlassColor(Color.WHITE);
+        button.setRoundRect(false);
+        button.setBorder(BorderFactory.createLineBorder(ThemeConfig.BORDER));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override public void mouseEntered(java.awt.event.MouseEvent e){
+                if(button.isEnabled()){
+                    button.setBackground(ThemeConfig.ACTION_HOVER_BG);
+                    button.setGlassColor(ThemeConfig.ACTION_HOVER_BG);
+                    button.setBorder(BorderFactory.createLineBorder(ThemeConfig.PRIMARY));
+                }
+            }
+            @Override public void mouseExited(java.awt.event.MouseEvent e){
+                button.setBackground(Color.WHITE);
+                button.setGlassColor(Color.WHITE);
+                button.setBorder(BorderFactory.createLineBorder(ThemeConfig.BORDER));
+            }
+        });
+    }
+
     /**
      * [Tab "Data Rekonsiliasi Obat"] Query header saja (TANPA nested-loop ke
      * detail obat/konfirmasi spt RMCariRekonsiliasiObat.tampil() lama - itu
@@ -2177,6 +3009,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         java.sql.ResultSet rsData=null;
         try {
             Valid.tabelKosong(tabModeData);
+            String kataKunci = nilaiPencarianData();
             psData=koneksi.prepareStatement(
                 "select rekonsiliasi_obat.no_rekonsiliasi,rekonsiliasi_obat.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,"+
                 "reg_periksa.umurdaftar,reg_periksa.sttsumur,rekonsiliasi_obat.tanggal_wawancara,rekonsiliasi_obat.rekonsiliasi_obat_saat,"+
@@ -2185,13 +3018,13 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                 "inner join petugas on rekonsiliasi_obat.nip=petugas.nip "+
                 "where rekonsiliasi_obat.tanggal_wawancara between ? and ? "+
-                (TCariData.getText().trim().equals("")?"":" and (rekonsiliasi_obat.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
+                (kataKunci.equals("")?"":" and (rekonsiliasi_obat.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
                 "pasien.nm_pasien like ? or petugas.nip like ? or petugas.nama like ?) ")+
                 "order by rekonsiliasi_obat.tanggal_wawancara desc");
             psData.setString(1, Valid.SetTgl(Tgl1Data.getSelectedItem()+"")+" 00:00:00");
             psData.setString(2, Valid.SetTgl(Tgl2Data.getSelectedItem()+"")+" 23:59:59");
-            if(!TCariData.getText().trim().equals("")){
-                String kw = "%"+TCariData.getText().trim()+"%";
+            if(!kataKunci.equals("")){
+                String kw = "%"+kataKunci+"%";
                 psData.setString(3,kw); psData.setString(4,kw); psData.setString(5,kw); psData.setString(6,kw); psData.setString(7,kw);
             }
             rsData=psData.executeQuery();
@@ -2204,11 +3037,39 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     rsData.getString("nip")+" "+rsData.getString("nama")
                 });
             }
+            if(LCountData != null){
+                LCountData.setText(Integer.toString(tabModeData.getRowCount()));
+            }
+            perbaruiAksiDataTerpilih();
         } catch (Exception e) {
             System.out.println("Notif tampilDataRekonsiliasi : "+e);
         } finally {
             try{ if(rsData!=null){ rsData.close(); } if(psData!=null){ psData.close(); } }catch(Exception e){}
         }
+    }
+
+    private void pasangPlaceholderPencarian(final widget.TextBox field, final String placeholder){
+        field.setText(placeholder);
+        field.setForeground(ThemeConfig.TEXT_FAINT);
+        field.addFocusListener(new java.awt.event.FocusAdapter(){
+            @Override public void focusGained(java.awt.event.FocusEvent e){
+                if(placeholder.equals(field.getText())){
+                    field.setText("");
+                    field.setForeground(ThemeConfig.TEXT_NORMAL);
+                }
+            }
+            @Override public void focusLost(java.awt.event.FocusEvent e){
+                if(field.getText().trim().isEmpty()){
+                    field.setText(placeholder);
+                    field.setForeground(ThemeConfig.TEXT_FAINT);
+                }
+            }
+        });
+    }
+
+    private String nilaiPencarianData(){
+        String nilai = TCariData.getText().trim();
+        return "Ketik kata kunci...".equals(nilai) ? "" : nilai;
     }
 
     /** Toggle lipat/buka panel ringkasan - pola identik isMenu() milik RMTriaseIGD.java. */
@@ -2233,6 +3094,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             ChkAccor.setSelected(true);
             isMenu();
             bangunRingkasanDataRekonsiliasi();
+            perbaruiAksiDataTerpilih();
         }
     }
 
@@ -2241,14 +3103,42 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         return (s==null || s.trim().equals(""))?"-":s;
     }
 
-    /** Baris label:nilai ringkasan HTML - dilewati (string kosong) kalau nilainya kosong/null/"-". */
+    /** Baris label:nilai mengikuti pola ringkasan HTML form IGD. */
     private String barisData(String label,String nilai){
-        if(nilai==null || nilai.trim().equals("") || nilai.trim().equals("-")){ return ""; }
-        return "<tr><td width='170'>"+label+"</td><td>: "+nilai+"</td></tr>";
+        String tampil=(nilai==null || nilai.trim().isEmpty())?"-":nilai;
+        return "<tr class='isi'><td valign='middle' width='35%'>"+escapeHtml(label)+"</td>"+
+               "<td valign='middle' width='65%'>"+escapeHtml(tampil)+"</td></tr>";
     }
 
     private String judulBarisData(String judul){
-        return "<tr><td colspan='2' bgcolor='#FFFAF8'><b>"+judul+"</b></td></tr>";
+        return "<tr class='isi'><td colspan='2' valign='middle' bgcolor='#FFFAF8' align='center' style='border:1px solid #e2e7dd;'><b>"+
+               escapeHtml(judul)+"</b></td></tr>";
+    }
+
+    private String escapeHtml(String nilai){
+        if(nilai==null){ return ""; }
+        return nilai.replace("&","&amp;")
+                    .replace("<","&lt;")
+                    .replace(">","&gt;")
+                    .replace("\"","&quot;")
+                    .replace("'","&#39;");
+    }
+
+    private String formatTanggalWawancaraHtml(String tglStr){
+        if(tglStr == null || tglStr.trim().isEmpty()){
+            return "-";
+        }
+        String bersih = tglStr.trim();
+        if(bersih.length() >= 16 && bersih.charAt(4) == '-' && bersih.charAt(7) == '-'){
+            return bersih.substring(8, 10) + "-" + bersih.substring(5, 7) + "-" + bersih.substring(0, 4) + " " + bersih.substring(11, 16);
+        }
+        try {
+            java.text.SimpleDateFormat sdfIn = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            java.util.Date d = sdfIn.parse(bersih);
+            return new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm").format(d);
+        } catch (Exception e) {
+            return bersih;
+        }
     }
 
     /**
@@ -2277,7 +3167,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private void bangunRingkasanDataRekonsiliasi(){
         String noRekonsiliasiKlik = tbDataRekonsiliasi.getValueAt(tbDataRekonsiliasi.getSelectedRow(),0).toString();
         StringBuilder html = new StringBuilder();
-        html.append("<html><body><table class='isi' width='100%' cellspacing='0'>");
+        html.append("<html><table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>");
 
         String noRawat = null;
         java.sql.PreparedStatement psId=null; java.sql.ResultSet rsId=null;
@@ -2322,7 +3212,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
                     html.append(judulBarisData("Rekonsiliasi Saat: "+kosongkeStrip(rsH.getString("rekonsiliasi_obat_saat"))));
                     html.append(barisData("No.Rekonsiliasi", noRekonsiliasiTahap));
-                    html.append(barisData("Tanggal Wawancara", rsH.getString("tanggal_wawancara")));
+                    html.append(barisData("Tanggal Wawancara", formatTanggalWawancaraHtml(rsH.getString("tanggal_wawancara"))));
                     html.append(barisData("Apoteker", rsH.getString("nip")+" "+rsH.getString("nama_petugas")));
 
                     try {
@@ -2337,8 +3227,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     html.append(barisData("Manifestasi Alergi", rsH.getString("manifestasi_alergi")));
                     html.append(barisData("Dampak Alergi", rsH.getString("dampak_alergi")));
 
-                    html.append("<tr><td colspan='2'><table class='isi2' width='100%' cellspacing='0'>");
-                    html.append("<tr><td><b>Nama Obat</b></td><td><b>Dosis</b></td><td><b>Frekuensi</b></td><td><b>Cara Pemberian</b></td><td><b>Tindak Lanjut</b></td><td><b>Perubahan Aturan Pakai</b></td></tr>");
+                    html.append("<tr class='isi'><td colspan='2' valign='top'><table width='100%' border='0' cellpadding='3px' cellspacing='0'>");
+                    html.append("<tr class='isi3'>"+
+                        "<td width='22%' align='left'><b>Nama Obat</b></td>"+
+                        "<td width='13%' align='center'><b>Dosis Obat</b></td>"+
+                        "<td width='13%' align='center'><b>Frekuensi</b></td>"+
+                        "<td width='16%' align='center'><b>Cara<br>Pemberian</b></td>"+
+                        "<td width='18%' align='center'><b>Tindak<br>Lanjut</b></td>"+
+                        "<td width='18%' align='center'><b>Perubahan<br>Aturan Pakai</b></td></tr>");
                     java.sql.PreparedStatement psO=null; java.sql.ResultSet rsO=null;
                     try {
                         psO = koneksi.prepareStatement("select * from rekonsiliasi_obat_detail_obat where no_rekonsiliasi=?");
@@ -2347,15 +3243,15 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                         boolean adaObat=false;
                         while(rsO.next()){
                             adaObat=true;
-                            html.append("<tr><td>").append(kosongkeStrip(rsO.getString("nama_obat"))).append("</td>")
-                                .append("<td>").append(kosongkeStrip(rsO.getString("dosis_obat"))).append("</td>")
-                                .append("<td>").append(kosongkeStrip(rsO.getString("frekuensi"))).append("</td>")
-                                .append("<td>").append(kosongkeStrip(rsO.getString("cara_pemberian"))).append("</td>")
-                                .append("<td>").append(kosongkeStrip(rsO.getString("tindak_lanjut"))).append("</td>")
-                                .append("<td>").append(kosongkeStrip(rsO.getString("perubahan_aturan_pakai"))).append("</td></tr>");
+                            html.append("<tr class='isi2'><td>").append(escapeHtml(kosongkeStrip(rsO.getString("nama_obat")))).append("</td>")
+                                .append("<td>").append(escapeHtml(kosongkeStrip(rsO.getString("dosis_obat")))).append("</td>")
+                                .append("<td>").append(escapeHtml(kosongkeStrip(rsO.getString("frekuensi")))).append("</td>")
+                                .append("<td>").append(escapeHtml(kosongkeStrip(rsO.getString("cara_pemberian")))).append("</td>")
+                                .append("<td>").append(escapeHtml(kosongkeStrip(rsO.getString("tindak_lanjut")))).append("</td>")
+                                .append("<td>").append(escapeHtml(kosongkeStrip(rsO.getString("perubahan_aturan_pakai")))).append("</td></tr>");
                         }
                         if(!adaObat){
-                            html.append("<tr><td colspan='6'><i>Belum ada data obat</i></td></tr>");
+                            html.append("<tr class='isi2'><td colspan='6'><i>Belum ada data obat</i></td></tr>");
                         }
                     } catch (Exception e) {
                         System.out.println("Notif ringkasan obat : "+e);
@@ -2391,9 +3287,21 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             }
         }
 
-        html.append("</table></body></html>");
+        html.append("</table></html>");
         LoadHTML.setText(html.toString());
+        resetPosisiRingkasan();
+    }
+
+    private void resetPosisiRingkasan(){
+        if(LoadHTML==null || ScrollHTML==null){ return; }
         LoadHTML.setCaretPosition(0);
+        ScrollHTML.getViewport().setViewPosition(new java.awt.Point(0,0));
+        ScrollHTML.getVerticalScrollBar().setValue(0);
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            LoadHTML.setCaretPosition(0);
+            ScrollHTML.getVerticalScrollBar().setValue(ScrollHTML.getVerticalScrollBar().getMinimum());
+            ScrollHTML.getViewport().setViewPosition(new java.awt.Point(0,0));
+        });
     }
 
     /** Baca kolom yg mungkin blm ada (migrasi RM 03-06A blm diimport) - null kalau gagal, bukan exception. */
@@ -2419,63 +3327,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         }
         String noRekonsiliasiKlik = tbDataRekonsiliasi.getValueAt(tbDataRekonsiliasi.getSelectedRow(),0).toString();
 
-        String noRawat = null;
-        java.sql.PreparedStatement psR=null; java.sql.ResultSet rsR=null;
-        try {
-            psR = koneksi.prepareStatement("select no_rawat from rekonsiliasi_obat where no_rekonsiliasi=?");
-            psR.setString(1, noRekonsiliasiKlik);
-            rsR = psR.executeQuery();
-            if(rsR.next()){ noRawat = rsR.getString("no_rawat"); }
-        } catch (Exception e) {
-            System.out.println("Notif resolve no_rawat cetak : "+e);
-        } finally {
-            try{ if(rsR!=null){ rsR.close(); } if(psR!=null){ psR.close(); } }catch(Exception e){}
-        }
-        if(noRawat==null){
-            JOptionPane.showMessageDialog(null,"Data tidak ditemukan.");
+        String modeCetak = (String) JOptionPane.showInputDialog(null, "Silahkan pilih mode cetak..!",
+                "Cetak Form Rekonsiliasi Obat (RM 03-06A)", JOptionPane.QUESTION_MESSAGE, null,
+                new Object[] { "Lembar", "PDF" }, "Lembar");
+        if (modeCetak == null) {
             return;
         }
 
-        String[] urutanTahap = {"Admisi","Transfer Antar Ruang","Pulang"};
-        java.util.Map<String,String> tahapKeNoRekon = new java.util.LinkedHashMap<>();
-        java.sql.PreparedStatement psT=null; java.sql.ResultSet rsT=null;
-        try {
-            psT = koneksi.prepareStatement("select no_rekonsiliasi, rekonsiliasi_obat_saat from rekonsiliasi_obat where no_rawat=?");
-            psT.setString(1, noRawat);
-            rsT = psT.executeQuery();
-            while(rsT.next()){
-                tahapKeNoRekon.put(rsT.getString("rekonsiliasi_obat_saat"), rsT.getString("no_rekonsiliasi"));
-            }
-        } catch (Exception e) {
-            System.out.println("Notif daftar tahap cetak : "+e);
-        } finally {
-            try{ if(rsT!=null){ rsT.close(); } if(psT!=null){ psT.close(); } }catch(Exception e){}
-        }
-
-        javax.swing.JPanel panelPilihan = new javax.swing.JPanel(new java.awt.GridLayout(0,1,4,4));
-        panelPilihan.add(new javax.swing.JLabel("Pilih tahap rekonsiliasi yang akan dicetak:"));
-        javax.swing.JCheckBox[] chkTahap = new javax.swing.JCheckBox[urutanTahap.length];
-        for(int i=0;i<urutanTahap.length;i++){
-            chkTahap[i] = new javax.swing.JCheckBox(urutanTahap[i]);
-            boolean ada = tahapKeNoRekon.containsKey(urutanTahap[i]);
-            chkTahap[i].setEnabled(ada);
-            chkTahap[i].setSelected(ada && tahapKeNoRekon.get(urutanTahap[i]).equals(noRekonsiliasiKlik));
-            panelPilihan.add(chkTahap[i]);
-        }
-
-        int pilih = JOptionPane.showConfirmDialog(null, panelPilihan, "Cetak Form Rekonsiliasi Obat (RM 03-06A)", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if(pilih != JOptionPane.OK_OPTION){ return; }
-
-        boolean adaDipilih=false;
-        for(int i=0;i<urutanTahap.length;i++){
-            if(chkTahap[i].isSelected()){
-                adaDipilih=true;
-                cetakSatuTahapRekonsiliasi(tahapKeNoRekon.get(urutanTahap[i]));
-            }
-        }
-        if(!adaDipilih){
-            JOptionPane.showMessageDialog(null,"Tidak ada tahap yang dipilih untuk dicetak.");
-        }
+        cetakSatuTahapRekonsiliasi(noRekonsiliasiKlik, modeCetak);
     }
 
     /**
@@ -2483,17 +3342,10 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
      * (rptRekonsiliasiObatForm.jasper) - replika layout formulir fisik RSUD
      * Demang Sepulau Raya. Identitas pasien/checkbox/apoteker dikirim
      * lewat parameter Jasper (1 nilai per print, di-query manual di sini);
-     * dataset utama (daftar obat) di-query LANGSUNG oleh Valid.MyReportqry
-     * sendiri (pola sama BtnPrintActionPerformed di RMCariRekonsiliasiObat.java
-     * - qry string biasa, BUKAN PreparedStatement, krn MyReportqry cuma
-     * terima 1 string query lalu dieksekusinya sendiri).
-     * TTD Apoteker pakai QR-code tanda tangan elektronik (parameter
-     * "finger") - pola PERSIS sama dgn BtnPrint1ActionPerformed RMTriaseIGD.java
-     * (SHA1 sidik jari dari tabel sidikjari via pegawai.nik, fallback ke
-     * NIP kalau blm rekam sidik jari). petugas.nip di app ini = pegawai.nik
-     * (nilai sama, tabel beda - dicek langsung ke DB sebelum implementasi).
+     * dataset utama (daftar obat) di-query LANGSUNG oleh Valid.MyReportqry/
+     * MyReportqrypdf.
      */
-    private void cetakSatuTahapRekonsiliasi(String noRekonsiliasi){
+    private void cetakSatuTahapRekonsiliasi(String noRekonsiliasi, String modeCetak){
         if(noRekonsiliasi==null){ return; }
         java.sql.PreparedStatement psH=null; java.sql.ResultSet rsH=null;
         try {
@@ -2528,7 +3380,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             param.put("pTglLahir", rsH.getString("tgl_lahir"));
             param.put("pPenggunaanObatSebelumAdmisi", safeGetString(rsH,"penggunaan_obat_sebelum_admisi"));
             param.put("pRekonsiliasiSaat", rsH.getString("rekonsiliasi_obat_saat"));
-            param.put("pTanggalWawancara", rsH.getString("tanggal_wawancara"));
+            param.put("pTanggalWawancara", formatTanggalWawancaraHtml(rsH.getString("tanggal_wawancara")));
             param.put("pSumberInformasi", safeGetString(rsH,"sumber_informasi"));
             param.put("pSumberInformasiLain", safeGetString(rsH,"sumber_informasi_lain"));
             param.put("pApotekerNama", namaApoteker);
@@ -2536,12 +3388,18 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+
                 "\nDitandatangani secara elektronik oleh "+namaApoteker+
                 "\nID "+((fingerHash==null||fingerHash.isEmpty())?nipApoteker:fingerHash)+
-                "\n"+rsH.getString("tanggal_wawancara"));
+                "\n"+formatTanggalWawancaraHtml(rsH.getString("tanggal_wawancara")));
 
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            Valid.MyReportqry("rptRekonsiliasiObatForm.jasper","report","::[ Form Rekonsiliasi Obat - RM 03-06A ]::",
-                "select nama_obat, dosis_obat, frekuensi, cara_pemberian, tindak_lanjut, perubahan_aturan_pakai "+
-                "from rekonsiliasi_obat_detail_obat where no_rekonsiliasi='"+noRekonsiliasi+"'", param);
+            String qryCetak = "select nama_obat, dosis_obat, frekuensi, cara_pemberian, tindak_lanjut, perubahan_aturan_pakai "+
+                              "from rekonsiliasi_obat_detail_obat where no_rekonsiliasi='"+noRekonsiliasi+"'";
+            if ("PDF".equals(modeCetak)) {
+                Valid.MyReportqrypdf("rptRekonsiliasiObatForm.jasper","report","::[ Form Rekonsiliasi Obat - RM 03-06A ]::",
+                    qryCetak, param);
+            } else {
+                Valid.MyReportqry("rptRekonsiliasiObatForm.jasper","report","::[ Form Rekonsiliasi Obat - RM 03-06A ]::",
+                    qryCetak, param);
+            }
             this.setCursor(Cursor.getDefaultCursor());
         } catch (Exception e) {
             this.setCursor(Cursor.getDefaultCursor());
@@ -2562,12 +3420,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         bgObatSebelumAdmisi.clearSelection();
         bgSumberInformasi.clearSelection();
         TSumberLainKet.setText("");
+        perbaruiKeteranganSumber();
 
         autoNomor();
         updatePatientCard();
         updateCounterObat();
         updateStatusRekon();
-        TNoRekonsialiasi.requestFocus();
+        if(BtnPetugas.isEnabled()){
+            BtnPetugas.requestFocusInWindow();
+        }else if(btnSegAdmisi!=null){
+            btnSegAdmisi.requestFocusInWindow();
+        }
     }
     
     private void jam(){
@@ -2626,7 +3489,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     } 
     
     public void setNoRm(String norwt) {
-        TNoRw.setText(norwt);   
+        TNoRw.setText(norwt);
+        if(TCariData!=null){
+            TCariData.setText(norwt);
+            TCariData.setForeground(ThemeConfig.TEXT_NORMAL);
+        }
         try {
             ps=koneksi.prepareStatement(
                     "select reg_periksa.no_rkm_medis,pasien.nm_pasien, if(pasien.jk='L','Laki-Laki','Perempuan') as jk,pasien.tgl_lahir,reg_periksa.tgl_registrasi "+
@@ -2639,6 +3506,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     TPasien.setText(rs.getString("nm_pasien"));
                     Jk.setText(rs.getString("jk"));
                     TglLahir.setText(rs.getString("tgl_lahir"));
+                    if(Tgl1Data!=null && rs.getDate("tgl_registrasi")!=null){
+                        Tgl1Data.setDate(rs.getDate("tgl_registrasi"));
+                    }
                     updatePatientCard();
                 }
             } catch (Exception e) {
@@ -2657,7 +3527,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
     
     public void isCek(){        
-        BtnSimpan.setEnabled(akses.getrekonsiliasi_obat());
+        boolean bolehRekonsiliasi=akses.getrekonsiliasi_obat();
+        BtnSimpan.setEnabled(bolehRekonsiliasi);
+        if(BtnBaruData!=null){ BtnBaruData.setEnabled(bolehRekonsiliasi); }
+        if(BtnGantiData!=null){ BtnGantiData.setEnabled(false); }
+        if(BtnHapusData!=null){ BtnHapusData.setEnabled(false); }
         if(akses.getjml2()>=1){
             KdPetugas.setEditable(false);
             BtnPetugas.setEnabled(false);
@@ -2681,11 +3555,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JButton btnTindakStop;
 
     private JButton createSegmentedTindakLanjutButton(final String text) {
-        JButton b = new JButton(text) {
+        JButton b = new JButton() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
                 boolean isSel = text.equalsIgnoreCase(selectedTindakLanjut);
                 if (isSel) {
                     g2.setColor(new Color(0, 91, 82));
@@ -2696,10 +3571,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     g2.setColor(new Color(203, 213, 225));
                     g2.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
                 }
+
+                g2.setFont(getFont());
+                g2.setColor(getForeground());
+                FontMetrics fm = g2.getFontMetrics();
+                int textX = (getWidth() - fm.stringWidth(text)) / 2;
+                int textY = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+                g2.drawString(text, textX, textY);
                 g2.dispose();
-                super.paintComponent(g);
             }
         };
+        b.setText(text);
         b.setOpaque(false);
         b.setContentAreaFilled(false);
         b.setBorderPainted(false);
@@ -2730,6 +3612,15 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnTindakStop.setForeground(sel3 ? Color.WHITE : new Color(51, 65, 85));
         btnTindakStop.setFont(new Font("Segoe UI", sel3 ? Font.BOLD : Font.PLAIN, 11));
 
+        if(PerubahanAturanPakai != null){
+            PerubahanAturanPakai.setEnabled(sel2);
+            PerubahanAturanPakai.setEditable(sel2);
+            if(!sel2){
+                PerubahanAturanPakai.setText("Kosongkan bila tidak berubah");
+                PerubahanAturanPakai.setForeground(ThemeConfig.TEXT_FAINT);
+            }
+        }
+
         btnTindakSama.repaint();
         btnTindakBerubah.repaint();
         btnTindakStop.repaint();
@@ -2739,12 +3630,18 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         tb.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         tb.setForeground(new Color(15, 23, 42));
         tb.setBackground(Color.WHITE);
-        tb.putClientProperty("Component.arc", 6);
+        tb.putClientProperty("Component.arc", 0);
+        tb.putClientProperty("TextComponent.arc", 0);
+        tb.putClientProperty("JTextField.arc", 0);
+        tb.putClientProperty("JComponent.roundRect", false);
         tb.putClientProperty("ModernStyle.active", Boolean.TRUE);
         tb.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(203, 213, 225), 1),
             BorderFactory.createEmptyBorder(0, 8, 0, 8)
         ));
+        // Samakan tinggi seluruh isian modal dengan field Nama Obat.
+        tb.setPreferredSize(new Dimension(160, 30));
+        tb.setMinimumSize(new Dimension(80, 30));
         tb.setText(placeholder);
         tb.setForeground(new Color(148, 163, 184));
         tb.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -2766,12 +3663,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
 
     private void initModernModalTambahObat() {
-        DlgTambahObatRekonsiliasi.setSize(560, 320);
+        DlgTambahObatRekonsiliasi.setSize(580, 365);
         DlgTambahObatRekonsiliasi.getContentPane().removeAll();
 
         JPanel pnlRoot = new JPanel(new BorderLayout(0, 0));
         pnlRoot.setBackground(Color.WHITE);
-        pnlRoot.setBorder(BorderFactory.createLineBorder(new Color(203, 213, 225), 1));
+        pnlRoot.setBorder(BorderFactory.createLineBorder(new Color(224, 226, 221), 1));
 
         // 1. Header (North)
         JPanel pnlHeader = new JPanel(new BorderLayout());
@@ -2780,12 +3677,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         JLabel lblTitle = new JLabel("Tambah Obat Direkonsiliasi");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lblTitle.setForeground(new Color(15, 23, 42));
+        lblTitle.setForeground(new Color(31, 36, 33));
         pnlHeader.add(lblTitle, BorderLayout.WEST);
 
         JButton btnClose = new JButton("\u00D7");
         btnClose.setFont(new Font("Segoe UI", Font.BOLD, 17));
-        btnClose.setForeground(new Color(148, 163, 184));
+        btnClose.setForeground(new Color(139, 146, 141));
         btnClose.setBorderPainted(false);
         btnClose.setContentAreaFilled(false);
         btnClose.setFocusPainted(false);
@@ -2794,41 +3691,49 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnClose.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
-                btnClose.setForeground(new Color(15, 23, 42));
+                btnClose.setForeground(new Color(31, 36, 33));
             }
             @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
-                btnClose.setForeground(new Color(148, 163, 184));
+                btnClose.setForeground(new Color(139, 146, 141));
             }
         });
         pnlHeader.add(btnClose, BorderLayout.EAST);
         pnlRoot.add(pnlHeader, BorderLayout.NORTH);
 
         // 2. Form Content (Center)
-        JPanel pnlForm = new JPanel(null);
+        JPanel pnlForm = new JPanel(new GridBagLayout());
         pnlForm.setBackground(Color.WHITE);
-        pnlForm.setPreferredSize(new Dimension(556, 212));
+        pnlForm.setBorder(BorderFactory.createEmptyBorder(2, 18, 2, 18));
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.NORTHWEST;
 
         // Row 1: Nama Obat & Tombol Pencarian
-        JLabel lNama = new JLabel("Nama Obat (Gunakan Pencarian)");
-        lNama.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lNama.setForeground(new Color(100, 116, 139));
-        lNama.setBounds(18, 2, 200, 14);
-        pnlForm.add(lNama);
+        JLabel lNama = new JLabel("NAMA OBAT (KLIK CARI DARI FORMULARIUM)");
+        lNama.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        lNama.setForeground(new Color(139, 146, 141));
+        c.gridx = 0; c.gridy = 0; c.gridwidth = 3; c.weightx = 1;
+        c.insets = new Insets(0, 0, 3, 0);
+        pnlForm.add(lNama, c);
 
         NamaObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        NamaObat.setForeground(new Color(148, 163, 184));
+        NamaObat.setForeground(new Color(139, 146, 141));
         NamaObat.setBackground(Color.WHITE);
         NamaObat.setEditable(false);
         NamaObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
         NamaObat.setToolTipText("Klik untuk mencari nama obat di database formularium");
-        NamaObat.putClientProperty("Component.arc", 6);
+        NamaObat.putClientProperty("Component.arc", 0);
+        NamaObat.putClientProperty("TextComponent.arc", 0);
+        NamaObat.putClientProperty("JTextField.arc", 0);
+        NamaObat.putClientProperty("JComponent.roundRect", false);
         NamaObat.putClientProperty("ModernStyle.active", Boolean.TRUE);
         NamaObat.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(203, 213, 225), 1),
+            BorderFactory.createLineBorder(new Color(224, 226, 221), 1),
             BorderFactory.createEmptyBorder(0, 8, 0, 8)
         ));
-        NamaObat.setBounds(18, 18, 484, 28);
+        NamaObat.setPreferredSize(new Dimension(420, 30));
+        NamaObat.setMinimumSize(new Dimension(180, 30));
         NamaObat.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -2843,75 +3748,96 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 }
             }
         });
-        pnlForm.add(NamaObat);
+        c.gridx = 0; c.gridy = 1; c.gridwidth = 2; c.weightx = 1;
+        c.insets = new Insets(0, 0, 10, 6);
+        pnlForm.add(NamaObat, c);
 
         JButton btnCariObat = new JButton();
-        btnCariObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png")));
-        btnCariObat.setBounds(506, 18, 32, 28);
+        try {
+            com.formdev.flatlaf.extras.FlatSVGIcon ikonCari =
+                new com.formdev.flatlaf.extras.FlatSVGIcon("icon/search.svg", 14, 14);
+            ikonCari.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter(
+                warna -> ThemeConfig.TEXT_MUTED));
+            btnCariObat.setIcon(ikonCari);
+        } catch (Throwable ex) {
+            // Tetap bermakna bila SVG tidak tersedia; jangan kembali ke ikon klip lama.
+            btnCariObat.setText("Cari");
+        }
+        btnCariObat.setPreferredSize(new Dimension(36, 30));
+        btnCariObat.setMinimumSize(new Dimension(36, 30));
         btnCariObat.setBackground(Color.WHITE);
-        btnCariObat.setBorder(BorderFactory.createLineBorder(new Color(203, 213, 225), 1));
+        btnCariObat.setBorder(BorderFactory.createLineBorder(new Color(224, 226, 221), 1));
         btnCariObat.setFocusPainted(false);
         btnCariObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnCariObat.setToolTipText("Cari Obat di Formularium (databarang)");
         btnCariObat.addActionListener(e -> bukaCariObat());
-        pnlForm.add(btnCariObat);
+        c.gridx = 2; c.gridy = 1; c.gridwidth = 1; c.weightx = 0;
+        c.insets = new Insets(0, 0, 10, 0);
+        pnlForm.add(btnCariObat, c);
 
-        // Row 2: Dosis Obat & Frekuensi (2 equal columns)
-        JLabel lDosis = new JLabel("Dosis Obat");
-        lDosis.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lDosis.setForeground(new Color(100, 116, 139));
-        lDosis.setBounds(18, 54, 150, 14);
-        pnlForm.add(lDosis);
+        // Row 2: Dosis Obat, Frekuensi, & Cara Pemberian (3 columns)
+        JLabel lDosis = new JLabel("DOSIS OBAT");
+        lDosis.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        lDosis.setForeground(new Color(139, 146, 141));
+        c.gridx = 0; c.gridy = 2; c.weightx = 1; c.insets = new Insets(0, 0, 3, 8);
+        pnlForm.add(lDosis, c);
 
         styleModalTextBox(DosisObat, "mis. 500mg");
-        DosisObat.setBounds(18, 70, 254, 28);
-        pnlForm.add(DosisObat);
+        c.gridy = 3; c.insets = new Insets(0, 0, 10, 8);
+        pnlForm.add(DosisObat, c);
 
-        JLabel lFrek = new JLabel("Frekuensi");
-        lFrek.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lFrek.setForeground(new Color(100, 116, 139));
-        lFrek.setBounds(284, 54, 150, 14);
-        pnlForm.add(lFrek);
+        JLabel lFrek = new JLabel("FREKUENSI");
+        lFrek.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        lFrek.setForeground(new Color(139, 146, 141));
+        c.gridx = 1; c.gridy = 2; c.insets = new Insets(0, 0, 3, 8);
+        pnlForm.add(lFrek, c);
 
         styleModalTextBox(Frekuensi, "mis. 3x1");
-        Frekuensi.setBounds(284, 70, 254, 28);
-        pnlForm.add(Frekuensi);
+        c.gridy = 3; c.insets = new Insets(0, 0, 10, 8);
+        pnlForm.add(Frekuensi, c);
+
+        JLabel lCara = new JLabel("CARA PEMBERIAN");
+        lCara.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        lCara.setForeground(new Color(139, 146, 141));
+        c.gridx = 2; c.gridy = 2; c.insets = new Insets(0, 0, 3, 0);
+        pnlForm.add(lCara, c);
+
+        AturanPakai.setVisible(true);
+        styleModalTextBox(AturanPakai, "mis. Oral / IV");
+        c.gridy = 3; c.insets = new Insets(0, 0, 10, 0);
+        pnlForm.add(AturanPakai, c);
 
         // Row 3: Tindak Lanjut
-        JLabel lTindak = new JLabel("Tindak Lanjut");
-        lTindak.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lTindak.setForeground(new Color(100, 116, 139));
-        lTindak.setBounds(18, 106, 150, 14);
-        pnlForm.add(lTindak);
+        JLabel lTindak = new JLabel("TINDAK LANJUT");
+        lTindak.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        lTindak.setForeground(new Color(139, 146, 141));
+        c.gridx = 0; c.gridy = 4; c.gridwidth = 3; c.insets = new Insets(0, 0, 3, 0);
+        pnlForm.add(lTindak, c);
 
-        JPanel segTindak = new JPanel(null);
-        segTindak.setBounds(18, 122, 520, 28);
+        JPanel segTindak = new JPanel(new GridLayout(1, 3, -1, 0));
+        segTindak.setPreferredSize(new Dimension(540, 28));
         segTindak.setOpaque(false);
 
         btnTindakSama = createSegmentedTindakLanjutButton("Lanjut aturan pakai sama");
-        btnTindakSama.setBounds(0, 0, 190, 28);
-
         btnTindakBerubah = createSegmentedTindakLanjutButton("Lanjut aturan pakai berubah");
-        btnTindakBerubah.setBounds(189, 0, 215, 28);
-
         btnTindakStop = createSegmentedTindakLanjutButton("Stop");
-        btnTindakStop.setBounds(403, 0, 117, 28);
 
         segTindak.add(btnTindakSama);
         segTindak.add(btnTindakBerubah);
         segTindak.add(btnTindakStop);
-        pnlForm.add(segTindak);
+        c.gridy = 5; c.insets = new Insets(0, 0, 10, 0);
+        pnlForm.add(segTindak, c);
 
         // Row 4: Perubahan Aturan Pakai
-        JLabel lPerubahan = new JLabel("Perubahan Aturan Pakai");
-        lPerubahan.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        lPerubahan.setForeground(new Color(100, 116, 139));
-        lPerubahan.setBounds(18, 158, 200, 14);
-        pnlForm.add(lPerubahan);
+        JLabel lPerubahan = new JLabel("PERUBAHAN ATURAN PAKAI");
+        lPerubahan.setFont(new Font("Segoe UI", Font.BOLD, 9));
+        lPerubahan.setForeground(new Color(139, 146, 141));
+        c.gridy = 6; c.insets = new Insets(0, 0, 3, 0);
+        pnlForm.add(lPerubahan, c);
 
         styleModalTextBox(PerubahanAturanPakai, "Kosongkan bila tidak berubah");
-        PerubahanAturanPakai.setBounds(18, 174, 520, 28);
-        pnlForm.add(PerubahanAturanPakai);
+        c.gridy = 7; c.insets = new Insets(0, 0, 0, 0);
+        pnlForm.add(PerubahanAturanPakai, c);
 
         pnlRoot.add(pnlForm, BorderLayout.CENTER);
 
@@ -2945,7 +3871,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 if (dlgObat.getTable().getSelectedRow() != -1) {
                     String nm = dlgObat.getTable().getValueAt(dlgObat.getTable().getSelectedRow(), 1).toString();
                     NamaObat.setText(nm);
-                    NamaObat.setForeground(new Color(15, 23, 42));
+                    NamaObat.setForeground(new Color(31, 36, 33));
                     DosisObat.requestFocus();
                 }
             }
@@ -2957,17 +3883,20 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
     private void emptTeksTambahRekon() {
         NamaObat.setText("Pilih nama obat (klik cari)...");
-        NamaObat.setForeground(new Color(148, 163, 184));
+        NamaObat.setForeground(new Color(139, 146, 141));
         NamaObat.setEditable(false);
 
         DosisObat.setText("mis. 500mg");
-        DosisObat.setForeground(new Color(148, 163, 184));
+        DosisObat.setForeground(new Color(139, 146, 141));
 
         Frekuensi.setText("mis. 3x1");
-        Frekuensi.setForeground(new Color(148, 163, 184));
+        Frekuensi.setForeground(new Color(139, 146, 141));
+
+        AturanPakai.setText("mis. Oral / IV");
+        AturanPakai.setForeground(new Color(139, 146, 141));
 
         PerubahanAturanPakai.setText("Kosongkan bila tidak berubah");
-        PerubahanAturanPakai.setForeground(new Color(148, 163, 184));
+        PerubahanAturanPakai.setForeground(new Color(139, 146, 141));
 
         selectedTindakLanjut = "Lanjut aturan pakai sama";
         if (TindakLanjut != null) {

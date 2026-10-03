@@ -28,11 +28,10 @@ public class Table extends JTable {
         // senada header tabel.
         setSelectionBackground(ThemeConfig.TABLE_SELECTION_BG);
         setSelectionForeground(ThemeConfig.TABLE_SELECTION_TEXT);
-        // Fase 2.5: header JTable dimodernisasi - Navy/Surface/Bold sesuai
-        // Design System (widget.ThemeConfig), border header lama (garis
-        // off-white) dihapus supaya diambil alih FlatLaf.
-        getTableHeader().setBackground(ThemeConfig.NAVY);
-        getTableHeader().setForeground(ThemeConfig.SURFACE);
+        // Header terang netral menjadi standar global. Gunakan token khusus
+        // agar nilai instance dan UIManager selalu berasal dari sumber sama.
+        getTableHeader().setBackground(ThemeConfig.TABLE_HEADER_BG);
+        getTableHeader().setForeground(ThemeConfig.TABLE_HEADER_TEXT);
         getTableHeader().setFont(ThemeConfig.FONT_BOLD);
     }
 }

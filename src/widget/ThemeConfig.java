@@ -31,8 +31,10 @@ public final class ThemeConfig {
     // ---------- INTERAKSI ----------
     public static final Color FOCUS        = PRIMARY;
     public static final Color TAB_ACTIVE   = PRIMARY;
-    public static final Color TABLE_HEADER_BG   = NAVY;   // alternatif: PRIMARY
-    public static final Color TABLE_HEADER_TEXT = Color.WHITE;
+    // ButtonGlass melukis glassColor dengan alpha sekitar 43% lalu memudar.
+    // Nilai ini sengaja lebih pekat agar hasil akhirnya tetap berupa teal muda.
+    public static final Color ACTION_HOVER_BG = new Color(0xA9, 0xDB, 0xD8);
+    public static final Color ACTION_DANGER_HOVER_BG = new Color(0xF0, 0xB4, 0xAF);
     // Muted navy blue (turunan NAVY, dilembutkan ~15% ke arah putih) -
     // "senada" dgn header tabel tapi tidak sekontras/segelap header, dipakai
     // utk baris tabel terpilih (ganti PRIMARY/teal yg dirasa terlalu terang).
@@ -52,6 +54,8 @@ public final class ThemeConfig {
     public static final Color BORDER_SOFT  = new Color(0xE4, 0xE6, 0xE2);
     public static final Color SURFACE_ALT  = new Color(0xF7, 0xF8, 0xF5);
     public static final Color TEXT_FAINT   = new Color(0x9A, 0xA1, 0x9C);
+    public static final Color TABLE_HEADER_BG   = SURFACE_ALT;
+    public static final Color TABLE_HEADER_TEXT = TEXT_NORMAL;
     public static final Color OK           = new Color(0x1A, 0x6B, 0x4C);
     public static final Color OK_BG        = new Color(0xE3, 0xF4, 0xEC);
     public static final Color WARN         = new Color(0xA1, 0x5C, 0x00);

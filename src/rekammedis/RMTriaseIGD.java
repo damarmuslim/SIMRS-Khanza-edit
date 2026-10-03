@@ -77,48 +77,26 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         widget.IconStyle.pasang(this);
+        // Satu tombol kaca pembesar untuk menerapkan filter tanggal + kata kunci,
+        // sama seperti Penilaian Awal Keperawatan IGD. Isi TCari tidak dihapus.
+        javax.swing.Icon ikonCariData = widget.IconStyle.muat("search.svg",14,widget.IconStyle.ABU);
+        if(ikonCariData!=null){
+            BtnCari.setIcon(ikonCariData);
+        }
+        BtnCari.setToolTipText("Filter / Terapkan Pencarian (Alt+3)");
         initHeaderTambahan();
         initPatientBanner();
         initActionBar();
         this.setLocation(8,1);
         tabMode=new DefaultTableModel(null,new Object[]{
-                "No.Rawat","No.RM","Nama Pasien","Tgl.Kunjungan","Cara Masuk","Transportasi",
-                "Alasan Kedatangan","Keterangan","Kode Kasus","Macam Kasus"
+                "Waktu Triase","No. Rawat","Pasien","Hasil Triase","Petugas","Status",
+                "No. RM","Cara Masuk","Transportasi","Alasan Kedatangan","Keterangan","Kode Kasus","Macam Kasus","Nama Pasien"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbTriase.setModel(tabMode);
 
-        //tbObat.setDefaultRenderer(Object.class, new WarnaTable(panelJudul.getBackground(),tbObat.getBackground()));
-        tbTriase.setPreferredScrollableViewportSize(new Dimension(500,500));
-        tbTriase.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-        for (i = 0; i < 10; i++) {
-            TableColumn column = tbTriase.getColumnModel().getColumn(i);
-            if(i==0){
-                column.setPreferredWidth(105);
-            }else if(i==1){
-                column.setPreferredWidth(70);
-            }else if(i==2){
-                column.setPreferredWidth(160);
-            }else if(i==3){
-                column.setPreferredWidth(120);
-            }else if(i==4){
-                column.setPreferredWidth(80);
-            }else if(i==5){
-                column.setPreferredWidth(80);
-            }else if(i==6){
-                column.setPreferredWidth(110);
-            }else if(i==7){
-                column.setPreferredWidth(180);
-            }else if(i==8){
-                column.setMinWidth(0);
-                column.setMaxWidth(0);
-            }else if(i==9){
-                column.setPreferredWidth(300);
-            }
-        }
-        tbTriase.setDefaultRenderer(Object.class, new WarnaTable());
+        initTabelDaftarTriase();
         
         tabModePemeriksaan=new DefaultTableModel(null,new Object[]{
                 "Kode Pemeriksaan","Pemeriksaan"
@@ -378,7 +356,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         SekunderAnamnesa.setDocument(new batasInput((int)400).getKata(SekunderAnamnesa));
        
         HTMLEditorKit kit = new HTMLEditorKit();
-        LoadHTML.setEditable(true);
+        LoadHTML.setEditable(false);
         LoadHTML.setEditorKit(kit);
         LoadHTML2.setEditable(true);
         LoadHTML2.setEditorKit(kit);
@@ -1585,7 +1563,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         FormInput.add(jLabel22);
         jLabel22.setBounds(531, 10, 80, 23);
 
-        Transportasi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "AGD", "Sendiri", "Swasta" }));
+        Transportasi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ambulance", "Kendaraan Bukan Ambulance", "-" }));
         Transportasi.setName("Transportasi"); // NOI18N
         Transportasi.setPreferredSize(new java.awt.Dimension(55, 28));
         Transportasi.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1596,12 +1574,12 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         FormInput.add(Transportasi);
         Transportasi.setBounds(615, 10, 100, 23);
 
-        jLabel23.setText("Alasan Kedatangan :");
+        jLabel23.setText("Asal Kedatangan :");
         jLabel23.setName("jLabel23"); // NOI18N
         FormInput.add(jLabel23);
         jLabel23.setBounds(431, 40, 130, 23);
 
-        AlasanKedatangan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Datang Sendiri", "Polisi", "Rujukan", "Bidan", "Puskesmas", "Rumah Sakit", "Poliklinik", "Faskes Lain", "-" }));
+        AlasanKedatangan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Datang Sendiri", "Polisi", "Rujukan", "Dijemput Oleh" }));
         AlasanKedatangan.setName("AlasanKedatangan"); // NOI18N
         AlasanKedatangan.setPreferredSize(new java.awt.Dimension(55, 28));
         AlasanKedatangan.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1703,11 +1681,11 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
 
         panelGlass9.setName("panelGlass9"); // NOI18N
         panelGlass9.setPreferredSize(new java.awt.Dimension(44, 44));
-        panelGlass9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 9));
+        panelGlass9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 8));
 
         jLabel19.setText("Tgl.Triase :");
         jLabel19.setName("jLabel19"); // NOI18N
-        jLabel19.setPreferredSize(new java.awt.Dimension(65, 23));
+        jLabel19.setPreferredSize(new java.awt.Dimension(65, 28));
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
@@ -1715,13 +1693,13 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
-        DTPCari1.setPreferredSize(new java.awt.Dimension(90, 23));
+        DTPCari1.setPreferredSize(new java.awt.Dimension(115, 28));
         panelGlass9.add(DTPCari1);
 
         jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel21.setText("s.d.");
         jLabel21.setName("jLabel21"); // NOI18N
-        jLabel21.setPreferredSize(new java.awt.Dimension(23, 23));
+        jLabel21.setPreferredSize(new java.awt.Dimension(23, 28));
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
@@ -1729,16 +1707,16 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
-        DTPCari2.setPreferredSize(new java.awt.Dimension(90, 23));
+        DTPCari2.setPreferredSize(new java.awt.Dimension(115, 28));
         panelGlass9.add(DTPCari2);
 
         jLabel6.setText("Key Word :");
         jLabel6.setName("jLabel6"); // NOI18N
-        jLabel6.setPreferredSize(new java.awt.Dimension(70, 23));
+        jLabel6.setPreferredSize(new java.awt.Dimension(70, 28));
         panelGlass9.add(jLabel6);
 
         TCari.setName("TCari"); // NOI18N
-        TCari.setPreferredSize(new java.awt.Dimension(205, 23));
+        TCari.setPreferredSize(new java.awt.Dimension(205, 28));
         TCari.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 TCariKeyPressed(evt);
@@ -1750,7 +1728,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         BtnCari.setMnemonic('3');
         BtnCari.setToolTipText("Alt+3");
         BtnCari.setName("BtnCari"); // NOI18N
-        BtnCari.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnCari.setPreferredSize(new java.awt.Dimension(28, 28));
         BtnCari.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnCariActionPerformed(evt);
@@ -1765,13 +1743,13 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
 
         jLabel7.setText("Record :");
         jLabel7.setName("jLabel7"); // NOI18N
-        jLabel7.setPreferredSize(new java.awt.Dimension(65, 23));
+        jLabel7.setPreferredSize(new java.awt.Dimension(65, 28));
         panelGlass9.add(jLabel7);
 
         LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LCount.setText("0");
         LCount.setName("LCount"); // NOI18N
-        LCount.setPreferredSize(new java.awt.Dimension(50, 23));
+        LCount.setPreferredSize(new java.awt.Dimension(50, 28));
         panelGlass9.add(LCount);
 
         internalFrame4.add(panelGlass9, java.awt.BorderLayout.PAGE_END);
@@ -1998,8 +1976,10 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
             Valid.textKosong(TNoRw,"Pasien");
         }else if(KdKasus.getText().trim().equals("")||NmKasus.getText().trim().equals("")){
             Valid.textKosong(btnKasus,"Macam Kasus");
-        }else if(KeteranganKedatangan.equals("")){
-            Valid.textKosong(btnKasus,"Keterangan");
+        }else if(("Rujukan".equals(AlasanKedatangan.getSelectedItem()) || "Dijemput Oleh".equals(AlasanKedatangan.getSelectedItem())) && (KeteranganKedatangan.getText().trim().isEmpty() || "-".equals(KeteranganKedatangan.getText().trim()))){
+            Valid.textKosong(KeteranganKedatangan, "Rujukan".equals(AlasanKedatangan.getSelectedItem()) ? "Faskes / RS Perujuk" : "Petugas / Tim Penjemput");
+        }else if(KeteranganKedatangan.getText().trim().equals("")){
+            Valid.textKosong(KeteranganKedatangan,"Keterangan");
         }else{
             Sequel.AutoComitFalse();
             sukses=true;
@@ -2337,8 +2317,10 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
             Valid.textKosong(TNoRw,"Pasien");
         }else if(KdKasus.getText().trim().equals("")||NmKasus.getText().trim().equals("")){
             Valid.textKosong(btnKasus,"Macam Kasus");
-        }else if(KeteranganKedatangan.equals("")){
-            Valid.textKosong(btnKasus,"Keterangan");
+        }else if(("Rujukan".equals(AlasanKedatangan.getSelectedItem()) || "Dijemput Oleh".equals(AlasanKedatangan.getSelectedItem())) && (KeteranganKedatangan.getText().trim().isEmpty() || "-".equals(KeteranganKedatangan.getText().trim()))){
+            Valid.textKosong(KeteranganKedatangan, "Rujukan".equals(AlasanKedatangan.getSelectedItem()) ? "Faskes / RS Perujuk" : "Petugas / Tim Penjemput");
+        }else if(KeteranganKedatangan.getText().trim().equals("")){
+            Valid.textKosong(KeteranganKedatangan,"Keterangan");
         }else{
             if(tbTriase.getSelectedRow()> -1){
                 if(akses.getkode().equals("Admin Utama")){
@@ -2431,39 +2413,39 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                     "<td valign='top' cellpadding='0' cellspacing='0'>"+
                                         "<table width='100%' border='0' cellpadding='0' cellspacing='0'align='center'>"+
                                             "<tr class='isi2'>"+
-                                                "<td width='34%' valign='top'>No.Rawat</td><td valign='top'>:&nbsp;</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,0).toString()+"</td>"+
+                                                "<td width='34%' valign='top'>No.Rawat</td><td valign='top'>:&nbsp;</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,1).toString()+"</td>"+
                                             "</tr>"+
                                             "<tr class='isi2'>"+
-                                                "<td width='34%' valign='top'>No.R.M.</td><td valign='top'>:&nbsp;</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,1).toString()+"</td>"+
+                                                "<td width='34%' valign='top'>No.R.M.</td><td valign='top'>:&nbsp;</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,6).toString()+"</td>"+
                                             "</tr>"+
                                             "<tr class='isi2'>"+
-                                                "<td width='34%' valign='top'>Nama Pasien</td><td valign='top'>:&nbsp;</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,2).toString()+"</td>"+
-                                            "</tr>"+
-                                        "</table>"+
-                                    "</td>"+
-                                    "<td valign='top' cellpadding='0' cellspacing='0'>"+
-                                        "<table width='100%' border='0' cellpadding='0' cellspacing='0' align='center'>"+
-                                            "<tr class='isi2'>"+
-                                                "<td width='34%' valign='top'>Tgl.Kunjungan</td><td valign='top'>:&nbsp;</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,3).toString()+"</td>"+
-                                            "</tr>"+
-                                            "<tr class='isi2'>"+
-                                                "<td width='34%' valign='top'>Cara Masuk</td><td valign='top'>:</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,4).toString()+"</td>"+
-                                            "</tr>"+
-                                            "<tr class='isi2'>"+
-                                                "<td width='34%' valign='top'>Transportasi</td><td valign='top'>:&nbsp;</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,5).toString()+"</td>"+
+                                                "<td width='34%' valign='top'>Nama Pasien</td><td valign='top'>:&nbsp;</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,13).toString()+"</td>"+
                                             "</tr>"+
                                         "</table>"+
                                     "</td>"+
                                     "<td valign='top' cellpadding='0' cellspacing='0'>"+
                                         "<table width='100%' border='0' cellpadding='0' cellspacing='0' align='center'>"+
                                             "<tr class='isi2'>"+
-                                                "<td width='31%' valign='top'>Alasan Kedatangan</td><td valign='top'>:&nbsp;</td><td width='68%' valign='top'>"+tbTriase.getValueAt(i,6).toString()+"</td>"+
+                                                "<td width='34%' valign='top'>Tgl.Kunjungan</td><td valign='top'>:&nbsp;</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,0).toString()+"</td>"+
                                             "</tr>"+
                                             "<tr class='isi2'>"+
-                                                "<td width='31%' valign='top'>Keterangan</td><td valign='top'>:&nbsp;</td><td width='68%' valign='top'>"+tbTriase.getValueAt(i,7).toString()+"</td>"+
+                                                "<td width='34%' valign='top'>Cara Masuk</td><td valign='top'>:</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,7).toString()+"</td>"+
                                             "</tr>"+
                                             "<tr class='isi2'>"+
-                                                "<td width='31%' valign='top'>Macam Kasus</td><td valign='top'>:&nbsp;</td><td width='68%' valign='top'>"+tbTriase.getValueAt(i,9).toString()+"</td>"+
+                                                "<td width='34%' valign='top'>Transportasi</td><td valign='top'>:&nbsp;</td><td width='65%' valign='top'>"+tbTriase.getValueAt(i,8).toString()+"</td>"+
+                                            "</tr>"+
+                                        "</table>"+
+                                    "</td>"+
+                                    "<td valign='top' cellpadding='0' cellspacing='0'>"+
+                                        "<table width='100%' border='0' cellpadding='0' cellspacing='0' align='center'>"+
+                                            "<tr class='isi2'>"+
+                                                "<td width='31%' valign='top'>Alasan Kedatangan</td><td valign='top'>:&nbsp;</td><td width='68%' valign='top'>"+tbTriase.getValueAt(i,9).toString()+"</td>"+
+                                            "</tr>"+
+                                            "<tr class='isi2'>"+
+                                                "<td width='31%' valign='top'>Keterangan</td><td valign='top'>:&nbsp;</td><td width='68%' valign='top'>"+tbTriase.getValueAt(i,10).toString()+"</td>"+
+                                            "</tr>"+
+                                            "<tr class='isi2'>"+
+                                                "<td width='31%' valign='top'>Macam Kasus</td><td valign='top'>:&nbsp;</td><td width='68%' valign='top'>"+tbTriase.getValueAt(i,12).toString()+"</td>"+
                                             "</tr>"+
                                         "</table>"+
                                     "</td>"
@@ -2476,7 +2458,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                 "data_triase_igd.no_rawat from data_triase_igdprimer inner join data_triase_igd on data_triase_igd.no_rawat="+
                                 "data_triase_igdprimer.no_rawat where data_triase_igd.no_rawat=?");
                             try {
-                                ps.setString(1,tbTriase.getValueAt(i,0).toString());
+                                ps.setString(1,tbTriase.getValueAt(i,1).toString());
                                 rs=ps.executeQuery();
                                 if(rs.next()){
                                     htmlContent.append(
@@ -2661,7 +2643,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                 "data_triase_igd.no_rawat from data_triase_igdsekunder inner join data_triase_igd on data_triase_igd.no_rawat="+
                                 "data_triase_igdsekunder.no_rawat where data_triase_igd.no_rawat=?");
                             try {
-                                ps.setString(1,tbTriase.getValueAt(i,0).toString());
+                                ps.setString(1,tbTriase.getValueAt(i,1).toString());
                                 rs=ps.executeQuery();
                                 if(rs.next()){
                                     htmlContent.append(
@@ -3046,25 +3028,25 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                 Valid.tabelKosong(tabModeSkala3);
                 Valid.tabelKosong(tabModeSkala4);
                 Valid.tabelKosong(tabModeSkala5);
-                TNoRw.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-                TNoRM.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
-                TPasien.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),2).toString());
-                Valid.SetTgl2(TanggalKunjungan,tbTriase.getValueAt(tbTriase.getSelectedRow(),3).toString());
+                TNoRw.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+                TNoRM.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),6).toString());
+                TPasien.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),13).toString());
+                Valid.SetTgl2(TanggalKunjungan,tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
                 sinkronPanelTglKunjungan();
-                CaraMasuk.setSelectedItem(tbTriase.getValueAt(tbTriase.getSelectedRow(),4).toString());
-                Transportasi.setSelectedItem(tbTriase.getValueAt(tbTriase.getSelectedRow(),5).toString());
-                AlasanKedatangan.setSelectedItem(tbTriase.getValueAt(tbTriase.getSelectedRow(),6).toString());
-                KeteranganKedatangan.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),7).toString());
-                KdKasus.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),8).toString());
-                NmKasus.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),9).toString());
+                CaraMasuk.setSelectedItem(tbTriase.getValueAt(tbTriase.getSelectedRow(),7).toString());
+                Transportasi.setSelectedItem(tbTriase.getValueAt(tbTriase.getSelectedRow(),8).toString());
+                AlasanKedatangan.setSelectedItem(tbTriase.getValueAt(tbTriase.getSelectedRow(),9).toString());
+                KeteranganKedatangan.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),10).toString());
+                KdKasus.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),11).toString());
+                NmKasus.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),12).toString());
                 // (TabPilihan sengaja TIDAK dipindah ke sini - klik baris cuma memuat data,
                 // tetap di tab Data Triase; user pindah manual ke tab Input kalau mau edit)
                 // [PACS] Stage f/h: load data lama tab PACS (independen dari Primer/Sekunder di bawah).
-                tampilPacs(tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+                tampilPacs(tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
                 // [Header tambahan] Sudah Terpasang/Identitas Pengantar - selalu dimuat langsung dari
                 // data_triase_igd (tidak lewat JOIN data_triase_pacs), supaya tetap terisi walau
                 // pasien belum pernah punya baris PACS (hanya Primer/Sekunder yang pernah disimpan).
-                tampilHeaderTambahan(tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+                tampilHeaderTambahan(tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
                 ps=koneksi.prepareStatement(
                         "select data_triase_igdprimer.keluhan_utama,data_triase_igdprimer.kebutuhan_khusus,data_triase_igdprimer.catatan,"+
                         "data_triase_igdprimer.plan,data_triase_igdprimer.tanggaltriase,data_triase_igdprimer.nik,data_triase_igd.tekanan_darah,"+
@@ -3072,7 +3054,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                         "data_triase_igd.no_rawat from data_triase_igdprimer inner join data_triase_igd on data_triase_igd.no_rawat="+
                         "data_triase_igdprimer.no_rawat where data_triase_igd.no_rawat=?");
                 try {
-                    ps.setString(1,tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+                    ps.setString(1,tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
                     rs=ps.executeQuery();
                     if(rs.next()){
                         kodepetugas=rs.getString("nik");
@@ -3215,7 +3197,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                         "data_triase_igd.no_rawat from data_triase_igdsekunder inner join data_triase_igd on data_triase_igd.no_rawat="+
                         "data_triase_igdsekunder.no_rawat where data_triase_igd.no_rawat=?");
                 try {
-                    ps.setString(1,tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+                    ps.setString(1,tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
                     rs=ps.executeQuery();
                     if(rs.next()){
                         kodepetugas=rs.getString("nik");
@@ -4047,7 +4029,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
             return;
         }
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        cetakPacs(tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+        cetakPacs(tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnPrint1ActionPerformed
 
@@ -4271,6 +4253,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     private javax.swing.ButtonGroup bgLevelPacs;
     private widget.RadioButton RbPacsResusitasi, RbPacsNonResusitasi, RbPacsPoliKlinik, RbPacsDOA;
     private javax.swing.ButtonGroup bgKeputusanPacs;
+    private widget.Label lblHdrKeterangan;
 
     // =====================================================================
     // [PACS - modernisasi tampilan sub-tab, UI-only] Komponen visual baru.
@@ -4311,7 +4294,6 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     private widget.Button btnKeputusanPukulSekarangPacs;
     // (Petugas PACS dihapus - dipakai bersama dengan Dokter/Petugas tab Sekunder:
     // SekunderKodePetugas/SekunderNamaPetugas/btnSekunderPetugas)
-    private widget.Button btnPrintPacs;
     // -- Kelompok A sisa: Keluhan --
     // (Kontak Awal dihapus dari tab PACS - nilainya diambil dari TanggalKunjungan/header, tidak perlu inputan terpisah)
     private widget.TextArea PacsKeluhanUtama;
@@ -4365,11 +4347,6 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         PacsNamaPengantar = new widget.TextBox();
         PacsTelpPengantar = new widget.TextBox();
 
-        // [Bagian B.11] Dipindah kesini (dari initPacsTab()) supaya sudah ada
-        // saat initActionBar() (dipanggil sesudah method ini) menaruhnya di
-        // action bar bawah bersama Baru/Hapus/Ganti/Semua.
-        btnPrintPacs = new widget.Button(); btnPrintPacs.setText("Cetak Lembar Triase PACS");
-        btnPrintPacs.addActionListener((java.awt.event.ActionEvent evt) -> btnPrintPacsActionPerformed(evt));
     }
 
     // ---- konstanta warna header (dari widget.ThemeConfig / Bagian A) ----
@@ -4388,6 +4365,47 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
      *  - Sel KANAN : grid 5 kolom x 2 baris, label DI ATAS field.
      */
     private void initPatientBanner(){
+        internalFrame1.setBorder(null);
+        javax.swing.JPanel pnlTopBar = new javax.swing.JPanel(new java.awt.BorderLayout());
+        pnlTopBar.setPreferredSize(new java.awt.Dimension(1000, 34));
+        pnlTopBar.setBackground(new java.awt.Color(0x12, 0x3c, 0x3a));
+        pnlTopBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 16, 0, 16));
+
+        javax.swing.JPanel pnlLeft = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 7));
+        pnlLeft.setOpaque(false);
+
+        javax.swing.JLabel lblTitle = new javax.swing.JLabel("Data Triase IGD");
+        lblTitle.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        lblTitle.setForeground(new java.awt.Color(0xdf, 0xe9, 0xe6));
+
+        javax.swing.JLabel lblBadge = new javax.swing.JLabel("RM 03-1") {
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new java.awt.Color(0x12, 0x3c, 0x3a));
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 3, 3);
+                g2.setColor(new java.awt.Color(0x2a, 0x5d, 0x5a));
+                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 3, 3);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        lblBadge.setFont(new java.awt.Font("Segoe UI Mono", java.awt.Font.BOLD, 10));
+        lblBadge.setForeground(new java.awt.Color(0x7d, 0xd3, 0xc8));
+        lblBadge.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 6, 1, 6));
+
+        pnlLeft.add(lblTitle);
+        pnlLeft.add(lblBadge);
+
+        javax.swing.JLabel lblHospital = new javax.swing.JLabel("RSUD Demang Sepulau Raya");
+        lblHospital.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        lblHospital.setForeground(new java.awt.Color(0xa2, 0xc7, 0xc2));
+
+        pnlTopBar.add(pnlLeft, java.awt.BorderLayout.WEST);
+        pnlTopBar.add(lblHospital, java.awt.BorderLayout.EAST);
+        internalFrame1.add(pnlTopBar, java.awt.BorderLayout.PAGE_START);
+
         FormInput.removeAll();
         FormInput.setLayout(new java.awt.GridBagLayout());
         FormInput.setBackground(widget.ThemeConfig.SURFACE);
@@ -4433,11 +4451,17 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         lblKartuRawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblKartuRawat.setForeground(widget.ThemeConfig.TEXT_MUTED);
 
+        widget.Label lblKartuLokasi = new widget.Label();
+        lblKartuLokasi.setText("Lokasi  IGD");
+        lblKartuLokasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblKartuLokasi.setForeground(widget.ThemeConfig.TEXT_MUTED);
+
         // [Bagian C.12] Avatar bulat berisi inisial nama - kolom paling kiri,
-        // membentang seluruh tinggi baris judul s/d No. Rawat.
+        // membentang seluruh tinggi baris judul s/d No. Rawat & Lokasi.
         avatarKartuPacs = new AvatarBulatPacs();
         java.awt.Dimension davatar = new java.awt.Dimension(40,40);
         avatarKartuPacs.setPreferredSize(davatar); avatarKartuPacs.setMinimumSize(davatar);
+        avatarKartuPacs.setMaximumSize(davatar);
         avatarKartuPacs.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
 
         // [Bagian C.12] Progress kelengkapan - KOSMETIK saja utk iterasi ini,
@@ -4454,7 +4478,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         progresKartu.setPreferredSize(dprog);
 
         java.awt.GridBagConstraints k = new java.awt.GridBagConstraints();
-        k.gridx=0; k.gridy=0; k.gridheight=5; k.anchor=java.awt.GridBagConstraints.NORTHWEST;
+        k.gridx=0; k.gridy=0; k.gridheight=6; k.anchor=java.awt.GridBagConstraints.NORTHWEST;
         k.fill=java.awt.GridBagConstraints.NONE; k.weightx=0; k.insets=new java.awt.Insets(0,0,0,10);
         kartu.add(avatarKartuPacs,k);
 
@@ -4469,11 +4493,12 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         k.gridy=2; k.insets=new java.awt.Insets(2,0,0,0);   kartu.add(lblKartuJK,k);
         k.gridy=3; k.insets=new java.awt.Insets(7,0,0,0);   kartu.add(lblKartuRM,k);
         k.gridy=4; k.insets=new java.awt.Insets(3,0,0,0);   kartu.add(lblKartuRawat,k);
-        k.gridx=0; k.gridwidth=3; k.gridy=5; k.insets=new java.awt.Insets(8,0,0,0);
+        k.gridy=5; k.insets=new java.awt.Insets(3,0,0,0);   kartu.add(lblKartuLokasi,k);
+        k.gridx=0; k.gridwidth=3; k.gridy=6; k.insets=new java.awt.Insets(8,0,0,0);
         kartu.add(lblProgresKartu,k);
-        k.gridy=6; k.insets=new java.awt.Insets(2,0,0,0);
+        k.gridy=7; k.insets=new java.awt.Insets(2,0,0,0);
         kartu.add(progresKartu,k);
-        k.gridy=7; k.weighty=1.0; k.fill=java.awt.GridBagConstraints.BOTH; k.insets=new java.awt.Insets(0,0,0,0);
+        k.gridy=8; k.weighty=1.0; k.fill=java.awt.GridBagConstraints.BOTH; k.insets=new java.awt.Insets(0,0,0,0);
         kartu.add(javax.swing.Box.createGlue(),k);
 
         // sinkronisasi label kartu <- TextBox tersembunyi
@@ -4492,10 +4517,10 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         grid.setOpaque(false);
         grid.setLayout(new java.awt.GridBagLayout());
 
-        // tombol lookup -> glyph "cari", 30px, di dalam pembungkus berborder.
-        btnKasus.setText("⌕"); btnKasus.setIcon(null);
+        // tombol lookup -> ikon cari modern SVG, 30px, di dalam pembungkus berborder.
+        btnKasus.setText(""); btnKasus.setIcon(widget.IconStyle.muat("search.svg", 14, widget.ThemeConfig.TEXT_MUTED));
         btnKasus.setPreferredSize(new java.awt.Dimension(30,30));
-        btnSekunderPetugas.setText("⌕"); btnSekunderPetugas.setIcon(null);
+        btnSekunderPetugas.setText(""); btnSekunderPetugas.setIcon(widget.IconStyle.muat("search.svg", 14, widget.ThemeConfig.TEXT_MUTED));
         btnSekunderPetugas.setPreferredSize(new java.awt.Dimension(30,30));
         KdKasus.setVisible(false);
         SekunderKodePetugas.setVisible(false);
@@ -4546,8 +4571,8 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         g.gridy=0;
         g.gridx=0; grid.add(selTglKunjungan,g);
         g.gridx=1; grid.add(hdrCell("Cara Masuk",        CaraMasuk,         false),g);
-        g.gridx=2; grid.add(hdrCell("Transportasi",      Transportasi,      false),g);
-        g.gridx=3; grid.add(hdrCell("Alasan Keterlambatan", AlasanKedatangan,  false),g);
+        g.gridx=2; grid.add(hdrCell("Kendaraan",         Transportasi,      false),g);
+        g.gridx=3; grid.add(hdrCell("Asal Kedatangan",   AlasanKedatangan,  false),g);
         g.gridx=4; g.insets=new java.awt.Insets(0,0,0,0);
         grid.add(hdrCell("Macam Kasus", selMacamKasus, true),g);
         // baris 2
@@ -4556,14 +4581,24 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         g.gridx=1; grid.add(hdrCell("Pengantar — Nama", PacsNamaPengantar, false),g);
         g.gridx=2; grid.add(hdrCell("Pengantar — Telp", PacsTelpPengantar, false),g);
         g.gridx=3; g.gridwidth=2; g.weightx=0.4; g.insets=new java.awt.Insets(10,0,0,0);
-        grid.add(hdrCell("Keterangan", KeteranganKedatangan, false),g);
+        lblHdrKeterangan = new widget.Label();
+        lblHdrKeterangan.setText("Keterangan");
+        lblHdrKeterangan.setForeground(widget.ThemeConfig.TEXT_MUTED);
+        grid.add(hdrCell(lblHdrKeterangan, KeteranganKedatangan), g);
+
+        AlasanKedatangan.addActionListener((java.awt.event.ActionEvent e) -> sesuaikanFieldKeterangan());
+        sesuaikanFieldKeterangan();
 
         // ===================== rakit FormInput =====================
         java.awt.GridBagConstraints f = new java.awt.GridBagConstraints();
         f.gridx=0; f.gridy=0; f.fill=java.awt.GridBagConstraints.BOTH;
         f.weightx=0; f.weighty=1.0;
         f.insets=new java.awt.Insets(0,0,0,16);
-        java.awt.Dimension dk = new java.awt.Dimension(270,118);
+        // Jangan memaksa tinggi 118 px: isi kartu terdiri dari delapan baris
+        // dan akan terpotong pada font/LAF tertentu. Ambil tinggi alami hasil
+        // GridBagLayout, sedangkan lebar kartu tetap konsisten 270 px.
+        int tinggiKartu = Math.max(150,kartu.getPreferredSize().height);
+        java.awt.Dimension dk = new java.awt.Dimension(270,tinggiKartu);
         kartu.setMinimumSize(dk); kartu.setPreferredSize(dk);
         FormInput.add(kartu,f);
         f.gridx=1; f.weightx=1.0; f.insets=new java.awt.Insets(0,0,0,0);
@@ -4573,16 +4608,23 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         // combo jam panelTglKunjungan dilebarkan 46->62px, fix elipsis "...")
         // supaya kolom "Tgl. Kunjungan" (tanggal+3 kotak jam, >=306px) punya
         // ruang, tanpa memepetkan 4 kolom header lain yg lebarnya tetap.
-        FormInput.setPreferredSize(new java.awt.Dimension(1090,142));
+        int tinggiIsiHeader = Math.max(tinggiKartu,grid.getPreferredSize().height);
+        FormInput.setPreferredSize(new java.awt.Dimension(1090,tinggiIsiHeader+24));
     }
 
     /** [Bagian C.12] Ambil inisial (maks 2 huruf) dari nama pasien utk avatar bulat. */
     private static String inisialDariNama(String nama){
         if(nama==null || nama.trim().isEmpty()){ return "?"; }
-        String[] kata = nama.trim().split("\\s+");
+        String bersih = nama.replaceAll("\\(.*?\\)", " ").replaceAll("[^a-zA-Z\\s]", " ").trim();
+        String[] kata = bersih.split("\\s+");
         StringBuilder sb = new StringBuilder();
         for(int i=0;i<kata.length && sb.length()<2;i++){
-            if(!kata[i].isEmpty()){ sb.append(Character.toUpperCase(kata[i].charAt(0))); }
+            if(!kata[i].isEmpty()){
+                char c = kata[i].charAt(0);
+                if(Character.isLetter(c)){
+                    sb.append(Character.toUpperCase(c));
+                }
+            }
         }
         return sb.length()==0 ? "?" : sb.toString();
     }
@@ -4594,13 +4636,18 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         @Override protected void paintComponent(java.awt.Graphics g){
             java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
             g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            int diameter = Math.max(0,Math.min(getWidth(),getHeight())-1);
+            int x = (getWidth()-diameter)/2;
+            int y = (getHeight()-diameter)/2;
             g2.setColor(widget.ThemeConfig.ACCENT);
-            g2.fillOval(0,0,getWidth()-1,getHeight()-1);
+            g2.fillOval(x,y,diameter,diameter);
             g2.setColor(java.awt.Color.WHITE);
             g2.setFont(getFont());
             java.awt.FontMetrics fm = g2.getFontMetrics();
             int tw = fm.stringWidth(inisial);
-            g2.drawString(inisial, (getWidth()-tw)/2, (getHeight()+fm.getAscent())/2 - 2);
+            int tx = x+(diameter-tw)/2;
+            int ty = y+(diameter-fm.getHeight())/2+fm.getAscent();
+            g2.drawString(inisial,tx,ty);
             g2.dispose();
         }
     }
@@ -4652,6 +4699,68 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         return sel;
     }
 
+    /** [Bagian B] Sel grid header dengan custom widget.Label (memungkinkan label dinamis). */
+    private widget.PanelBiasa hdrCell(widget.Label l, java.awt.Component field){
+        widget.PanelBiasa sel = new widget.PanelBiasa();
+        sel.setOpaque(false);
+        sel.setLayout(new java.awt.BorderLayout(0,3));
+        l.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        l.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        if(field instanceof javax.swing.JComponent){
+            ((javax.swing.JComponent)field).setPreferredSize(new java.awt.Dimension(0,30));
+        }
+        sel.add(l, java.awt.BorderLayout.NORTH);
+        sel.add(field, java.awt.BorderLayout.CENTER);
+        return sel;
+    }
+
+    /**
+     * Menyesuaikan field Keterangan Kedatangan secara adaptif:
+     * - Datang Sendiri : disable (keterangan="-")
+     * - Polisi         : enable (opsional)
+     * - Rujukan        : enable & wajib ("* Faskes / RS Perujuk")
+     * - Dijemput Oleh  : enable & wajib ("* Dijemput Oleh (Petugas / Tim)")
+     */
+    private void sesuaikanFieldKeterangan(){
+        if(AlasanKedatangan==null || KeteranganKedatangan==null || lblHdrKeterangan==null){ return; }
+        String asal = AlasanKedatangan.getSelectedItem()!=null ? AlasanKedatangan.getSelectedItem().toString() : "";
+        if("Datang Sendiri".equalsIgnoreCase(asal)){
+            lblHdrKeterangan.setText("Keterangan");
+            lblHdrKeterangan.setForeground(widget.ThemeConfig.TEXT_MUTED);
+            KeteranganKedatangan.setEnabled(false);
+            if(KeteranganKedatangan.getText().trim().isEmpty() || "-".equals(KeteranganKedatangan.getText().trim())){
+                KeteranganKedatangan.setText("-");
+            }
+        }else if("Polisi".equalsIgnoreCase(asal)){
+            lblHdrKeterangan.setText("Keterangan Polisi / Instansi");
+            lblHdrKeterangan.setForeground(widget.ThemeConfig.TEXT_MUTED);
+            KeteranganKedatangan.setEnabled(true);
+            if("-".equals(KeteranganKedatangan.getText().trim())){
+                KeteranganKedatangan.setText("");
+            }
+        }else if("Rujukan".equalsIgnoreCase(asal)){
+            lblHdrKeterangan.setText("<html>Faskes / RS Perujuk <font color='#B3261E'>*</font></html>");
+            lblHdrKeterangan.setForeground(new java.awt.Color(0xd9, 0x77, 0x06));
+            KeteranganKedatangan.setEnabled(true);
+            if("-".equals(KeteranganKedatangan.getText().trim())){
+                KeteranganKedatangan.setText("");
+            }
+            KeteranganKedatangan.requestFocus();
+        }else if("Dijemput Oleh".equalsIgnoreCase(asal)){
+            lblHdrKeterangan.setText("<html>Dijemput Oleh (Petugas / Tim) <font color='#B3261E'>*</font></html>");
+            lblHdrKeterangan.setForeground(new java.awt.Color(0xd9, 0x77, 0x06));
+            KeteranganKedatangan.setEnabled(true);
+            if("-".equals(KeteranganKedatangan.getText().trim())){
+                KeteranganKedatangan.setText("");
+            }
+            KeteranganKedatangan.requestFocus();
+        }else{
+            lblHdrKeterangan.setText("Keterangan");
+            lblHdrKeterangan.setForeground(widget.ThemeConfig.TEXT_MUTED);
+            KeteranganKedatangan.setEnabled(true);
+        }
+    }
+
     /**
      * [Bagian E] Sinkron kotak tampilan Tgl/Jam Kunjungan dari TanggalKunjungan
      * (GEN, sumber nilai asli) - satu arah saja. Dipanggil tiap kali
@@ -4685,6 +4794,30 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         return w;
     }
 
+    /** Styling tombol action bar dengan keadaan normal dan hover yang terlihat. */
+    private void gayaTombolActionTriase(final widget.Button tombol,int lebar,boolean aksiBahaya){
+        final java.awt.Color latarNormal = java.awt.Color.WHITE;
+        final java.awt.Color borderNormal = new java.awt.Color(0xD8,0xDB,0xD6);
+        final java.awt.Color teksNormal = aksiBahaya
+                ? widget.ThemeConfig.DANGER : widget.ThemeConfig.TEXT;
+
+        tombol.setOpaque(true);
+        tombol.setContentAreaFilled(true);
+        tombol.setBackground(latarNormal);
+        tombol.setGlassColor(latarNormal);
+        tombol.setForeground(teksNormal);
+        tombol.setRoundRect(false);
+        tombol.putClientProperty("Component.arc",4);
+        tombol.putClientProperty("Button.arc",4);
+        tombol.putClientProperty("JButton.buttonType","square");
+        tombol.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        tombol.setFont(new java.awt.Font("Segoe UI",java.awt.Font.PLAIN,11));
+        tombol.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(borderNormal),
+                javax.swing.BorderFactory.createEmptyBorder(4,12,4,12)));
+        tombol.setPreferredSize(new java.awt.Dimension(lebar,32));
+    }
+
     /**
      * [Bagian G] Action bar bawah (panelGlass8 - dipakai bersama SEMUA tab
      * form ini). Restyle warna/font + "Keluar" dipisah ke kanan + label
@@ -4692,28 +4825,14 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
      * initHeaderTambahan/initPatientBanner) - blok GEN tidak disentuh.
      */
     private void initActionBar(){
-        // Simpan: tanpa background warna (permintaan) - cukup teks tebal + label lebih jelas
-        BtnSimpan.setText("Simpan Triase");
-        BtnSimpan.setGlassColor(java.awt.Color.WHITE);
-        BtnSimpan.setForeground(widget.ThemeConfig.TEXT);
-        BtnSimpan.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
-        BtnSimpan.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8,0xDB,0xD6)));
-        BtnSimpan.setPreferredSize(new java.awt.Dimension(140,32));
-
-        // sekunder: Baru, Ganti, Hapus, Cetak, Semua
-        widget.Button[] sekunder = {BtnBatal, BtnEdit, BtnHapus, BtnPrint, BtnAll};
-        for(widget.Button b : sekunder){
-            b.setGlassColor(java.awt.Color.WHITE);
-            b.setForeground(widget.ThemeConfig.TEXT);
-            b.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8,0xDB,0xD6)));
-            b.setPreferredSize(new java.awt.Dimension(96,32));
-        }
-
-        // Keluar: sisi kanan, teks danger-ish
-        BtnKeluar.setGlassColor(java.awt.Color.WHITE);
-        BtnKeluar.setForeground(new java.awt.Color(0x8A,0x4A,0x46));
-        BtnKeluar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8,0xDB,0xD6)));
-        BtnKeluar.setPreferredSize(new java.awt.Dimension(96,32));
+        BtnSimpan.setText("Simpan");
+        gayaTombolActionTriase(BtnSimpan,92,false);
+        gayaTombolActionTriase(BtnBatal,86,false);
+        gayaTombolActionTriase(BtnEdit,86,false);
+        gayaTombolActionTriase(BtnHapus,88,true);
+        gayaTombolActionTriase(BtnPrint,86,false);
+        gayaTombolActionTriase(BtnAll,90,false);
+        gayaTombolActionTriase(BtnKeluar,90,true);
 
         lblRingkasanPacs = new widget.Label();
         lblRingkasanPacs.setText("");
@@ -4723,14 +4842,8 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         widget.PanelBiasa kiri = new widget.PanelBiasa();
         kiri.setOpaque(false);
         kiri.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 8));
-        btnPrintPacs.setGlassColor(java.awt.Color.WHITE);
-        btnPrintPacs.setForeground(widget.ThemeConfig.TEXT);
-        btnPrintPacs.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0xD8,0xDB,0xD6)));
-        btnPrintPacs.setPreferredSize(new java.awt.Dimension(170,32));
-
         kiri.add(BtnSimpan); kiri.add(BtnBatal); kiri.add(BtnEdit);
         kiri.add(BtnHapus); kiri.add(BtnPrint); kiri.add(BtnAll);
-        kiri.add(btnPrintPacs);
 
         widget.PanelBiasa kanan = new widget.PanelBiasa();
         kanan.setOpaque(false);
@@ -4743,6 +4856,8 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         panelGlass8.setBorder(javax.swing.BorderFactory.createMatteBorder(1,0,0,0, widget.ThemeConfig.BORDER_SOFT));
         panelGlass8.add(kiri, java.awt.BorderLayout.CENTER);
         panelGlass8.add(kanan, java.awt.BorderLayout.EAST);
+        panelGlass8.revalidate();
+        panelGlass8.repaint();
     }
 
     /** [Bagian G.4] "Level terpilih: PACS n · <keputusan>" di action bar. */
@@ -4886,6 +5001,13 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         widget.PanelBiasa kolVital = buatKolomPacs(398,true);
         int rV = 0;
         rV = tambahIsiKolom(kolVital, rV, buatHeaderStrip("TANDA VITAL"));
+        PacsKesadaran = new widget.ComboBox();
+        PacsKesadaran.addItem("Sadar Penuh");
+        PacsKesadaran.addItem("Respon Suara");
+        PacsKesadaran.addItem("Respon Nyeri");
+        PacsKesadaran.addItem("Tidak Respon");
+        PacsKesadaran.setVisible(false);
+        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Kesadaran (AVPU)", buatPanelAvpu(), ""));
         rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Tekanan Darah", ukuranPacsFieldPendek(PacsTensi = new widget.TextBox()), "mmHg"));
         rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Nadi",          ukuranPacsFieldPendek(PacsNadi = new widget.TextBox()), "/mnt"));
         rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Pernapasan",    ukuranPacsFieldPendek(PacsRespirasi = new widget.TextBox()), "/mnt"));
@@ -4919,14 +5041,6 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         togglePanelNyeri.add(tglNyeriTidak); togglePanelNyeri.add(tglNyeriYa);
         panelNyeri.add(togglePanelNyeri, java.awt.BorderLayout.EAST);
         rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Skala Nyeri", panelNyeri, "/10"));
-
-        PacsKesadaran = new widget.ComboBox();
-        PacsKesadaran.addItem("Sadar Penuh");
-        PacsKesadaran.addItem("Respon Suara");
-        PacsKesadaran.addItem("Respon Nyeri");
-        PacsKesadaran.addItem("Tidak Respon");
-        PacsKesadaran.setVisible(false);
-        rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Kesadaran (AVPU)", buatPanelAvpu(), ""));
         rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Berat Badan", ukuranPacsFieldPendek(PacsBeratBadan = new widget.TextBox()), "kg"));
         rV = tambahIsiKolom(kolVital, rV, barisFieldPacs("Tinggi Badan", ukuranPacsFieldPendek(PacsTinggiBadan = new widget.TextBox()), "cm"));
         rV = tambahIsiKolom(kolVital, rV, catatanKecilPacs("Skor 0-3 di kolom SKOR EWS & KEPUTUSAN dihitung OTOMATIS dari tanda vital di atas."));
@@ -5021,8 +5135,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         cb.gridx = 2; cb.weightx = 1.0; panelBadan.add(kolEws, cb);
 
         PanelPacs.add(panelBadan, java.awt.BorderLayout.CENTER);
-        // (btnPrintPacs sekarang dibuat di initHeaderTambahan() dan ditaruh di
-        // action bar bawah bersama Baru/Hapus/Ganti/Semua - lihat initActionBar())
+        // Cetak lembar triase tersedia dari tombol pada panel detail LoadHTML.
 
         // Listener styling Level & Keputusan + ringkasan action bar.
         java.awt.event.ItemListener liLevel = (java.awt.event.ItemEvent e) -> { refreshKartuLevelPacs(); refreshRingkasanPacs(); };
@@ -5270,33 +5383,37 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         l.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         java.awt.Dimension dl = new java.awt.Dimension(118,24);
         l.setPreferredSize(dl); l.setMinimumSize(dl);
-        c.gridx=0; c.weightx=0; c.fill=java.awt.GridBagConstraints.NONE;
+        c.gridx=0; c.weightx=0; c.gridwidth=1; c.fill=java.awt.GridBagConstraints.NONE;
         c.insets=new java.awt.Insets(0,0,0,8);
         p.add(l,c);
 
-        c.gridx=1; c.weightx=1.0; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
-        c.insets=new java.awt.Insets(0,0,0,0);
-        p.add(field,c);
+        if(satuan!=null && !satuan.trim().isEmpty()){
+            c.gridx=1; c.weightx=1.0; c.gridwidth=1; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+            c.insets=new java.awt.Insets(0,0,0,0);
+            p.add(field,c);
 
-        widget.Label u = new widget.Label();
-        u.setText(satuan==null?"":satuan);
-        u.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        u.setForeground(widget.ThemeConfig.TEXT_FAINT);
-        u.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.PLAIN, 11));
-        java.awt.Dimension du = new java.awt.Dimension(52,24);
-        u.setPreferredSize(du); u.setMinimumSize(du);
-        c.gridx=2; c.weightx=0; c.fill=java.awt.GridBagConstraints.NONE;
-        c.insets=new java.awt.Insets(0,6,0,0);
-        p.add(u,c);
+            widget.Label u = new widget.Label();
+            u.setText(satuan);
+            u.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            u.setForeground(widget.ThemeConfig.TEXT_FAINT);
+            u.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.PLAIN, 11));
+            java.awt.Dimension du = new java.awt.Dimension(52,24);
+            u.setPreferredSize(du); u.setMinimumSize(du);
+            c.gridx=2; c.weightx=0; c.gridwidth=1; c.fill=java.awt.GridBagConstraints.NONE;
+            c.insets=new java.awt.Insets(0,6,0,0);
+            p.add(u,c);
+        }else{
+            c.gridx=1; c.weightx=1.0; c.gridwidth=2; c.fill=java.awt.GridBagConstraints.HORIZONTAL;
+            c.insets=new java.awt.Insets(0,0,0,0);
+            p.add(field,c);
+        }
         return p;
     }
 
     /**
-     * [Bagian C.5] 4 JToggleButton Kesadaran (AVPU) -> disinkron ke ComboBox
-     * PacsKesadaran (tersembunyi). Disusun VERTIKAL (bukan sejajar horizontal)
-     * dengan label kata penuh + skor di ujung kanan, sesuai mockup. Skor yang
-     * ditampilkan HARUS ikut PacsScoring.skorKesadaran() (Sadar Penuh=0, tiga
-     * lainnya=3 - skor 1/2 memang kosong di formulir, jangan menebak skala baru).
+     * [Bagian C.5] 4 JToggleButton Kesadaran (AVPU) horizontal 1 baris segmented
+     * [ A (0) | V (3) | P (3) | U (3) ] dengan tinggi 28px (sejajar Tekanan Darah dll).
+     * Disinkronkan ke ComboBox PacsKesadaran (tersembunyi).
      */
     private widget.PanelBiasa buatPanelAvpu(){
         bgAvpuPacs = new javax.swing.ButtonGroup();
@@ -5305,30 +5422,30 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         tblAvpuP = new javax.swing.JToggleButton();
         tblAvpuU = new javax.swing.JToggleButton();
         final javax.swing.JToggleButton[] tg = {tblAvpuA,tblAvpuV,tblAvpuP,tblAvpuU};
+        final String[] kodeAvpu = {"A","V","P","U"};
         final String[] namaAvpu = {"Sadar Penuh","Respon Suara","Respon Nyeri","Tidak Respon"};
-        // Sesuai mockup: daftar vertikal, tiap baris kartu sendiri dgn border
-        // sendiri (bukan satu panel besar berbingkai) - lihat refreshAvpuPacs().
+
         widget.PanelBiasa p = new widget.PanelBiasa();
         p.setOpaque(false);
-        p.setLayout(new java.awt.GridLayout(4,1,0,5));
+        p.setLayout(new java.awt.GridLayout(1, 4, 3, 0));
+        p.setPreferredSize(new java.awt.Dimension(180, 28));
+        p.setMinimumSize(new java.awt.Dimension(140, 28));
+
         for(int i=0;i<4;i++){
             final int idx = i;
             int skor = PacsScoring.skorKesadaran(namaAvpu[i]);
+            tg[i].putClientProperty("kodeAvpu", kodeAvpu[i]);
             tg[i].putClientProperty("namaAvpu", namaAvpu[i]);
             tg[i].putClientProperty("skorAvpu", skor);
-            tg[i].setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+            tg[i].setToolTipText(kodeAvpu[i] + " - " + namaAvpu[i] + " (Skor: " + skor + ")");
+            tg[i].setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             tg[i].setFocusPainted(false);
             tg[i].setBorderPainted(false);
-            // contentAreaFilled=false + opaque=false: FlatLaf punya overlay
-            // abu-abu tersendiri utk state "selected" toggle button yang tidak
-            // bisa ditimpa lewat setBackground() saja (kebukti lewat Robot -
-            // pita abu muncul di sisi kanan tombol terpilih walau background
-            // sudah WHITE). Solusinya: background/border kartu dipindah ke
-            // panel pembungkus polos (yg tidak punya cat "selected" LAF apa
-            // pun), tombolnya sendiri jadi transparan, cuma menyumbang teks.
             tg[i].setOpaque(false);
             tg[i].setContentAreaFilled(false);
-            widget.PanelBiasa kartu = new widget.PanelBiasa();
+            tg[i].setMargin(new java.awt.Insets(0,0,0,0));
+
+            javax.swing.JPanel kartu = new javax.swing.JPanel();
             kartu.setOpaque(true);
             kartu.setBackground(java.awt.Color.WHITE);
             kartu.setLayout(new java.awt.BorderLayout());
@@ -5345,36 +5462,29 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     }
 
     /**
-     * Gaya per baris AVPU sesuai mockup: terpilih = border teal 2px, bulatan
-     * radio terisi, teks tebal teal, skor jadi badge oranye teks putih.
-     * Tidak terpilih = border abu tipis, bulatan radio kosong, teks & skor abu polos.
-     * Background kartu SELALU putih di kedua kondisi (cuma border/teks/badge yg beda).
+     * Gaya horizontal segmented button AVPU:
+     * - Terpilih   : background teal WARNA_TERPILIH_PACS, teks putih tebal + skor kuning, border 2px
+     * - Unselected : background putih, teks abu gelap + skor abu muda, border 1px
      */
     private void refreshAvpuPacs(){
         if(tblAvpuA==null){ return; }
         javax.swing.JToggleButton[] tg = {tblAvpuA,tblAvpuV,tblAvpuP,tblAvpuU};
-        String hexTerpilih = hexWarna(WARNA_TERPILIH_PACS);
-        String hexAbu = hexWarna(widget.ThemeConfig.TEXT_MUTED);
-        String hexBadge = hexWarna(widget.ThemeConfig.WARN);
         for(javax.swing.JToggleButton b : tg){
-            String nama = (String) b.getClientProperty("namaAvpu");
+            String kode = (String) b.getClientProperty("kodeAvpu");
             Object skorObj = b.getClientProperty("skorAvpu");
-            boolean pilih = b.isSelected();
-            String warnaTeks = pilih ? hexTerpilih : hexAbu;
-            String glyph = pilih ? "&#9679;" : "&#9675;";
-            String labelHtml = pilih ? "<b><font color='"+warnaTeks+"'>"+nama+"</font></b>" : "<font color='"+warnaTeks+"'>"+nama+"</font>";
-            String tdSkor = pilih
-                    ? "<td width='34' align='center' bgcolor='"+hexBadge+"'><font color='#FFFFFF'><b>"+skorObj+"</b></font></td>"
-                    : "<td width='34' align='center'><font color='"+hexAbu+"'>"+skorObj+"</font></td>";
-            b.setText("<html><table width='100%' cellpadding='3' cellspacing='0' border='0'><tr>"
-                    +"<td width='20' align='left'><font color='"+warnaTeks+"' size='+1'>"+glyph+"</font></td>"
-                    +"<td align='left'>"+labelHtml+"</td>"
-                    +tdSkor
-                    +"</tr></table></html>");
             javax.swing.JComponent kartu = (javax.swing.JComponent) b.getClientProperty("kartuAvpu");
-            kartu.setBorder(pilih
-                    ? javax.swing.BorderFactory.createLineBorder(WARNA_TERPILIH_PACS, 2)
-                    : javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER, 1));
+            boolean pilih = b.isSelected();
+            java.awt.Color garis = pilih ? WARNA_TERPILIH_PACS : widget.ThemeConfig.BORDER;
+            kartu.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                    javax.swing.BorderFactory.createLineBorder(garis, pilih ? 2 : 1),
+                    javax.swing.BorderFactory.createEmptyBorder(1, 2, 1, 2)));
+            if(pilih){
+                kartu.setBackground(WARNA_TERPILIH_PACS);
+                b.setText("<html><center><b style='color:#FFFFFF; font-size:11px;'>" + kode + "</b> <b style='color:#FDE047; font-size:9.5px;'>(" + skorObj + ")</b></center></html>");
+            }else{
+                kartu.setBackground(java.awt.Color.WHITE);
+                b.setText("<html><center><span style='color:#374151; font-size:11px; font-weight:600;'>" + kode + "</span> <span style='color:#9CA3AF; font-size:9.5px;'>(" + skorObj + ")</span></center></html>");
+            }
         }
     }
 
@@ -5606,7 +5716,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         LblTotalSkorPacs.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         LblTotalSkorPacs.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 28));
         lblBannerSatuanPacs = new widget.Label();
-        lblBannerSatuanPacs.setText("/ 18");
+        lblBannerSatuanPacs.setText("/ 14");
         lblBannerSatuanPacs.setForeground(widget.ThemeConfig.TEXT_MUTED);
         kanan.add(LblTotalSkorPacs); kanan.add(lblBannerSatuanPacs);
 
@@ -6125,24 +6235,10 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     }
 
     /**
-     * Cetak "rptLembarTriasePacs.jasper" (formulir RM 03-1). Pola sama persis
-     * dengan BtnPrintActionPerformed("Laporan 1") - MyReportqry butuh SQL
-     * jadi (bukan JRXML queryString) karena datanya dilewatkan lewat
-     * JRResultSetDataSource, bukan dieksekusi ulang dari dalam file .jasper.
-     */
-    private void btnPrintPacsActionPerformed(java.awt.event.ActionEvent evt){
-        if(TNoRw.getText().trim().equals("")){
-            Valid.textKosong(TNoRw,"Pasien");
-            return;
-        }
-        cetakPacs(TNoRw.getText());
-    }
-
-    /**
      * Cetak "rptLembarTriasePacs.jasper" (formulir RM 03-1) utk no_rawat tertentu -
-     * dipisah dari btnPrintPacsActionPerformed() supaya bisa dipanggil juga dari
-     * BtnPrintActionPerformed (tombol Cetak bersama) dengan no_rawat baris terpilih,
-     * bukan cuma dari TNoRw (field header tab Input Triase).
+     * dipanggil dari tombol cetak pada panel detail LoadHTML dengan no_rawat
+     * dari baris yang sedang dipilih. MyReportqry membutuhkan SQL jadi karena
+     * data dilewatkan melalui JRResultSetDataSource.
      */
     private void cetakPacs(String noRawat){
         Map<String,Object> param = new HashMap<>();
@@ -6582,16 +6678,126 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         return null;
     }
 
+    /**
+     * Menata tabel daftar sebagai ringkasan pasien: enam kolom penting tetap
+     * terlihat, sedangkan delapan kolom teknis tetap berada di model untuk
+     * kebutuhan edit/cetak tetapi disembunyikan dari layar.
+     */
+    private void initTabelDaftarTriase(){
+        tbTriase.setPreferredScrollableViewportSize(new Dimension(900,500));
+        tbTriase.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tbTriase.setRowHeight(31);
+        tbTriase.setIntercellSpacing(new Dimension(0,1));
+        tbTriase.setShowVerticalLines(false);
+        tbTriase.setShowHorizontalLines(true);
+        tbTriase.setFillsViewportHeight(true);
+        tbTriase.getTableHeader().setPreferredSize(new Dimension(0,32));
+        tbTriase.getTableHeader().setReorderingAllowed(false);
+
+        int[] lebarPilihan = {145,145,240,330,195,90};
+        int[] lebarMinimum = {125,120,170,220,150,75};
+        for(int kolom=0;kolom<14;kolom++){
+            TableColumn column = tbTriase.getColumnModel().getColumn(kolom);
+            if(kolom<6){
+                column.setMinWidth(lebarMinimum[kolom]);
+                column.setPreferredWidth(lebarPilihan[kolom]);
+            }else{
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+                column.setPreferredWidth(0);
+                column.setResizable(false);
+            }
+        }
+        tbTriase.setDefaultRenderer(Object.class,new RendererDaftarTriase());
+        javax.swing.table.TableRowSorter<DefaultTableModel> sorter =
+                new javax.swing.table.TableRowSorter<>(tabMode);
+        java.util.List<javax.swing.RowSorter.SortKey> urutan = new java.util.ArrayList<>();
+        urutan.add(new javax.swing.RowSorter.SortKey(0,javax.swing.SortOrder.DESCENDING));
+        sorter.setSortKeys(urutan);
+        tbTriase.setRowSorter(sorter);
+
+        tbTriase.addMouseMotionListener(new java.awt.event.MouseMotionAdapter(){
+            @Override public void mouseMoved(java.awt.event.MouseEvent evt){
+                int baris = tbTriase.rowAtPoint(evt.getPoint());
+                int kolom = tbTriase.columnAtPoint(evt.getPoint());
+                if(baris>=0 && kolom>=0 && kolom<6){
+                    Object nilai = tbTriase.getValueAt(baris,kolom);
+                    tbTriase.setToolTipText(nilai==null?null:nilai.toString());
+                }else{
+                    tbTriase.setToolTipText("Klik baris untuk membuka detail triase");
+                }
+            }
+        });
+    }
+
+    /** Renderer khusus daftar Triase: zebra netral, aksen level, dan status. */
+    private static final class RendererDaftarTriase extends javax.swing.table.DefaultTableCellRenderer {
+        @Override
+        public java.awt.Component getTableCellRendererComponent(JTable table,Object value,
+                boolean isSelected,boolean hasFocus,int row,int column){
+            super.getTableCellRendererComponent(table,value,isSelected,hasFocus,row,column);
+            int kolomModel = table.convertColumnIndexToModel(column);
+            setFont(widget.ThemeConfig.FONT_NORMAL);
+            setHorizontalAlignment((kolomModel==0||kolomModel==1||kolomModel==5)
+                    ? javax.swing.SwingConstants.CENTER : javax.swing.SwingConstants.LEFT);
+            setBorder(javax.swing.BorderFactory.createEmptyBorder(0,8,0,8));
+
+            if(isSelected){
+                setBackground(widget.ThemeConfig.TABLE_SELECTION_BG);
+                setForeground(widget.ThemeConfig.TABLE_SELECTION_TEXT);
+            }else{
+                setBackground(row%2==0?widget.ThemeConfig.SURFACE:new Color(0xF7,0xF9,0xFB));
+                setForeground(widget.ThemeConfig.TEXT_NORMAL);
+
+                if(kolomModel==3){
+                    String hasil = value==null?"":value.toString();
+                    Color aksen = warnaHasilTriase(hasil);
+                    setFont(widget.ThemeConfig.FONT_BOLD);
+                    setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                            javax.swing.BorderFactory.createMatteBorder(0,4,0,0,aksen),
+                            javax.swing.BorderFactory.createEmptyBorder(0,8,0,8)));
+                }else if(kolomModel==5 && "Final".equalsIgnoreCase(value==null?"":value.toString())){
+                    setBackground(widget.ThemeConfig.OK_BG);
+                    setForeground(widget.ThemeConfig.OK);
+                    setFont(widget.ThemeConfig.FONT_BOLD);
+                }
+            }
+            return this;
+        }
+
+        private static Color warnaHasilTriase(String hasil){
+            String nilai = hasil.toUpperCase();
+            if(nilai.contains("PACS 1")) return widget.ThemeConfig.DANGER;
+            if(nilai.contains("PACS 2")) return widget.ThemeConfig.WARN;
+            if(nilai.contains("PACS 3")) return widget.ThemeConfig.PACS3;
+            if(nilai.contains("PACS 4")) return widget.ThemeConfig.OK;
+            if(nilai.contains("RUANG RESUSITASI")) return widget.ThemeConfig.DANGER;
+            if(nilai.contains("RUANG KRITIS")) return widget.ThemeConfig.WARN;
+            if(nilai.contains("ZONA KUNING")) return widget.ThemeConfig.PACS3;
+            if(nilai.contains("ZONA HIJAU")) return widget.ThemeConfig.OK;
+            return widget.ThemeConfig.PRIMARY;
+        }
+    }
+
     private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
                     "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,data_triase_igd.tgl_kunjungan,"+
                     "data_triase_igd.cara_masuk,data_triase_igd.alat_transportasi,data_triase_igd.alasan_kedatangan,"+
-                    "data_triase_igd.keterangan_kedatangan,data_triase_igd.kode_kasus,master_triase_macam_kasus.macam_kasus "+
-                    "from reg_periksa inner join pasien inner join data_triase_igd inner join master_triase_macam_kasus "+
-                    "on reg_periksa.no_rkm_medis=pasien.no_rkm_medis and reg_periksa.no_rawat=data_triase_igd.no_rawat "+
-                    "and data_triase_igd.kode_kasus=master_triase_macam_kasus.kode_kasus "+
+                    "data_triase_igd.keterangan_kedatangan,data_triase_igd.kode_kasus,master_triase_macam_kasus.macam_kasus,"+
+                    "data_triase_pacs.level_pacs,data_triase_pacs.keputusan_pacs,data_triase_pacs.tanggal_triase as tgl_pacs,"+
+                    "coalesce(pegawai_pacs.nama, pegawai_sekunder.nama, pegawai_primer.nama, '-') as nm_petugas,"+
+                    "data_triase_igdsekunder.plan as keputusan_sekunder "+
+                    "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                    "inner join data_triase_igd on reg_periksa.no_rawat=data_triase_igd.no_rawat "+
+                    "inner join master_triase_macam_kasus on data_triase_igd.kode_kasus=master_triase_macam_kasus.kode_kasus "+
+                    "left join data_triase_pacs on data_triase_pacs.no_rawat=data_triase_igd.no_rawat "+
+                    "left join pegawai as pegawai_pacs on pegawai_pacs.nik=data_triase_pacs.nik "+
+                    "left join data_triase_igdsekunder on data_triase_igdsekunder.no_rawat=data_triase_igd.no_rawat "+
+                    "left join pegawai as pegawai_sekunder on pegawai_sekunder.nik=data_triase_igdsekunder.nik "+
+                    "left join data_triase_igdprimer on data_triase_igdprimer.no_rawat=data_triase_igd.no_rawat "+
+                    "left join pegawai as pegawai_primer on pegawai_primer.nik=data_triase_igdprimer.nik "+
                     "where data_triase_igd.tgl_kunjungan between ? and ? and reg_periksa.no_rawat like ? or "+
                     "data_triase_igd.tgl_kunjungan between ? and ? and pasien.no_rkm_medis like ? or "+
                     "data_triase_igd.tgl_kunjungan between ? and ? and pasien.nm_pasien like ? or "+
@@ -6599,7 +6805,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                     "data_triase_igd.tgl_kunjungan between ? and ? and data_triase_igd.alat_transportasi like ? or "+
                     "data_triase_igd.tgl_kunjungan between ? and ? and data_triase_igd.alasan_kedatangan like ? or "+
                     "data_triase_igd.tgl_kunjungan between ? and ? and data_triase_igd.keterangan_kedatangan like ? or "+
-                    "data_triase_igd.tgl_kunjungan between ? and ? and master_triase_macam_kasus.macam_kasus like ? order by data_triase_igd.tgl_kunjungan");
+                    "data_triase_igd.tgl_kunjungan between ? and ? and master_triase_macam_kasus.macam_kasus like ? order by data_triase_igd.tgl_kunjungan desc");
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+"")+" 00:00:00");
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+"")+" 23:59:59");
@@ -6627,10 +6833,33 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                 ps.setString(24,"%"+TCari.getText().trim()+"%");
                 rs=ps.executeQuery();
                 while(rs.next()){
+                    String wktTriase = rs.getString("tgl_pacs");
+                    if(wktTriase == null || wktTriase.trim().isEmpty()){
+                        wktTriase = rs.getString("tgl_kunjungan");
+                    }
+                    String hasilTriase = "";
+                    String lvl = rs.getString("level_pacs");
+                    String kep = rs.getString("keputusan_pacs");
+                    String kepSek = rs.getString("keputusan_sekunder");
+                    if(lvl != null && !lvl.trim().isEmpty()){
+                        hasilTriase = lvl + (kep != null && !kep.trim().isEmpty() ? " — " + kep : "");
+                    }else if(kepSek != null && !kepSek.trim().isEmpty()){
+                        hasilTriase = kepSek;
+                    }else{
+                        hasilTriase = "Triase Primer";
+                    }
+                    String petugas = rs.getString("nm_petugas");
+                    if(petugas == null || petugas.trim().isEmpty()){
+                        petugas = "-";
+                    }
+                    String status = "Final";
+                    String nmPasien = rs.getString("nm_pasien");
+                    String noRm = rs.getString("no_rkm_medis");
+                    String labelPasien = nmPasien + " (" + noRm + ")";
                     tabMode.addRow(new Object[]{
-                        rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("tgl_kunjungan"),
-                        rs.getString("cara_masuk"),rs.getString("alat_transportasi"),rs.getString("alasan_kedatangan"),
-                        rs.getString("keterangan_kedatangan"),rs.getString("kode_kasus"),rs.getString("macam_kasus")
+                        wktTriase, rs.getString("no_rawat"), labelPasien, hasilTriase, petugas, status,
+                        noRm, rs.getString("cara_masuk"), rs.getString("alat_transportasi"), rs.getString("alasan_kedatangan"),
+                        rs.getString("keterangan_kedatangan"), rs.getString("kode_kasus"), rs.getString("macam_kasus"), nmPasien
                     });
                 }
             } catch (Exception e) {
@@ -6667,6 +6896,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         NmKasus.setText("");
         CaraMasuk.setSelectedIndex(0);
         KeteranganKedatangan.setText("");
+        sesuaikanFieldKeterangan();
         PrimerKeluhanUtama.setText("");
         PrimerSuhu.setText("");
         PrimerNyeri.setText("");
@@ -7155,8 +7385,8 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     private void getData() {
         if(tbTriase.getSelectedRow()!= -1){
             try {
-                TNoRM1.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
-                TPasien1.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),2).toString());
+                TNoRM1.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),6).toString());
+                TPasien1.setText(tbTriase.getValueAt(tbTriase.getSelectedRow(),13).toString());
                 ps=koneksi.prepareStatement(
                         "select data_triase_igdprimer.keluhan_utama,data_triase_igdprimer.kebutuhan_khusus,data_triase_igdprimer.catatan,"+
                         "data_triase_igdprimer.plan,data_triase_igdprimer.tanggaltriase,data_triase_igdprimer.nik,data_triase_igd.tekanan_darah,"+
@@ -7164,7 +7394,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                         "data_triase_igd.no_rawat from data_triase_igdprimer inner join data_triase_igd on data_triase_igd.no_rawat="+
                         "data_triase_igdprimer.no_rawat where data_triase_igd.no_rawat=?");
                 try {
-                    ps.setString(1,tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+                    ps.setString(1,tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
                     rs=ps.executeQuery();
                     if(rs.next()){
                         kodepetugas=rs.getString("nik");
@@ -7375,7 +7605,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                         "data_triase_igd.no_rawat from data_triase_igdsekunder inner join data_triase_igd on data_triase_igd.no_rawat="+
                         "data_triase_igdsekunder.no_rawat where data_triase_igd.no_rawat=?");
                 try {
-                    ps.setString(1,tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+                    ps.setString(1,tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
                     rs=ps.executeQuery();
                     if(rs.next()){
                         kodepetugas=rs.getString("nik");
@@ -7659,7 +7889,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                         "from data_triase_pacs inner join data_triase_igd on data_triase_igd.no_rawat=data_triase_pacs.no_rawat "+
                         "where data_triase_igd.no_rawat=?");
                 try {
-                    ps.setString(1,tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+                    ps.setString(1,tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
                     rs=ps.executeQuery();
                     if(rs.next()){
                         kodepetugas=rs.getString("nik");
@@ -7677,16 +7907,41 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                                 "<td valign='middle'>"+(rs.getString("keluhan_utama")==null?"":rs.getString("keluhan_utama").replaceAll("(\r\n|\r|\n|\n\r)","<br>"))+"</td>"+
                             "</tr>"+
                             "<tr class='isi'>"+
-                                "<td valign='middle'>Tanda Vital</td>"+
-                                "<td valign='middle'>Suhu (C) : "+rs.getString("suhu")+", Nyeri : "+rs.getString("nyeri")+", Tensi : "+rs.getString("tekanan_darah")+", Nadi(/menit) : "+rs.getString("nadi")+", Saturasi O²(%) : "+rs.getString("saturasi_o2")+", Respirasi(/menit) : "+rs.getString("pernapasan")+"</td>"+
+                                "<td valign='top' bgcolor='#F3F7F6' align='center'><b>Tanda Vital</b></td>"+
+                                "<td valign='top' cellpadding='0' cellspacing='0'>"+
+                                    "<table width='100%' border='0' cellpadding='2' cellspacing='1'>"+
+                                        "<tr><td width='58%' bgcolor='#F7F9F8'>Tekanan Darah</td><td width='42%'><b>"+rs.getString("tekanan_darah")+" mmHg</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>Nadi</td><td><b>"+rs.getString("nadi")+" x/menit</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>Respirasi</td><td><b>"+rs.getString("pernapasan")+" x/menit</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>Suhu</td><td><b>"+rs.getString("suhu")+" &deg;C</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>SpO2</td><td><b>"+rs.getString("saturasi_o2")+" %</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>Nyeri</td><td><b>"+rs.getString("nyeri")+" / 10</b></td></tr>"+
+                                    "</table>"+
+                                "</td>"+
                             "</tr>"+
                             "<tr class='isi'>"+
-                                "<td valign='middle'>Kesadaran</td>"+
-                                "<td valign='middle'>"+(rs.getString("kesadaran")==null?"-":rs.getString("kesadaran"))+", Berat Badan (kg) : "+(rs.getString("berat_badan")==null?"-":rs.getString("berat_badan"))+", Tinggi Badan (cm) : "+(rs.getString("tinggi_badan")==null?"-":rs.getString("tinggi_badan"))+"</td>"+
+                                "<td valign='top' bgcolor='#F3F7F6' align='center'><b>Kondisi Pasien</b></td>"+
+                                "<td valign='top' cellpadding='0' cellspacing='0'>"+
+                                    "<table width='100%' border='0' cellpadding='2' cellspacing='1'>"+
+                                        "<tr><td width='58%' bgcolor='#F7F9F8'>Kesadaran</td><td width='42%'><b>"+(rs.getString("kesadaran")==null?"-":rs.getString("kesadaran"))+"</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>Berat Badan</td><td><b>"+(rs.getString("berat_badan")==null?"-":rs.getString("berat_badan"))+" kg</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>Tinggi Badan</td><td><b>"+(rs.getString("tinggi_badan")==null?"-":rs.getString("tinggi_badan"))+" cm</b></td></tr>"+
+                                    "</table>"+
+                                "</td>"+
                             "</tr>"+
                             "<tr class='isi'>"+
-                                "<td valign='middle'>Skor EWS</td>"+
-                                "<td valign='middle'>Kesadaran : "+rs.getInt("skor_kesadaran")+", TD Sistolik : "+rs.getInt("skor_tekanan_darah_sistolik")+", Nadi : "+rs.getInt("skor_nadi")+", Respirasi : "+rs.getInt("skor_respirasi")+", Temperatur : "+rs.getInt("skor_temperatur")+", Saturasi O2 : "+rs.getInt("skor_saturasi_o2")+", Total : "+rs.getInt("total_skor")+"</td>"+
+                                "<td valign='top' bgcolor='#F3F7F6' align='center'><b>Skor EWS</b></td>"+
+                                "<td valign='top' cellpadding='0' cellspacing='0'>"+
+                                    "<table width='100%' border='0' cellpadding='2' cellspacing='1'>"+
+                                        "<tr><td width='72%' bgcolor='#F7F9F8'>Kesadaran</td><td width='28%' align='center'><b>"+rs.getInt("skor_kesadaran")+"</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>TD Sistolik</td><td align='center'><b>"+rs.getInt("skor_tekanan_darah_sistolik")+"</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>Nadi</td><td align='center'><b>"+rs.getInt("skor_nadi")+"</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>Respirasi</td><td align='center'><b>"+rs.getInt("skor_respirasi")+"</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>Temperatur</td><td align='center'><b>"+rs.getInt("skor_temperatur")+"</b></td></tr>"+
+                                        "<tr><td bgcolor='#F7F9F8'>Saturasi O2</td><td align='center'><b>"+rs.getInt("skor_saturasi_o2")+"</b></td></tr>"+
+                                        "<tr><td bgcolor='#DDEDEC'><b>TOTAL EWS</b></td><td bgcolor='#DDEDEC' align='center'><b>"+rs.getInt("total_skor")+"</b></td></tr>"+
+                                    "</table>"+
+                                "</td>"+
                             "</tr>"
                         );
 
@@ -7781,7 +8036,25 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
             }
+            posisikanDetailHtmlKeAtas();
         }
+    }
+
+    /**
+     * Mengembalikan panel detail ke baris pertama setelah dokumen HTML selesai
+     * dihitung ukurannya. Reset langsung mencegah caret berada di akhir teks,
+     * sedangkan reset di event berikutnya menangani perubahan viewport saat
+     * layout HTML selesai dirender oleh Swing.
+     */
+    private void posisikanDetailHtmlKeAtas(){
+        LoadHTML.setCaretPosition(0);
+        ScrollHTML.getViewport().setViewPosition(new java.awt.Point(0,0));
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            LoadHTML.setCaretPosition(0);
+            ScrollHTML.getVerticalScrollBar().setValue(
+                    ScrollHTML.getVerticalScrollBar().getMinimum());
+            ScrollHTML.getViewport().setViewPosition(new java.awt.Point(0,0));
+        });
     }
 
     private void isMenu(){
@@ -7801,14 +8074,14 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
     }
 
     private void hapus() {
-        Sequel.meghapus("data_triase_igd","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igdprimer","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igdsekunder","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igddetail_skala1","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igddetail_skala2","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igddetail_skala3","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igddetail_skala4","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igddetail_skala5","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+        Sequel.meghapus("data_triase_igd","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igdprimer","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igdsekunder","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igddetail_skala1","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igddetail_skala2","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igddetail_skala3","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igddetail_skala4","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igddetail_skala5","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
         runBackground(() ->tampil());
         TNoRM1.setText("");
         TPasien1.setText("");
@@ -7825,13 +8098,13 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         // bukan menggantikan - jadi TIDAK ikut dihapus saat tab PACS yang sedang diedit,
         // supaya data Primer/Sekunder existing tidak hilang tanpa sengaja.
         if(TabTriase.getSelectedIndex()!=2){
-        Sequel.meghapus("data_triase_igdprimer","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igddetail_skala1","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igddetail_skala2","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igdsekunder","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igddetail_skala3","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igddetail_skala4","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
-        Sequel.meghapus("data_triase_igddetail_skala5","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+        Sequel.meghapus("data_triase_igdprimer","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igddetail_skala1","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igddetail_skala2","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igdsekunder","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igddetail_skala3","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igddetail_skala4","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
+        Sequel.meghapus("data_triase_igddetail_skala5","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
         }
         if(TabTriase.getSelectedIndex()==0){
             jmlskala1=0;jmlskala2=0;
@@ -7883,7 +8156,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                         PrimerSaturasi.getText(),PrimerNyeri.getText(),
                         PacsInfus.isSelected()?"Ya":"Tidak",PacsNgt.isSelected()?"Ya":"Tidak",PacsKateter.isSelected()?"Ya":"Tidak",
                         PacsNamaPengantar.getText(),PacsTelpPengantar.getText(),
-                        tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString()
+                        tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString()
                     })==true){
                     if(PrimerResusitasi.isSelected()==true){
                         keputusan="Ruang Resusitasi";
@@ -7982,7 +8255,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                         SekunderSaturasi.getText(),SekunderNyeri.getText(),
                         PacsInfus.isSelected()?"Ya":"Tidak",PacsNgt.isSelected()?"Ya":"Tidak",PacsKateter.isSelected()?"Ya":"Tidak",
                         PacsNamaPengantar.getText(),PacsTelpPengantar.getText(),
-                        tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString()
+                        tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString()
                     })==true){
                     if(SekunderZonaKuning.isSelected()==true){
                         keputusan="Zona Kuning";
@@ -8050,7 +8323,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                         Valid.SetTgl(TanggalKunjungan.getSelectedItem()+""),TanggalKunjungan.getSelectedItem().toString().substring(11,19),
                         PacsInfus.isSelected()?"Ya":"Tidak",PacsNgt.isSelected()?"Ya":"Tidak",PacsKateter.isSelected()?"Ya":"Tidak",
                         PacsNamaPengantar.getText(),PacsTelpPengantar.getText(),
-                        tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString()
+                        tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString()
                     })==true){
                     if(Sequel.mengedittf("data_triase_pacs","no_rawat=?","skor_kesadaran=?,skor_tekanan_darah_sistolik=?,skor_nadi=?,skor_respirasi=?,skor_temperatur=?,skor_saturasi_o2=?,total_skor=?,level_pacs=?,keputusan_pacs=?,keputusan_pukul=?,tanggal_triase=?,nik=?,keluhan_utama=?,catatan_khusus=?",15,new String[]{
                             CmbSkorKesadaranPacs.getSelectedItem().toString(),
@@ -8067,16 +8340,16 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                             SekunderKodePetugas.getText(),
                             PacsKeluhanUtama.getText(),
                             PacsCatatanKhusus.getText(),
-                            tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString()
+                            tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString()
                         })==false){
                         sukses=false;
                     }
                     // [Mekanisme Trauma] Edit = hapus baris lama lalu insert ulang kalau
                     // sekarang Trauma (pola sama seperti ganti() utk tabel detail skala di atas).
-                    Sequel.meghapus("data_triase_mekanisme_trauma","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString());
+                    Sequel.meghapus("data_triase_mekanisme_trauma","no_rawat",tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString());
                     if(panelMekanismeTrauma.isVisible()){
                         if(Sequel.menyimpantf2("data_triase_mekanisme_trauma (no_rawat,kkl_tunggal,kkl_dengan_lawan,kkl_lawan,kkl_tempat_kejadian,kkl_tanggal_kejadian,kkl_pukul_kejadian,jatuh_ketinggian,jatuh_ketinggian_keterangan,luka_bakar,luka_bakar_keterangan,trauma_fisik,trauma_fisik_keterangan,trauma_zat_kimia,trauma_zat_kimia_keterangan,trauma_zat_lainnya,trauma_zat_lainnya_keterangan)","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?",17,new String[]{
-                                tbTriase.getValueAt(tbTriase.getSelectedRow(),0).toString(),
+                                tbTriase.getValueAt(tbTriase.getSelectedRow(),1).toString(),
                                 CekKklTunggal.isSelected()?"Ya":"Tidak",
                                 CekKklDenganLawan.isSelected()?"Ya":"Tidak",
                                 TKklLawan.getText(),
