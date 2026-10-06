@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="rptResumeRawatJalanRM01Lanjutan" language="groovy"
+              pageWidth="609" pageHeight="935" columnWidth="569"
+              leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20"
+              whenNoDataType="AllSectionsNoDetail"
+              uuid="e2010001-0100-4000-8000-000000000001">
+
+    <parameter name="namars" class="java.lang.String"/>
+    <parameter name="alamatrs" class="java.lang.String"/>
+    <parameter name="kotars" class="java.lang.String"/>
+    <parameter name="kontakrs" class="java.lang.String"/>
+    <parameter name="emailrs" class="java.lang.String"/>
+    <parameter name="logo" class="java.io.InputStream"/>
+    <parameter name="no_rkm_medis" class="java.lang.String"/>
+    <parameter name="nm_pasien" class="java.lang.String"/>
+    <parameter name="tgl_lahir" class="java.lang.String"/>
+    <parameter name="jk" class="java.lang.String"/>
+    <parameter name="umur" class="java.lang.String"/>
+    <parameter name="tgl_masuk_rs" class="java.lang.String"/>
+
+    <queryString><![CDATA[select * from resume_rawat_jalan_kunjungan]]></queryString>
+
+    <field name="no_rawat" class="java.lang.String"/>
+    <field name="tgl_perawatan" class="java.lang.String"/>
+    <field name="jam_rawat" class="java.lang.String"/>
+    <field name="nm_dokter" class="java.lang.String"/>
+    <field name="diagnosa" class="java.lang.String"/>
+    <field name="uraian_klinis" class="java.lang.String"/>
+    <field name="penatalaksanaan" class="java.lang.String"/>
+    <field name="catatan_penting" class="java.lang.String"/>
+    <field name="nm_petugas" class="java.lang.String"/>
+    <field name="eparaf_internal" class="java.lang.String"/>
+    <field name="qr_eparaf" class="java.lang.String"/>
+    <field name="hash_dokumen" class="java.lang.String"/>
+    <field name="versi" class="java.lang.Integer"/>
+    <field name="jenis_catatan" class="java.lang.String"/>
+
+    <pageHeader>
+        <band height="130" splitType="Prevent">
+            <rectangle><reportElement mode="Transparent" x="0" y="0" width="569" height="65" uuid="e2010001-0100-4000-8000-000000000002"/></rectangle>
+            <image onErrorType="Blank"><reportElement x="5" y="5" width="52" height="52" uuid="e2010001-0100-4000-8000-000000000003"/><imageExpression><![CDATA[$P{logo}]]></imageExpression></image>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="62" y="5" width="296" height="14" uuid="e2010001-0100-4000-8000-000000000004"/><textElement><font fontName="Tahoma" size="10" isBold="true"/></textElement><textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression></textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="62" y="21" width="296" height="11" uuid="e2010001-0100-4000-8000-000000000005"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[($P{alamatrs}==null?"":$P{alamatrs})+", "+($P{kotars}==null?"":$P{kotars})]]></textFieldExpression></textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="62" y="34" width="296" height="11" uuid="e2010001-0100-4000-8000-000000000006"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA["Telp/Fax. "+($P{kontakrs}==null?"-":$P{kontakrs})+"   e-mail: "+($P{emailrs}==null?"-":$P{emailrs})]]></textFieldExpression></textField>
+            <line><reportElement x="362" y="0" width="1" height="65" uuid="e2010001-0100-4000-8000-000000000007"/></line>
+            <staticText><reportElement x="368" y="5" width="70" height="11" uuid="e2010001-0100-4000-8000-000000000008"/><textElement><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[No. RM]]></text></staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="440" y="5" width="125" height="11" uuid="e2010001-0100-4000-8000-000000000009"/><textElement><font fontName="Tahoma" size="7" isBold="true"/></textElement><textFieldExpression><![CDATA[": "+($P{no_rkm_medis}==null?"":$P{no_rkm_medis})]]></textFieldExpression></textField>
+            <staticText><reportElement x="368" y="20" width="70" height="11" uuid="e2010001-0100-4000-8000-00000000000a"/><textElement><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[Nama]]></text></staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="440" y="20" width="125" height="11" uuid="e2010001-0100-4000-8000-00000000000b"/><textElement><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[": "+($P{nm_pasien}==null?"":$P{nm_pasien})]]></textFieldExpression></textField>
+            <staticText><reportElement x="368" y="35" width="70" height="11" uuid="e2010001-0100-4000-8000-00000000000c"/><textElement><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[Tgl Lahir / Umur]]></text></staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="440" y="35" width="125" height="11" uuid="e2010001-0100-4000-8000-00000000000d"/><textElement><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[": "+($P{tgl_lahir}==null?"":$P{tgl_lahir})+" / "+($P{umur}==null?"":$P{umur})]]></textFieldExpression></textField>
+            <staticText><reportElement x="368" y="50" width="70" height="11" uuid="e2010001-0100-4000-8000-00000000000e"/><textElement><font fontName="Tahoma" size="7"/></textElement><text><![CDATA[L/P]]></text></staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="440" y="50" width="125" height="11" uuid="e2010001-0100-4000-8000-00000000000f"/><textElement><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA[": "+($P{jk}==null?"":$P{jk})]]></textFieldExpression></textField>
+
+            <staticText><reportElement x="0" y="71" width="569" height="18" uuid="e2010001-0100-4000-8000-000000000010"/><textElement textAlignment="Center"><font fontName="Tahoma" size="12" isBold="true"/></textElement><text><![CDATA[LEMBAR LANJUTAN RESUME RAWAT JALAN]]></text></staticText>
+            <staticText><reportElement x="0" y="90" width="569" height="12" uuid="e2010001-0100-4000-8000-000000000011"/><textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement><text><![CDATA[RM 01 — SATU KUNJUNGAN, SATU PENGESAHAN]]></text></staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="0" y="108" width="569" height="12" uuid="e2010001-0100-4000-8000-000000000012"/><textElement textAlignment="Center"><font fontName="Tahoma" size="7"/></textElement><textFieldExpression><![CDATA["No. Rawat: "+$F{no_rawat}+"   |   Catatan: "+$F{jenis_catatan}+" versi "+$F{versi}]]></textFieldExpression></textField>
+        </band>
+    </pageHeader>
+
+    <columnHeader>
+        <band height="36" splitType="Prevent">
+            <rectangle><reportElement mode="Transparent" x="0" y="0" width="569" height="36" uuid="e2010001-0100-4000-8000-000000000020"/></rectangle>
+            <line><reportElement x="55" y="0" width="1" height="36" uuid="e2010001-0100-4000-8000-000000000021"/></line>
+            <line><reportElement x="125" y="0" width="1" height="36" uuid="e2010001-0100-4000-8000-000000000022"/></line>
+            <line><reportElement x="210" y="0" width="1" height="36" uuid="e2010001-0100-4000-8000-000000000023"/></line>
+            <line><reportElement x="340" y="0" width="1" height="36" uuid="e2010001-0100-4000-8000-000000000024"/></line>
+            <line><reportElement x="455" y="0" width="1" height="36" uuid="e2010001-0100-4000-8000-000000000025"/></line>
+            <line><reportElement x="520" y="0" width="1" height="36" uuid="e2010001-0100-4000-8000-000000000026"/></line>
+            <staticText><reportElement x="2" y="5" width="51" height="24" uuid="e2010001-0100-4000-8000-000000000027"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement><text><![CDATA[Tanggal / Jam]]></text></staticText>
+            <staticText><reportElement x="57" y="5" width="66" height="24" uuid="e2010001-0100-4000-8000-000000000028"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement><text><![CDATA[DPJP]]></text></staticText>
+            <staticText><reportElement x="127" y="5" width="81" height="24" uuid="e2010001-0100-4000-8000-000000000029"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement><text><![CDATA[Diagnosa]]></text></staticText>
+            <staticText><reportElement x="212" y="5" width="126" height="24" uuid="e2010001-0100-4000-8000-00000000002a"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement><text><![CDATA[Uraian Klinis]]></text></staticText>
+            <staticText><reportElement x="342" y="5" width="111" height="24" uuid="e2010001-0100-4000-8000-00000000002b"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement><text><![CDATA[Rencana Penatalaksanaan]]></text></staticText>
+            <staticText><reportElement x="457" y="5" width="61" height="24" uuid="e2010001-0100-4000-8000-00000000002c"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement><text><![CDATA[Catatan Penting]]></text></staticText>
+            <staticText><reportElement x="522" y="5" width="45" height="24" uuid="e2010001-0100-4000-8000-00000000002d"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7" isBold="true"/></textElement><text><![CDATA[Nama dan Paraf]]></text></staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="470" splitType="Prevent">
+            <rectangle><reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="569" height="470" uuid="e2010001-0100-4000-8000-000000000030"/></rectangle>
+            <line><reportElement stretchType="RelativeToBandHeight" x="55" y="0" width="1" height="470" uuid="e2010001-0100-4000-8000-000000000031"/></line>
+            <line><reportElement stretchType="RelativeToBandHeight" x="125" y="0" width="1" height="470" uuid="e2010001-0100-4000-8000-000000000032"/></line>
+            <line><reportElement stretchType="RelativeToBandHeight" x="210" y="0" width="1" height="470" uuid="e2010001-0100-4000-8000-000000000033"/></line>
+            <line><reportElement stretchType="RelativeToBandHeight" x="340" y="0" width="1" height="470" uuid="e2010001-0100-4000-8000-000000000034"/></line>
+            <line><reportElement stretchType="RelativeToBandHeight" x="455" y="0" width="1" height="470" uuid="e2010001-0100-4000-8000-000000000035"/></line>
+            <line><reportElement stretchType="RelativeToBandHeight" x="520" y="0" width="1" height="470" uuid="e2010001-0100-4000-8000-000000000036"/></line>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="2" y="6" width="51" height="30" uuid="e2010001-0100-4000-8000-000000000037"/><textElement textAlignment="Center"><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[$F{tgl_perawatan}+"\n"+$F{jam_rawat}]]></textFieldExpression></textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="57" y="6" width="66" height="450" uuid="e2010001-0100-4000-8000-000000000038"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[$F{nm_dokter}]]></textFieldExpression></textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="127" y="6" width="81" height="450" uuid="e2010001-0100-4000-8000-000000000039"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[$F{diagnosa}]]></textFieldExpression></textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="212" y="6" width="126" height="450" uuid="e2010001-0100-4000-8000-00000000003a"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[$F{uraian_klinis}]]></textFieldExpression></textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="342" y="6" width="111" height="450" uuid="e2010001-0100-4000-8000-00000000003b"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[$F{penatalaksanaan}]]></textFieldExpression></textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="457" y="6" width="61" height="450" uuid="e2010001-0100-4000-8000-00000000003c"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[$F{catatan_penting}]]></textFieldExpression></textField>
+            <staticText><reportElement x="522" y="6" width="45" height="12" uuid="e2010001-0100-4000-8000-00000000003e"/><textElement textAlignment="Center"><font fontName="Tahoma" size="5" isBold="true"/></textElement><text><![CDATA[E-PARAF]]></text></staticText>
+            <componentElement>
+                <reportElement x="525" y="21" width="39" height="39" uuid="e2010001-0100-4000-8000-00000000003f">
+                    <printWhenExpression><![CDATA[$F{qr_eparaf} != null && !$F{qr_eparaf}.isEmpty()]]></printWhenExpression>
+                </reportElement>
+                <jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="M">
+                    <jr:codeExpression><![CDATA[$F{qr_eparaf}]]></jr:codeExpression>
+                </jr:QRCode>
+            </componentElement>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="522" y="65" width="45" height="30" uuid="e2010001-0100-4000-8000-00000000003d"/><textElement textAlignment="Center"><font fontName="Tahoma" size="5"/></textElement><textFieldExpression><![CDATA[$F{nm_petugas}]]></textFieldExpression></textField>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="125" splitType="Prevent">
+            <rectangle><reportElement mode="Transparent" x="0" y="8" width="569" height="100" uuid="e2010001-0100-4000-8000-000000000040"/></rectangle>
+            <staticText><reportElement x="8" y="15" width="180" height="12" uuid="e2010001-0100-4000-8000-000000000041"/><textElement><font fontName="Tahoma" size="7" isBold="true"/></textElement><text><![CDATA[AUDIT TRAIL INTERNAL SIMRS]]></text></staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="8" y="30" width="553" height="28" uuid="e2010001-0100-4000-8000-000000000042"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[$F{eparaf_internal}]]></textFieldExpression></textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="8" y="62" width="553" height="25" uuid="e2010001-0100-4000-8000-000000000043"/><textElement><font fontName="Tahoma" size="5"/></textElement><textFieldExpression><![CDATA["Hash SHA-256: "+$F{hash_dokumen}]]></textFieldExpression></textField>
+            <staticText><reportElement x="8" y="89" width="553" height="12" uuid="e2010001-0100-4000-8000-000000000044"/><textElement><font fontName="Tahoma" size="6" isItalic="true"/></textElement><text><![CDATA[E-paraf ini adalah kontrol internal, bukan TTE tersertifikasi.]]></text></staticText>
+        </band>
+    </summary>
+</jasperReport>

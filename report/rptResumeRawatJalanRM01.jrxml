@@ -40,13 +40,13 @@
 	<parameter name="kontakrs" class="java.lang.String"/>
 	<parameter name="emailrs" class="java.lang.String"/>
 	<parameter name="logo" class="java.io.InputStream"/>
-	<parameter name="finger_petugas" class="java.lang.String"/>
 
 	<parameter name="no_rkm_medis" class="java.lang.String"/>
 	<parameter name="nm_pasien" class="java.lang.String"/>
 	<parameter name="tgl_lahir" class="java.lang.String"/>
 	<parameter name="jk" class="java.lang.String"/>
 	<parameter name="umur" class="java.lang.String"/>
+	<parameter name="tgl_masuk_rs" class="java.lang.String"/>
 
 	<parameter name="alergi1" class="java.lang.String"/>
 	<parameter name="alergi2" class="java.lang.String"/>
@@ -79,6 +79,7 @@
 	<field name="penatalaksanaan" class="java.lang.String"/>
 	<field name="catatan_penting" class="java.lang.String"/>
 	<field name="nm_petugas" class="java.lang.String"/>
+	<field name="qr_eparaf" class="java.lang.String"/>
 
 	<pageHeader>
 		<band height="222" splitType="Prevent">
@@ -140,6 +141,16 @@
 				<reportElement x="440" y="37" width="125" height="11" uuid="d1e2f3a4-0100-0001-0000-00000000000d"/>
 				<textElement><font fontName="Tahoma" size="7" isBold="true"/></textElement>
 				<textFieldExpression><![CDATA[": "+($P{tgl_lahir}==null?"":$P{tgl_lahir})+" / "+($P{umur}==null?"":$P{umur})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="368" y="53" width="70" height="11" uuid="d1e2f3a4-0100-0001-0000-000000000030"/>
+				<textElement><font fontName="Tahoma" size="7"/></textElement>
+				<text><![CDATA[Tgl Masuk RS]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="440" y="53" width="125" height="11" uuid="d1e2f3a4-0100-0001-0000-000000000031"/>
+				<textElement><font fontName="Tahoma" size="7" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[": "+($P{tgl_masuk_rs}==null?"":$P{tgl_masuk_rs})]]></textFieldExpression>
 			</textField>
 
 			<!-- =============== JUDUL + KODE RM =============== -->
@@ -304,29 +315,16 @@
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="212" y="4" width="126" height="54" uuid="d1e2f3a4-0100-0006-0000-00000000000c"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[$F{uraian_klinis}]]></textFieldExpression></textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="342" y="4" width="111" height="54" uuid="d1e2f3a4-0100-0006-0000-00000000000d"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[$F{penatalaksanaan}]]></textFieldExpression></textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="457" y="4" width="61" height="54" uuid="d1e2f3a4-0100-0006-0000-00000000000e"/><textElement><font fontName="Tahoma" size="6"/></textElement><textFieldExpression><![CDATA[$F{catatan_penting}]]></textFieldExpression></textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="522" y="4" width="45" height="30" uuid="d1e2f3a4-0100-0006-0000-00000000000f"/><textElement textAlignment="Center"><font fontName="Tahoma" size="5"/></textElement><textFieldExpression><![CDATA[$F{nm_petugas}]]></textFieldExpression></textField>
+			<componentElement>
+				<reportElement x="529" y="3" width="31" height="31" uuid="d1e2f3a4-0100-0006-0000-000000000010">
+					<printWhenExpression><![CDATA[$F{qr_eparaf} != null && !$F{qr_eparaf}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="M">
+					<jr:codeExpression><![CDATA[$F{qr_eparaf}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true"><reportElement x="522" y="39" width="45" height="19" uuid="d1e2f3a4-0100-0006-0000-00000000000f"/><textElement textAlignment="Center"><font fontName="Tahoma" size="5"/></textElement><textFieldExpression><![CDATA[$F{nm_petugas}]]></textFieldExpression></textField>
 		</band>
 	</detail>
 
-	<summary>
-		<band height="96" splitType="Prevent">
-			<staticText>
-				<reportElement x="330" y="4" width="235" height="12" uuid="d1e2f3a4-0100-0007-0000-000000000001"/>
-				<textElement textAlignment="Center"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-				<text><![CDATA[Petugas]]></text>
-			</staticText>
-			<componentElement>
-				<reportElement x="422" y="18" width="52" height="40" uuid="d1e2f3a4-0100-0007-0000-000000000002"/>
-				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
-					<jr:codeExpression><![CDATA[$P{finger_petugas}]]></jr:codeExpression>
-				</jr:QRCode>
-			</componentElement>
-			<line><reportElement x="360" y="64" width="175" height="1" uuid="d1e2f3a4-0100-0007-0000-000000000003"/></line>
-			<staticText>
-				<reportElement x="300" y="67" width="265" height="11" uuid="d1e2f3a4-0100-0007-0000-000000000004"/>
-				<textElement textAlignment="Center"><font fontName="Tahoma" size="7" isItalic="true"/></textElement>
-				<text><![CDATA[Tanda Tangan dan nama jelas petugas]]></text>
-			</staticText>
-		</band>
-	</summary>
 </jasperReport>

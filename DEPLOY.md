@@ -68,6 +68,7 @@ Isi kolom Produksi dengan tanggalnya (mis. `2026-09-01`) begitu dijalankan.
 | `sik_rekonsiliasi_obat_rm0306a.sql` | ya |  | 6640316 2026-08-22 |  |
 | `sik_resume_keperawatan_ranap_rm33.sql` | ya |  | 398f47e 2026-08-28 |  |
 | `sik_resume_rawat_jalan_rm01.sql` | ya |  | 39d8d91 2026-08-28 |  |
+| `sik_resume_rawat_jalan_rm01_eparaf.sql` | ya (2026-10-06) |  | perubahan lokal | Snapshot kunjungan dan e-paraf internal DPJP; Java dan migrasi wajib naik bersama |
 | `sik_ringkasan_pasien_masuk_keluar_rm17.sql` | ya |  | f7eaf3b 2026-08-27 |  |
 | `sik_transfer_pasien_antar_ruang_rm04.sql` | ya |  | 89ddef4 2026-08-17 |  |
 | `sik_triase_pacs.sql` | ya |  | 89ddef4 2026-08-17 |  |
