@@ -172,16 +172,16 @@ public final class RMTransferPasienAntarRuang extends javax.swing.JDialog {
         "Ruangan, Dokter, dan Persetujuan",
         "Kondisi Pasien Saat Transfer",
         "Data Serah Terima",
-        "Kebutuhan Khusus, Alergi, dan Alat Bantu",
-        "Tindakan, Penunjang, dan Rencana"
+        "Hasil Investigasi Abnormal dan Tindakan",
+        "Tindakan yang Sudah Dilakukan"
     };
 
     private static final String[] SECTION_SUBTITLES = {
         "Ruang asal & tujuan, dokter penanggung jawab, cara pindah, dan persetujuan keluarga",
         "Satu kali observasi saat transfer (kesadaran, tanda vital, dan terapi oksigen)",
         "Line invasif, prosedur, kewaspadaan, nutrisi, eliminasi, aktifitas, mobilisasi, drainase, dan luka",
-        "Kebutuhan restrain, resiko jatuh, alergi, dan alat bantu fungsional",
-        "Tindakan terlaksana, penunjang penegakan, terapi, dan rencana lanjutan"
+        "Hasil investigasi abnormal, kebutuhan khusus, resiko jatuh, alergi, dan alat bantu",
+        "Tindakan yang sudah dilakukan, pemeriksaan penunjang, terapi obat, dan rencana asuhan"
     };
 
     private final DefaultTableModel tabMode;

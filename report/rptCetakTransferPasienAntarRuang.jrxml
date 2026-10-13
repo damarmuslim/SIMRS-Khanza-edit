@@ -1453,7 +1453,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[INVESTIGASI, KEBUTUHAN KHUSUS & ALERGI]]></text>
+				<text><![CDATA[HASIL INVESTIGASI ABNORMAL DAN TINDAKAN]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement positionType="Float" mode="Transparent" x="0" y="198" width="569" height="52"/>
@@ -1865,7 +1865,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 					<font fontName="Times New Roman" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[TINDAKAN, TERAPI & RENCANA ASUHAN]]></text>
+				<text><![CDATA[TINDAKAN YANG SUDAH DILAKUKAN]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement positionType="Float" mode="Transparent" x="0" y="351" width="569" height="86"/>
