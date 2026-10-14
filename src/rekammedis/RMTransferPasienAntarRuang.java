@@ -12,6 +12,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -34,8 +35,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -3386,9 +3389,9 @@ public final class RMTransferPasienAntarRuang extends javax.swing.JDialog {
         pLeft.add(BtnHapus);
 
         BtnPrint = new widget.Button();
-        BtnPrint.setText("Cetak RM 04");
+        BtnPrint.setText("Cetak");
         BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png")));
-        BtnPrint.setPreferredSize(new Dimension(135, 32));
+        BtnPrint.setPreferredSize(new Dimension(100, 32));
         BtnPrint.setMargin(new Insets(2, 6, 2, 6));
         BtnPrint.setRoundRect(false);
         BtnPrint.addActionListener(e -> BtnPrintActionPerformed(e));
@@ -4315,14 +4318,16 @@ public final class RMTransferPasienAntarRuang extends javax.swing.JDialog {
             cekListTransfer(CekLukaOperasi,"Operasi")+cekListTransfer(CekLukaDekubitus,"Dekubitus")+
             cekListTransfer(CekLukaSkinLost,"Skin Lost")+cekListTransfer(CekLukaGangren,"Gangren")+cekListTransfer(CekLukaLain,"Lain-lain")));
 
-        h.append(judulBarisTransfer("TINDAKAN, PENUNJANG & RENCANA"));
-        h.append(barisTransfer("Kebutuhan Khusus", cekListTransfer(CekTindakanResikoJatuh,"Resiko Jatuh")+cekListTransfer(CekTindakanPemasanganRestrain,"Restrain")+cekListTransfer(CekTindakanPerawatanLuka,"Luka")+cekListTransfer(CekTindakanHygiene,"Hygiene")));
+        h.append(judulBarisTransfer("HASIL INVESTIGASI ABNORMAL DAN TINDAKAN"));
+        h.append(barisTransfer("Hasil Investigasi Abnormal", HasilInvestigasiAbnormal.getText()));
+        h.append(barisTransfer("Kebutuhan Khusus / Tindakan", cekListTransfer(CekTindakanResikoJatuh,"Resiko Jatuh")+cekListTransfer(CekTindakanPemasanganRestrain,"Restrain")+cekListTransfer(CekTindakanPerawatanLuka,"Luka")+cekListTransfer(CekTindakanHygiene,"Hygiene")));
         h.append(barisTransfer("Riwayat Alergi", "Ya".equals(RiwayatAlergi.getSelectedItem() + "") ? "Ya - " + TJenisAlergi.getText() + " / " + TReaksiAlergi.getText() : "Tidak"));
         h.append(barisTransfer("Alat Bantu", cekListTransfer(CekAlatBantuTanpa,"Tanpa")+cekListTransfer(CekAlatBantuDengar,"Dengar")+cekListTransfer(CekAlatBantuKacaMata,"Kaca Mata")+cekListTransfer(CekAlatBantuGigiPalsu,"Gigi Palsu")+cekListTransfer(CekAlatBantuTongkatKruk,"Tongkat")+cekListTransfer(CekAlatBantuLain,"Lain")));
+
+        h.append(judulBarisTransfer("TINDAKAN YANG SUDAH DILAKUKAN"));
         h.append(barisTransfer("Tindakan Sudah Dilakukan", TindakanYangSudahDilakukan.getText()));
         h.append(barisTransfer("Pemeriksaan Penunjang", cekListTransfer(CekPenunjangLaboratorium,"Laboratorium")+cekListTransfer(CekPenunjangRadiologi,"Radiologi")+cekListTransfer(CekPenunjangCtScan,"CT Scan")+cekListTransfer(CekPenunjangLain,"Lain")));
         h.append(barisTransfer("Therapy Yang Diberikan", ObatYangDiberikan.getText()));
-        h.append(barisTransfer("Investigasi Abnormal", HasilInvestigasiAbnormal.getText()));
         h.append(barisTransfer("Rencana Tindak Lanjut", RencanaTindakLanjut.getText()));
         h.append(barisTransfer("Masalah Keperawatan", MasalahUtamaKeperawatan.getText()));
         h.append(barisTransfer("Dokumen Diserahterimakan", DokumenYangDiserahterimakan.getText()));
@@ -4496,36 +4501,90 @@ public final class RMTransferPasienAntarRuang extends javax.swing.JDialog {
     }
 
     private void BtnPrintActionPerformed(ActionEvent evt) {
-        if (tbObat.getSelectedRow() != -1) {
-            BtnPrint1ActionPerformed(evt);
-            return;
-        }
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (tabMode.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Maaf, tidak ada data transfer yang bisa dicetak!");
         } else {
             try {
-                Map<String, Object> param = new HashMap<>();
-                param.put("namars", akses.getnamars());
-                param.put("alamatrs", akses.getalamatrs());
-                param.put("kotars", akses.getkabupatenrs());
-                param.put("propinsirs", akses.getpropinsirs());
-                param.put("kontakrs", akses.getkontakrs());
-                param.put("emailrs", akses.getemailrs());
-                param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+                StringBuilder htmlTabel = new StringBuilder();
+                htmlTabel.append(
+                    "<tr class='isi'>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>No.Rawat</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>No.RM</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>Nama Pasien</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>Tgl.Lahir</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>J.K.</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>Tanggal Masuk</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>Tanggal Pindah</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>Diagnosa Utama</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>NIP Menyerahkan</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>Petugas Yang Menyerahkan</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>NIP Menerima</b></td>" +
+                        "<td valign='middle' bgcolor='#FFFAFA' align='center'><b>Petugas Yang Menerima</b></td>" +
+                    "</tr>"
+                );
 
-                String qryCetak =
-                    "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,if(pasien.jk='L','Laki-Laki','Perempuan') as jk,pasien.tgl_lahir,"+
-                    "transfer_pasien_antar_ruang.*,"+
-                    "petugasmenyerahkan.nama as nm_menyerahkan,petugasmenerima.nama as nm_menerima "+
-                    "from reg_periksa inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                    "inner join transfer_pasien_antar_ruang on reg_periksa.no_rawat=transfer_pasien_antar_ruang.no_rawat "+
-                    "inner join petugas as petugasmenyerahkan on transfer_pasien_antar_ruang.nip_menyerahkan=petugasmenyerahkan.nip "+
-                    "inner join petugas as petugasmenerima on transfer_pasien_antar_ruang.nip_menerima=petugasmenerima.nip where "+
-                    "transfer_pasien_antar_ruang.tanggal_pindah between '" + Valid.SetTgl(DTPCari1.getSelectedItem()+"") + " 00:00:00' and '" +
-                    Valid.SetTgl(DTPCari2.getSelectedItem()+"") + " 23:59:59' order by transfer_pasien_antar_ruang.tanggal_pindah";
+                for (int r = 0; r < tabMode.getRowCount(); r++) {
+                    htmlTabel.append(
+                        "<tr class='isi'>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 0).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 1).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 2).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 3).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 4).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 5).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 6).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 7).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 8).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 9).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 10).toString() + "</td>" +
+                            "<td valign='top'>" + tbObat.getValueAt(r, 11).toString() + "</td>" +
+                        "</tr>"
+                    );
+                }
 
-                Valid.MyReportqry("rptTransferPasienAntarRuang.jasper", "report", "::[ Laporan Daftar Transfer Pasien Antar Ruang ]::", qryCetak, param);
+                File g = new File("file2.css");
+                BufferedWriter bg = new BufferedWriter(new FileWriter(g));
+                bg.write(
+                    ".isi td{border-right: 1px solid #e2e7dd;font: 8.5px tahoma;height:12px;border-bottom: 1px solid #e2e7dd;background: #ffffff;color:#323232;}" +
+                    ".isi2 td{font: 8.5px tahoma;border:none;height:12px;background: #ffffff;color:#323232;}" +
+                    ".isi3 td{border-right: 1px solid #e2e7dd;font: 8.5px tahoma;height:12px;border-top: 1px solid #e2e7dd;background: #ffffff;color:#323232;}" +
+                    ".isi4 td{font: 11px tahoma;height:12px;border-top: 1px solid #e2e7dd;background: #ffffff;color:#323232;}" +
+                    ".isi5 td{font: 8.5px tahoma;border:none;height:12px;background: #ffffff;color:#AA0000;}" +
+                    ".isi6 td{font: 8.5px tahoma;border:none;height:12px;background: #ffffff;color:#FF0000;}" +
+                    ".isi7 td{font: 8.5px tahoma;border:none;height:12px;background: #ffffff;color:#C8C800;}" +
+                    ".isi8 td{font: 8.5px tahoma;border:none;height:12px;background: #ffffff;color:#00AA00;}" +
+                    ".isi9 td{font: 8.5px tahoma;border:none;height:12px;background: #ffffff;color:#969696;}"
+                );
+                bg.close();
+
+                File f = new File("DataTransferPasienAntarRuang.html");
+                BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+                bw.write(
+                    "<html>" +
+                    "<head>" +
+                        "<title>Data Transfer Pasien Antar Ruang</title>" +
+                        "<link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" />" +
+                    "</head>" +
+                    "<body>" +
+                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>" +
+                            "<tr class='isi2'>" +
+                                "<td valign='top' align='center'>" +
+                                    "<font size='4' face='Tahoma'>" + akses.getnamars() + "</font><br>" +
+                                    akses.getalamatrs() + ", " + akses.getkabupatenrs() + ", " + akses.getpropinsirs() + "<br>" +
+                                    akses.getkontakrs() + ", E-mail : " + akses.getemailrs() + "<br><br>" +
+                                    "<font size='2' face='Tahoma'>DATA TRANSFER PASIEN ANTAR RUANG<br><br></font>" +
+                                "</td>" +
+                            "</tr>" +
+                        "</table>" +
+                        "<table width='100%' border='0' align='center' cellpadding='1px' cellspacing='0' class='tbl_form'>" +
+                            htmlTabel.toString() +
+                        "</table>" +
+                    "</body>" +
+                    "</html>"
+                );
+                bw.close();
+                Desktop.getDesktop().browse(f.toURI());
             } catch (Exception e) {
                 System.out.println("Notif Cetak Daftar : " + e);
             }
