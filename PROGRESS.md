@@ -3963,3 +3963,122 @@ Formulir Pengkajian Keperawatan IGD ini dijadikan **cetak biru (blueprint)** unt
 - Rail dan footer kini dinamis mengikuti jumlah kelompok aktif. Klik panel, aksen, judul, maupun hitungan pada rail berpindah ke kelompok yang dipilih.
 - Verifikasi final: build JAR melalui NetBeans berhasil; render pasien umum membuktikan 12 kelompok, render bayi membuktikan 13 kelompok dengan halaman bayi di urutan 3; harness membuktikan transisi 12 → 13 → 12 dan klik rail; 105 chip tetap tidak melar; progres, `ButtonGroup`, dan status UI `Tandai tidak relevan` tetap reaktif.
 - Graph kode telah diperbarui dengan `graphify update .`.
+
+---
+
+## Penyesuaian Alur Evaluasi UI Form RM (2026-09-26)
+
+- Seluruh sumber aturan proyek yang relevan ditinjau ulang: `CLAUDE.md`, `.claude/CLAUDE.md`, `DEPLOY.md`, `.gitignore`, README desain handoff, panduan pilot di `PROGRESS.md`, konfigurasi Git lokal, tag, branch, dan riwayat commit.
+- Evaluasi form RM tetap dilakukan satu per satu dan langsung pada branch `main`; branch per form tidak digunakan. Tag `pre-redesign-<form>` menjadi titik awal dan `design-baru-<form>` hanya dibuat setelah form stabil serta disetujui pengguna.
+- Urutan acuan dipertegas: keputusan eksplisit pengguna terbaru, desain handoff yang cocok, pilot historis `RMPenilaianAwalKeperawatanIGD`, token `ThemeConfig`, lalu pola legacy.
+- `RMTriaseIGD` dikoreksi dari status baseline selesai menjadi **sedang dikerjakan**. Tag `pre-redesign-triase-igd` sudah ada, sedangkan tag akhir belum ada.
+- Keputusan tombol `Keluar` di ujung kanan dicatat sebagai penyimpangan yang telah disetujui dari desain handoff. Gaya header tabel Triase masih terbuka karena implementasi navy saat ini berbeda dari referensi header terang tanpa warna solid.
+- Rule `.cursor/rules/rm-ui-consistency.mdc` dan tracker `RM_UI_STATUS.md` diperbarui agar memakai gerbang kerja, verifikasi, dokumentasi, commit, dan tag yang sama dengan alur proyek sebelumnya.
+- Tidak ada kode Java, database, atau artefak build yang diubah pada tahap dokumentasi ini; build aplikasi tidak diperlukan.
+
+### Implementasi Header Terang Tabel Triase
+
+- Header tabel daftar `RMTriaseIGD` diubah secara lokal dari navy solid menjadi `ThemeConfig.SURFACE_ALT`, dengan teks `TEXT_NORMAL`, font tebal, dan garis pemisah `BORDER_SOFT`.
+- Renderer header bawaan tetap digunakan sebagai dasar agar indikator sorting tidak hilang; perubahan tidak memengaruhi tabel pada form lain.
+- Warna klinis tetap dibatasi pada aksen kolom **Hasil Triase** dan status, bukan dipakai sebagai dekorasi header.
+- Verifikasi kompilasi dan pengemasan: `ant jar` berhasil (`BUILD SUCCESSFUL`, 2026-09-26). Pemeriksaan visual di aplikasi masih menunggu pengguna.
+
+### Perbaikan Kartu Identitas Pasien Triase
+
+- Tinggi kartu tidak lagi dipaksa `118 px`; tinggi alami `GridBagLayout` dipakai sebagai dasar dan tinggi `FormInput` mengikuti konten terbesarnya agar judul serta progres tidak terpotong.
+- Avatar tetap berukuran dasar 40×40 dan lingkarannya dihitung dari sisi terpendek komponen, sehingga tetap bulat meskipun layout memberi bounds yang tidak persegi.
+- Posisi inisial dihitung ulang terhadap lingkaran, bukan terhadap seluruh bounds komponen.
+- Verifikasi kompilasi dan pengemasan: `ant jar` berhasil (`BUILD SUCCESSFUL`, 2026-09-26). Pemeriksaan visual masih menunggu pengguna.
+
+### Posisi Awal Scroll Panel Detail Triase
+
+- `LoadHTML` dijadikan read-only karena hanya berfungsi sebagai panel ringkasan data.
+- Setelah seluruh HTML Primer/Sekunder/PACS selesai dimuat, caret, posisi viewport, dan nilai scrollbar vertikal dikembalikan ke titik paling atas.
+- Reset diulang melalui event queue Swing untuk mencegah proses layout HTML menggeser viewport kembali ke bagian bawah.
+- Verifikasi kompilasi dan pengemasan: `ant jar` berhasil (`BUILD SUCCESSFUL`, 2026-09-26). Pemeriksaan perilaku visual masih menunggu pengguna.
+
+### Header Tabel Terang sebagai Standar Global
+
+- Berdasarkan persetujuan pengguna, header tabel terang netral tidak lagi menjadi override lokal `RMTriaseIGD`.
+- `ThemeConfig.TABLE_HEADER_BG` sekarang memakai `SURFACE_ALT` dan `TABLE_HEADER_TEXT` memakai `TEXT_NORMAL`; nilai `UIManager` ikut menggunakan token tersebut.
+- Constructor `widget.Table` memakai kedua token yang sama sehingga instance table tidak lagi menimpa tema global dengan navy dan teks putih.
+- Override lokal header di `RMTriaseIGD` dihapus. Audit menemukan override eksplisit lain sudah menggunakan warna terang yang sejalan.
+- Warna klinis tetap digunakan pada isi data yang bermakna klinis, bukan pada header tabel.
+- Verifikasi kompilasi dan pengemasan lintas perubahan: `ant jar` berhasil (`BUILD SUCCESSFUL`, 2026-09-26).
+
+### Finalisasi Baseline Triase IGD
+
+- Pengguna menyatakan evaluasi visual `RMTriaseIGD` cukup dan meminta penutupan Git pada 2026-09-26.
+- Perubahan Triase, standar header tabel global, serta dokumentasi dipisahkan dalam commit terarah agar perubahan form lain di worktree tidak ikut terbawa.
+- Tag `design-baru-triase-igd` menjadi baseline stabil setelah tag awal `pre-redesign-triase-igd`; perubahan Triase berikutnya harus dibuat sebagai commit lanjutan dan tidak memindahkan kedua tag historis tersebut.
+
+## Evaluasi UI Lanjutan Penilaian Awal Keperawatan IGD (2026-09-26)
+
+- Form `RMPenilaianAwalKeperawatanIGD.java` dipilih sebagai satu-satunya form pada tahap ini. Baseline sebelum commit ditandai dengan tag `pre-redesign-penilaian-awal-keperawatan-igd`.
+- Seluruh 11 bagian dirender pada ukuran 1600×900 dan dilihat satu per satu. Top bar, kartu identitas pasien, header input, rail navigasi, kartu bagian, navigasi bawah, bagian panjang yang menggulung, tabel obat/infus, serta action bar tetap terbaca dan konsisten dengan handoff.
+- Panel ringkasan HTML pada tab Data Pengkajian dikunci read-only. Sebelumnya `LoadHTML` masih editable walau hanya berfungsi sebagai pratinjau, sehingga pengguna dapat mengira perubahan teks akan tersimpan.
+- Harness reflektif terhadap JAR terbaru lulus untuk: jumlah tepat 11 bagian; hanya satu kartu tampil pada mode satu bagian; pergantian skrining gizi dewasa/anak; hasil risiko jatuh otomatis; visibilitas Petugas yang Menerima; visibilitas Alasan Dirujuk; dan ringkasan read-only.
+- Report `rptCetakPenilaianAwalKeperawatanIGD.jrxml` diaudit ulang: 203/203 `textField` memakai `isStretchWithOverflow="true"`, 148/148 `staticText` memiliki tinggi minimal 11 px, empat band memakai `splitType="Prevent"`, dan kotak detail mengikuti tinggi band. Garis horizontal sengaja tetap berukuran tetap karena report memakai satu band besar per halaman; `RelativeToBandHeight` pada garis horizontal terbukti membuat batas tabel miring saat render.
+- Report berhasil dikompilasi, disalin ke `report/`, `dist/report/`, dan `build/report/` dengan hash SHA-256 identik, lalu dirender menjadi tepat empat halaman. Keempat halaman diperiksa visual; tidak ada teks hilang, garis miring, atau bagian terpotong pada data sintetis panjang.
+- Build akhir melalui NetBeans Ant menghasilkan `BUILD SUCCESSFUL`. Tidak ada perubahan database atau migrasi, sehingga `DEPLOY.md` tidak berubah.
+- Status tracker dinaikkan menjadi `VERIFIKASI`, bukan selesai. Tag `design-baru-penilaian-awal-keperawatan-igd` baru boleh dibuat setelah pengguna menyetujui tampilan visual.
+- Revisi visual lanjutan: grid Tanggal & Jam, Petugas, Dokter, dan Informasi Didapat Dari pada banner diubah dari anchor tengah ke anchor atas agar sejajar dengan bagian teratas kartu identitas pasien. Perubahan hanya pada layout Java; Jasper tidak disentuh. Render banner 1600×900 sudah dilihat, `ant jar` berhasil, dan seluruh harness evaluasi tetap lulus.
+- Penyempurnaan akhir `LoadHTML`: identitas dilengkapi dengan No. Rawat, jenis kelamin/tanggal lahir, dan Informasi Didapat Dari; tanda vital serta Gravida/Para/Abortus/HPHT diubah dari kalimat berkoma menjadi grid dua kolom; reset caret, viewport, dan scrollbar mengikuti pola Data Triase; panel dikosongkan dan dilipat setelah dipakai sebagai buffer cetak massal.
+- Avatar inisial pasien pada kartu identitas diubah dari kotak rounded menjadi bulat agar konsisten dengan Triase IGD. Render banner dan ringkasan HTML diperiksa, posisi awal ringkasan terbukti `caret=0` dan viewport `(0,0)`, build `ant jar` berhasil, serta seluruh harness evaluasi tetap lulus.
+- Pengguna menyetujui hasil akhir pada 2026-09-27. Status dipindahkan dari `VERIFIKASI` menjadi selesai dan baseline ditutup dengan tag `design-baru-penilaian-awal-keperawatan-igd` setelah commit final.
+- Penyempurnaan pasca-baseline pada laporan mengganti seluruh notasi teks `[V]`/`[ ]` menjadi 124 kotak grafis dengan `V` kondisional. Kotak dan label pilihan majemuk dibuat sebagai elemen Jasper terpisah agar tidak bergeser atau bertumpuk ketika font/renderer berbeda. JRXML berhasil dikompilasi, artefak `report`/`build`/`dist` identik, dan render sintetis tetap tepat empat halaman.
+- Bar pencarian Data Pengkajian diselaraskan dengan Triase IGD: hanya satu tombol kaca pembesar untuk menerapkan rentang tanggal dan kata kunci; reset tetap menggunakan tombol `Semua` pada action bar. Pengguna menyetujui hasil akhir, dan build NetBeans Ant menghasilkan `BUILD SUCCESSFUL`.
+
+## Evaluasi UI Lanjutan Penilaian Awal Medis IGD (2026-09-27)
+
+- Evaluasi dibatasi pada satu form, `RMPenilaianAwalMedisIGD.java`; penyempurnaan report Jasper ditunda sampai Java disetujui.
+- Pengelompokan yang sudah berjalan dipertahankan atas keputusan eksplisit pengguna: pasien umum memakai 12 kelompok dan bayi baru lahir 13 kelompok; Rencana tetap digabung dengan Konsul dan Edukasi, sedangkan Kondisi Pulang tetap digabung dengan Tanda Vital Terakhir.
+- Panel ringkasan HTML dijadikan read-only dan posisi awal caret, viewport, serta scrollbar dikembalikan ke atas setelah layout HTML selesai.
+- Action bar diselaraskan dengan keputusan UI global: aksi transaksi berada di kiri, indikator kelengkapan di kanan, dan `Keluar` menjadi tombol terakhir di ujung kanan.
+- Warna sub-divider dan aksi bahaya memakai token `ThemeConfig`, bukan warna hardcode baru.
+- Tag kanonis `pre-redesign-penilaian-awal-medis-igd` dibuat pada baseline historis yang sama dengan `pre-redesign-awal-medis-igd-2026-09-10`; perubahan lokal tidak dimasukkan ke tag tersebut.
+- Build resmi `ant jar` berhasil (`BUILD SUCCESSFUL`). Status masih `SEDANG`; persetujuan visual pengguna dan pekerjaan report yang ditunda tetap diperlukan sebelum form dinyatakan selesai.
+- Banner pasien diselaraskan dengan implementasi aktual Keperawatan IGD: avatar inisial menjadi bulat, kartu identitas menjadi 310×138 px agar baris Lokasi tidak terpotong, field header memakai tinggi 26 px dan anchor atas, serta lookup dokter memakai bingkai kotak dan ikon pencarian.
+- Render 1600×1000 diperiksa: avatar bulat, kartu identitas, Tanggal, Dokter, Kategori Pasien, Anamnesis, dan Keterangan Anamnesis tampil sejajar dari atas. Harness membuktikan kategori tetap berada di banner dan jumlah kelompok tetap 12 untuk pasien umum serta 13 untuk bayi baru lahir. Build ulang `ant jar` berhasil.
+- Footer disamakan dengan implementasi aktual Keperawatan IGD: tombol Simpan tidak lagi solid teal, melainkan kartu putih outline 92×32 px seperti aksi lain; urutan kiri tetap Simpan, Baru, Ganti, Hapus, Cetak, Semua, sedangkan indikator progres dan Keluar berada di kanan. Render footer 1600×900 diperiksa dan build ulang `ant jar` berhasil.
+- Audit tata letak field ditindaklanjuti tanpa mengubah pengelompokan maupun Jasper: filler vertikal tidak lagi membuat kolom ketiga yang mengambil lebar, sehingga narasi dan dual-pane Penunjang memakai lebar kartu; Diagnosis menjadi input satu baris 32 px; lookup Konsul serta alasan Edukasi responsif; dan tujuh field APGAR/PAT bayi memakai label 232 px serta tinggi 32 px. Render ulang 1600×1000 untuk 12 kelompok umum dan halaman bayi diperiksa, pemeriksaan runtime layout/chip dijalankan, dan build `ant jar` berhasil.
+- Scroll horizontal area pengkajian dihilangkan dengan membuat lebar kartu responsif terhadap viewport, tetap dibatasi maksimum 1230 px, serta menghitung ulang bounds ketika ukuran jendela berubah. Verifikasi runtime pada 1600×900, 1440×900, 1366×900, dan 1280×768 menunjukkan kartu selalu berada di dalam viewport dan horizontal scrollbar tidak tampil; render 1366 px untuk Penunjang serta Rencana/Konsul/Edukasi diperiksa visual. Scroll vertikal tetap aktif untuk halaman panjang. Jasper dan pengelompokan tidak berubah; build `ant jar` berhasil.
+- Badge nomor Romawi pada header kartu dibungkus panel penahan ukuran agar `BorderLayout.WEST` tidak lagi meregangkannya menjadi persegi panjang. Badge kini konsisten 26×26 px seperti pada Keperawatan IGD; render halaman III diperiksa dan build `ant jar` berhasil.
+- Diagnosis kerja tidak lagi berupa input manual: checkbox **Tetapkan diagnosis kerja dari ICD-10** membuka `DlgCariPenyakit`, lalu menyimpan kode dan nama diagnosis tunggal. Diagnosis pembanding memakai checkbox kondisional yang membuka pencarian ICD-10 dan tabel multi-pilih; pilihan duplikat ditolak dan baris terpilih dapat dihapus. ICD-9-CM tidak dipakai karena bagian ini mencatat diagnosis, bukan prosedur.
+- Kompatibilitas dipertahankan tanpa menyentuh Jasper: `diagnosa_kerja` dan `diagnosa_banding` tetap diisi sebagai snapshot nama, sedangkan migrasi baru `sik_penilaian_medis_igd_diagnosis_icd10.sql` menambah `diagnosa_kerja_kd` dan tabel detail `penilaian_medis_igd_diagnosa_banding`. Data teks lama tetap dapat dimuat dan ditampilkan sampai dipetakan ulang.
+- Migrasi aditif sudah diimport ke DB lokal `aik` pada 2026-09-27. Verifikasi menemukan 1 kolom baru, 1 tabel detail, 2 foreign key, dan tabel `user` tetap **1215 kolom** sebelum/sesudah import. Daftar `KOLOM_RM032` dari kelas terkompilasi cocok dengan skema (130 nilai); jalur aplikasi `ganti()` berhasil menulis induk serta detail dalam satu transaksi dan rollback mengembalikan keduanya tanpa sisa data uji.
+- Render halaman Diagnosis pada keadaan tertutup dan terbuka sudah dilihat: pencarian hanya muncul setelah checkbox aktif, kode/nama diagnosis kerja terbaca, dan dua diagnosis pembanding tampil utuh dalam tabel tanpa scroll horizontal. Jasper dan pengelompokan 12/13 bagian tidak diubah. Build NetBeans Ant menghasilkan `BUILD SUCCESSFUL`.
+- Polesan visual Diagnosis: ikon klip bawaan `190.png` diganti SVG kaca pembesar yang sama dengan lookup modern lain. Aksi **Tambah ICD-10** dan **Hapus Pilihan** kini berupa tombol putih berbingkai 32 px dengan ikon plus hijau/trash merah, padding, serta hover; render aktual sudah dilihat dan build `ant jar` tetap berhasil.
+- Scroll bertingkat diterapkan pada seluruh **16/16** `TextArea` aktif: selama isi internal masih dapat bergerak, roda mouse menggulir teks; setelah mencapai batas atas/bawah, roda diteruskan ke halaman utama. Uji runtime membuktikan scroll internal bergerak 45 px tanpa menggeser halaman, lalu pada batas bawah halaman utama bergerak 48 px.
+- Ikon klip pada lookup **Dokter Konsul** dan **Unit/Poli Konsul** diganti SVG kaca pembesar. Field **Keterangan Status Lokalis** diperbesar dari satu baris terkompresi menjadi area minimum 150 px; render Status Lokalis dan Rencana/Konsul diperiksa. Build akhir `ant jar` berhasil, tanpa perubahan Jasper, database, atau pengelompokan 12/13 bagian.
+- Jasper Penilaian Awal Medis IGD dirapikan mengikuti struktur dua lembar form fisik tanpa mengubah query, ekspresi, maupun 127 field yang digunakan. Kertas menjadi Legal portrait 612×1008, font Times New Roman, kop/identitas pasien hanya pada halaman pertama melalui band `title`, dan page break tetap ditempatkan setelah Riwayat Pengobatan/Alergi. Seluruh 76 pilihan memakai rectangle penuh 8×8 dengan `V`; proporsi Bayi Baru Lahir/Disabilitas/Eksposur menjadi 42/34/24; Status Lokalis digabung secara visual dengan Kepala-Leher, Leher, Thorax, serta Abdomen-Pelvis; gambar anatomi memakai `RetainShape`; Penunjang memakai grid dua kolom; dan QR dokter menjadi persegi. JRXML berhasil dikompilasi, render sintetis tepat dua halaman sudah diperiksa visual, artefak Jasper diselaraskan, dan build NetBeans Ant menghasilkan `BUILD SUCCESSFUL`.
+- Tata letak `LoadHTML` diselaraskan dengan Awal Keperawatan IGD: tujuh tanda vital/antropometri awal dan empat tanda vital terakhir tidak lagi dirangkai dalam satu kalimat berkoma, tetapi ditampilkan sebagai grid dua kelompok per baris dengan label, nilai tebal, dan satuan. Nilai kosong tetap ditampilkan sebagai `-`; query, data, pengelompokan, dan Jasper tidak berubah. Pemeriksaan struktur lulus dan build NetBeans Ant menghasilkan `BUILD SUCCESSFUL`.
+- Penomoran bagian dihilangkan dari tampilan Java sesuai keputusan pengguna: badge Romawi pada header kartu dihapus, judul navigasi/form tidak lagi memakai prefiks Romawi, dan seluruh judul bagian `LoadHTML` tidak lagi memakai prefiks Romawi maupun A–Q. Urutan, pengelompokan 12/13 bagian, navigasi, data, dan Jasper tidak berubah. Pemeriksaan struktur dan build NetBeans Ant menghasilkan `BUILD SUCCESSFUL`.
+- Bar pencarian Data Pengkajian diselaraskan dengan Awal Keperawatan IGD: kedua field tanggal diperbesar dari 90×23 menjadi 125×26 px agar tanggal tidak terpotong, keyword menjadi 205×26 px dengan placeholder, dan seluruh kontrol memakai sudut siku-siku serta border datar. Fungsi filter tidak berubah; pemeriksaan struktur dan build NetBeans Ant menghasilkan `BUILD SUCCESSFUL`.
+- Penutupan evaluasi 2026-09-28: checkbox berpasangan pada Pernapasan dan Sirkulasi diratakan dalam kolom tetap; identitas penandatangan menampilkan nama, NIP, lalu No. SIP bila tersedia. Atas persetujuan pengguna dan mengikuti form fisik/Awal Keperawatan IGD, kop hanya tampil pada lembar pertama. Render akhir membuktikan lembar kedua langsung dimulai dari Status Lokalis tanpa kop ulang atau konten terpotong. Form dinyatakan selesai dan ditutup dengan tag `design-baru-penilaian-awal-medis-igd`.
+
+## Koreksi Cakupan Tracker UI RM (2026-09-28)
+
+- Audit awal sempat memakai seluruh **211** file `src/rekammedis/RM*.java` sebagai denominator. Pengguna mengoreksi bahwa cakupan tersebut terlalu luas dan mencampur layanan yang berbeda.
+- Tracker sekarang hanya memuat item yang mempunyai acuan di `design_handoff_simrs_rm_forms`, lalu dibagi menjadi tiga jalur resmi: **IGD**, **Rawat Inap (Ranap)**, dan **Rawat Jalan (Ralan)**.
+- Dari 21 baris desain layanan, Triase klasik dan PACS memakai satu kelas `RMTriaseIGD`, sehingga desain handoff menghasilkan 20 item implementasi. `RMRekonsiliasiObat` ditambahkan sebagai item ke-21 karena memiliki acuan formulir fisik RM 03-06A dan riwayat redesign tersendiri.
+- Status resmi menjadi **3 dari 21 selesai**: IGD 3 item selesai, Ranap 14 item dengan 1 menunggu verifikasi, dan Ralan 4 item. Form pendaftaran serta dua halaman webapps berada di luar tiga kategori dan tidak dihitung.
+- CPPT dan Pelaksanaan Informasi Edukasi merupakan item lintas layanan. Masing-masing dihitung sekali di bawah pemilik tracker Ranap, tetapi seluruh jalur pemanggilannya wajib diuji.
+- Atas keputusan eksplisit pengguna, Rekonsiliasi Obat diklasifikasikan khusus sebagai **Ranap** karena momen klinisnya Admisi, Transfer Antar Ruang, dan Pulang. Verifikasi penyelesaian tracker dibatasi pada alur Ranap; keberadaan pemanggilan teknis dari menu lain tidak mengubah kategorinya.
+- Rule diperluas untuk target dialog CPPT dan melarang penggunaan seluruh `RM*.java` sebagai denominator otomatis.
+- Tidak ada kode Java, report, database, atau artefak build yang diubah dalam koreksi dokumentasi ini.
+
+## Evaluasi UI dan Cetakan Transfer Pasien Antar Ruang RM 04 (2026-10-14)
+
+- Form `RMTransferPasienAntarRuang.java` dan laporan Jasper `rptCetakTransferPasienAntarRuang.jrxml` diselaraskan dengan standar formulir rekam medis IGD dan disetujui pengguna.
+- Layout form Java: penataan alur input bertahap, perbaikan navigasi scroll, penataan layout input, serta integrasi preview cetak.
+- Lembar cetak Jasper disusun ulang mengikuti format standar IGD:
+  - Grid tabel bergaris penuh (border 0.5), font Times New Roman.
+  - Halaman 1: kop instansi lengkap dengan logo, garis ganda pemisah kop, dan kotak stiker identitas pasien (RM 04-1).
+  - Halaman 2: running mini-header identitas pasien (RM 04-2), rincian luka dan kebutuhan khusus, serta tabel serah terima 4 kolom untuk tanda tangan digital dokter, perawat pengirim, perawat penerima, dan pasien/keluarga.
+  - Format checklist pilihan memakai kotak bujur sangkar (rectangle border 0.5) dengan isian huruf 'X' kapital bila terpilih.
+  - Penamaan judul bagian disesuaikan: Bagian 04 menjadi 'Hasil Investigasi Abnormal dan Tindakan', Bagian 05 menjadi 'Tindakan yang Sudah Dilakukan'.
+  - Tombol cetak toolbar pada tab Data Rekap mengarahkan ke pratinjau rekap tabel HTML browser (`DataTransferPasienAntarRuang.html`).
+- Artefak laporan `.jasper` dikompilasi dan disalin secara sinkron ke tiga direktori: `report/`, `dist/report/`, dan `build/report/` dengan ukuran dan konten identik (260.340 bytes).
+- Kompilasi dan pengemasan penuh `ant jar` berhasil (`BUILD SUCCESSFUL`).
+- Pengguna menyatakan task Transfer Pasien Antar Ruang selesai pada 2026-10-14; status di `RM_UI_STATUS.md` dinaikkan menjadi selesai (`[x]`) dan ditutup dengan tag `design-baru-transfer-pasien-antar-ruang`.

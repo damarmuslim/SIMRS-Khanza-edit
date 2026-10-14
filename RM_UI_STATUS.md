@@ -22,9 +22,9 @@ Satu item mewakili satu formulir/desain kerja, bukan selalu satu file Java. Tria
 
 - Total item implementasi: **21**
 - IGD: **3 dari 3 selesai**
-- Ranap: **1 dari 14 selesai**
+- Ranap: **2 dari 14 selesai**
 - Ralan: **0 dari 4 selesai**
-- Keseluruhan: **4 dari 21 selesai**
+- Keseluruhan: **5 dari 21 selesai**
 - Sedang: **0**
 - Menunggu verifikasi: **0**
 
@@ -36,7 +36,7 @@ Satu item mewakili satu formulir/desain kerja, bukan selalu satu file Java. Tria
 
 ## Rawat Inap (Ranap) — 14 Item
 
-- [ ] [`RMTransferPasienAntarRuang.java`](src/rekammedis/RMTransferPasienAntarRuang.java) — Transfer Pasien Antar Ruang RM 04.
+- [x] [`RMTransferPasienAntarRuang.java`](src/rekammedis/RMTransferPasienAntarRuang.java) — Transfer Pasien Antar Ruang RM 04; layout input, navigasi, dan cetakan standar IGD (grid bergaris, kop instansi, stiker identitas RM 04-1/04-2, serah terima 4 kolom e-paraf, rekap HTML) disetujui pengguna pada 2026-10-14 dan ditutup dengan tag `design-baru-transfer-pasien-antar-ruang`.
 - [ ] [`RMPenilaianAwalKeperawatanRanap.java`](src/rekammedis/RMPenilaianAwalKeperawatanRanap.java) — Pengkajian Awal Keperawatan Ranap RM 19.
 - [ ] [`RMPenilaianAwalMedisRanapDewasa.java`](src/rekammedis/RMPenilaianAwalMedisRanapDewasa.java) — Pengkajian Awal Medis Rawat Inap.
 - [ ] [`RMAsesmenMedisRanap.java`](src/rekammedis/RMAsesmenMedisRanap.java) — Asesmen Medis Rawat Inap RM 20.
