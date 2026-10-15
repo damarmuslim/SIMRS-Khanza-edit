@@ -325,6 +325,7 @@ public final class DlgIGD extends javax.swing.JDialog {
         initComponents();
         widget.IconStyle.pasang(this);
         initIGD();
+        initAutoRefreshIGD();
 
         this.setLocation(8,1);
         setSize(885,674);
@@ -7790,6 +7791,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Sudah'");
                 if(tbPetugas.getSelectedRow()>-1){
                     tabMode.setValueAt("Sudah",tbPetugas.getSelectedRow(),18);
+                    tbPetugas.repaint();
                 }
             }
         }
@@ -7805,6 +7807,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Belum'");
                 if(tbPetugas.getSelectedRow()>-1){
                     tabMode.setValueAt("Belum",tbPetugas.getSelectedRow(),18);
+                    tbPetugas.repaint();
                 }
             }
 
@@ -7821,6 +7824,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Batal',biaya_reg='0'");
                 if(tbPetugas.getSelectedRow()>-1){
                     tabMode.setValueAt("Batal",tbPetugas.getSelectedRow(),18);
+                    tbPetugas.repaint();
                 }
             }
         }
@@ -7837,6 +7841,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 MnRujukActionPerformed(evt);
                 if(tbPetugas.getSelectedRow()>-1){
                     tabMode.setValueAt("Dirujuk",tbPetugas.getSelectedRow(),18);
+                    tbPetugas.repaint();
                 }
             }
         }
@@ -7853,6 +7858,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 MnKamarInapActionPerformed(evt);
                 if(tbPetugas.getSelectedRow()>-1){
                     tabMode.setValueAt("Dirawat",tbPetugas.getSelectedRow(),18);
+                    tbPetugas.repaint();
                 }
             }
         }
@@ -7875,6 +7881,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 dlgPasienMati.setVisible(true);
                 if(tbPetugas.getSelectedRow()>-1){
                     tabMode.setValueAt("Meninggal",tbPetugas.getSelectedRow(),18);
+                    tbPetugas.repaint();
                 }
             }
 
@@ -12874,9 +12881,27 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                                   MnSuratPenolakanResusitasi,MnCatatanObservasiRuangOperasi,MnIntervensiNyeriFarmakologi,MnIntervensiNyeriNonFarmakologi,MnPengajuanCutiPerawatanPasien,MnCheckListKriteriaMasukIsolasi;
     private javax.swing.JMenu MnRMSkrining,MnEdukasi,MnRMSkriningRisikoKanker,MnRMSkriningKesehatanGigiMulut,MnSuratPersetujuan,MnSkriningInstrumen,MnSkriningParu;
     
+    private String autoSelectedNoRw = null;
+    private int autoScrollPos = -1;
+
     private void tampil() {
         if(ceksukses==false){
             ceksukses=true;
+            try {
+                if(tbPetugas.getSelectedRow() != -1 && tbPetugas.getSelectedRow() < tabMode.getRowCount()){
+                    autoSelectedNoRw = tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 2).toString();
+                } else {
+                    autoSelectedNoRw = null;
+                }
+                if(Scroll != null && Scroll.getVerticalScrollBar() != null){
+                    autoScrollPos = Scroll.getVerticalScrollBar().getValue();
+                } else {
+                    autoScrollPos = -1;
+                }
+            } catch (Exception ex) {
+                autoSelectedNoRw = null;
+                autoScrollPos = -1;
+            }
             Valid.tabelKosong(tabMode);  
             new SwingWorker<Void, Object[]>() {
                 @Override
@@ -12951,6 +12976,19 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 protected void done() {
                     LCount.setText(""+i);
                     ceksukses = false;
+                    try {
+                        if(autoSelectedNoRw != null){
+                            for(int r = 0; r < tbPetugas.getRowCount(); r++){
+                                if(tbPetugas.getValueAt(r, 2).toString().equals(autoSelectedNoRw)){
+                                    tbPetugas.setRowSelectionInterval(r, r);
+                                    break;
+                                }
+                            }
+                        }
+                        if(autoScrollPos >= 0 && Scroll != null && Scroll.getVerticalScrollBar() != null){
+                            Scroll.getVerticalScrollBar().setValue(autoScrollPos);
+                        }
+                    } catch (Exception ex) {}
                 }
             }.execute(); 
         }
@@ -14689,5 +14727,40 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnRMHCU.add(MnCheckListKriteriaMasukNICU);
         MnRMHCU.add(MnCheckListKriteriaMasukPICU);
         MnRMHCU.add(MnCheckListKriteriaMasukIsolasi);
+    }
+
+    private javax.swing.Timer timerAutoRefreshIGD;
+
+    private void initAutoRefreshIGD() {
+        if (timerAutoRefreshIGD == null) {
+            timerAutoRefreshIGD = new javax.swing.Timer(10000, (java.awt.event.ActionEvent e) -> {
+                if (isVisible() && isShowing() && !ceksukses) {
+                    if (TCari.hasFocus() || TNoRM.hasFocus() || TPasien.hasFocus() || TNoReg.hasFocus()) {
+                        return;
+                    }
+                    if (jPopupMenu1 != null && jPopupMenu1.isVisible()) {
+                        return;
+                    }
+                    tampil();
+                }
+            });
+            timerAutoRefreshIGD.setRepeats(true);
+            timerAutoRefreshIGD.start();
+        }
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowActivated(java.awt.event.WindowEvent e) {
+                if (isVisible() && isShowing() && !ceksukses) {
+                    tampil();
+                }
+            }
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                if (timerAutoRefreshIGD != null) {
+                    timerAutoRefreshIGD.stop();
+                }
+            }
+        });
     }
 }
