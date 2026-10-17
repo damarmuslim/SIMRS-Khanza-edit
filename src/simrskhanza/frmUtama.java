@@ -1245,6 +1245,11 @@ public class frmUtama extends javax.swing.JFrame {
     private int jmlmenu=0,grid=0,tinggi=0,i=0,menuawal=0;
     private String coder_nik="",pilihpage="",judulform="",tampilkantni=Sequel.cariIsi("select set_tni_polri.tampilkan_tni_polri from set_tni_polri"),
             AKTIFKANTRACKSQL=koneksiDB.AKTIFKANTRACKSQL();
+    private static java.awt.Image cachedLogoImg = null;
+    private static java.awt.Image cachedWallImg = null;
+    private static long lastWallLoadedTime = 0;
+    // Tracker jendela dialog aktif agar tidak tertutup Beranda saat user beralih aplikasi (Chrome, minimize, taskbar, dll)
+    private final java.util.List<java.awt.Window> daftarDialogAktif = new java.util.concurrent.CopyOnWriteArrayList<>();
     
     private frmUtama() {
         super();
@@ -1292,13 +1297,19 @@ public class frmUtama extends javax.swing.JFrame {
             System.out.println("Notif Setting : "+e);
         }
         
-        try {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            LblIP.setText(""+inetAddress.getHostAddress());
-            akses.setalamatip(""+inetAddress.getHostAddress());
-        } catch (Exception e) {
-            System.out.println("Notif IP : "+e);
-        }
+        // Optimasi: Jalankan resolusi IP di background thread agar tidak memblokir/hang tampilan awal (DNS/NetBIOS timeout di jaringan RS)
+        new Thread(() -> {
+            try {
+                InetAddress inetAddress = InetAddress.getLocalHost();
+                String hostAddr = inetAddress.getHostAddress();
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    LblIP.setText(hostAddr);
+                    akses.setalamatip(hostAddr);
+                });
+            } catch (Exception e) {
+                System.out.println("Notif IP : " + e);
+            }
+        }, "Async-IP-Lookup").start();
         
         FlayMenu.setVisible(false);
         TCari.setVisible(false);
@@ -1315,6 +1326,80 @@ public class frmUtama extends javax.swing.JFrame {
         }catch(Exception exWall){
             System.out.println("Notif isWall Constructor: " + exWall);
         }
+
+        // Pasang pelacak fokus jendela global & pemulih Z-order saat aplikasi diaktifkan kembali
+        initWindowFocusManager();
+    }
+
+    private void initWindowFocusManager() {
+        try {
+            java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("activeWindow", evt -> {
+                try {
+                    java.awt.Window w = (java.awt.Window) evt.getNewValue();
+                    if (w instanceof javax.swing.JDialog && w.isVisible() && w != DlgHome) {
+                        daftarDialogAktif.remove(w);
+                        daftarDialogAktif.add(w);
+                    }
+                } catch (Exception ex) {
+                    // Abaikan exception fokus ringan
+                }
+            });
+
+            this.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowActivated(java.awt.event.WindowEvent e) {
+                    angkatDialogAktifKeDepan();
+                }
+
+                @Override
+                public void windowDeiconified(java.awt.event.WindowEvent e) {
+                    angkatDialogAktifKeDepan();
+                }
+            });
+        } catch (Exception ex) {
+            System.out.println("Notif initWindowFocusManager: " + ex);
+        }
+    }
+
+    private void angkatDialogAktifKeDepan() {
+        // Beri sedikit jeda agar native OS window manager selesai me-restore window sebelum menaikkan dialog
+        javax.swing.Timer t = new javax.swing.Timer(100, (java.awt.event.ActionEvent evt) -> {
+            try {
+                // Hanya buang dialog yang sudah di-dispose atau tidak visible lagi
+                daftarDialogAktif.removeIf(w -> w == null || !w.isDisplayable() || !w.isVisible());
+
+                java.util.List<java.awt.Window> targetWindows = new java.util.ArrayList<>();
+                if (!daftarDialogAktif.isEmpty()) {
+                    targetWindows.addAll(daftarDialogAktif);
+                } else {
+                    for (java.awt.Window w : java.awt.Window.getWindows()) {
+                        if (w != this && w instanceof javax.swing.JDialog && w != DlgHome && w.isDisplayable() && w.isVisible()) {
+                            targetWindows.add(w);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < targetWindows.size(); i++) {
+                    java.awt.Window d = targetWindows.get(i);
+                    if (d != null && d.isDisplayable() && d.isVisible()) {
+                        if (PanelUtama != null && PanelUtama.getWidth() > 100 && PanelUtama.getHeight() > 100) {
+                            d.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+                            d.setLocationRelativeTo(PanelUtama);
+                            d.validate();
+                            d.repaint();
+                        }
+                        d.toFront();
+                        if (i == targetWindows.size() - 1) {
+                            d.requestFocus();
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                // Abaikan jika ada window disposal bersamaan
+            }
+        });
+        t.setRepeats(false);
+        t.start();
     }
     
     public static frmUtama getInstance() {
@@ -7293,18 +7378,18 @@ public class frmUtama extends javax.swing.JFrame {
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(226, 232, 240)));
         internalFrame1.setName("internalFrame1"); // NOI18N
-        internalFrame1.setPreferredSize(new java.awt.Dimension(40, 52));
+        internalFrame1.setPreferredSize(new java.awt.Dimension(40, 58));
         internalFrame1.setVerifyInputWhenFocusTarget(false);
         internalFrame1.setWarnaAtas(java.awt.Color.WHITE);
         internalFrame1.setWarnaBawah(java.awt.Color.WHITE);
         internalFrame1.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.JPanel pnlLeftTools = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 9));
+        javax.swing.JPanel pnlLeftTools = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 8));
         pnlLeftTools.setOpaque(false);
-        javax.swing.JPanel pnlRightActions = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 9));
+        javax.swing.JPanel pnlRightActions = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 8));
         pnlRightActions.setOpaque(false);
 
-        BtnMenu.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/menu.svg", 20, 20));
+        BtnMenu.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/menu.svg", 32, 32));
         BtnMenu.setRolloverIcon(svgIconHover("picture/icons/toolbar/menu.svg"));
         BtnMenu.setPressedIcon(svgIconHover("picture/icons/toolbar/menu.svg"));
         BtnMenu.setMnemonic('M');
@@ -7315,7 +7400,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnMenu.setIconTextGap(6);
         BtnMenu.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnMenu.setName("BtnMenu"); // NOI18N
-        BtnMenu.setPreferredSize(new java.awt.Dimension(86, 34));
+        BtnMenu.setPreferredSize(new java.awt.Dimension(98, 40));
         BtnMenu.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnMenu.putClientProperty("JButton.buttonType", "toolBarButton");
         BtnMenu.putClientProperty("JButton.arc", 8);
@@ -7336,10 +7421,10 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 232, 240)));
         jSeparator4.setName("jSeparator4"); // NOI18N
         jSeparator4.setOpaque(true);
-        jSeparator4.setPreferredSize(new java.awt.Dimension(1, 20));
+        jSeparator4.setPreferredSize(new java.awt.Dimension(1, 24));
         pnlLeftTools.add(jSeparator4);
 
-        BtnToolReg.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/registration.svg", 20, 20));
+        BtnToolReg.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/registration.svg", 32, 32));
         BtnToolReg.setRolloverIcon(svgIconHover("picture/icons/toolbar/registration.svg"));
         BtnToolReg.setPressedIcon(svgIconHover("picture/icons/toolbar/registration.svg"));
         BtnToolReg.setMnemonic('R');
@@ -7350,7 +7435,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolReg.setIconTextGap(6);
         BtnToolReg.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolReg.setName("BtnToolReg"); // NOI18N
-        BtnToolReg.setPreferredSize(new java.awt.Dimension(112, 34));
+        BtnToolReg.setPreferredSize(new java.awt.Dimension(124, 40));
         BtnToolReg.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolReg.putClientProperty("JButton.buttonType", "toolBarButton");
         BtnToolReg.putClientProperty("JButton.arc", 8);
@@ -7365,7 +7450,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(BtnToolReg);
 
-        btnToolIGD.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/emergency.svg", 20, 20));
+        btnToolIGD.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/emergency.svg", 32, 32));
         btnToolIGD.setRolloverIcon(svgIconHover("picture/icons/toolbar/emergency.svg"));
         btnToolIGD.setPressedIcon(svgIconHover("picture/icons/toolbar/emergency.svg"));
         btnToolIGD.setMnemonic('D');
@@ -7376,7 +7461,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnToolIGD.setIconTextGap(6);
         btnToolIGD.setMargin(new java.awt.Insets(0, 4, 0, 4));
         btnToolIGD.setName("btnToolIGD"); // NOI18N
-        btnToolIGD.setPreferredSize(new java.awt.Dimension(102, 34));
+        btnToolIGD.setPreferredSize(new java.awt.Dimension(122, 40));
         btnToolIGD.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         btnToolIGD.putClientProperty("JButton.buttonType", "toolBarButton");
         btnToolIGD.putClientProperty("JButton.arc", 8);
@@ -7397,10 +7482,10 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 232, 240)));
         jSeparator5.setName("jSeparator5"); // NOI18N
         jSeparator5.setOpaque(true);
-        jSeparator5.setPreferredSize(new java.awt.Dimension(1, 20));
+        jSeparator5.setPreferredSize(new java.awt.Dimension(1, 24));
         pnlLeftTools.add(jSeparator5);
 
-        btnToolLab.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/laboratory.svg", 20, 20));
+        btnToolLab.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/laboratory.svg", 32, 32));
         btnToolLab.setRolloverIcon(svgIconHover("picture/icons/toolbar/laboratory.svg"));
         btnToolLab.setPressedIcon(svgIconHover("picture/icons/toolbar/laboratory.svg"));
         btnToolLab.setMnemonic('O');
@@ -7410,7 +7495,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnToolLab.setIconTextGap(6);
         btnToolLab.setMargin(new java.awt.Insets(0, 4, 0, 4));
         btnToolLab.setName("btnToolLab"); // NOI18N
-        btnToolLab.setPreferredSize(new java.awt.Dimension(96, 34));
+        btnToolLab.setPreferredSize(new java.awt.Dimension(108, 40));
         btnToolLab.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         btnToolLab.putClientProperty("JButton.buttonType", "toolBarButton");
         btnToolLab.putClientProperty("JButton.arc", 8);
@@ -7425,7 +7510,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(btnToolLab);
 
-        btnToolRad.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/radiology.svg", 20, 20));
+        btnToolRad.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/radiology.svg", 32, 32));
         btnToolRad.setRolloverIcon(svgIconHover("picture/icons/toolbar/radiology.svg"));
         btnToolRad.setPressedIcon(svgIconHover("picture/icons/toolbar/radiology.svg"));
         btnToolRad.setMnemonic('A');
@@ -7435,7 +7520,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnToolRad.setIconTextGap(6);
         btnToolRad.setMargin(new java.awt.Insets(0, 4, 0, 4));
         btnToolRad.setName("btnToolRad"); // NOI18N
-        btnToolRad.setPreferredSize(new java.awt.Dimension(104, 34));
+        btnToolRad.setPreferredSize(new java.awt.Dimension(116, 40));
         btnToolRad.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         btnToolRad.putClientProperty("JButton.buttonType", "toolBarButton");
         btnToolRad.putClientProperty("JButton.arc", 8);
@@ -7450,7 +7535,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(btnToolRad);
 
-        BtnToolJualObat.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/pharmacy.svg", 20, 20));
+        BtnToolJualObat.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/pharmacy.svg", 32, 32));
         BtnToolJualObat.setRolloverIcon(svgIconHover("picture/icons/toolbar/pharmacy.svg"));
         BtnToolJualObat.setPressedIcon(svgIconHover("picture/icons/toolbar/pharmacy.svg"));
         BtnToolJualObat.setMnemonic('j');
@@ -7460,7 +7545,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolJualObat.setIconTextGap(6);
         BtnToolJualObat.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolJualObat.setName("BtnToolJualObat"); // NOI18N
-        BtnToolJualObat.setPreferredSize(new java.awt.Dimension(96, 34));
+        BtnToolJualObat.setPreferredSize(new java.awt.Dimension(108, 40));
         BtnToolJualObat.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolJualObat.putClientProperty("JButton.buttonType", "toolBarButton");
         BtnToolJualObat.putClientProperty("JButton.arc", 8);
@@ -7481,10 +7566,10 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 232, 240)));
         jSeparator9.setName("jSeparator9"); // NOI18N
         jSeparator9.setOpaque(true);
-        jSeparator9.setPreferredSize(new java.awt.Dimension(1, 20));
+        jSeparator9.setPreferredSize(new java.awt.Dimension(1, 24));
         pnlLeftTools.add(jSeparator9);
 
-        BtnToolKamnap.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/inpatient.svg", 20, 20));
+        BtnToolKamnap.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/inpatient.svg", 32, 32));
         BtnToolKamnap.setRolloverIcon(svgIconHover("picture/icons/toolbar/inpatient.svg"));
         BtnToolKamnap.setPressedIcon(svgIconHover("picture/icons/toolbar/inpatient.svg"));
         BtnToolKamnap.setMnemonic('K');
@@ -7495,7 +7580,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolKamnap.setIconTextGap(6);
         BtnToolKamnap.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolKamnap.setName("BtnToolKamnap"); // NOI18N
-        BtnToolKamnap.setPreferredSize(new java.awt.Dimension(114, 34));
+        BtnToolKamnap.setPreferredSize(new java.awt.Dimension(126, 40));
         BtnToolKamnap.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolKamnap.putClientProperty("JButton.buttonType", "toolBarButton");
         BtnToolKamnap.putClientProperty("JButton.arc", 8);
@@ -7510,7 +7595,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(BtnToolKamnap);
 
-        BtnToolKasir.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/outpatient.svg", 20, 20));
+        BtnToolKasir.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/outpatient.svg", 32, 32));
         BtnToolKasir.setRolloverIcon(svgIconHover("picture/icons/toolbar/outpatient.svg"));
         BtnToolKasir.setPressedIcon(svgIconHover("picture/icons/toolbar/outpatient.svg"));
         BtnToolKasir.setMnemonic('S');
@@ -7521,7 +7606,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolKasir.setIconTextGap(6);
         BtnToolKasir.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolKasir.setName("BtnToolKasir"); // NOI18N
-        BtnToolKasir.setPreferredSize(new java.awt.Dimension(118, 34));
+        BtnToolKasir.setPreferredSize(new java.awt.Dimension(130, 40));
         BtnToolKasir.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolKasir.putClientProperty("JButton.buttonType", "toolBarButton");
         BtnToolKasir.putClientProperty("JButton.arc", 8);
@@ -7536,7 +7621,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(BtnToolKasir);
 
-        BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 15, null));
+        BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 18, null));
         BtnLog.setMnemonic('L');
         BtnLog.setText("Log In");
         BtnLog.setToolTipText("Alt+L");
@@ -7544,7 +7629,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnLog.setIconTextGap(6);
         BtnLog.setMargin(new java.awt.Insets(0, 0, 0, 0));
         BtnLog.setName("BtnLog"); // NOI18N
-        BtnLog.setPreferredSize(new java.awt.Dimension(108, 34));
+        BtnLog.setPreferredSize(new java.awt.Dimension(108, 40));
         BtnLog.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnLog.putClientProperty("JButton.arc", 8);
         BtnLog.setBackground(new java.awt.Color(13, 148, 136));
@@ -7559,7 +7644,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlRightActions.add(BtnLog);
 
-        BtnClose.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/exit.svg", 15, "#E11D48"));
+        BtnClose.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/exit.svg", 18, "#E11D48"));
         BtnClose.setMnemonic('U');
         BtnClose.setText("Keluar");
         BtnClose.setToolTipText("Alt+U");
@@ -7567,7 +7652,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnClose.setIconTextGap(6);
         BtnClose.setMargin(new java.awt.Insets(0, 0, 0, 0));
         BtnClose.setName("BtnClose"); // NOI18N
-        BtnClose.setPreferredSize(new java.awt.Dimension(98, 34));
+        BtnClose.setPreferredSize(new java.awt.Dimension(98, 40));
         BtnClose.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnClose.putClientProperty("JButton.arc", 8);
         BtnClose.setBackground(new java.awt.Color(255, 241, 242));
@@ -8567,8 +8652,8 @@ public class frmUtama extends javax.swing.JFrame {
         boolean tampil = chkTampilkanPassword.isSelected();
         edPwd.setEchoChar(tampil ? (char)0 : '\u25cf');
         try {
-            String svg = tampil ? "/picture/icons/login/eye_off_outline.svg" : "/picture/icons/login/eye_outline.svg";
-            edPwd.putClientProperty("JTextField.trailingIcon", widget.SvgIconLoader.load(svg, 16, "#64748B"));
+            edPwd.putClientProperty("JTextField.trailingIcon",
+                    muatIkonLogin(tampil ? "eye_outline.svg" : "eye_half_closed.svg"));
         } catch (Exception e) {
             edPwd.putClientProperty("JTextField.trailingIcon", ikonMata(!tampil));
         }
@@ -8602,7 +8687,7 @@ public class frmUtama extends javax.swing.JFrame {
                 edAdmin.setText("");
                 edPwd.setText("");
                 BtnLog.setText("Log In");
-                BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 15, null));
+                BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 18, null));
                 BtnLog.setBackground(new java.awt.Color(13, 148, 136));
                 BtnLog.setForeground(java.awt.Color.WHITE);
                 MnLogin.setText("Log In");
@@ -8663,7 +8748,7 @@ public class frmUtama extends javax.swing.JFrame {
 
                     DlgLogin.dispose();
                     BtnLog.setText("Log Out");
-                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 15, null));
+                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 18, null));
                     BtnLog.setBackground(new java.awt.Color(225, 29, 72));
                     BtnLog.setForeground(java.awt.Color.WHITE);
                     MnLogin.setText("Log Out");
@@ -8682,7 +8767,7 @@ public class frmUtama extends javax.swing.JFrame {
                     BtnMenu.setEnabled(true);
                     DlgLogin.dispose();
                     BtnLog.setText("Log Out");
-                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 15, null));
+                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/logout.svg", 18, null));
                     BtnLog.setBackground(new java.awt.Color(225, 29, 72));
                     BtnLog.setForeground(java.awt.Color.WHITE);
                     MnLogin.setText("Log Out");
@@ -8766,7 +8851,7 @@ public class frmUtama extends javax.swing.JFrame {
 
                     edAdmin.requestFocus();
                     BtnLog.setText("Log In");
-                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 15, null));
+                    BtnLog.setIcon(widget.SvgIconLoader.load("/picture/icons/toolbar/login_white.svg", 18, null));
                     BtnLog.setBackground(new java.awt.Color(13, 148, 136));
                     BtnLog.setForeground(java.awt.Color.WHITE);
                     MnLogin.setText("Log In");
@@ -10491,6 +10576,20 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     }//GEN-LAST:event_btnJMDetailDokterActionPerformed
 
     private void btnIGDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIGDActionPerformed
+        for (java.awt.Window w : java.awt.Window.getWindows()) {
+            if (w instanceof DlgIGD && w.isDisplayable() && w.isVisible()) {
+                if (PanelUtama != null && PanelUtama.getWidth() > 100 && PanelUtama.getHeight() > 100) {
+                    w.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+                    w.setLocationRelativeTo(PanelUtama);
+                    w.validate();
+                    w.repaint();
+                }
+                w.toFront();
+                w.requestFocus();
+                DlgHome.dispose();
+                return;
+            }
+        }
         isTutup();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         DlgIGD igd=new DlgIGD(this,false);
@@ -11554,9 +11653,6 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         setToolbar();
-        try{
-            isWall();
-        }catch(Exception exWall){}
         if(koneksiDB.CARICEPAT().equals("aktif")){
             TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
                 @Override
@@ -24736,13 +24832,23 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     }
 
     private static com.formdev.flatlaf.extras.FlatSVGIcon svgIconHover(String path){
-        com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon(path, 20, 20);
+        com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon(path, 32, 32);
         icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter()
-            .add(new java.awt.Color(0x17, 0x32, 0x4D), new java.awt.Color(0x08, 0x7E, 0x8B)));
+            .add(new java.awt.Color(0x17, 0x32, 0x4D), new java.awt.Color(0x0F, 0x76, 0x6E))
+            .add(new java.awt.Color(0x0E, 0x2F, 0x49), new java.awt.Color(0x0F, 0x76, 0x6E)));
         return icon;
     }
 
     public void isWall(){
+        isWall(false);
+    }
+
+    public synchronized void isWall(boolean forceReload){
+        long now = System.currentTimeMillis();
+        if (!forceReload && (now - lastWallLoadedTime < 3000)) {
+            return;
+        }
+        lastWallLoadedTime = now;
         try{            
             ps=koneksi.prepareStatement("select setting.nama_instansi,setting.alamat_instansi,setting.kabupaten,setting.propinsi,setting.aktifkan,setting.wallpaper,setting.kontak,setting.email,setting.logo,setting.kode_ppk,setting.kode_ppkkemenkes from setting");
             try {
@@ -24766,40 +24872,41 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                     String kontak = rs.getString("kontak");
                     String email = rs.getString("email");
                     
-                    java.awt.Image logoImg = null;
-                    try{
-                        Blob logoBlob = rs.getBlob("logo");
-                        if(logoBlob!=null && logoBlob.length()>0){
-                            byte[] logoBytes = logoBlob.getBytes(1, (int) (logoBlob.length()));
-                            lblLoginLogo.setIcon(skalakanIkon(new javax.swing.ImageIcon(logoBytes).getImage(),64,64));
-                            jLabel8.setIcon(skalakanIkon(new javax.swing.ImageIcon(logoBytes).getImage(),110,110));
-                            logoImg = new javax.swing.ImageIcon(logoBytes).getImage();
-                            logoBlob.free();
+                    java.awt.Image logoImg = cachedLogoImg;
+                    if(logoImg == null || forceReload){
+                        try{
+                            Blob logoBlob = rs.getBlob("logo");
+                            if(logoBlob!=null && logoBlob.length()>0){
+                                byte[] logoBytes = logoBlob.getBytes(1, (int) (logoBlob.length()));
+                                logoImg = new javax.swing.ImageIcon(logoBytes).getImage();
+                                cachedLogoImg = logoImg;
+                                logoBlob.free();
+                            }
+                        }catch(Exception exLogo){
+                            System.out.println("Notif Logo : "+exLogo);
                         }
-                    }catch(Exception exLogo){
-                        System.out.println("Notif Logo : "+exLogo);
+                    }
+                    if(logoImg != null){
+                        lblLoginLogo.setIcon(skalakanIkon(logoImg,64,64));
+                        jLabel8.setIcon(skalakanIkon(logoImg,110,110));
                     }
                     
-                    java.awt.Image wallImg = null;
-                    try{
-                        if(rs.getString(5).equals("Yes")){
-                            Blob blob = rs.getBlob(6);
-                            if(blob != null && blob.length() > 0){
-                                byte[] wallBytes = blob.getBytes(1, (int) (blob.length()));
-                                javax.swing.ImageIcon wallIcon = new javax.swing.ImageIcon(wallBytes);
-                                wallImg = wallIcon.getImage();
-                                // PanelWall.setBackgroundImage/setOpaqueImage(true) SENGAJA
-                                // dihapus - dulu PanelWall yg gambar wallpaper sendiri sebelum
-                                // PanelLandingHospital ada, sekarang jadi duplikat foto yg sama
-                                // (skala beda) di belakang panelLandingHospital, tak terlihat
-                                // normal tapi kerja render dua kali & jadi kandidat sumber
-                                // gradasi/ghosting saat resize. panelLandingHospital di bawah
-                                // sudah dapat wallImg-nya sendiri lewat updateHospitalData().
-                                blob.free();
+                    java.awt.Image wallImg = cachedWallImg;
+                    if(wallImg == null || forceReload){
+                        try{
+                            if(rs.getString(5).equals("Yes")){
+                                Blob blob = rs.getBlob(6);
+                                if(blob != null && blob.length() > 0){
+                                    byte[] wallBytes = blob.getBytes(1, (int) (blob.length()));
+                                    javax.swing.ImageIcon wallIcon = new javax.swing.ImageIcon(wallBytes);
+                                    wallImg = wallIcon.getImage();
+                                    cachedWallImg = wallImg;
+                                    blob.free();
+                                }
                             }
+                        }catch(Exception exWall){
+                            System.out.println("Notif Wallpaper : "+exWall);
                         }
-                    }catch(Exception exWall){
-                        System.out.println("Notif Wallpaper : "+exWall);
                     }
                     
                     if(panelLandingHospital != null){
@@ -24845,7 +24952,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                 BtnToolKasir.getWidth()+BtnLog.getWidth()+BtnClose.getWidth()+8)){
             internalFrame1.setSize(new Dimension(PanelUtama.getWidth(),90));
         }else{
-            internalFrame1.setSize(new Dimension(PanelUtama.getWidth(),52));
+            internalFrame1.setSize(new Dimension(PanelUtama.getWidth(),58));
         }
     }
     
@@ -51487,12 +51594,12 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     }
 
     private static class CircularLogoBadge extends javax.swing.JPanel {
-        private java.awt.Image logoImg;
+        private final java.awt.Image logoImg;
 
         public CircularLogoBadge(java.awt.Image img) {
             this.logoImg = img;
             setOpaque(false);
-            setPreferredSize(new java.awt.Dimension(54, 54));
+            setPreferredSize(new java.awt.Dimension(48, 48));
         }
 
         @Override
@@ -51526,11 +51633,42 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         }
     }
 
+    private static final int UKURAN_IKON_LOGIN = 14;
+    private static final int UKURAN_IKON_FIELD_LOGIN = 16;
+    private static final String WARNA_IKON_LOGIN = "#64748B";
+
+    private javax.swing.Icon muatIkonLogin(String nama) {
+        return widget.SvgIconLoader.load("/picture/icons/login/" + nama,
+                UKURAN_IKON_FIELD_LOGIN, WARNA_IKON_LOGIN);
+    }
+
+    private void pasangGayaFieldLogin(javax.swing.JTextField field, java.awt.Color text,
+            java.awt.Color border, int radius) {
+        field.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+        field.setForeground(text);
+        field.setBackground(java.awt.Color.WHITE);
+        field.putClientProperty("Component.arc", radius);
+        field.putClientProperty("JTextField.arc", radius);
+        field.putClientProperty("ModernStyle.active", Boolean.TRUE);
+        field.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                new javax.swing.border.LineBorder(border, 1, true),
+                javax.swing.BorderFactory.createEmptyBorder(0, 8, 0, 10)));
+    }
+
     private void initModernLoginCard() {
+        final int cardBodyW = 400;
+        final int cardBodyH = 440;
+        final int pad = 12;
+        final int contentX = 24;
+        final int contentW = 352;
+        final int fieldH = 38;
+        final int radius = 8;
+        final java.awt.Color border = new java.awt.Color(220, 227, 234);
+        final java.awt.Color text = new java.awt.Color(15, 23, 42);
+        final java.awt.Color muted = new java.awt.Color(100, 116, 139);
+        final java.awt.Color primary = new java.awt.Color(0, 91, 82);
+
         try {
-            int cardBodyW = 400;
-            int cardBodyH = 490;
-            int pad = 14;
             int totalW = cardBodyW + (pad * 2);
             int totalH = cardBodyH + (pad * 2);
 
@@ -51571,79 +51709,69 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             } catch (Exception e) {}
 
             CircularLogoBadge badge = new CircularLogoBadge(logo);
-            badge.setBounds(24, 20, 54, 54);
+            badge.setBounds(contentX, 14, 40, 40);
             content.add(badge);
 
-            lblLoginJudul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
-            lblLoginJudul.setForeground(new java.awt.Color(100, 116, 139));
+            lblLoginJudul.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 9));
+            lblLoginJudul.setForeground(muted);
             lblLoginJudul.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             lblLoginJudul.setText("SIMRS KHANZA");
-            lblLoginJudul.setBounds(90, 18, 290, 15);
+            lblLoginJudul.setBounds(70, 14, 306, 12);
             content.add(lblLoginJudul);
 
             lblLoginWelcome.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 17));
-            lblLoginWelcome.setForeground(new java.awt.Color(15, 23, 42));
+            lblLoginWelcome.setForeground(text);
             lblLoginWelcome.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             lblLoginWelcome.setText("Masuk ke Sistem");
-            lblLoginWelcome.setBounds(90, 35, 290, 24);
+            lblLoginWelcome.setBounds(70, 26, 306, 22);
             content.add(lblLoginWelcome);
 
-            lblLoginSubtitle.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
-            lblLoginSubtitle.setForeground(new java.awt.Color(100, 116, 139));
+            lblLoginSubtitle.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 10));
+            lblLoginSubtitle.setForeground(muted);
             lblLoginSubtitle.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             lblLoginSubtitle.setText("Gunakan akun pegawai RSUD Demang Sepulau Raya");
-            lblLoginSubtitle.setBounds(90, 60, 290, 16);
+            lblLoginSubtitle.setBounds(70, 48, 306, 14);
             content.add(lblLoginSubtitle);
 
-            // Divider 1
+            // Pemisah tipis membuat header dan form tetap terbaca sebagai dua kelompok.
             javax.swing.JPanel div1 = new javax.swing.JPanel();
-            div1.setBackground(new java.awt.Color(241, 245, 249));
-            div1.setBounds(0, 92, cardBodyW, 1);
+            div1.setBackground(new java.awt.Color(226, 232, 240));
+            div1.setBounds(0, 70, cardBodyW, 1);
             content.add(div1);
 
             // 2. BODY FORM
             jLabel4.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
-            jLabel4.setForeground(new java.awt.Color(100, 116, 139));
-            jLabel4.setText("ID ADMIN");
-            jLabel4.setBounds(24, 112, 352, 14);
+            jLabel4.setForeground(muted);
+            jLabel4.setText("USER LOGIN");
+            jLabel4.setBounds(contentX, 84, contentW, 14);
             content.add(jLabel4);
 
-            edAdmin.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
-            edAdmin.setForeground(new java.awt.Color(15, 23, 42));
-            edAdmin.setBackground(java.awt.Color.WHITE);
-            edAdmin.setBounds(24, 130, 352, 40);
-            edAdmin.putClientProperty("Component.arc", 10);
-            edAdmin.putClientProperty("JTextField.arc", 10);
-            edAdmin.putClientProperty("ModernStyle.active", Boolean.TRUE);
-            edAdmin.setBorder(javax.swing.UIManager.getBorder("TextField.border"));
-            edAdmin.putClientProperty("JTextField.placeholderText", "Masukkan ID Admin");
-            try {
-                javax.swing.Icon userIcon = widget.SvgIconLoader.load("/picture/icons/login/user_outline.svg", 16, "#64748B");
-                edAdmin.putClientProperty("JTextField.leadingIcon", userIcon);
-            } catch (Exception e) {}
+            pasangGayaFieldLogin(edAdmin, text, border, radius);
+            edAdmin.setBounds(contentX, 102, contentW, fieldH);
+            edAdmin.putClientProperty("JTextField.placeholderText", "Nama pengguna");
+            edAdmin.putClientProperty("JTextField.leadingIcon", muatIkonLogin("user_outline.svg"));
             content.add(edAdmin);
 
             jLabel5.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
-            jLabel5.setForeground(new java.awt.Color(100, 116, 139));
+            jLabel5.setForeground(muted);
             jLabel5.setText("PASSWORD");
-            jLabel5.setBounds(24, 186, 352, 14);
+            jLabel5.setBounds(contentX, 154, contentW, 14);
             content.add(jLabel5);
 
-            edPwd.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
-            edPwd.setForeground(new java.awt.Color(15, 23, 42));
-            edPwd.setBackground(java.awt.Color.WHITE);
-            edPwd.setBounds(24, 204, 352, 40);
-            edPwd.putClientProperty("Component.arc", 10);
-            edPwd.putClientProperty("JTextField.arc", 10);
-            edPwd.putClientProperty("ModernStyle.active", Boolean.TRUE);
-            edPwd.setBorder(javax.swing.UIManager.getBorder("PasswordField.border"));
-            edPwd.putClientProperty("JTextField.placeholderText", "Masukkan Password");
-            try {
-                javax.swing.Icon lockIcon = widget.SvgIconLoader.load("/picture/icons/login/lock_outline.svg", 16, "#64748B");
-                javax.swing.Icon eyeIcon = widget.SvgIconLoader.load("/picture/icons/login/eye_outline.svg", 16, "#64748B");
-                edPwd.putClientProperty("JTextField.leadingIcon", lockIcon);
-                edPwd.putClientProperty("JTextField.trailingIcon", eyeIcon);
-            } catch (Exception e) {}
+            pasangGayaFieldLogin(edPwd, text, border, radius);
+            edPwd.setBounds(contentX, 172, contentW, fieldH);
+            edPwd.putClientProperty("JTextField.placeholderText", "Kata sandi");
+            edPwd.putClientProperty("JTextField.leadingIcon", muatIkonLogin("lock_outline.svg"));
+            edPwd.putClientProperty("JTextField.trailingIcon", muatIkonLogin("eye_half_closed.svg"));
+            edPwd.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    if (e.getX() >= edPwd.getWidth() - 36) {
+                        chkTampilkanPassword.setSelected(!chkTampilkanPassword.isSelected());
+                        chkTampilkanPasswordActionPerformed(null);
+                    }
+                }
+            });
             content.add(edPwd);
 
             // Row 3: Checkbox & Link Lupa Password
@@ -51652,7 +51780,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             chkTampilkanPassword.setOpaque(false);
             chkTampilkanPassword.setFocusPainted(false);
             chkTampilkanPassword.setText("Tampilkan password");
-            chkTampilkanPassword.setBounds(22, 258, 170, 22);
+            chkTampilkanPassword.setBounds(contentX - 2, 216, 170, 22);
             content.add(chkTampilkanPassword);
 
             lblLupaPassword.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
@@ -51660,24 +51788,25 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             lblLupaPassword.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
             lblLupaPassword.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
             lblLupaPassword.setText("Lupa password?");
-            lblLupaPassword.setBounds(224, 258, 152, 22);
+            lblLupaPassword.setBounds(224, 216, 152, 22);
             content.add(lblLupaPassword);
 
             // Row 4: Masuk Button
             BtnLogin.setText("Masuk");
             BtnLogin.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 13));
             BtnLogin.setForeground(java.awt.Color.WHITE);
-            BtnLogin.setBackground(new java.awt.Color(0, 91, 82));
-            BtnLogin.setBounds(24, 296, 352, 42);
+            BtnLogin.setBackground(primary);
+            BtnLogin.setBounds(contentX, 246, contentW, 38);
             BtnLogin.setFocusPainted(false);
             BtnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
             BtnLogin.putClientProperty("JButton.buttonType", "roundRect");
-            BtnLogin.putClientProperty("Component.arc", 10);
-            try {
-                javax.swing.Icon loginIcon = widget.SvgIconLoader.load("/picture/icons/login/login_white.svg", 16, "#FFFFFF");
-                BtnLogin.setIcon(loginIcon);
-                BtnLogin.setIconTextGap(8);
-            } catch (Exception e) {}
+            BtnLogin.putClientProperty("Component.arc", radius);
+            BtnLogin.putClientProperty("JButton.arc", radius);
+            BtnLogin.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+            BtnLogin.setIcon(widget.SvgIconLoader.load("/picture/icons/login/login_white.svg", UKURAN_IKON_LOGIN, "#FFFFFF"));
+            BtnLogin.setIconTextGap(6);
+            BtnLogin.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+            BtnLogin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             content.add(BtnLogin);
 
             // Row 5: Batal Button
@@ -51685,33 +51814,31 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             BtnCancel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
             BtnCancel.setForeground(new java.awt.Color(51, 65, 85));
             BtnCancel.setBackground(java.awt.Color.WHITE);
-            BtnCancel.setBounds(24, 348, 352, 40);
+            BtnCancel.setBounds(contentX, 294, contentW, 36);
             BtnCancel.setFocusPainted(false);
             BtnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
             BtnCancel.putClientProperty("JButton.buttonType", "roundRect");
-            BtnCancel.putClientProperty("Component.arc", 10);
-            BtnCancel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(203, 213, 225), 1, true));
+            BtnCancel.putClientProperty("Component.arc", radius);
+            BtnCancel.putClientProperty("JButton.arc", radius);
+            BtnCancel.setBorder(new javax.swing.border.LineBorder(border, 1, true));
             content.add(BtnCancel);
 
             // Divider 2
             javax.swing.JPanel div2 = new javax.swing.JPanel();
-            div2.setBackground(new java.awt.Color(241, 245, 249));
-            div2.setBounds(0, 412, cardBodyW, 1);
+            div2.setBackground(new java.awt.Color(226, 232, 240));
+            div2.setBounds(0, 342, cardBodyW, 1);
             content.add(div2);
 
             // 3. FOOTER
             javax.swing.JLabel lblFooterIcon = new javax.swing.JLabel();
-            lblFooterIcon.setBounds(24, 434, 16, 16);
-            try {
-                javax.swing.Icon footerLock = widget.SvgIconLoader.load("/picture/icons/login/lock_footer.svg", 14, "#94A3B8");
-                lblFooterIcon.setIcon(footerLock);
-            } catch (Exception e) {}
+            lblFooterIcon.setBounds(contentX, 356, 14, 14);
+            lblFooterIcon.setIcon(widget.SvgIconLoader.load("/picture/icons/login/lock_footer.svg", UKURAN_IKON_LOGIN, "#94A3B8"));
             content.add(lblFooterIcon);
 
             javax.swing.JLabel lblFooter = new javax.swing.JLabel("Seluruh percobaan masuk tercatat dalam log audit sistem.");
-            lblFooter.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
-            lblFooter.setForeground(new java.awt.Color(100, 116, 139));
-            lblFooter.setBounds(46, 432, 330, 20);
+            lblFooter.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 10));
+            lblFooter.setForeground(muted);
+            lblFooter.setBounds(44, 353, 332, 18);
             content.add(lblFooter);
 
             pnlLoginCard.add(content);
