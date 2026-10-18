@@ -11,7 +11,7 @@ Implementasi rekomendasi Gemini Argon: menambahkan tampilan **Ringkasan Operasio
 - **`src/simrskhanza/PanelLandingHospital.java`**:
   - Mengintegrasikan `PanelDashboardUtamaRSUD` di bagian bawah (`BorderLayout.SOUTH`).
   - Menggantikan floating card status lama dengan panel identitas sesi terpadu di dalam dock.
-  - Menyesuaikan vertical padding konten hero agar proporsi visual seimbang dan elegan di atas latar gerbang RSUD.
+  - Menyesuaikan vertical padding dan jarak antar elemen hero kiri (logo pemda, nama RSUD, alamat, pill badge sesi, notifikasi, dan tombol aksi) agar lebih rapat, kompak, dan proporsional persis sesuai acuan mockup.
   - Meneruskan status login pengguna (`setLoginStatus`) ke dock dashboard secara otomatis.
 
 ---
