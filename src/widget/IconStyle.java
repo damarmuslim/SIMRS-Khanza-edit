@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.border.Border;
 
 /**
  * IconStyle - memasang ikon otomatis ke tombol berdasarkan teksnya.
@@ -39,6 +40,7 @@ public class IconStyle {
 
     private static final int UKURAN_TOMBOL = 16;
     private static final int UKURAN_STATUS = 14;
+    private static final String PROP_HOVER_AKSI = "simrs.hoverAksiTerpasang";
 
     /** Peta: kata kunci pada teks tombol -> [nama file svg, warna] */
     private static final Map<String, Object[]> PETA = new HashMap<>();
@@ -89,27 +91,53 @@ public class IconStyle {
         }
     }
 
+    /**
+     * Memasang ikon dan hover pada tombol aksi khusus yang tidak aman
+     * dikenali hanya dari teksnya (misalnya "Masuk" pada banyak konteks).
+     */
+    public static void pasangAksi(AbstractButton tombol, String namaFile, Color warna, boolean aksiBahaya) {
+        if (tombol == null) return;
+        Icon ikon = muat(namaFile, UKURAN_TOMBOL, warna);
+        if (ikon != null) {
+            tombol.setIcon(ikon);
+            tombol.setIconTextGap(6);
+            tombol.setHorizontalTextPosition(SwingConstants.RIGHT);
+            tombol.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+        pasangHoverAksi(tombol, aksiBahaya);
+    }
+
     private static void pasangIkonTombol(AbstractButton b) {
         // Jangan pasang icon pada RadioButton dan CheckBox
         if (b instanceof JRadioButton || b instanceof JCheckBox) return;
 
-        // Jangan timpa jika sudah memakai SVG modern
-        if (b.getIcon() instanceof FlatSVGIcon) return;
+        // Ikon SVG modern tidak ditimpa, tetapi tombolnya tetap perlu menerima
+        // standar hover aksi global di bawah.
+        boolean memakaiIkonModern = b.getIcon() instanceof FlatSVGIcon;
 
         String teks = b.getText();
         if (teks == null || teks.trim().isEmpty()) {
+            b.setBorderPainted(false);
+            b.setContentAreaFilled(false);
+            b.putClientProperty("JButton.buttonType", "toolBarButton");
+            if (memakaiIkonModern) return;
             // Tombol icon-only (misal tombol cari petugas, all/refresh, tambah)
             if (b.getIcon() != null) {
                 String desc = b.getIcon().toString().toLowerCase();
                 String name = (b.getName() != null ? b.getName().toLowerCase() : "");
                 String tip  = (b.getToolTipText() != null ? b.getToolTipText().toLowerCase() : "");
 
-                if (name.contains("all") || tip.contains("semua") || tip.contains("refresh")) {
+                if (name.contains("print") || desc.contains("item (copy)") || desc.contains("printer") || desc.contains("b_cetak") || tip.contains("cetak") || tip.contains("print")) {
+                    Icon ikon = muat("printer.svg", 14, ABU);
+                    if (ikon != null) {
+                        b.setIcon(ikon);
+                    }
+                } else if (name.contains("all") || tip.contains("semua") || tip.contains("refresh")) {
                     Icon ikon = muat("refresh.svg", 14, ABU);
                     if (ikon != null) {
                         b.setIcon(ikon);
                     }
-                } else if (name.contains("tambah") || desc.contains("plus")) {
+                } else if (name.contains("tambah") || desc.contains("plus") || desc.contains("category.png")) {
                     Icon ikon = muat("plus.svg", 14, HIJAU);
                     if (ikon != null) {
                         b.setIcon(ikon);
@@ -124,6 +152,15 @@ public class IconStyle {
             return;
         }
 
+        // Jika tombol berteks ini adalah menu samping (alignment LEFT atau roundRect false)
+        if (b.getHorizontalAlignment() == SwingConstants.LEFT || 
+            (b instanceof widget.Button && !((widget.Button) b).isRoundRect())) {
+            b.setBorderPainted(false);
+            b.setContentAreaFilled(false);
+            b.putClientProperty("JButton.buttonType", "toolBarButton");
+            return;
+        }
+
         String kunci = teks.trim().toLowerCase();
 
         for (Map.Entry<String, Object[]> e : PETA.entrySet()) {
@@ -133,16 +170,78 @@ public class IconStyle {
                 String file  = (String) e.getValue()[0];
                 Color  warna = (Color)  e.getValue()[1];
 
-                Icon ikon = muat(file, UKURAN_TOMBOL, warna);
-                if (ikon != null) {
-                    b.setIcon(ikon);
-                    b.setIconTextGap(6);
-                    b.setHorizontalTextPosition(SwingConstants.RIGHT);
-                    b.setHorizontalAlignment(SwingConstants.CENTER);
+                // Aktifkan card border khusus tombol aksi utama
+                b.setContentAreaFilled(true);
+                b.setBorderPainted(true);
+                b.putClientProperty("JButton.buttonType", null);
+                b.putClientProperty("JButton.arc", 8);
+
+                if (!memakaiIkonModern) {
+                    Icon ikon = muat(file, UKURAN_TOMBOL, warna);
+                    if (ikon != null) {
+                        b.setIcon(ikon);
+                        b.setIconTextGap(6);
+                        b.setHorizontalTextPosition(SwingConstants.RIGHT);
+                        b.setHorizontalAlignment(SwingConstants.CENTER);
+                    }
                 }
+                pasangHoverAksi(b, kataKunci.equals("hapus") || kataKunci.equals("keluar") || kataKunci.equals("tutup"));
                 return;
             }
         }
+    }
+
+    /**
+     * Standar hover global untuk tombol aksi yang dikenali PETA. Warna dasar
+     * ditangkap saat pointer masuk agar styling khusus form tetap dipulihkan
+     * utuh ketika pointer keluar.
+     */
+    private static void pasangHoverAksi(final AbstractButton tombol, final boolean aksiBahaya) {
+        if (Boolean.TRUE.equals(tombol.getClientProperty(PROP_HOVER_AKSI))) return;
+        tombol.putClientProperty(PROP_HOVER_AKSI, Boolean.TRUE);
+        tombol.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        tombol.addMouseListener(new java.awt.event.MouseAdapter() {
+            private Color latarNormal;
+            private Color glassNormal;
+            private Color teksNormal;
+            private Border borderNormal;
+            private boolean borderDilukisNormal;
+            private boolean sedangHover;
+
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                if (!tombol.isEnabled()) return;
+                latarNormal = tombol.getBackground();
+                teksNormal = tombol.getForeground();
+                if (tombol instanceof widget.Button) {
+                    glassNormal = ((widget.Button) tombol).getGlassColor();
+                }
+
+                Color latarHover = aksiBahaya
+                        ? ThemeConfig.ACTION_DANGER_HOVER_BG : ThemeConfig.ACTION_HOVER_BG;
+                Color aksenHover = aksiBahaya ? ThemeConfig.DANGER : ThemeConfig.PRIMARY;
+                tombol.setBackground(latarHover);
+                tombol.setForeground(aksenHover);
+                if (tombol instanceof widget.Button) {
+                    ((widget.Button) tombol).setGlassColor(latarHover);
+                }
+                sedangHover = true;
+                tombol.repaint();
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (!sedangHover) return;
+                tombol.setBackground(latarNormal);
+                tombol.setForeground(teksNormal);
+                if (tombol instanceof widget.Button && glassNormal != null) {
+                    ((widget.Button) tombol).setGlassColor(glassNormal);
+                }
+                sedangHover = false;
+                tombol.repaint();
+            }
+        });
     }
 
     /**
