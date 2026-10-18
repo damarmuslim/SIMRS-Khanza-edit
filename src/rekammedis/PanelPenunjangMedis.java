@@ -110,11 +110,28 @@ public class PanelPenunjangMedis extends JPanel {
         }
     }
 
+    private boolean hanyaLabDanRad = false;
+
     public PanelPenunjangMedis() {
         this(new JTextArea(), new JTextArea(), new JTextArea(), new JTextArea());
     }
 
+    public PanelPenunjangMedis(JTextArea txtLab, JTextArea txtRad) {
+        this(txtLab, txtRad, true);
+    }
+
+    public PanelPenunjangMedis(JTextArea txtLab, JTextArea txtRad, boolean hanyaLabDanRad) {
+        this.hanyaLabDanRad = hanyaLabDanRad;
+        this.txtLaborat = (txtLab != null) ? txtLab : new JTextArea();
+        this.txtRadiologi = (txtRad != null) ? txtRad : new JTextArea();
+        this.txtEKG = new JTextArea();
+        this.txtPemeriksaanLain = new JTextArea();
+
+        inisialisasiUI();
+    }
+
     public PanelPenunjangMedis(JTextArea txtLab, JTextArea txtRad, JTextArea txtEkg, JTextArea txtLain) {
+        this.hanyaLabDanRad = false;
         this.txtLaborat = (txtLab != null) ? txtLab : new JTextArea();
         this.txtRadiologi = (txtRad != null) ? txtRad : new JTextArea();
         this.txtEKG = (txtEkg != null) ? txtEkg : new JTextArea();
@@ -124,9 +141,28 @@ public class PanelPenunjangMedis extends JPanel {
     }
 
     private void inisialisasiUI() {
-        setLayout(new BorderLayout(0, 12));
+        setLayout(new BorderLayout(0, 10));
         setBackground(Color.WHITE);
-        setBorder(new EmptyBorder(10, 14, 10, 14));
+        setBorder(new EmptyBorder(8, 10, 8, 10));
+
+        if (hanyaLabDanRad) {
+            setPreferredSize(new Dimension(840, 200));
+            setMinimumSize(new Dimension(500, 160));
+
+            // 1. TOOLBAR ATAS
+            add(buatToolbarAtas(), BorderLayout.NORTH);
+
+            // 2. GRID 1x2: LABORAT & RADIOLOGI
+            JPanel grid = new JPanel(new GridLayout(1, 2, 14, 0));
+            grid.setOpaque(false);
+            grid.add(buatCardStandar("Laborat", txtLaborat, badgeLab, btnCekLab, null));
+            grid.add(buatCardStandar("Radiologi", txtRadiologi, badgeRad, btnCekRad, null));
+
+            add(grid, BorderLayout.CENTER);
+            perbaruiSemuaBadge();
+            return;
+        }
+
         setPreferredSize(new Dimension(840, 540));
         setMinimumSize(new Dimension(600, 500));
 
@@ -159,7 +195,7 @@ public class PanelPenunjangMedis extends JPanel {
     public void setKoneksiServer(Connection conn, String kdDokter) {
         this.koneksiServer = conn;
         this.kodeDokterAktif = (kdDokter == null || kdDokter.isEmpty()) ? "-" : kdDokter;
-        if (conn != null) {
+        if (!hanyaLabDanRad && conn != null) {
             try (Statement st = conn.createStatement()) {
                 st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS master_chip_penunjang (" +
@@ -173,9 +209,9 @@ public class PanelPenunjangMedis extends JPanel {
                     ") ENGINE=InnoDB DEFAULT CHARSET=latin1;"
                 );
             } catch (Exception ignored) {}
+            cacheSudahDimuat = false;
+            muatDataChipAwal();
         }
-        cacheSudahDimuat = false;
-        muatDataChipAwal();
     }
 
     // =========================================================================
@@ -987,16 +1023,20 @@ public class PanelPenunjangMedis extends JPanel {
     public void perbaruiSemuaBadge() {
         perbaruiBadgeTeks(txtLaborat, badgeLab, "Laborat");
         perbaruiBadgeTeks(txtRadiologi, badgeRad, "Radiologi");
-        perbaruiBadgeTeks(txtPemeriksaanLain, badgeLain, "Pemeriksaan Lainnya");
-        perbaruiBadgeEKG();
+        if (!hanyaLabDanRad) {
+            perbaruiBadgeTeks(txtPemeriksaanLain, badgeLain, "Pemeriksaan Lainnya");
+            perbaruiBadgeEKG();
+        }
     }
 
     public void resetForm() {
         txtLaborat.setText("");
         txtRadiologi.setText("");
-        txtEKG.setText("");
-        txtPemeriksaanLain.setText("");
-        hapusFotoEKG();
+        if (!hanyaLabDanRad) {
+            txtEKG.setText("");
+            txtPemeriksaanLain.setText("");
+            hapusFotoEKG();
+        }
         perbaruiSemuaBadge();
     }
 

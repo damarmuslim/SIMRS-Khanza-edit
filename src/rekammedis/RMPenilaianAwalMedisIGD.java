@@ -69,6 +69,11 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         widget.IconStyle.pasang(this);
+        javax.swing.Icon icPrintHtml = widget.IconStyle.muat("printer.svg", 14, widget.IconStyle.ABU);
+        if (icPrintHtml != null) {
+            BtnPrint1.setIcon(icPrintHtml);
+            BtnPrint1.setToolTipText("Cetak Pengkajian (Alt+T)");
+        }
         isMenu(); // panel ringkasan HTML disembunyikan dulu sampai user klik baris pasien (lihat getData())
 
         // [RM 03-2] Header tabMode SENGAJA diringkas jadi kolom pencarian saja
@@ -2110,7 +2115,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                 param.put("segitiga_pat", null);
             }
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());
-            param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),6).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),5).toString():finger)+"\n"+Valid.SetTgl3(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString()));
+            param.put("finger","Dikeluarkan di "+akses.getnamars()+"\nKabupaten "+akses.getkabupatenrs()+"\nDitandatangani oleh: "+tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
 
             String qryCetak =
                 "select penilaian_medis_igd.*, reg_periksa.no_rkm_medis, pasien.nm_pasien, pasien.tgl_lahir, "+
@@ -2894,8 +2899,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         btnTpl.addActionListener(e -> bukaDialogTemplateTtv());
 
         widget.Button btnTriase = new widget.Button();
-        btnTriase.setText("Triase");
-        btnTriase.setToolTipText("Salin / Tarik Data TTV & Keluhan dari Triase IGD");
+        btnTriase.setText("Tarik TTV");
+        btnTriase.setToolTipText("Tarik / Refresh Data TTV & Keluhan dari Triase IGD atau Pemeriksaan Awal");
         btnTriase.setPreferredSize(new java.awt.Dimension(0, TINGGI_FIELD_MEDIS));
         btnTriase.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.PLAIN, 11));
         btnTriase.addActionListener(e -> tarikDataTriase(TNoRw.getText(), true));
@@ -5627,7 +5632,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
      * - true  : Menampilkan grid TTV (TD, Nadi, RR, Suhu, SpO2, TB, BB) beserta tombol
      *           Template TTV dan Tarik Data Triase.
      */
-    private static final boolean TAMPILKAN_TTV_MEDIS = false;
+    private static final boolean TAMPILKAN_TTV_MEDIS = true;
     private static final java.awt.Color WARNA_BORDER_KOTAK_MEDIS = new java.awt.Color(0xD8, 0xDB, 0xD6);
     private static final javax.swing.border.Border BORDER_KOTAK_TEXTFIELD_MEDIS =
         javax.swing.BorderFactory.createCompoundBorder(
@@ -7850,48 +7855,18 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     }
 
     private void gayaTombolCardFooterMedis(final widget.Button b, int lebar){
-        b.setOpaque(true);
         b.setContentAreaFilled(true);
-        b.setBackground(java.awt.Color.WHITE);
-        b.setGlassColor(java.awt.Color.WHITE);
-        b.setRoundRect(false);
-        b.putClientProperty("Component.arc", 4);
-        b.putClientProperty("Button.arc", 4);
-        b.putClientProperty("JButton.buttonType", "square");
+        b.setBorderPainted(true);
+        b.setFocusPainted(false);
         b.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
         b.setIconTextGap(6);
         b.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         b.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-
-        final java.awt.Color borderNormal = new java.awt.Color(0xD8, 0xDB, 0xD6);
-        final java.awt.Color borderHover = new java.awt.Color(0x94, 0xA3, 0xB8);
-        final java.awt.Color bgHover = new java.awt.Color(0xF8, 0xFA, 0xFC);
-
-        b.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(borderNormal),
-            javax.swing.BorderFactory.createEmptyBorder(4, 12, 4, 12)
-        ));
-        b.setPreferredSize(new java.awt.Dimension(lebar, 32));
-
-        b.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override public void mouseEntered(java.awt.event.MouseEvent e) {
-                if(b.isEnabled()){
-                    b.setBackground(bgHover);
-                    b.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-                        javax.swing.BorderFactory.createLineBorder(borderHover),
-                        javax.swing.BorderFactory.createEmptyBorder(4, 12, 4, 12)
-                    ));
-                }
-            }
-            @Override public void mouseExited(java.awt.event.MouseEvent e) {
-                b.setBackground(java.awt.Color.WHITE);
-                b.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-                    javax.swing.BorderFactory.createLineBorder(borderNormal),
-                    javax.swing.BorderFactory.createEmptyBorder(4, 12, 4, 12)
-                ));
-            }
-        });
+        b.putClientProperty("JButton.buttonType", null);
+        b.putClientProperty("JButton.arc", 8);
+        b.setMargin(new java.awt.Insets(2, 6, 2, 6));
+        b.setPreferredSize(new java.awt.Dimension(lebar, 30));
     }
 
     /** Bilah judul dan tab datar bergaris bawah seperti referensi user. */
@@ -7928,13 +7903,13 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     /** Restyle action bar bawah (panelGlass8) agar tombol berwujud card yang jelas. */
     private void initActionBarMedis(){
         BtnSimpan.setText("Simpan");
-        gayaTombolCardFooterMedis(BtnSimpan, 92);
-        gayaTombolCardFooterMedis(BtnBatal, 86);
-        gayaTombolCardFooterMedis(BtnEdit, 86);
-        gayaTombolCardFooterMedis(BtnHapus, 88);
-        gayaTombolCardFooterMedis(BtnPrint, 86);
-        gayaTombolCardFooterMedis(BtnAll, 90);
-        gayaTombolCardFooterMedis(BtnKeluar, 90);
+        gayaTombolCardFooterMedis(BtnSimpan, 96);
+        gayaTombolCardFooterMedis(BtnBatal, 90);
+        gayaTombolCardFooterMedis(BtnEdit, 90);
+        gayaTombolCardFooterMedis(BtnHapus, 92);
+        gayaTombolCardFooterMedis(BtnPrint, 90);
+        gayaTombolCardFooterMedis(BtnAll, 96);
+        gayaTombolCardFooterMedis(BtnKeluar, 96);
 
         BtnHapus.setForeground(widget.ThemeConfig.DANGER);
         BtnKeluar.setForeground(widget.ThemeConfig.DANGER);

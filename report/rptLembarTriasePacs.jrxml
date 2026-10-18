@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptLembarTriasePacs" pageWidth="609" pageHeight="935" columnWidth="569" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptLembarTriasePacs" language="groovy" pageWidth="609" pageHeight="935" columnWidth="569" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<!--
@@ -758,26 +758,62 @@ where data_triase_igd.no_rawat = $P{norawat}]]>
 
 			<!-- Kolom 3 (Kanan): Petugas Triage -->
 			<staticText><reportElement x="374" y="606" width="190" height="12"/><textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7.5" isBold="true"/></textElement><text><![CDATA[Petugas Triage]]></text></staticText>
+			<rectangle radius="2">
+				<reportElement mode="Transparent" x="374" y="620" width="190" height="46"/>
+				<graphicElement><pen lineWidth="0.5" lineColor="#94A3B8"/></graphicElement>
+			</rectangle>
 			<componentElement>
-				<reportElement x="444" y="621" width="52" height="52" isRemoveLineWhenBlank="true"/>
+				<reportElement x="379" y="625" width="36" height="36"/>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
-					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
+					<jr:codeExpression><![CDATA["Dikeluarkan di " + $P{namars} + "\nKabupaten " + $P{kotars} + "\nDitandatangani oleh: " + ($F{petugas_nama}!=null?$F{petugas_nama}:"")]]></jr:codeExpression>
 				</jr:QRCode>
 			</componentElement>
-			<textField isBlankWhenNull="true">
-				<reportElement x="374" y="676" width="190" height="12"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7.5" isBold="true"/></textElement>
-				<textFieldExpression><![CDATA[$F{petugas_nama}==null?"":$F{petugas_nama}]]></textFieldExpression>
+			<staticText>
+				<reportElement x="419" y="623" width="142" height="10" forecolor="#0F172A"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[TTE TERVERIFIKASI SISTEM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="419" y="633" width="142" height="9" forecolor="#475569"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="6"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Dikeluarkan di RSUD Demang Sepulau Raya]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="419" y="642" width="142" height="9" forecolor="#475569"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="6"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Kabupaten Lampung Tengah]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="419" y="652" width="142" height="12" forecolor="#0F172A"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="6" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ditandatangani oleh: " + ($F{petugas_nama}!=null?$F{petugas_nama}:"—")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="374" y="689" width="190" height="11"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
-				<textFieldExpression><![CDATA[$P{nikpetugas}==null||$P{nikpetugas}.trim().isEmpty()?"":"NIP : "+$P{nikpetugas}]]></textFieldExpression>
+				<reportElement x="374" y="670" width="190" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7.5" isBold="true" isUnderline="true"/></textElement>
+				<textFieldExpression><![CDATA[$F{petugas_nama}==null?"—":$F{petugas_nama}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="374" y="701" width="190" height="11" isRemoveLineWhenBlank="true"/>
+				<reportElement x="374" y="684" width="190" height="10"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
-				<textFieldExpression><![CDATA[$P{noijinpraktek}==null||$P{noijinpraktek}.trim().isEmpty()?"":"No. SIP : "+$P{noijinpraktek}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{nikpetugas}==null||$P{nikpetugas}.trim().isEmpty()?"NIP: —":"NIP: "+$P{nikpetugas}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="374" y="696" width="190" height="10" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
+				<textFieldExpression><![CDATA[$P{noijinpraktek}==null||$P{noijinpraktek}.trim().isEmpty()?"":($P{noijinpraktek}.toUpperCase().startsWith("NO")?$P{noijinpraktek}:"No. SIP: "+$P{noijinpraktek})]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

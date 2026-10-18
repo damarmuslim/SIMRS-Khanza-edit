@@ -105,6 +105,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         buatKotakKep(barPasienKep);
         pasangTopBarKep();
         widget.IconStyle.pasang(this);
+        javax.swing.Icon icPrintHtml = widget.IconStyle.muat("printer.svg", 14, widget.IconStyle.ABU);
+        if (icPrintHtml != null) {
+            BtnPrint1.setIcon(icPrintHtml);
+            BtnPrint1.setToolTipText("Cetak Pengkajian (Alt+T)");
+        }
         javax.swing.Icon icPencarian = widget.IconStyle.muat("search.svg", 14, widget.IconStyle.ABU);
         if (icPencarian != null) {
             BtnCari.setIcon(icPencarian);
@@ -4862,25 +4867,18 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      * dan efek hover halus.
      */
     private void gayaTombolCardFooter(final widget.Button b, int lebar) {
-        b.setOpaque(true);
         b.setContentAreaFilled(true);
-        b.setBackground(java.awt.Color.WHITE);
-        b.setGlassColor(java.awt.Color.WHITE);
-        b.setRoundRect(false);
-        b.putClientProperty("Component.arc", 4);
-        b.putClientProperty("Button.arc", 4);
-        b.putClientProperty("JButton.buttonType", "square");
+        b.setBorderPainted(true);
+        b.setFocusPainted(false);
         b.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
         b.setIconTextGap(6);
         b.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         b.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-
-        final java.awt.Color borderNormal = new java.awt.Color(0xD8, 0xDB, 0xD6);
-        b.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-                javax.swing.BorderFactory.createLineBorder(borderNormal),
-                javax.swing.BorderFactory.createEmptyBorder(4, 12, 4, 12)));
-        b.setPreferredSize(new java.awt.Dimension(lebar, 32));
+        b.putClientProperty("JButton.buttonType", null);
+        b.putClientProperty("JButton.arc", 8);
+        b.setMargin(new java.awt.Insets(2, 6, 2, 6));
+        b.setPreferredSize(new java.awt.Dimension(lebar, 30));
     }
 
     /**
@@ -4888,13 +4886,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      */
     private void initActionBarKep() {
         BtnSimpan.setText("Simpan");
-        gayaTombolCardFooter(BtnSimpan, 92);
-        gayaTombolCardFooter(BtnBatal, 86);
-        gayaTombolCardFooter(BtnEdit, 86);
-        gayaTombolCardFooter(BtnHapus, 88);
-        gayaTombolCardFooter(BtnPrint, 86);
-        gayaTombolCardFooter(BtnAll, 90);
-        gayaTombolCardFooter(BtnKeluar, 90);
+        gayaTombolCardFooter(BtnSimpan, 96);
+        gayaTombolCardFooter(BtnBatal, 90);
+        gayaTombolCardFooter(BtnEdit, 90);
+        gayaTombolCardFooter(BtnHapus, 92);
+        gayaTombolCardFooter(BtnPrint, 90);
+        gayaTombolCardFooter(BtnAll, 96);
+        gayaTombolCardFooter(BtnKeluar, 96);
 
         BtnHapus.setForeground(new java.awt.Color(0xB9, 0x1C, 0x1C));
         BtnKeluar.setForeground(new java.awt.Color(0xB9, 0x1C, 0x1C));
@@ -4916,11 +4914,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         kiri.add(BtnHapus);
         kiri.add(BtnPrint);
         kiri.add(BtnAll);
+        kiri.add(BtnKeluar);
         widget.PanelBiasa kanan = new widget.PanelBiasa();
         kanan.setOpaque(false);
         kanan.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 12, 8));
         kanan.add(lblProgresBawahKep);
-        kanan.add(BtnKeluar);
 
         panelGlass8.removeAll();
         panelGlass8.setLayout(new java.awt.BorderLayout());
@@ -5705,6 +5703,121 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         FormInput.repaint();
     }
 
+    private DlgMasterTemplateKeperawatan dlgMasterTemplateKep;
+
+    private void bukaDialogTemplateKeperawatan() {
+        if (dlgMasterTemplateKep == null) {
+            dlgMasterTemplateKep = new DlgMasterTemplateKeperawatan(null, true);
+        }
+        dlgMasterTemplateKep.setPetugas(KdPetugas.getText());
+        dlgMasterTemplateKep.setListener((namaTemplate, keluhanUtama, rencanaKeperawatan) -> {
+            terapkanTemplateKeperawatan(keluhanUtama, rencanaKeperawatan);
+        });
+        dlgMasterTemplateKep.setLocationRelativeTo(this);
+        dlgMasterTemplateKep.setVisible(true);
+    }
+
+    private void terapkanTemplateKeperawatan(String keluhan, String rencana) {
+        if (keluhan != null && !keluhan.trim().isEmpty()) {
+            if (KeluhanUtama.getText().trim().isEmpty()) {
+                KeluhanUtama.setText(keluhan.trim());
+            } else {
+                int c = JOptionPane.showConfirmDialog(this,
+                    "Kolom Keluhan Utama sudah terisi.\nApakah Anda ingin menimpa (Yes) atau menambahkan di bawahnya (No)?",
+                    "Konfirmasi Template", JOptionPane.YES_NO_CANCEL_OPTION);
+                if (c == JOptionPane.YES_OPTION) {
+                    KeluhanUtama.setText(keluhan.trim());
+                } else if (c == JOptionPane.NO_OPTION) {
+                    KeluhanUtama.setText(KeluhanUtama.getText().trim() + "\n" + keluhan.trim());
+                }
+            }
+        }
+        if (rencana != null && !rencana.trim().isEmpty()) {
+            if (Rencana != null) {
+                if (Rencana.getText().trim().isEmpty()) {
+                    Rencana.setText(rencana.trim());
+                } else {
+                    Rencana.setText(Rencana.getText().trim() + "\n" + rencana.trim());
+                }
+            }
+        }
+        hitungProgresKep();
+    }
+
+    private void tampilkanMenuTemplateKeperawatan(javax.swing.JComponent anchor) {
+        javax.swing.JPopupMenu popup = new javax.swing.JPopupMenu();
+        javax.swing.JMenuItem itemKelola = new javax.swing.JMenuItem("Kelola Master Template Keperawatan...");
+        itemKelola.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 11));
+        itemKelola.setForeground(new java.awt.Color(15, 61, 62));
+        itemKelola.addActionListener(e -> bukaDialogTemplateKeperawatan());
+        popup.add(itemKelola);
+        popup.addSeparator();
+
+        try {
+            String nip = KdPetugas.getText().trim();
+            java.sql.PreparedStatement psTpl = koneksi.prepareStatement(
+                "select no_template, nama_template, keluhan_utama, rencana_keperawatan " +
+                "from template_asuhan_keperawatan_igd where nip='-' or nip=? order by nama_template asc"
+            );
+            psTpl.setString(1, nip.isEmpty() ? "-" : nip);
+            java.sql.ResultSet rsTpl = psTpl.executeQuery();
+            int hitung = 0;
+            while (rsTpl.next()) {
+                hitung++;
+                String nm = rsTpl.getString("nama_template");
+                String kel = rsTpl.getString("keluhan_utama");
+                String ren = rsTpl.getString("rencana_keperawatan");
+                javax.swing.JMenuItem itm = new javax.swing.JMenuItem(nm);
+                itm.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.PLAIN, 11));
+                itm.addActionListener(e -> terapkanTemplateKeperawatan(kel, ren));
+                popup.add(itm);
+            }
+            rsTpl.close();
+            psTpl.close();
+            if (hitung == 0) {
+                javax.swing.JMenuItem empty = new javax.swing.JMenuItem("(Belum ada template tersimpan)");
+                empty.setEnabled(false);
+                popup.add(empty);
+            }
+        } catch (Exception ex) {
+            System.out.println("Notif load template keperawatan: " + ex);
+        }
+        popup.show(anchor, 0, anchor.getHeight());
+    }
+
+    private widget.PanelBiasa siapkanAreaKeluhanUtamaKep() {
+        widget.PanelBiasa panel = new widget.PanelBiasa(new java.awt.BorderLayout(0, 6));
+        panel.setOpaque(false);
+
+        widget.PanelBiasa toolbar = new widget.PanelBiasa(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 0));
+        toolbar.setOpaque(false);
+
+        javax.swing.JButton btnMaster = new javax.swing.JButton("Master Template Keperawatan");
+        btnMaster.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 11));
+        btnMaster.setForeground(new java.awt.Color(15, 61, 62));
+        btnMaster.setFocusPainted(false);
+        btnMaster.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnMaster.setPreferredSize(new java.awt.Dimension(220, 28));
+        btnMaster.setToolTipText("Kelola dan pilih format narasi Asuhan Keperawatan IGD");
+        btnMaster.addActionListener(e -> bukaDialogTemplateKeperawatan());
+
+        javax.swing.JButton btnMenu = new javax.swing.JButton("Template Cepat  ▼");
+        btnMenu.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.BOLD, 11));
+        btnMenu.setForeground(new java.awt.Color(15, 61, 62));
+        btnMenu.setFocusPainted(false);
+        btnMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnMenu.setPreferredSize(new java.awt.Dimension(150, 28));
+        btnMenu.setToolTipText("Daftar template narasi keperawatan IGD tersimpan");
+        btnMenu.addActionListener(e -> tampilkanMenuTemplateKeperawatan(btnMenu));
+
+        toolbar.add(btnMaster);
+        toolbar.add(btnMenu);
+
+        panel.add(toolbar, java.awt.BorderLayout.NORTH);
+        panel.add(scrollPane1, java.awt.BorderLayout.CENTER);
+        return panel;
+    }
+
     /**
      * Bagian "I. RIWAYAT KESEHATAN PASIEN" tidak lahir dari
      * tambahBarisKepJudul(): isinya scrollPane1 (Keluhan Utama) bawaan GEN yg
@@ -5747,7 +5860,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         KeluhanUtama.putClientProperty("Component.arc", 0);
         scrollPane1.putClientProperty("Component.arc", 0);
 
-        barisPengkajian(isi, 1, "Keluhan Utama", true, scrollPane1);
+        barisPengkajian(isi, 1, "Keluhan Utama", true, siapkanAreaKeluhanUtamaKep());
         SeksiKep s = new SeksiKep(judul, strip, isi, -1);
         s.panel = isi;
         seksiKep.add(0, s);
@@ -6261,7 +6374,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
         cVital.gridx = 3;
         cVital.insets = new java.awt.Insets(0, 0, 0, 0);
-        panelKeadaanUmum.add(javax.swing.Box.createHorizontalGlue(), cVital);
+        widget.Button btnRefreshTtvKep = new widget.Button();
+        btnRefreshTtvKep.setText("Tarik TTV Triase");
+        btnRefreshTtvKep.setToolTipText("Tarik / Refresh tanda vital & keluhan dari data Triase IGD / Pemeriksaan Awal");
+        btnRefreshTtvKep.setPreferredSize(new java.awt.Dimension(130, 26));
+        btnRefreshTtvKep.setFont(new java.awt.Font(widget.ThemeConfig.FONT_FAMILY, java.awt.Font.PLAIN, 11));
+        btnRefreshTtvKep.addActionListener(e -> tarikDataTriase(TNoRw.getText(), true));
+        panelKeadaanUmum.add(buatSelVital("Aksi TTV", btnRefreshTtvKep, null), cVital);
 
         row = tambahBarisKepField(panelKepAtas, row, "Tanda Vital & Antropometri", false, panelKeadaanUmum);
 
@@ -7894,28 +8013,64 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // -- Tindakan Penunjang --
         row = tambahBarisKepJudul(panelKepTiga, row, "TINDAKAN PENUNJANG");
         CekPenunjangCekLab = new widget.CekBox();
-        CekPenunjangCekLab.setText("Cek Lab");
         TPenunjangCekLabKet = new widget.TextBox();
-
         CekPenunjangRontgen = new widget.CekBox();
-        CekPenunjangRontgen.setText("Rontgen");
         TPenunjangRontgenKet = new widget.TextBox();
-
         CekPenunjangCtScan = new widget.CekBox();
-        CekPenunjangCtScan.setText("CT Scan");
         TPenunjangCtScanKet = new widget.TextBox();
 
-        widget.PanelBiasa itemLab = buatItemCekTeks(CekPenunjangCekLab, TPenunjangCekLabKet, "Jenis pemeriksaan");
-        widget.PanelBiasa itemRontgen = buatItemCekTeks(CekPenunjangRontgen, TPenunjangRontgenKet, "Bagian");
-        widget.PanelBiasa itemCtScan = buatItemCekTeks(CekPenunjangCtScan, TPenunjangCtScanKet, "Bagian");
+        txtPenunjangLab = new javax.swing.JTextArea();
+        txtPenunjangRad = new javax.swing.JTextArea();
 
-        widget.PanelBiasa panelPenunjang = new widget.PanelBiasa();
-        panelPenunjang.setOpaque(false);
-        panelPenunjang.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 18, 0));
-        panelPenunjang.add(itemLab);
-        panelPenunjang.add(itemRontgen);
-        panelPenunjang.add(itemCtScan);
-        row = tambahBarisKepField(panelKepTiga, row, "Penunjang", panelPenunjang);
+        panelPenunjangMedis = new PanelPenunjangMedis(txtPenunjangLab, txtPenunjangRad, true);
+        panelPenunjangMedis.putClientProperty("fillWidth", Boolean.TRUE);
+        panelPenunjangMedis.setKoneksiServer(koneksi, akses.getkode());
+
+        panelPenunjangMedis.btnTarikSemua.addActionListener(e -> {
+            tarikSemuaDataPenunjang();
+            if (panelPenunjangMedis != null) panelPenunjangMedis.perbaruiSemuaBadge();
+        });
+        panelPenunjangMedis.btnCekLab.addActionListener(e -> {
+            tarikDataLaboratorium(false);
+            if (panelPenunjangMedis != null) panelPenunjangMedis.perbaruiSemuaBadge();
+        });
+        panelPenunjangMedis.btnCekRad.addActionListener(e -> {
+            tarikDataRadiologi(false);
+            if (panelPenunjangMedis != null) panelPenunjangMedis.perbaruiSemuaBadge();
+        });
+
+        txtPenunjangLab.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void update() {
+                String t = txtPenunjangLab.getText().trim();
+                TPenunjangCekLabKet.setText(t);
+                CekPenunjangCekLab.setSelected(!t.isEmpty());
+                hitungProgresKep();
+            }
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { update(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { update(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { update(); }
+        });
+
+        txtPenunjangRad.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void update() {
+                String t = txtPenunjangRad.getText().trim();
+                TPenunjangRontgenKet.setText(t);
+                CekPenunjangRontgen.setSelected(!t.isEmpty());
+                if (t.toUpperCase().matches(".*\\b(CT|SCAN|MSCT)\\b.*")) {
+                    CekPenunjangCtScan.setSelected(true);
+                    TPenunjangCtScanKet.setText(t);
+                } else {
+                    CekPenunjangCtScan.setSelected(false);
+                    TPenunjangCtScanKet.setText("");
+                }
+                hitungProgresKep();
+            }
+            @Override public void insertUpdate(javax.swing.event.DocumentEvent e) { update(); }
+            @Override public void removeUpdate(javax.swing.event.DocumentEvent e) { update(); }
+            @Override public void changedUpdate(javax.swing.event.DocumentEvent e) { update(); }
+        });
+
+        row = tambahBarisKepField(panelKepTiga, row, "", panelPenunjangMedis);
 
         // -- Tindakan Kolaborasi --
         row = tambahBarisKepJudul(panelKepTiga, row, "TINDAKAN KOLABORASI");
@@ -10971,11 +11126,10 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                     "select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",
                     tbObat.getValueAt(tbObat.getSelectedRow(), 5).toString());
             param.put("finger",
-                    "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs()
-                            + "\nDitandatangani secara elektronik oleh "
-                            + tbObat.getValueAt(tbObat.getSelectedRow(), 6).toString() + "\nID "
-                            + (finger.equals("") ? tbObat.getValueAt(tbObat.getSelectedRow(), 5).toString() : finger)
-                            + "\n" + Valid.SetTgl3(tbObat.getValueAt(tbObat.getSelectedRow(), 4).toString()));
+                    "Dikeluarkan di " + akses.getnamars()
+                            + "\nKabupaten " + akses.getkabupatenrs()
+                            + "\nDitandatangani oleh: "
+                            + tbObat.getValueAt(tbObat.getSelectedRow(), 6).toString());
             String qryCetak = "select penilaian_awal_keperawatan_igd.*, " +
                     "reg_periksa.no_rkm_medis, pasien.nm_pasien, pasien.tgl_lahir, TIMESTAMPDIFF(YEAR,pasien.tgl_lahir,CURDATE()) as umur, if(pasien.jk='L','Laki-Laki','Perempuan') as jk, "
                     +
@@ -11338,6 +11492,55 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     }
 
     // ===================================================================
+    // Helper Format Cetakan Penunjang (Konsisten dengan Awal Medis IGD)
+    // ===================================================================
+    public static String getNamaPemeriksaanLab(String raw) {
+        return RMPenilaianAwalMedisIGD.getNamaPemeriksaanLab(raw);
+    }
+
+    public static String getStatusPenunjangLab(String raw) {
+        return RMPenilaianAwalMedisIGD.getStatusPenunjangLab(raw);
+    }
+
+    public static String getPemeriksaanRad(String rontgenRaw, String ctScanRaw) {
+        String rad1 = RMPenilaianAwalMedisIGD.getPemeriksaanRad(rontgenRaw);
+        String rad2 = RMPenilaianAwalMedisIGD.getPemeriksaanRad(ctScanRaw);
+        if (rad1.equals("-") && rad2.equals("-")) return "-";
+        if (rad1.equals("-")) return rad2;
+        if (rad2.equals("-")) return rad1;
+        if (rad1.equalsIgnoreCase(rad2)) return rad1;
+
+        java.util.LinkedHashSet<String> set = new java.util.LinkedHashSet<String>();
+        for (String s : rad1.split(",")) {
+            String st = s.trim();
+            if (!st.isEmpty() && !st.equals("-")) set.add(st);
+        }
+        for (String s : rad2.split(",")) {
+            String st = s.trim();
+            if (!st.isEmpty() && !st.equals("-")) set.add(st);
+        }
+        if (set.isEmpty()) return "-";
+        StringBuilder sb = new StringBuilder();
+        for (String s : set) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
+    public static String getStatusRad(String rontgenRaw, String ctScanRaw) {
+        String st1 = RMPenilaianAwalMedisIGD.getStatusRad(rontgenRaw);
+        String st2 = RMPenilaianAwalMedisIGD.getStatusRad(ctScanRaw);
+        if (st1.contains("Proses") || st1.contains("Menunggu") || st2.contains("Proses") || st2.contains("Menunggu")) {
+            return "Sedang Proses / Menunggu Hasil";
+        }
+        if (!st1.equals("-") || !st2.equals("-")) {
+            return "Hasil Selesai / Terlampir";
+        }
+        return "-";
+    }
+
+    // ===================================================================
     // [RM 03-4/03-5/03-6] Field baru HALAMAN 1 - lihat initKepTambahan().
     // ===================================================================
     private widget.PanelBiasa panelKepAtas;
@@ -11651,6 +11854,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     // -- V. Tindakan Penunjang --
     private widget.CekBox CekPenunjangCekLab, CekPenunjangRontgen, CekPenunjangCtScan;
     private widget.TextBox TPenunjangCekLabKet, TPenunjangRontgenKet, TPenunjangCtScanKet;
+    private PanelPenunjangMedis panelPenunjangMedis;
+    private javax.swing.JTextArea txtPenunjangLab, txtPenunjangRad;
 
     // -- VI. Tindakan Kolaborasi --
     private widget.CekBox CekKolabO2, CekKolabEkgMonitor, CekKolabNebulizer, CekKolabPasangInfus,
@@ -12297,6 +12502,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         TPenunjangRontgenKet.setText("");
         CekPenunjangCtScan.setSelected(false);
         TPenunjangCtScanKet.setText("");
+        if (txtPenunjangLab != null) txtPenunjangLab.setText("");
+        if (txtPenunjangRad != null) txtPenunjangRad.setText("");
+        if (panelPenunjangMedis != null) panelPenunjangMedis.perbaruiSemuaBadge();
 
         // -- VI. Tindakan Kolaborasi --
         CekKolabO2.setSelected(false);
@@ -12417,6 +12625,14 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      */
     private String kosongKeNull(String s) {
         return (s == null || s.trim().equals("")) ? null : s;
+    }
+
+    private String potong(String s, int max) {
+        if (s == null) {
+            return "";
+        }
+        s = s.trim();
+        return (s.length() > max) ? s.substring(0, max) : s;
     }
 
     /**
@@ -12949,6 +13165,22 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                         CekPenunjangCtScan.setSelected(ctScan);
                         TPenunjangCtScanKet.setText(rsData.getString("penunjang_ct_scan_ket"));
 
+                        if (txtPenunjangLab != null) {
+                            txtPenunjangLab.setText(TPenunjangCekLabKet.getText());
+                        }
+                        if (txtPenunjangRad != null) {
+                            String radVal = TPenunjangRontgenKet.getText().trim();
+                            String ctVal = TPenunjangCtScanKet.getText().trim();
+                            if (!ctVal.isEmpty()) {
+                                if (radVal.isEmpty()) radVal = ctVal;
+                                else if (!radVal.contains(ctVal)) radVal = radVal + ", " + ctVal;
+                            }
+                            txtPenunjangRad.setText(radVal);
+                        }
+                        if (panelPenunjangMedis != null) {
+                            panelPenunjangMedis.perbaruiSemuaBadge();
+                        }
+
                         // -- VI. Tindakan Kolaborasi --
                         boolean kolabO2 = "Ya".equals(rsData.getString("kolab_o2"));
                         CekKolabO2.setSelected(kolabO2);
@@ -13462,6 +13694,361 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         });
     }
 
+    private void tarikDataTriase(String norwt, boolean manual) {
+        if (norwt == null || norwt.trim().isEmpty()) {
+            if (manual) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Nomor Rawat belum dipilih / kosong!", "Pemberitahuan", javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+            return;
+        }
+
+        boolean ditemukan = false;
+        try {
+            // 1. Coba dari data_triase_igd & data_triase_pacs / primer
+            java.sql.PreparedStatement psTriase = koneksi.prepareStatement(
+                "select d.tekanan_darah, d.nadi, d.pernapasan, d.suhu, d.saturasi_o2, d.berat_badan, d.tinggi_badan, d.kesadaran, " +
+                "coalesce(p.keluhan_utama, r.keluhan_utama, '') as keluhan_utama " +
+                "from data_triase_igd d " +
+                "left join data_triase_pacs p on p.no_rawat=d.no_rawat " +
+                "left join data_triase_igdprimer r on r.no_rawat=d.no_rawat " +
+                "where d.no_rawat=?"
+            );
+            psTriase.setString(1, norwt.trim());
+            java.sql.ResultSet rsTriase = psTriase.executeQuery();
+            if (rsTriase.next()) {
+                String td = rsTriase.getString("tekanan_darah");
+                String nadi = rsTriase.getString("nadi");
+                String rr = rsTriase.getString("pernapasan");
+                String suhu = rsTriase.getString("suhu");
+                String spo = rsTriase.getString("saturasi_o2");
+                String bb = rsTriase.getString("berat_badan");
+                String tb = rsTriase.getString("tinggi_badan");
+                String kel = rsTriase.getString("keluhan_utama");
+
+                if (td != null && !td.trim().isEmpty() && (TdKep.getText().trim().isEmpty() || manual)) TdKep.setText(td.trim());
+                if (nadi != null && !nadi.trim().isEmpty() && (NadiKep.getText().trim().isEmpty() || manual)) NadiKep.setText(nadi.trim());
+                if (rr != null && !rr.trim().isEmpty() && (RrKep.getText().trim().isEmpty() || manual)) RrKep.setText(rr.trim());
+                if (suhu != null && !suhu.trim().isEmpty() && (SuhuKep.getText().trim().isEmpty() || manual)) SuhuKep.setText(suhu.trim());
+                if (spo != null && !spo.trim().isEmpty() && (SpoKep.getText().trim().isEmpty() || manual)) SpoKep.setText(spo.trim());
+                if (bb != null && !bb.trim().isEmpty() && (BbKep.getText().trim().isEmpty() || manual)) BbKep.setText(bb.trim());
+                if (tb != null && !tb.trim().isEmpty() && (TbKep.getText().trim().isEmpty() || manual)) TbKep.setText(tb.trim());
+                if (kel != null && !kel.trim().isEmpty() && (KeluhanUtama.getText().trim().isEmpty() || manual)) {
+                    KeluhanUtama.setText(kel.trim());
+                }
+                ditemukan = true;
+            }
+            rsTriase.close();
+            psTriase.close();
+
+            // 2. Fallback: Cek pemeriksaan_ralan jika di triase belum ada
+            if (!ditemukan) {
+                java.sql.PreparedStatement psRalan = koneksi.prepareStatement(
+                    "select tensi, nadi, respirasi, suhu_tubuh, spo2, tinggi, berat, keluhan " +
+                    "from pemeriksaan_ralan where no_rawat=? order by tgl_perawatan desc, jam_rawat desc limit 1"
+                );
+                psRalan.setString(1, norwt.trim());
+                java.sql.ResultSet rsRalan = psRalan.executeQuery();
+                if (rsRalan.next()) {
+                    String td = rsRalan.getString("tensi");
+                    String nadi = rsRalan.getString("nadi");
+                    String rr = rsRalan.getString("respirasi");
+                    String suhu = rsRalan.getString("suhu_tubuh");
+                    String spo = rsRalan.getString("spo2");
+                    String bb = rsRalan.getString("berat");
+                    String tb = rsRalan.getString("tinggi");
+                    String kel = rsRalan.getString("keluhan");
+
+                    if (td != null && !td.trim().isEmpty() && (TdKep.getText().trim().isEmpty() || manual)) TdKep.setText(td.trim());
+                    if (nadi != null && !nadi.trim().isEmpty() && (NadiKep.getText().trim().isEmpty() || manual)) NadiKep.setText(nadi.trim());
+                    if (rr != null && !rr.trim().isEmpty() && (RrKep.getText().trim().isEmpty() || manual)) RrKep.setText(rr.trim());
+                    if (suhu != null && !suhu.trim().isEmpty() && (SuhuKep.getText().trim().isEmpty() || manual)) SuhuKep.setText(suhu.trim());
+                    if (spo != null && !spo.trim().isEmpty() && (SpoKep.getText().trim().isEmpty() || manual)) SpoKep.setText(spo.trim());
+                    if (bb != null && !bb.trim().isEmpty() && (BbKep.getText().trim().isEmpty() || manual)) BbKep.setText(bb.trim());
+                    if (tb != null && !tb.trim().isEmpty() && (TbKep.getText().trim().isEmpty() || manual)) TbKep.setText(tb.trim());
+                    if (kel != null && !kel.trim().isEmpty() && (KeluhanUtama.getText().trim().isEmpty() || manual)) {
+                        KeluhanUtama.setText(kel.trim());
+                    }
+                    ditemukan = true;
+                }
+                rsRalan.close();
+                psRalan.close();
+            }
+
+            hitungProgresKep();
+
+            if (manual) {
+                if (ditemukan) {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Data TTV & Keluhan berhasil disalin dari Triase / Pemeriksaan Awal!", "Sukses", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(this, "Belum ada data Triase atau Pemeriksaan Awal untuk pasien ini.", "Informasi", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif tarikDataTriase Keperawatan: " + e);
+            if (manual) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Gagal menarik data: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private boolean tarikDataLaboratorium(boolean silentIfEmpty) {
+        String noRawat = TNoRw.getText().trim();
+        if (noRawat.isEmpty()) {
+            if (!silentIfEmpty) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Nomor rawat pasien belum dipilih / kosong!", "Peringatan",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+            return false;
+        }
+
+        java.util.LinkedHashSet<String> semuaLab = new java.util.LinkedHashSet<>();
+        // a. detail_periksa_lab (hasil lab PK)
+        String sqlHasilPK = "SELECT DISTINCT jp.nm_perawatan FROM detail_periksa_lab dp " +
+                            "INNER JOIN jns_perawatan_lab jp ON dp.kd_jenis_prw = jp.kd_jenis_prw " +
+                            "WHERE dp.no_rawat = ? ORDER BY jp.nm_perawatan ASC";
+        try (PreparedStatement psLab = koneksi.prepareStatement(sqlHasilPK)) {
+            psLab.setString(1, noRawat);
+            try (ResultSet rsLab = psLab.executeQuery()) {
+                while (rsLab.next()) {
+                    String nm = rsLab.getString("nm_perawatan");
+                    if (nm != null && !nm.trim().isEmpty()) semuaLab.add(nm.trim());
+                }
+            }
+        } catch (Exception ignored) {}
+
+        // b. periksa_lab
+        String sqlPeriksaLab = "SELECT DISTINCT jp.nm_perawatan FROM periksa_lab pl " +
+                               "INNER JOIN jns_perawatan_lab jp ON pl.kd_jenis_prw = jp.kd_jenis_prw " +
+                               "WHERE pl.no_rawat = ? ORDER BY jp.nm_perawatan ASC";
+        try (PreparedStatement psLab = koneksi.prepareStatement(sqlPeriksaLab)) {
+            psLab.setString(1, noRawat);
+            try (ResultSet rsLab = psLab.executeQuery()) {
+                while (rsLab.next()) {
+                    String nm = rsLab.getString("nm_perawatan");
+                    if (nm != null && !nm.trim().isEmpty()) semuaLab.add(nm.trim());
+                }
+            }
+        } catch (Exception ignored) {}
+
+        // c. permintaan_lab & permintaan_pemeriksaan_lab (order PK)
+        String sqlOrderPK = "SELECT DISTINCT jp.nm_perawatan FROM permintaan_lab pl " +
+                            "INNER JOIN permintaan_pemeriksaan_lab ppl ON pl.noorder = ppl.noorder " +
+                            "INNER JOIN jns_perawatan_lab jp ON ppl.kd_jenis_prw = jp.kd_jenis_prw " +
+                            "WHERE pl.no_rawat = ? ORDER BY jp.nm_perawatan ASC";
+        try (PreparedStatement psLab = koneksi.prepareStatement(sqlOrderPK)) {
+            psLab.setString(1, noRawat);
+            try (ResultSet rsLab = psLab.executeQuery()) {
+                while (rsLab.next()) {
+                    String nm = rsLab.getString("nm_perawatan");
+                    if (nm != null && !nm.trim().isEmpty()) semuaLab.add(nm.trim());
+                }
+            }
+        } catch (Exception ignored) {}
+
+        // d. permintaan_labpa (order PA)
+        String sqlOrderPA = "SELECT DISTINCT jp.nm_perawatan FROM permintaan_labpa pl " +
+                            "INNER JOIN permintaan_pemeriksaan_labpa ppl ON pl.noorder = ppl.noorder " +
+                            "INNER JOIN jns_perawatan_lab jp ON ppl.kd_jenis_prw = jp.kd_jenis_prw " +
+                            "WHERE pl.no_rawat = ? ORDER BY jp.nm_perawatan ASC";
+        try (PreparedStatement psLab = koneksi.prepareStatement(sqlOrderPA)) {
+            psLab.setString(1, noRawat);
+            try (ResultSet rsLab = psLab.executeQuery()) {
+                while (rsLab.next()) {
+                    String nm = rsLab.getString("nm_perawatan");
+                    if (nm != null && !nm.trim().isEmpty()) semuaLab.add(nm.trim());
+                }
+            }
+        } catch (Exception ignored) {}
+
+        // e. permintaan_labmb (order MB)
+        String sqlOrderMB = "SELECT DISTINCT jp.nm_perawatan FROM permintaan_labmb pl " +
+                            "INNER JOIN permintaan_pemeriksaan_labmb ppl ON pl.noorder = ppl.noorder " +
+                            "INNER JOIN jns_perawatan_lab jp ON ppl.kd_jenis_prw = jp.kd_jenis_prw " +
+                            "WHERE pl.no_rawat = ? ORDER BY jp.nm_perawatan ASC";
+        try (PreparedStatement psLab = koneksi.prepareStatement(sqlOrderMB)) {
+            psLab.setString(1, noRawat);
+            try (ResultSet rsLab = psLab.executeQuery()) {
+                while (rsLab.next()) {
+                    String nm = rsLab.getString("nm_perawatan");
+                    if (nm != null && !nm.trim().isEmpty()) semuaLab.add(nm.trim());
+                }
+            }
+        } catch (Exception ignored) {}
+
+        if (!semuaLab.isEmpty()) {
+            String hasilLab = String.join(", ", semuaLab);
+            if (txtPenunjangLab != null) txtPenunjangLab.setText(hasilLab);
+            TPenunjangCekLabKet.setText(hasilLab);
+            CekPenunjangCekLab.setSelected(true);
+            if (panelPenunjangMedis != null) panelPenunjangMedis.perbaruiSemuaBadge();
+            hitungProgresKep();
+            if (!silentIfEmpty) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Data pemeriksaan Laboratorium (" + semuaLab.size() + " item) berhasil disalin!",
+                    "Sukses", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+            return true;
+        } else {
+            if (!silentIfEmpty) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Belum ada data permintaan maupun hasil pemeriksaan Laboratorium untuk pasien ini.",
+                    "Informasi", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+            return false;
+        }
+    }
+
+    private boolean tarikDataRadiologi(boolean silentIfEmpty) {
+        String noRawat = TNoRw.getText().trim();
+        if (noRawat.isEmpty()) {
+            if (!silentIfEmpty) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Nomor rawat pasien belum dipilih / kosong!", "Peringatan",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+            return false;
+        }
+
+        java.util.LinkedHashSet<String> semuaRad = new java.util.LinkedHashSet<>();
+        java.util.LinkedHashSet<String> semuaRontgen = new java.util.LinkedHashSet<>();
+        java.util.LinkedHashSet<String> semuaCtScan = new java.util.LinkedHashSet<>();
+
+        // a. periksa_radiologi
+        String sqlPeriksaRad = "SELECT DISTINCT jpr.nm_perawatan FROM periksa_radiologi px " +
+                               "INNER JOIN jns_perawatan_radiologi jpr ON px.kd_jenis_prw = jpr.kd_jenis_prw " +
+                               "WHERE px.no_rawat = ? ORDER BY jpr.nm_perawatan ASC";
+        try (PreparedStatement psRad = koneksi.prepareStatement(sqlPeriksaRad)) {
+            psRad.setString(1, noRawat);
+            try (ResultSet rsRad = psRad.executeQuery()) {
+                while (rsRad.next()) {
+                    String nm = rsRad.getString("nm_perawatan");
+                    if (nm != null && !nm.trim().isEmpty()) {
+                        String clean = nm.trim();
+                        semuaRad.add(clean);
+                        String upper = clean.toUpperCase();
+                        if (upper.contains("CT") || upper.contains("SCAN") || upper.contains("MSCT")) {
+                            semuaCtScan.add(clean);
+                        } else {
+                            semuaRontgen.add(clean);
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+
+        // b. permintaan_radiologi & permintaan_pemeriksaan_radiologi
+        String sqlOrderRad = "SELECT DISTINCT jr.nm_perawatan FROM permintaan_radiologi pr " +
+                             "INNER JOIN permintaan_pemeriksaan_radiologi ppr ON pr.noorder = ppr.noorder " +
+                             "INNER JOIN jns_perawatan_radiologi jr ON ppr.kd_jenis_prw = jr.kd_jenis_prw " +
+                             "WHERE pr.no_rawat = ? ORDER BY jr.nm_perawatan ASC";
+        try (PreparedStatement psRad = koneksi.prepareStatement(sqlOrderRad)) {
+            psRad.setString(1, noRawat);
+            try (ResultSet rsRad = psRad.executeQuery()) {
+                while (rsRad.next()) {
+                    String nm = rsRad.getString("nm_perawatan");
+                    if (nm != null && !nm.trim().isEmpty()) {
+                        String clean = nm.trim();
+                        semuaRad.add(clean);
+                        String upper = clean.toUpperCase();
+                        if (upper.contains("CT") || upper.contains("SCAN") || upper.contains("MSCT")) {
+                            semuaCtScan.add(clean);
+                        } else {
+                            semuaRontgen.add(clean);
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+
+        if (!semuaRad.isEmpty()) {
+            String hasilSemua = String.join(", ", semuaRad);
+            if (txtPenunjangRad != null) txtPenunjangRad.setText(hasilSemua);
+
+            if (!semuaRontgen.isEmpty()) {
+                CekPenunjangRontgen.setSelected(true);
+                TPenunjangRontgenKet.setText(String.join(", ", semuaRontgen));
+            } else {
+                CekPenunjangRontgen.setSelected(true);
+                TPenunjangRontgenKet.setText(hasilSemua);
+            }
+
+            if (!semuaCtScan.isEmpty()) {
+                CekPenunjangCtScan.setSelected(true);
+                TPenunjangCtScanKet.setText(String.join(", ", semuaCtScan));
+            } else {
+                CekPenunjangCtScan.setSelected(false);
+                TPenunjangCtScanKet.setText("");
+            }
+
+            if (panelPenunjangMedis != null) panelPenunjangMedis.perbaruiSemuaBadge();
+            hitungProgresKep();
+            if (!silentIfEmpty) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Data pemeriksaan Radiologi (" + semuaRad.size() + " item) berhasil disalin!",
+                    "Sukses", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+            return true;
+        } else {
+            if (!silentIfEmpty) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Belum ada data permintaan maupun hasil pemeriksaan Radiologi untuk pasien ini.",
+                    "Informasi", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+            return false;
+        }
+    }
+
+    private boolean tarikSemuaDataPenunjang() {
+        return tarikDataPenunjang(TNoRw.getText(), true);
+    }
+
+    private boolean tarikDataPenunjang(String noRawat, boolean manual) {
+        if (noRawat == null || noRawat.trim().isEmpty()) {
+            if (manual) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Nomor rawat pasien belum dipilih / kosong!", "Peringatan",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+            return false;
+        }
+
+        boolean adaLab = tarikDataLaboratorium(true);
+        boolean adaRad = tarikDataRadiologi(true);
+        boolean adaEkg = false;
+
+        // Cek EKG (hasil_pemeriksaan_ekg)
+        String sqlEkg = "SELECT 1 FROM hasil_pemeriksaan_ekg WHERE no_rawat = ? LIMIT 1";
+        try (PreparedStatement psEkg = koneksi.prepareStatement(sqlEkg)) {
+            psEkg.setString(1, noRawat.trim());
+            try (ResultSet rsEkg = psEkg.executeQuery()) {
+                if (rsEkg.next()) {
+                    adaEkg = true;
+                    if (CekKolabEkgMonitor != null) {
+                        CekKolabEkgMonitor.setSelected(true);
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+
+        if (panelPenunjangMedis != null) panelPenunjangMedis.perbaruiSemuaBadge();
+        hitungProgresKep();
+
+        boolean adaData = adaLab || adaRad || adaEkg;
+        if (manual) {
+            if (adaData) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Data pemeriksaan penunjang (Laboratorium & Radiologi) berhasil disalin dari permintaan/hasil!",
+                    "Sukses", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                    "Belum ada data permintaan maupun hasil pemeriksaan penunjang (Lab & Radiologi) untuk pasien ini.",
+                    "Informasi", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        return adaData;
+    }
+
     private void isRawat() {
         try {
             ps = koneksi.prepareStatement(
@@ -13506,6 +14093,12 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // Pemberian Obat/Infus, akan dimuat ulang oleh getData() kalau
         // ternyata baris existing dipilih setelah ini.
         Valid.tabelKosong(tabModeObatInfus);
+        
+        // Auto-tarik data Triase IGD & Pemeriksaan Penunjang jika belum ada asesmen tersimpan
+        if (Sequel.cariInteger("select count(*) from penilaian_awal_keperawatan_igd where no_rawat=?", TNoRw.getText()) == 0) {
+            tarikDataTriase(TNoRw.getText(), false);
+            tarikDataPenunjang(TNoRw.getText(), false);
+        }
     }
 
     public void setNoRm(String norwt, Date tgl2) {
@@ -13913,6 +14506,23 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      * dengan KOLOM_KEP di atas. Dipakai bersama oleh ganti() dan simpan().
      */
     private String[] nilaiKep() {
+        if (txtPenunjangLab != null) {
+            String labTeks = txtPenunjangLab.getText().trim();
+            TPenunjangCekLabKet.setText(labTeks);
+            CekPenunjangCekLab.setSelected(!labTeks.isEmpty());
+        }
+        if (txtPenunjangRad != null) {
+            String radTeks = txtPenunjangRad.getText().trim();
+            TPenunjangRontgenKet.setText(radTeks);
+            CekPenunjangRontgen.setSelected(!radTeks.isEmpty());
+            if (radTeks.toUpperCase().matches(".*\\b(CT|SCAN|MSCT)\\b.*")) {
+                CekPenunjangCtScan.setSelected(true);
+                TPenunjangCtScanKet.setText(radTeks);
+            } else {
+                CekPenunjangCtScan.setSelected(false);
+                TPenunjangCtScanKet.setText("");
+            }
+        }
         boolean psiPerilakuAktif = CekPsiMasalahPerilaku != null && CekPsiMasalahPerilaku.isSelected();
         String masalahPrilaku = (psiPerilakuAktif && RbMasalahPrilakuYa.isSelected()) ? "Ya" : "Tidak";
         String masalahPrilakuSebutkan = (psiPerilakuAktif && RbMasalahPrilakuYa.isSelected())
@@ -14093,8 +14703,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                                 + " " + DTPKpPukulSaja.getJamSql())
                         : ((CekKpMasukRs.isSelected() || CekKpDipulangkan.isSelected() || CekKpMeninggal.isSelected()
                                 || CekKpDoa.isSelected() || CekKpDirujuk.isSelected()) ? DTPKpPukul.getTeksSql() : null),
-                TKpGcsE.getText(), TKpGcsV.getText(), TKpGcsM.getText(), TKpTd.getText(), TKpNadi.getText(),
-                kpNadiReguler, TKpSuhu.getText(), TKpPernafasan.getText(), TKpSpo.getText(),
+                potong(TKpGcsE.getText(), 25), potong(TKpGcsV.getText(), 25), potong(TKpGcsM.getText(), 25),
+                potong(TKpTd.getText(), 20), potong(TKpNadi.getText(), 15),
+                kpNadiReguler, potong(TKpSuhu.getText(), 15), potong(TKpPernafasan.getText(), 15), potong(TKpSpo.getText(), 15),
                 ya(CekKpMasukRs), TKpRuang.getText(), TKpPetugasPenerima.getText(), kpPendamping, kpTl,
                 TKpTindakanLanjutanKet.getText(),
                 ya(CekKpDirujuk), TKpDirujukKet.getText(), TKpDirujukAlasan.getText(), ya(CekKpDipulangkan),
