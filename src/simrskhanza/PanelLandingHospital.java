@@ -270,6 +270,7 @@ public class PanelLandingHospital extends JPanel {
         // 2. BOTTOM EXECUTIVE & OPERATIONAL DASHBOARD DOCK
         // -------------------------------------------------------------
         pnlDashboard = new PanelDashboardUtamaRSUD();
+        pnlDashboard.setVisible(false); // Sembunyikan dock saat belum login
         pnlStatusCard = null;
         lblClock = null;
         add(pnlDashboard, BorderLayout.SOUTH);
@@ -409,6 +410,7 @@ public class PanelLandingHospital extends JPanel {
         }
 
         if (pnlDashboard != null) {
+            pnlDashboard.setVisible(loggedIn);
             pnlDashboard.setLoginStatus(loggedIn, userName);
         }
 

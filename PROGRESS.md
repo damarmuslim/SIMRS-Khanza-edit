@@ -12,6 +12,7 @@ Implementasi rekomendasi Gemini Argon: menambahkan tampilan **Ringkasan Operasio
   - Mengintegrasikan `PanelDashboardUtamaRSUD` di bagian bawah (`BorderLayout.SOUTH`).
   - Menggantikan floating card status lama dengan panel identitas sesi terpadu di dalam dock.
   - Menyesuaikan vertical padding dan jarak antar elemen hero kiri (logo pemda, nama RSUD, alamat, pill badge sesi, notifikasi, dan tombol aksi) agar lebih rapat, kompak, dan proporsional persis sesuai acuan mockup.
+  - Mengatur visibilitas kondisional dock dashboard: dock disembunyikan secara default saat aplikasi dibuka/belum login (`setVisible(false)`), dan hanya ditampilkan saat pengguna telah berhasil login (`setVisible(loggedIn)`).
   - Meneruskan status login pengguna (`setLoginStatus`) ke dock dashboard secara otomatis.
 - **`src/simrskhanza/frmUtama.java`**:
   - Memperbaiki posisi dialog login (`DlgLogin` / "Masuk ke Sistem") agar selalu berada tepat di tengah layar (`setLocationRelativeTo(this)`).
