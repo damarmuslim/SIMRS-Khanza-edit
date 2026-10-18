@@ -1,3 +1,21 @@
+# Progress: Dock Dashboard Operasional & Mutu RS (Landing Screen Utama)
+
+Implementasi rekomendasi Gemini Argon: menambahkan tampilan **Ringkasan Operasional Harian & Indikator Mutu RS** (Clinical Light Dock) pada halaman landing utama RSUD Demang Sepulau Raya.
+
+## File yang Dikerjakan/Diubah
+- **`src/simrskhanza/PanelDashboardUtamaRSUD.java`** (File baru): Komponen dock dashboard eksekutif & operasional berbasis palet Clinical Light & Deep Medical Teal. Terdiri dari 3 panel:
+  1. **Operasional Harian**: Kunjungan IGD (Observasi & Ranap), Rawat Jalan (Selesai & Antre), Ketersediaan Bed (Kosong & Terisi dari total TT), Penunjang & Resep (Lab/Rad & Resep Farmasi).
+  2. **Indikator Mutu Barber-Johnson**: BOR (Okupansi %), ALOS (Lama Rawat Hari), TOI & BTO (Bulan Berjalan).
+  3. **Identitas Sesi & Server**: Pengguna Login, Status Sesi Aktif, Jam Server Realtime.
+  - Terintegrasi langsung dengan database SIMRS Khanza (`reg_periksa`, `kamar`, `periksa_lab`, `periksa_radiologi`, `resep_obat`, `kamar_inap`) secara asynchronous (`SwingWorker`) dengan sistem caching on-demand (zero background polling, 100% aman server).
+- **`src/simrskhanza/PanelLandingHospital.java`**:
+  - Mengintegrasikan `PanelDashboardUtamaRSUD` di bagian bawah (`BorderLayout.SOUTH`).
+  - Menggantikan floating card status lama dengan panel identitas sesi terpadu di dalam dock.
+  - Menyesuaikan vertical padding konten hero agar proporsi visual seimbang dan elegan di atas latar gerbang RSUD.
+  - Meneruskan status login pengguna (`setLoginStatus`) ke dock dashboard secara otomatis.
+
+---
+
 # Progress: Triase IGD PACS (RM 03-1)
 
 Ringkasan kerja pada fitur Triase IGD PACS (Patient's Acuity Categorization Scale) di `RMTriaseIGD.java`, dibuat untuk menyamakan aplikasi dengan formulir fisik RM 03-1 (RSUD Demang Sepulau Raya).
@@ -4082,3 +4100,38 @@ Formulir Pengkajian Keperawatan IGD ini dijadikan **cetak biru (blueprint)** unt
 - Artefak laporan `.jasper` dikompilasi dan disalin secara sinkron ke tiga direktori: `report/`, `dist/report/`, dan `build/report/` dengan ukuran dan konten identik (260.340 bytes).
 - Kompilasi dan pengemasan penuh `ant jar` berhasil (`BUILD SUCCESSFUL`).
 - Pengguna menyatakan task Transfer Pasien Antar Ruang selesai pada 2026-10-14; status di `RM_UI_STATUS.md` dinaikkan menjadi selesai (`[x]`) dan ditutup dengan tag `design-baru-transfer-pasien-antar-ruang`.
+
+## Pembaruan Alur Triase IGD, Auto-Tarik TTV, dan Master Template Keperawatan (2026-10-18)
+
+- **Abaikan Berkas Report Tidak Terpakai**: Berkas `report/rptLembarTriaseSkala3.jrxml` tidak digunakan di proyek dan dibiarkan sesuai permintaan pengguna.
+- **Perbaikan Urutan Pemanggilan `DlgIGD.java`**: Memperbaiki bug di baris 9164 & 9342 di mana `form.setNoRm(...)` sebelumnya dipanggil sebelum `form.emptTeks()`, sehingga data auto-tarik dari Triase terhapus oleh pengosongan form. Urutan diperbaiki menjadi `form.emptTeks()` terlebih dahulu baru kemudian `form.setNoRm(...)`.
+- **Konsistensi UI Tombol Keluar**: Aturan `.cursor/rules/rm-ui-consistency.mdc` diselaraskan agar tombol `Keluar` tetap disejajarkan di panel kiri bersama tombol aksi transaksi (Simpan, Baru/Batal, Ganti, Hapus, Cetak, Semua, Keluar) untuk menjaga kebiasaan operasional dokter dan perawat.
+- **Fitur Auto-Tarik Data Triase IGD ke Medis & Keperawatan IGD**:
+  - `RMPenilaianAwalKeperawatanIGD.java`: Ditambahkan method `tarikDataTriase(String norwt, boolean manual)` yang menarik data dari `data_triase_igd` (TD, Nadi, RR, Suhu, SpO2, BB, TB, Keluhan Utama) dengan fallback ke `pemeriksaan_ralan`. Pada `isRawat()`, penarikan data berjalan otomatis ketika nomor rawat belum memiliki asesmen tersimpan.
+  - `RMPenilaianAwalMedisIGD.java`: Mengaktifkan `TAMPILKAN_TTV_MEDIS = true` sehingga grid TTV dan auto-tarik data triase saat form dibuka berjalan secara otomatis tanpa harus klik manual.
+- **Tombol Refresh TTV**:
+  - `RMPenilaianAwalKeperawatanIGD.java`: Ditambahkan tombol "Tarik TTV Triase" pada slot baris kedua panel Keadaan Umum (Tanda Vital).
+  - `RMPenilaianAwalMedisIGD.java`: Tombol "Tarik TTV" diaktifkan dan terhubung langsung ke penarikan data triase/ralan dengan notifikasi umpan balik.
+- **Master Template & Preset Cepat Asuhan Keperawatan IGD**:
+  - Dibuat kelas `src/rekammedis/DlgMasterTemplateKeperawatan.java` lengkap dengan fitur CRUD, pencarian template, filter kepemilikan (umum RS / pribadi perawat), serta double-click/enter selection listener.
+  - Skema tabel migrasi `template_asuhan_keperawatan_igd` dibuat di `sik_template_asuhan_keperawatan_igd.sql` lengkap dengan 6 preset klinis standar IGD (Sesak Napas, Nyeri Dada ACS, KLL/Trauma, Kejang Demam Anak, Diare Akut GEA, Penurunan Kesadaran Stroke).
+  - Area Keluhan Utama pada Keperawatan IGD dibungkus dengan toolbar yang memuat:
+    1. Tombol "Master Template Keperawatan" untuk membuka dialog manajemen template.
+    2. Tombol dropdown "Template Cepat ▼" untuk memilih cepat template dari database (chip preset statis dihilangkan agar tampilan ringkas dan terpusat pada menu template cepat).
+- **Berkas Migrasi SQL Produksi**:
+  - `sik_penilaian_medis_igd_lokalis_canvas.sql`
+  - `sik_template_rencana_terapi_dokter.sql`
+  - `sik_template_ttv_dokter.sql`
+  - `sik_template_asuhan_keperawatan_igd.sql`
+  - Seluruh file migrasi telah diuji coba di database lokal `aik` (tabel user 1215 kolom aman) dan didokumentasikan di `DEPLOY.md`.
+- **Penyelarasan Tampilan & Penarikan Otomatis Pemeriksaan Penunjang Keperawatan IGD (Sama dengan Awal Medis)**:
+  - Komponen tindakan penunjang lama (checkbox dan textbox 1 baris yang sempit) digantikan dengan **`PanelPenunjangMedis`** mode 1x2 (Laborat & Radiologi) yang identik dengan Penilaian Awal Medis IGD:
+    1. **Toolbar Atas**: Tombol `[↺ Tarik Semua Penunjang (Lab & Radiologi)]` serta kotak informasi tips sinkronisasi.
+    2. **Kartu Laborat**: Dilengkapi badge status real-time (`● Hasil Pemeriksaan Tersedia` / `● Menunggu Hasil` / `● Belum Ada Data`), tombol `[↺ Cek Hasil]`, serta textarea scrollable multi-line yang memperlihatkan seluruh daftar tes lab yang diminta atau selesai.
+    3. **Kartu Radiologi**: Dilengkapi badge status real-time, tombol `[↺ Cek Hasil]`, serta textarea scrollable multi-line yang memuat seluruh rincian rontgen dan CT-Scan.
+  - **Sinkronisasi Otomatis**: Setiap perubahan teks atau penarikan data secara otomatis menjaga backward-compatibility dengan kolom legacy (`penunjang_cek_lab`, `penunjang_cek_lab_ket`, `penunjang_rontgen`, `penunjang_rontgen_ket`, `penunjang_ct_scan`, `penunjang_ct_scan_ket`) serta laporan cetak Jasper `rptCetakPenilaianAwalKeperawatanIGD.jrxml`.
+  - **Dukungan Tipe TEXT / Bebas Data Truncation**:
+    - Dibuat skrip migrasi `sik_penilaian_keperawatan_igd_penunjang_text.sql` (`MODIFY COLUMN penunjang_cek_lab_ket TEXT, penunjang_rontgen_ket TEXT, penunjang_ct_scan_ket TEXT`).
+    - Skrip telah diaplikasikan pada database pengujian `aik`.
+  - **Kompilasi & Build**: Berhasil dikompilasi dengan NetBeans Ant (`BUILD SUCCESSFUL`).
+

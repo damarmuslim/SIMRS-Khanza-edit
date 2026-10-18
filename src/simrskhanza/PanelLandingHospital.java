@@ -69,6 +69,7 @@ public class PanelLandingHospital extends JPanel {
     private final PillBadgePanel pnlBadge;
     private final JLabel lblNotice;
     private final JButton btnActionHero;
+    private final PanelDashboardUtamaRSUD pnlDashboard;
     private final StatusGlassCard pnlStatusCard;
     private final JLabel lblClock;
     private final Timer clockTimer;
@@ -99,7 +100,7 @@ public class PanelLandingHospital extends JPanel {
         JPanel pnlLeftContainer = new JPanel();
         pnlLeftContainer.setOpaque(false);
         pnlLeftContainer.setLayout(new BoxLayout(pnlLeftContainer, BoxLayout.Y_AXIS));
-        pnlLeftContainer.setBorder(BorderFactory.createEmptyBorder(120, 60, 20, 30));
+        pnlLeftContainer.setBorder(BorderFactory.createEmptyBorder(45, 55, 15, 30));
 
         // Row 1: Logo + Pemda & Subtitle
         JPanel pnlHeaderRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 14, 0));
@@ -264,16 +265,12 @@ public class PanelLandingHospital extends JPanel {
         add(pnlLeftContainer, BorderLayout.WEST);
 
         // -------------------------------------------------------------
-        // 2. BOTTOM RIGHT FLOATING STATUS CARD (Glassmorphism)
+        // 2. BOTTOM EXECUTIVE & OPERATIONAL DASHBOARD DOCK
         // -------------------------------------------------------------
-        JPanel pnlBottomArea = new JPanel(new FlowLayout(FlowLayout.RIGHT, 35, 25));
-        pnlBottomArea.setOpaque(false);
-
-        pnlStatusCard = new StatusGlassCard();
-        lblClock = pnlStatusCard.getClockLabel();
-        pnlBottomArea.add(pnlStatusCard);
-
-        add(pnlBottomArea, BorderLayout.SOUTH);
+        pnlDashboard = new PanelDashboardUtamaRSUD();
+        pnlStatusCard = null;
+        lblClock = null;
+        add(pnlDashboard, BorderLayout.SOUTH);
 
         // Realtime clock timer (updates every second)
         clockTimer = new Timer(1000, new ActionListener() {
@@ -407,12 +404,20 @@ public class PanelLandingHospital extends JPanel {
             } catch (Exception ignored) {}
         }
 
+        if (pnlDashboard != null) {
+            pnlDashboard.setLoginStatus(loggedIn, userName);
+        }
+
         if (pnlStatusCard != null) {
             pnlStatusCard.updateStatus(loggedIn, currentUserName, versiSimrs);
         }
 
         revalidate();
         repaint();
+    }
+
+    public PanelDashboardUtamaRSUD getDashboard() {
+        return pnlDashboard;
     }
 
     @Override
