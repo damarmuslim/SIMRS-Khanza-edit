@@ -13,6 +13,10 @@ Implementasi rekomendasi Gemini Argon: menambahkan tampilan **Ringkasan Operasio
   - Menggantikan floating card status lama dengan panel identitas sesi terpadu di dalam dock.
   - Menyesuaikan vertical padding dan jarak antar elemen hero kiri (logo pemda, nama RSUD, alamat, pill badge sesi, notifikasi, dan tombol aksi) agar lebih rapat, kompak, dan proporsional persis sesuai acuan mockup.
   - Meneruskan status login pengguna (`setLoginStatus`) ke dock dashboard secara otomatis.
+- **`src/simrskhanza/frmUtama.java`**:
+  - Memperbaiki posisi dialog login (`DlgLogin` / "Masuk ke Sistem") agar selalu berada tepat di tengah layar (`setLocationRelativeTo(this)`).
+  - Mengecualikan `DlgLogin` dari pemaksaan `setSize(PanelUtama)` di `initWindowFocusManager` / `angkatDialogAktifKeDepan`, yang sebelumnya menyebabkan dialog membesar ke pojok kiri atas dan menutupi teks hero.
+  - Memasang `GridBagLayout` pada `pnlLoginBg` untuk menjamin kartu login selalu berpusat horizontal dan vertikal.
 
 ---
 

@@ -1336,7 +1336,7 @@ public class frmUtama extends javax.swing.JFrame {
             java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("activeWindow", evt -> {
                 try {
                     java.awt.Window w = (java.awt.Window) evt.getNewValue();
-                    if (w instanceof javax.swing.JDialog && w.isVisible() && w != DlgHome) {
+                    if (w instanceof javax.swing.JDialog && w.isVisible() && w != DlgHome && w != DlgLogin) {
                         daftarDialogAktif.remove(w);
                         daftarDialogAktif.add(w);
                     }
@@ -1373,7 +1373,7 @@ public class frmUtama extends javax.swing.JFrame {
                     targetWindows.addAll(daftarDialogAktif);
                 } else {
                     for (java.awt.Window w : java.awt.Window.getWindows()) {
-                        if (w != this && w instanceof javax.swing.JDialog && w != DlgHome && w.isDisplayable() && w.isVisible()) {
+                        if (w != this && w instanceof javax.swing.JDialog && w != DlgHome && w != DlgLogin && w.isDisplayable() && w.isVisible()) {
                             targetWindows.add(w);
                         }
                     }
@@ -1381,7 +1381,7 @@ public class frmUtama extends javax.swing.JFrame {
 
                 for (int i = 0; i < targetWindows.size(); i++) {
                     java.awt.Window d = targetWindows.get(i);
-                    if (d != null && d.isDisplayable() && d.isVisible()) {
+                    if (d != null && d.isDisplayable() && d.isVisible() && d != DlgLogin) {
                         if (PanelUtama != null && PanelUtama.getWidth() > 100 && PanelUtama.getHeight() > 100) {
                             d.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
                             d.setLocationRelativeTo(PanelUtama);
@@ -8705,6 +8705,7 @@ public class frmUtama extends javax.swing.JFrame {
                 break;
             case "Log In":
                 isTutup();
+                DlgLogin.setSize(424, 464);
                 DlgLogin.setLocationRelativeTo(this);
                 DlgLogin.setVisible(true);
                 edAdmin.requestFocus();
@@ -51673,13 +51674,13 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             int totalH = cardBodyH + (pad * 2);
 
             DlgLogin.setSize(totalW, totalH);
-            DlgLogin.setLocationRelativeTo(null);
+            DlgLogin.setLocationRelativeTo(this);
             DlgLogin.setBackground(new java.awt.Color(0, 0, 0, 0));
 
             pnlLoginBg.removeAll();
-            pnlLoginBg.setLayout(null);
+            pnlLoginBg.setLayout(new java.awt.GridBagLayout());
             pnlLoginBg.setOpaque(false);
-            pnlLoginBg.setBounds(0, 0, totalW, totalH);
+            pnlLoginBg.setPreferredSize(new java.awt.Dimension(totalW, totalH));
 
             pnlLoginCard.removeAll();
             pnlLoginCard.setRadius(16);
@@ -51687,9 +51688,10 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             pnlLoginCard.setWarna(java.awt.Color.WHITE);
             pnlLoginCard.setWarnaGaris(new java.awt.Color(226, 232, 240));
             pnlLoginCard.setAlphaShadow(32);
+            pnlLoginCard.setPreferredSize(new java.awt.Dimension(totalW, totalH));
             pnlLoginCard.setBounds(0, 0, totalW, totalH);
             pnlLoginCard.setLayout(null);
-            pnlLoginBg.add(pnlLoginCard);
+            pnlLoginBg.add(pnlLoginCard, new java.awt.GridBagConstraints());
 
             // Inner content panel
             javax.swing.JPanel content = new javax.swing.JPanel(null);
