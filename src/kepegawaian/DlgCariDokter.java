@@ -60,7 +60,11 @@ public final class DlgCariDokter extends javax.swing.JDialog {
      * @param parent
      * @param modal */
     public DlgCariDokter(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+        this((java.awt.Window) parent, modal);
+    }
+
+    public DlgCariDokter(java.awt.Window parent, boolean modal) {
+        super(parent, modal ? java.awt.Dialog.ModalityType.APPLICATION_MODAL : java.awt.Dialog.ModalityType.MODELESS);
         initComponents();
         this.setLocation(10,2);
         setSize(656,250);
@@ -70,7 +74,6 @@ public final class DlgCariDokter extends javax.swing.JDialog {
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbKamar.setModel(tabMode);
-        //tbPenyakit.setDefaultRenderer(Object.class, new WarnaTable(panelJudul.getBackground(),tbPenyakit.getBackground()));
         tbKamar.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbKamar.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
