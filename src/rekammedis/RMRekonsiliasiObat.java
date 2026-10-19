@@ -54,11 +54,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JTabbedPane tabPaneUtama;
 
     // Sidebar Kiri (Identitas Pasien & Contekan Asesmen Medis)
-    private JLabel lblAvatarInitials, lblPasienNama, lblPasienJk, lblBadgeSumberAsesmen;
+    private JLabel lblAvatarInitials, lblPasienNama, lblPasienJk;
     private JTextField TNoRw, TNoRM, TTglLahir, TUmurStatus;
     private JTextArea txtContekanTataLaksana, txtContekanRPO;
     private JLabel lblContekanAlergi;
     private JPanel panelQuickChips;
+    private JButton btnToggleIGD, btnToggleRanap;
+    private String tataRanap = "", rpoRanap = "", alergiRanap = "";
+    private String tataIGD = "", rpoIGD = "", alergiIGD = "";
 
     // Header Input Rekonsiliasi (Tab 1)
     private JTextField KdPetugas, NmPetugas, NoRekonsiliasi, KetSumberLain;
@@ -238,24 +241,41 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel cardContekan = createCardPanel("CONTEKAN ASESMEN AWAL MEDIS", TEAL_LIGHT, MINT_BORDER);
         cardContekan.setLayout(new BorderLayout(6, 6));
 
-        JPanel pnlContekanHeader = new JPanel(new BorderLayout());
+        JPanel pnlContekanHeader = new JPanel(new BorderLayout(4, 0));
         pnlContekanHeader.setOpaque(false);
         pnlContekanHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
-        pnlContekanHeader.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
+        pnlContekanHeader.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 
-        JLabel lblSubJudul = new JLabel("Otomatis dari Asesmen Medis");
+        JLabel lblSubJudul = new JLabel("Sumber Asesmen:");
         lblSubJudul.setFont(new Font("Segoe UI", Font.BOLD, 11));
         lblSubJudul.setForeground(TEAL_DARK);
 
-        lblBadgeSumberAsesmen = new JLabel(" MEDIS ");
-        lblBadgeSumberAsesmen.setFont(new Font("Segoe UI", Font.BOLD, 9));
-        lblBadgeSumberAsesmen.setForeground(TEAL_DARK);
-        lblBadgeSumberAsesmen.setBackground(Color.WHITE);
-        lblBadgeSumberAsesmen.setOpaque(true);
-        lblBadgeSumberAsesmen.setBorder(new LineBorder(MINT_BORDER, 1, false));
+        JPanel pnlToggle = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 0));
+        pnlToggle.setOpaque(false);
+
+        btnToggleIGD = new JButton("IGD");
+        btnToggleIGD.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        btnToggleIGD.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnToggleIGD.setMargin(new Insets(1, 6, 1, 6));
+        btnToggleIGD.setBackground(Color.WHITE);
+        btnToggleIGD.setForeground(TEAL_DARK);
+        btnToggleIGD.setBorder(new LineBorder(MINT_BORDER, 1, false));
+        btnToggleIGD.addActionListener(e -> tampilkanContekanSumber("IGD"));
+
+        btnToggleRanap = new JButton("Ranap");
+        btnToggleRanap.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        btnToggleRanap.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnToggleRanap.setMargin(new Insets(1, 6, 1, 6));
+        btnToggleRanap.setBackground(Color.WHITE);
+        btnToggleRanap.setForeground(TEAL_DARK);
+        btnToggleRanap.setBorder(new LineBorder(MINT_BORDER, 1, false));
+        btnToggleRanap.addActionListener(e -> tampilkanContekanSumber("RANAP"));
+
+        pnlToggle.add(btnToggleIGD);
+        pnlToggle.add(btnToggleRanap);
 
         pnlContekanHeader.add(lblSubJudul, BorderLayout.WEST);
-        pnlContekanHeader.add(lblBadgeSumberAsesmen, BorderLayout.EAST);
+        pnlContekanHeader.add(pnlToggle, BorderLayout.EAST);
 
         JPanel contekanBody = new JPanel();
         contekanBody.setLayout(new BoxLayout(contekanBody, BoxLayout.Y_AXIS));
@@ -1051,18 +1071,19 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             try { if (rs != null) rs.close(); if (ps != null) ps.close(); } catch (Exception e) {}
         }
 
-        // 2. Tarik otomatis Contekan Asesmen Awal Medis (Ranap -> IGD -> Ralan)
-        String tata = "", rpo = "", alergi = "", sumber = "TIDAK ADA";
+        // 2. Tarik otomatis Contekan Asesmen Awal Medis (Ranap & IGD)
+        tataRanap = ""; rpoRanap = ""; alergiRanap = "";
+        tataIGD = ""; rpoIGD = ""; alergiIGD = "";
+
+        // A. Cek Asesmen Medis Ranap
         try {
-            // Cek Ranap
             ps = koneksi.prepareStatement("SELECT tata, rpo, alergi FROM penilaian_medis_ranap WHERE no_rawat=?");
             ps.setString(1, norwt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                tata = rs.getString("tata");
-                rpo = rs.getString("rpo");
-                alergi = rs.getString("alergi");
-                sumber = "RANAP";
+                tataRanap = rs.getString("tata") != null ? rs.getString("tata") : "";
+                rpoRanap = rs.getString("rpo") != null ? rs.getString("rpo") : "";
+                alergiRanap = rs.getString("alergi") != null ? rs.getString("alergi") : "";
             }
         } catch (Exception e) {
             System.out.println("Notif Cek Ranap: " + e);
@@ -1070,36 +1091,32 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             try { if (rs != null) rs.close(); if (ps != null) ps.close(); } catch (Exception e) {}
         }
 
-        if (tata.isEmpty() && rpo.isEmpty()) {
-            try {
-                // Cek IGD
-                ps = koneksi.prepareStatement("SELECT tata, rpo, alergi FROM penilaian_medis_igd WHERE no_rawat=?");
-                ps.setString(1, norwt);
-                rs = ps.executeQuery();
-                if (rs.next()) {
-                    tata = rs.getString("tata");
-                    rpo = rs.getString("rpo");
-                    alergi = rs.getString("alergi");
-                    sumber = "IGD";
-                }
-            } catch (Exception e) {
-                System.out.println("Notif Cek IGD: " + e);
-            } finally {
-                try { if (rs != null) rs.close(); if (ps != null) ps.close(); } catch (Exception e) {}
+        // B. Cek Asesmen Medis IGD
+        try {
+            ps = koneksi.prepareStatement("SELECT tata, rpo, alergi FROM penilaian_medis_igd WHERE no_rawat=?");
+            ps.setString(1, norwt);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                tataIGD = rs.getString("tata") != null ? rs.getString("tata") : "";
+                rpoIGD = rs.getString("rpo") != null ? rs.getString("rpo") : "";
+                alergiIGD = rs.getString("alergi") != null ? rs.getString("alergi") : "";
             }
+        } catch (Exception e) {
+            System.out.println("Notif Cek IGD: " + e);
+        } finally {
+            try { if (rs != null) rs.close(); if (ps != null) ps.close(); } catch (Exception e) {}
         }
 
-        if (tata.isEmpty() && rpo.isEmpty()) {
+        // C. Cek Ralan sebagai cadangan jika IGD kosong
+        if (tataIGD.isEmpty() && rpoIGD.isEmpty()) {
             try {
-                // Cek Ralan
                 ps = koneksi.prepareStatement("SELECT tata, rpo, alergi FROM penilaian_medis_ralan WHERE no_rawat=?");
                 ps.setString(1, norwt);
                 rs = ps.executeQuery();
                 if (rs.next()) {
-                    tata = rs.getString("tata");
-                    rpo = rs.getString("rpo");
-                    alergi = rs.getString("alergi");
-                    sumber = "RALAN";
+                    tataIGD = rs.getString("tata") != null ? rs.getString("tata") : "";
+                    rpoIGD = rs.getString("rpo") != null ? rs.getString("rpo") : "";
+                    alergiIGD = rs.getString("alergi") != null ? rs.getString("alergi") : "";
                 }
             } catch (Exception e) {
                 System.out.println("Notif Cek Ralan: " + e);
@@ -1108,13 +1125,54 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             }
         }
 
-        lblBadgeSumberAsesmen.setText(" " + sumber + " ");
-        txtContekanTataLaksana.setText((tata == null || tata.trim().isEmpty()) ? "(Belum ada catatan Tata Laksana di Asesmen Medis)" : tata.trim());
-        txtContekanRPO.setText((rpo == null || rpo.trim().isEmpty()) ? "(Belum ada catatan Riwayat Obat di Asesmen Medis)" : rpo.trim());
-        lblContekanAlergi.setText("Alergi Medis: " + ((alergi == null || alergi.trim().isEmpty()) ? "-" : alergi.trim()));
+        boolean adaRanap = !tataRanap.trim().isEmpty() || !rpoRanap.trim().isEmpty();
+        boolean adaIGD = !tataIGD.trim().isEmpty() || !rpoIGD.trim().isEmpty();
 
-        generateQuickChips(tata);
+        btnToggleRanap.setText(adaRanap ? "Ranap" : "Ranap (-)");
+        btnToggleIGD.setText(adaIGD ? "IGD" : "IGD (-)");
+
+        // Default: buka yang ada isinya (prioritas Ranap jika ada, jika tidak ada buka IGD)
+        if (adaRanap) {
+            tampilkanContekanSumber("RANAP");
+        } else if (adaIGD) {
+            tampilkanContekanSumber("IGD");
+        } else {
+            tampilkanContekanSumber("RANAP");
+        }
+
         autoNomorRekonsiliasi();
+    }
+
+    private void tampilkanContekanSumber(String sumber) {
+        if ("IGD".equalsIgnoreCase(sumber)) {
+            btnToggleIGD.setBackground(TEAL_MAIN);
+            btnToggleIGD.setForeground(Color.WHITE);
+            btnToggleIGD.setBorder(new LineBorder(TEAL_DARK, 1, false));
+
+            btnToggleRanap.setBackground(Color.WHITE);
+            btnToggleRanap.setForeground(TEAL_DARK);
+            btnToggleRanap.setBorder(new LineBorder(MINT_BORDER, 1, false));
+
+            txtContekanTataLaksana.setText((tataIGD == null || tataIGD.trim().isEmpty()) ? "(Belum ada catatan Tata Laksana di Asesmen Medis IGD)" : tataIGD.trim());
+            txtContekanRPO.setText((rpoIGD == null || rpoIGD.trim().isEmpty()) ? "(Belum ada catatan Riwayat Obat di Asesmen Medis IGD)" : rpoIGD.trim());
+            lblContekanAlergi.setText("Alergi Medis (IGD): " + ((alergiIGD == null || alergiIGD.trim().isEmpty()) ? "-" : alergiIGD.trim()));
+            generateQuickChips(tataIGD);
+        } else {
+            btnToggleRanap.setBackground(TEAL_MAIN);
+            btnToggleRanap.setForeground(Color.WHITE);
+            btnToggleRanap.setBorder(new LineBorder(TEAL_DARK, 1, false));
+
+            btnToggleIGD.setBackground(Color.WHITE);
+            btnToggleIGD.setForeground(TEAL_DARK);
+            btnToggleIGD.setBorder(new LineBorder(MINT_BORDER, 1, false));
+
+            txtContekanTataLaksana.setText((tataRanap == null || tataRanap.trim().isEmpty()) ? "(Belum ada catatan Tata Laksana di Asesmen Medis Ranap)" : tataRanap.trim());
+            txtContekanRPO.setText((rpoRanap == null || rpoRanap.trim().isEmpty()) ? "(Belum ada catatan Riwayat Obat di Asesmen Medis Ranap)" : rpoRanap.trim());
+            lblContekanAlergi.setText("Alergi Medis (Ranap): " + ((alergiRanap == null || alergiRanap.trim().isEmpty()) ? "-" : alergiRanap.trim()));
+            generateQuickChips(tataRanap);
+        }
+        txtContekanTataLaksana.setCaretPosition(0);
+        txtContekanRPO.setCaretPosition(0);
     }
 
     private String getInitials(String name) {
