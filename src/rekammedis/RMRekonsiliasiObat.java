@@ -88,10 +88,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private Rectangle normalBounds = null;
     private JButton btnMaximize;
 
-    // Komponen Alergi Obat (Tab 1)
-    private JTextArea AlergiObat, ManifestasiAlergi;
-    private JComboBox<String> CmbDampakAlergi;
-
     // Komponen Tab 2 (Data Rekonsiliasi & Validasi Apoteker)
     private JTable tbDataRekon;
     private DefaultTableModel tabModeDataRekon;
@@ -390,26 +386,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelAlergiContekan.setMinimumSize(new Dimension(330, 36));
         panelAlergiContekan.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
 
-        lblContekanAlergi = new JLabel("Alergi Medis: -");
+        lblContekanAlergi = new JLabel("Riwayat Alergi Medis Pasien: -");
         lblContekanAlergi.setFont(new Font("Segoe UI", Font.BOLD, 11));
         lblContekanAlergi.setForeground(new Color(159, 18, 57));
 
-        JButton btnSalinAlergi = new JButton(" Salin Alergi");
-        btnSalinAlergi.setIcon(getIcon("/picture/editcopy.png"));
-        btnSalinAlergi.setBackground(new Color(225, 29, 72));
-        btnSalinAlergi.setForeground(Color.WHITE);
-        btnSalinAlergi.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        btnSalinAlergi.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnSalinAlergi.addActionListener(e -> {
-            String teks = lblContekanAlergi.getText().replace("Alergi Medis:", "").trim();
-            if (!teks.equals("-") && !teks.isEmpty()) {
-                AlergiObat.setText(teks);
-                AlergiObat.requestFocus();
-            }
-        });
-
         panelAlergiContekan.add(lblContekanAlergi, BorderLayout.CENTER);
-        panelAlergiContekan.add(btnSalinAlergi, BorderLayout.EAST);
 
         contekanBody.add(pnlContekanHeader);
         contekanBody.add(Box.createVerticalStrut(5));
@@ -429,62 +410,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         cardContekan.add(contekanBody, BorderLayout.CENTER);
 
-        // Card 3: Form Input Riwayat Alergi Obat Pasien (Dipindah ke Sidebar Kiri)
-        JPanel cardAlergi = createCardPanel("RIWAYAT ALERGI OBAT (KLINIS)", Color.WHITE, SLATE_BORDER);
-        cardAlergi.setLayout(new BoxLayout(cardAlergi, BoxLayout.Y_AXIS));
-        cardAlergi.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        AlergiObat = new JTextArea(2, 18);
-        AlergiObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        AlergiObat.setLineWrap(true);
-        AlergiObat.setWrapStyleWord(true);
-
-        ManifestasiAlergi = new JTextArea(2, 18);
-        ManifestasiAlergi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        ManifestasiAlergi.setLineWrap(true);
-        ManifestasiAlergi.setWrapStyleWord(true);
-
-        CmbDampakAlergi = new JComboBox<>(new String[]{"-", "Ringan", "Sedang", "Berat"});
-        CmbDampakAlergi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-
-        JPanel pAlergi1 = new JPanel(new BorderLayout(0, 2));
-        pAlergi1.setOpaque(false);
-        pAlergi1.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JLabel lAlergi1 = new JLabel("Obat Penyebab Alergi:");
-        lAlergi1.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        lAlergi1.setForeground(new Color(71, 85, 105));
-        pAlergi1.add(lAlergi1, BorderLayout.NORTH);
-        pAlergi1.add(new JScrollPane(AlergiObat), BorderLayout.CENTER);
-
-        JPanel pAlergi2 = new JPanel(new BorderLayout(0, 2));
-        pAlergi2.setOpaque(false);
-        pAlergi2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JLabel lAlergi2 = new JLabel("Gejala / Manifestasi Klinis:");
-        lAlergi2.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        lAlergi2.setForeground(new Color(71, 85, 105));
-        pAlergi2.add(lAlergi2, BorderLayout.NORTH);
-        pAlergi2.add(new JScrollPane(ManifestasiAlergi), BorderLayout.CENTER);
-
-        JPanel pAlergi3 = new JPanel(new BorderLayout(0, 2));
-        pAlergi3.setOpaque(false);
-        pAlergi3.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JLabel lAlergi3 = new JLabel("Dampak Alergi:");
-        lAlergi3.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        lAlergi3.setForeground(new Color(71, 85, 105));
-        pAlergi3.add(lAlergi3, BorderLayout.NORTH);
-        pAlergi3.add(CmbDampakAlergi, BorderLayout.CENTER);
-
-        cardAlergi.add(pAlergi1);
-        cardAlergi.add(Box.createVerticalStrut(5));
-        cardAlergi.add(pAlergi2);
-        cardAlergi.add(Box.createVerticalStrut(5));
-        cardAlergi.add(pAlergi3);
-
         sidebarKiri.add(cardIdentitas);
         sidebarKiri.add(Box.createVerticalStrut(8));
         sidebarKiri.add(cardContekan);
-        sidebarKiri.add(Box.createVerticalStrut(8));
-        sidebarKiri.add(cardAlergi);
 
         // ---------------------------------------------------------------------
         // PANEL KANAN: PARAMETER (KOMPAK 2 BARIS) + INLINE TABLE LUAS & TINGGI
@@ -768,8 +696,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         spSidebar.getViewport().setOpaque(false);
         spSidebar.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         spSidebar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        spSidebar.getVerticalScrollBar().setUnitIncrement(16);
+        spSidebar.getVerticalScrollBar().setUnitIncrement(24);
         spSidebar.setPreferredSize(new Dimension(365, 600));
+
+        // Solusi Masalah Klasik Swing: Smart Mouse Wheel Forwarding dari TextArea ke parent ScrollPane
+        pasangSmartMouseWheel(spTataLaksana, txtContekanTataLaksana, spSidebar);
+        pasangSmartMouseWheel(spRPO, txtContekanRPO, spSidebar);
 
         container.add(spSidebar, BorderLayout.WEST);
         container.add(mainKanan, BorderLayout.CENTER);
@@ -1088,6 +1020,29 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             btnMaximize.setToolTipText("Perbesar Layar Penuh (Maximize)");
             isMaximized = false;
         }
+    }
+
+    /**
+     * Solusi Masalah Klasik Swing: Mencegah scroll wheel macet saat mouse berada di atas TextArea
+     * Jika textarea tidak butuh scrollbar atau sudah mentok atas/bawah, event roda mouse diteruskan ke parent ScrollPane.
+     */
+    private void pasangSmartMouseWheel(JScrollPane childScroll, JTextArea childText, JScrollPane parentScroll) {
+        MouseWheelListener mwl = e -> {
+            JScrollBar bar = childScroll.getVerticalScrollBar();
+            boolean canScrollUp = (bar != null && bar.isVisible() && bar.getValue() > bar.getMinimum());
+            boolean canScrollDown = (bar != null && bar.isVisible() && (bar.getValue() + bar.getVisibleAmount() < bar.getMaximum()));
+            int rot = e.getWheelRotation();
+
+            if (rot < 0 && !canScrollUp) {
+                parentScroll.dispatchEvent(SwingUtilities.convertMouseEvent((Component) e.getSource(), e, parentScroll));
+            } else if (rot > 0 && !canScrollDown) {
+                parentScroll.dispatchEvent(SwingUtilities.convertMouseEvent((Component) e.getSource(), e, parentScroll));
+            } else if (bar == null || !bar.isVisible() || bar.getMaximum() <= bar.getVisibleAmount()) {
+                parentScroll.dispatchEvent(SwingUtilities.convertMouseEvent((Component) e.getSource(), e, parentScroll));
+            }
+        };
+        childText.addMouseWheelListener(mwl);
+        childScroll.addMouseWheelListener(mwl);
     }
 
     private void bukaDialogCariObat() {
@@ -1487,9 +1442,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
     public void emptTeks() {
         tabModeObat.setRowCount(0);
-        AlergiObat.setText("");
-        ManifestasiAlergi.setText("");
-        CmbDampakAlergi.setSelectedIndex(0);
         rbAdmisi.setSelected(true);
         rbPakaiYa.setSelected(true);
         rbSumberRM.setSelected(true);
@@ -1538,9 +1490,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         String tglJam = new SimpleDateFormat("yyyy-MM-dd").format((Date) DTPTgl.getValue()) + " "
                 + new SimpleDateFormat("HH:mm:ss").format((Date) DTPJam.getValue());
         String saat = rbAdmisi.isSelected() ? "Admisi" : (rbTransfer.isSelected() ? "Transfer Antar Ruang" : "Pulang");
-        String alergi = AlergiObat.getText().trim().isEmpty() ? "-" : AlergiObat.getText().trim();
-        String manifestasi = ManifestasiAlergi.getText().trim().isEmpty() ? "-" : ManifestasiAlergi.getText().trim();
-        String dampak = CmbDampakAlergi.getSelectedItem().toString();
+        String alergi = "-";
+        String manifestasi = "-";
+        String dampak = "-";
         String nip = KdPetugas.getText().trim();
         String penggunaanObat = rbPakaiYa.isSelected() ? "Ya" : "Tidak";
         String sumberInfo = rbSumberRM.isSelected() ? "Status Pasien di Rekam Medis" :
@@ -1679,11 +1631,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 } else {
                     rbSumberRM.setSelected(true);
                 }
-
-                // Alergi
-                AlergiObat.setText(rs.getString("alergi_obat"));
-                ManifestasiAlergi.setText(rs.getString("manifestasi_alergi"));
-                CmbDampakAlergi.setSelectedItem(rs.getString("dampak_alergi"));
 
                 // Petugas
                 KdPetugas.setText(rs.getString("nip"));
