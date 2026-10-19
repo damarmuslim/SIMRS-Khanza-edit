@@ -671,6 +671,10 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
                 boolean isSelected = isRowSelected(row);
+                int selRow = getSelectedRow();
+                int selCol = getSelectedColumn();
+                boolean isCurrentCell = (row == selRow && column == selCol);
+
                 boolean isCol6Disabled = false;
                 if (column == 6) {
                     String tindak = String.valueOf(getValueAt(row, 5));
@@ -679,13 +683,26 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     }
                 }
 
-                if (isSelected) {
-                    // Baris terpilih 100% utuh Soft Ice Mint seragam dari kolom awal sampai akhir
+                if (isCurrentCell && !isCol6Disabled) {
+                    // Sel aktif yang sedang difokuskan (posisi TAB / kursor): Latar Putih Bersih + Ring Aksen Teal
+                    c.setBackground(Color.WHITE);
+                    c.setForeground(new Color(15, 23, 42)); // Slate 900 gelap tajam
+                    if (c instanceof JComponent) {
+                        ((JComponent) c).setBorder(new CompoundBorder(
+                            new LineBorder(new Color(13, 148, 136), 2, true), // Ring Teal 2px
+                            new EmptyBorder(1, 6, 1, 6)
+                        ));
+                    }
+                } else if (isSelected) {
+                    // Baris terpilih lainnya tetap Soft Ice Mint yang sejuk
                     c.setBackground(new Color(204, 251, 241)); // #CCFBF1 Soft Ice Mint Selection
                     if (isCol6Disabled) {
                         c.setForeground(new Color(100, 116, 139)); // Slate muted saat kolom terkunci
                     } else {
                         c.setForeground(new Color(15, 23, 42));    // #0F172A Slate 900 gelap tajam
+                    }
+                    if (c instanceof JComponent) {
+                        ((JComponent) c).setBorder(new EmptyBorder(0, 8, 0, 8));
                     }
                 } else {
                     // Baris tidak terpilih: zebra striping rapi seragam
@@ -694,6 +711,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                         c.setForeground(new Color(148, 163, 184)); // Muted saat kolom terkunci
                     } else {
                         c.setForeground(new Color(30, 41, 59));
+                    }
+                    if (c instanceof JComponent) {
+                        ((JComponent) c).setBorder(new EmptyBorder(0, 8, 0, 8));
                     }
                 }
 
@@ -705,7 +725,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     } else {
                         lbl.setHorizontalAlignment(SwingConstants.LEFT);
                     }
-                    lbl.setBorder(new EmptyBorder(0, 8, 0, 8));
                 }
 
                 return c;
@@ -721,6 +740,27 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         tbObat.setShowVerticalLines(true);
         tbObat.setSurrendersFocusOnKeystroke(true);
         tbObat.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+
+        // Pasang aksi tombol TAB dan Shift+TAB pada JTable (Pindah kolom & langsung buka mode edit)
+        tbObat.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "tabMaju"
+        );
+        tbObat.getActionMap().put("tabMaju", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pindahKolomTab(true);
+            }
+        });
+
+        tbObat.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_DOWN_MASK), "tabMundur"
+        );
+        tbObat.getActionMap().put("tabMundur", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pindahKolomTab(false);
+            }
+        });
 
         tbObat.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 11));
         tbObat.getTableHeader().setBackground(new Color(241, 245, 249));
@@ -746,7 +786,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         tbObat.getColumnModel().getColumn(3).setCellEditor(createModernTextEditor(SwingConstants.CENTER));
         tbObat.getColumnModel().getColumn(6).setCellEditor(createModernTextEditor(SwingConstants.LEFT));
 
-        // ComboBox Cara Pemberian (Kolom 4) dengan Ring Teal Modern (Single Click)
+        // ComboBox Cara Pemberian (Kolom 4) dengan Ring Teal Modern (Single Click + TAB navigation)
         JComboBox<String> cmbCara = new JComboBox<>(new String[]{
             "Oral", "Injeksi IV", "Injeksi IM", "Injeksi SC", "Infus", "Inhalasi", "Sublingual", "Topikal", "Rektal", "Tetes"
         });
@@ -755,6 +795,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         cmbCara.setBackground(Color.WHITE);
         cmbCara.setForeground(new Color(15, 23, 42));
         cmbCara.setBorder(new LineBorder(new Color(13, 148, 136), 2, true));
+        cmbCara.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        cmbCara.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        cmbCara.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    pindahKolomTab(!e.isShiftDown());
+                    e.consume();
+                }
+            }
+        });
         DefaultCellEditor editorCara = new DefaultCellEditor(cmbCara) {
             @Override
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
@@ -770,7 +821,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         editorCara.setClickCountToStart(1);
         tbObat.getColumnModel().getColumn(4).setCellEditor(editorCara);
 
-        // ComboBox Tindak Lanjut DPJP (Kolom 5) dengan Ring Teal Modern (Single Click)
+        // ComboBox Tindak Lanjut DPJP (Kolom 5) dengan Ring Teal Modern (Single Click + TAB navigation)
         JComboBox<String> cmbTindak = new JComboBox<>(new String[]{
             "Lanjut aturan pakai sama", "Lanjut aturan pakai berubah", "Stop"
         });
@@ -778,6 +829,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         cmbTindak.setBackground(Color.WHITE);
         cmbTindak.setForeground(new Color(15, 23, 42));
         cmbTindak.setBorder(new LineBorder(new Color(13, 148, 136), 2, true));
+        cmbTindak.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        cmbTindak.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        cmbTindak.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    pindahKolomTab(!e.isShiftDown());
+                    e.consume();
+                }
+            }
+        });
         DefaultCellEditor editorTindak = new DefaultCellEditor(cmbTindak) {
             @Override
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
@@ -1202,6 +1264,77 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         dlgObat.setVisible(true);
     }
 
+    private void pindahKolomTab(final boolean maju) {
+        int row = tbObat.getSelectedRow();
+        int col = tbObat.getSelectedColumn();
+        if (row == -1) row = 0;
+        if (col == -1) col = 1;
+
+        if (tbObat.isEditing()) {
+            TableCellEditor ed = tbObat.getCellEditor();
+            if (ed != null) {
+                ed.stopCellEditing();
+            }
+        }
+
+        int nextRow = row;
+        int nextCol = col;
+
+        while (true) {
+            if (maju) {
+                nextCol++;
+                if (nextCol >= tbObat.getColumnCount()) {
+                    nextCol = 1; // Lewati kolom 0 (Kode tersembunyi)
+                    nextRow++;
+                }
+                if (nextRow >= tbObat.getRowCount()) {
+                    // Otomatis tambah baris baru di ujung tabel
+                    tabModeObat.addRow(new Object[]{"", "", "", "", "Oral", "Lanjut aturan pakai sama", "-"});
+                    updateBadgeObat();
+                    nextRow = tabModeObat.getRowCount() - 1;
+                    nextCol = 1;
+                }
+            } else {
+                nextCol--;
+                if (nextCol < 1) {
+                    nextCol = tbObat.getColumnCount() - 1;
+                    nextRow--;
+                }
+                if (nextRow < 0) {
+                    nextRow = 0;
+                    nextCol = 1;
+                    break;
+                }
+            }
+
+            if (tbObat.isCellEditable(nextRow, nextCol)) {
+                break;
+            }
+        }
+
+        final int targetRow = nextRow;
+        final int targetCol = nextCol;
+
+        tbObat.changeSelection(targetRow, targetCol, false, false);
+        tbObat.scrollRectToVisible(tbObat.getCellRect(targetRow, targetCol, true));
+
+        SwingUtilities.invokeLater(() -> {
+            tbObat.editCellAt(targetRow, targetCol);
+            Component editorComp = tbObat.getEditorComponent();
+            if (editorComp != null) {
+                editorComp.requestFocusInWindow();
+                if (editorComp instanceof JTextField) {
+                    ((JTextField) editorComp).selectAll();
+                } else if (editorComp instanceof JComboBox) {
+                    JComboBox<?> cb = (JComboBox<?>) editorComp;
+                    if (cb.isEditable() && cb.getEditor().getEditorComponent() instanceof JTextField) {
+                        ((JTextField) cb.getEditor().getEditorComponent()).selectAll();
+                    }
+                }
+            }
+        });
+    }
+
     private DefaultCellEditor createModernTextEditor(final int align) {
         final JTextField txt = new JTextField();
         txt.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -1212,6 +1345,19 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             new LineBorder(new Color(13, 148, 136), 2, true),
             new EmptyBorder(1, 6, 1, 6)
         ));
+
+        // Tangani tombol TAB agar langsung pindah dan buka mode edit sel berikutnya
+        txt.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        txt.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        txt.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    pindahKolomTab(!e.isShiftDown());
+                    e.consume();
+                }
+            }
+        });
 
         DefaultCellEditor editor = new DefaultCellEditor(txt) {
             @Override
@@ -1261,6 +1407,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             new LineBorder(new Color(13, 148, 136), 2, true),
             new EmptyBorder(1, 6, 1, 6)
         ));
+
+        // Tangani tombol TAB di kolom nama obat agar langsung lompat ke dosis
+        txtNamaObatEditor.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        txtNamaObatEditor.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
+
         DefaultCellEditor cellEditorObat = new DefaultCellEditor(txtNamaObatEditor) {
             @Override
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
@@ -1316,6 +1467,15 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         txtNamaObatEditor.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    if (popupSaranObat.isVisible()) {
+                        popupSaranObat.setVisible(false);
+                    }
+                    pindahKolomTab(!e.isShiftDown());
+                    e.consume();
+                    return;
+                }
+
                 if (popupSaranObat.isVisible()) {
                     if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                         int next = listSaranObat.getSelectedIndex() + 1;
