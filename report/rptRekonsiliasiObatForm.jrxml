@@ -13,7 +13,7 @@
      dgn rptCetakPenilaianAwalKeperawatanIGD.jrxml / rptLembarTriaseSkala*.jrxml
      (parameter "finger" = teks berisi RS+nama petugas+ID SHA1 sidik jari
      (fallback ke NIP kalau blm rekam sidik jari)+tanggal, di-encode QR). -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptRekonsiliasiObatForm" pageWidth="609" pageHeight="935" columnWidth="569" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7a2e3d10-4c1a-4b6e-9c2a-5f6d8e1b0a01">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptRekonsiliasiObatForm" language="groovy" pageWidth="609" pageHeight="935" columnWidth="569" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7a2e3d10-4c1a-4b6e-9c2a-5f6d8e1b0a01">
 	<parameter name="namars" class="java.lang.String"/>
 	<parameter name="alamatrs" class="java.lang.String"/>
 	<parameter name="kotars" class="java.lang.String"/>
@@ -42,7 +42,7 @@
 	<field name="tindak_lanjut" class="java.lang.String"/>
 	<field name="perubahan_aturan_pakai" class="java.lang.String"/>
 	<title>
-		<band height="160" splitType="Stretch">
+		<band height="160" splitType="Prevent">
 			<!-- Logo kiri = lambang Kabupaten (aset statis tetap, bukan dari
 			     setting DB - foto fisik user selalu pakai logo yg sama utk
 			     RS ini) - path relatif "report/..." mengikuti konvensi app
@@ -184,7 +184,7 @@
 				</textField>
 				<staticText>
 					<reportElement x="20" y="14" width="240" height="12" uuid="a1b2c3d4-0001-4000-8000-000000000015"/>
-					<textElement><font fontName="Tahoma" size="7.5"/></textElement>
+					<textElement><font fontName="Tahoma" size="8"/></textElement>
 					<text><![CDATA[Ya, Dengan Rincian Sebagai Berikut]]></text>
 				</staticText>
 				<rectangle>
@@ -200,22 +200,22 @@
 				</textField>
 				<staticText>
 					<reportElement x="292" y="14" width="277" height="12" uuid="a1b2c3d4-0001-4000-8000-000000000018"/>
-					<textElement><font fontName="Tahoma" size="7.5"/></textElement>
+					<textElement><font fontName="Tahoma" size="8"/></textElement>
 					<text><![CDATA[Tidak Menggunakan Obat Sebelum Admisi]]></text>
 				</staticText>
 			</frame>
 		</band>
 	</title>
 	<pageHeader>
-		<band splitType="Stretch"/>
+		<band splitType="Prevent"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="30" splitType="Stretch">
+		<band height="30" splitType="Prevent">
 			<rectangle>
 				<reportElement mode="Opaque" x="0" y="0" width="569" height="15" backcolor="#F0F0DC" uuid="a1b2c3d4-0001-4000-8000-000000000019"/>
 				<graphicElement><pen lineWidth="0.5"/></graphicElement>
 			</rectangle>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="0" y="0" width="569" height="15" uuid="a1b2c3d4-0001-4000-8000-00000000002a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8" isBold="true"/>
@@ -268,11 +268,9 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="36" splitType="Stretch">
-			<textField>
-				<reportElement x="0" y="0" width="20" height="36" uuid="a1b2c3d4-0001-4000-8000-000000000021">
-					<property name="net.sf.jasperreports.export.pdf.tag.full.width" value="true"/>
-				</reportElement>
+		<band height="36" splitType="Prevent">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="0" width="20" height="36" uuid="a1b2c3d4-0001-4000-8000-000000000021"/>
 				<box><pen lineWidth="0.5"/></box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"><font fontName="Tahoma" size="7"/></textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
@@ -310,7 +308,7 @@
 				<reportElement x="289" y="3" width="7" height="7" uuid="a1b2c3d4-0001-4000-8000-000000000027"/>
 				<graphicElement><pen lineWidth="0.5"/></graphicElement>
 			</rectangle>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="289" y="2" width="7" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000028">
 					<printWhenExpression><![CDATA[new Boolean("Lanjut aturan pakai sama".equals($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
@@ -318,15 +316,15 @@
 				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="299" y="1" width="134" height="10" uuid="a1b2c3d4-0001-4000-8000-000000000029"/>
-				<textElement><font fontName="Tahoma" size="6.5"/></textElement>
+				<reportElement x="299" y="1" width="134" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000029"/>
+				<textElement><font fontName="Tahoma" size="6"/></textElement>
 				<text><![CDATA[Lanjut aturan pakai sama]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement x="289" y="14" width="7" height="7" uuid="a1b2c3d4-0001-4000-8000-00000000002a"/>
 				<graphicElement><pen lineWidth="0.5"/></graphicElement>
 			</rectangle>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="289" y="13" width="7" height="8" uuid="a1b2c3d4-0001-4000-8000-00000000002b">
 					<printWhenExpression><![CDATA[new Boolean("Lanjut aturan pakai berubah".equals($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
@@ -334,15 +332,15 @@
 				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="299" y="12" width="134" height="10" uuid="a1b2c3d4-0001-4000-8000-00000000002c"/>
-				<textElement><font fontName="Tahoma" size="6.5"/></textElement>
+				<reportElement x="299" y="12" width="134" height="11" uuid="a1b2c3d4-0001-4000-8000-00000000002c"/>
+				<textElement><font fontName="Tahoma" size="6"/></textElement>
 				<text><![CDATA[Lanjut aturan pakai berubah]]></text>
 			</staticText>
 			<rectangle>
 				<reportElement x="289" y="25" width="7" height="7" uuid="a1b2c3d4-0001-4000-8000-00000000002d"/>
 				<graphicElement><pen lineWidth="0.5"/></graphicElement>
 			</rectangle>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="289" y="24" width="7" height="8" uuid="a1b2c3d4-0001-4000-8000-00000000002e">
 					<printWhenExpression><![CDATA[new Boolean("Stop".equals($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
@@ -350,8 +348,8 @@
 				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="299" y="23" width="134" height="10" uuid="a1b2c3d4-0001-4000-8000-00000000002f"/>
-				<textElement><font fontName="Tahoma" size="6.5"/></textElement>
+				<reportElement x="299" y="23" width="134" height="11" uuid="a1b2c3d4-0001-4000-8000-00000000002f"/>
+				<textElement><font fontName="Tahoma" size="6"/></textElement>
 				<text><![CDATA[Stop]]></text>
 			</staticText>
 
@@ -364,10 +362,10 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band splitType="Stretch"/>
+		<band splitType="Prevent"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="134" splitType="Stretch">
+		<band height="134" splitType="Prevent">
 			<frame>
 				<reportElement x="0" y="2" width="281" height="114" uuid="a1b2c3d4-0001-4000-8000-000000000048">
 					<printWhenExpression><![CDATA[new Boolean("Admisi".equals($P{pRekonsiliasiSaat}))]]></printWhenExpression>
@@ -393,7 +391,7 @@
 				</textField>
 				<staticText>
 					<reportElement x="20" y="18" width="257" height="12" uuid="a1b2c3d4-0001-4000-8000-000000000037"/>
-					<textElement><font fontName="Tahoma" size="7.5"/></textElement>
+					<textElement><font fontName="Tahoma" size="8"/></textElement>
 					<text><![CDATA[Status Pasien di Rekam Medis]]></text>
 				</staticText>
 
@@ -410,7 +408,7 @@
 				</textField>
 				<staticText>
 					<reportElement x="20" y="36" width="257" height="12" uuid="a1b2c3d4-0001-4000-8000-00000000003a"/>
-					<textElement><font fontName="Tahoma" size="7.5"/></textElement>
+					<textElement><font fontName="Tahoma" size="8"/></textElement>
 					<text><![CDATA[Pasien/ Keluarga Pasien]]></text>
 				</staticText>
 
@@ -427,64 +425,64 @@
 				</textField>
 				<staticText>
 					<reportElement x="20" y="54" width="60" height="12" uuid="a1b2c3d4-0001-4000-8000-00000000003d"/>
-					<textElement><font fontName="Tahoma" size="7.5"/></textElement>
+					<textElement><font fontName="Tahoma" size="8"/></textElement>
 					<text><![CDATA[Lain-lain :]]></text>
 				</staticText>
 				<textField isBlankWhenNull="true">
 					<reportElement x="80" y="54" width="197" height="12" uuid="a1b2c3d4-0001-4000-8000-00000000003e"/>
 					<box><bottomPen lineWidth="0.5" lineStyle="Dotted"/></box>
-					<textElement><font fontName="Tahoma" size="7.5"/></textElement>
+					<textElement><font fontName="Tahoma" size="8"/></textElement>
 					<textFieldExpression><![CDATA[$P{pSumberInformasiLain}]]></textFieldExpression>
 				</textField>
 			</frame>
 
-			<frame>
+			<rectangle>
 				<reportElement x="288" y="2" width="281" height="114" uuid="a1b2c3d4-0001-4000-8000-00000000003f"/>
-				<box><pen lineWidth="0.5"/></box>
-				<staticText>
-					<reportElement mode="Opaque" x="0" y="0" width="281" height="13" backcolor="#F0F0DC" uuid="a1b2c3d4-0001-4000-8000-000000000049"/>
-					<box leftPadding="4"><bottomPen lineWidth="0.5"/></box>
-					<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
-					<text><![CDATA[Apoteker Rekonsiliasi Obat]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="4" y="16" width="60" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000040"/>
-					<textElement><font fontName="Tahoma" size="7.5"/></textElement>
-					<text><![CDATA[Tanggal :]]></text>
-				</staticText>
-				<textField isBlankWhenNull="true">
-					<reportElement x="64" y="16" width="213" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000041"/>
-					<textElement><font fontName="Tahoma" size="7.5"/></textElement>
-					<textFieldExpression><![CDATA[$P{pTanggalWawancara}]]></textFieldExpression>
-				</textField>
-				<staticText>
-					<reportElement x="4" y="28" width="273" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000042"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="7.5" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Apoteker yang melakukan rekonsiliasi obat]]></text>
-				</staticText>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement x="4" y="39" width="273" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000043"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="7.5"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$P{pApotekerNama}]]></textFieldExpression>
-				</textField>
-				<componentElement>
-					<reportElement x="112" y="52" width="56" height="40" isRemoveLineWhenBlank="true" uuid="a1b2c3d4-0001-4000-8000-000000000044"/>
-					<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
-						<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
-					</jr:QRCode>
-				</componentElement>
-				<textField isBlankWhenNull="true">
-					<reportElement x="4" y="95" width="273" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000045"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="7"/>
-					</textElement>
-					<textFieldExpression><![CDATA["NIP: "+($P{pApotekerNip}==null?"-":$P{pApotekerNip})]]></textFieldExpression>
-				</textField>
-			</frame>
+				<graphicElement><pen lineWidth="0.5"/></graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Opaque" x="288" y="2" width="281" height="13" backcolor="#F0F0DC" uuid="a1b2c3d4-0001-4000-8000-000000000049"/>
+				<box leftPadding="4"><pen lineWidth="0.5"/></box>
+				<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="8" isBold="true"/></textElement>
+				<text><![CDATA[Apoteker Rekonsiliasi Obat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="292" y="18" width="60" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000040"/>
+				<textElement><font fontName="Tahoma" size="8"/></textElement>
+				<text><![CDATA[Tanggal :]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="352" y="18" width="213" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000041"/>
+				<textElement><font fontName="Tahoma" size="8"/></textElement>
+				<textFieldExpression><![CDATA[$P{pTanggalWawancara}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="292" y="30" width="273" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000042"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Apoteker yang melakukan rekonsiliasi obat]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="292" y="41" width="273" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000043"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pApotekerNama}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="400" y="54" width="56" height="40" isRemoveLineWhenBlank="true" uuid="a1b2c3d4-0001-4000-8000-000000000044"/>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
+					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="292" y="97" width="273" height="11" uuid="a1b2c3d4-0001-4000-8000-000000000045"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NIP: "+($P{pApotekerNip}==null?"-":$P{pApotekerNip})]]></textFieldExpression>
+			</textField>
 
 			<textField pattern="dd/MM/yyyy HH.mm.ss" isBlankWhenNull="false">
 				<reportElement x="0" y="118" width="150" height="14" uuid="a1b2c3d4-0001-4000-8000-000000000031"/>
@@ -499,6 +497,6 @@
 		</band>
 	</pageFooter>
 	<summary>
-		<band splitType="Stretch"/>
+		<band splitType="Prevent"/>
 	</summary>
 </jasperReport>
