@@ -1023,26 +1023,55 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
 
     /**
-     * Solusi Masalah Klasik Swing: Mencegah scroll wheel macet saat mouse berada di atas TextArea
-     * Jika textarea tidak butuh scrollbar atau sudah mentok atas/bawah, event roda mouse diteruskan ke parent ScrollPane.
+     * Solusi Masalah Klasik Swing: Menggerakkan scrollbar secara langsung (direct scrollbar control)
+     * - Jika kursor di TextArea dan isi teks panjang: TextArea di-scroll. Begitu teks mentok atas/bawah, parent ScrollPane yang lanjut di-scroll!
+     * - Jika isi teks pendek (tidak butuh scroll): Roda mouse langsung meng-scroll parent ScrollPane (spSidebar)!
      */
     private void pasangSmartMouseWheel(JScrollPane childScroll, JTextArea childText, JScrollPane parentScroll) {
         MouseWheelListener mwl = e -> {
-            JScrollBar bar = childScroll.getVerticalScrollBar();
-            boolean canScrollUp = (bar != null && bar.isVisible() && bar.getValue() > bar.getMinimum());
-            boolean canScrollDown = (bar != null && bar.isVisible() && (bar.getValue() + bar.getVisibleAmount() < bar.getMaximum()));
+            JScrollBar childBar = childScroll.getVerticalScrollBar();
+            JScrollBar parentBar = parentScroll.getVerticalScrollBar();
             int rot = e.getWheelRotation();
+            int units = e.getUnitsToScroll();
 
-            if (rot < 0 && !canScrollUp) {
-                parentScroll.dispatchEvent(SwingUtilities.convertMouseEvent((Component) e.getSource(), e, parentScroll));
-            } else if (rot > 0 && !canScrollDown) {
-                parentScroll.dispatchEvent(SwingUtilities.convertMouseEvent((Component) e.getSource(), e, parentScroll));
-            } else if (bar == null || !bar.isVisible() || bar.getMaximum() <= bar.getVisibleAmount()) {
-                parentScroll.dispatchEvent(SwingUtilities.convertMouseEvent((Component) e.getSource(), e, parentScroll));
+            boolean childScrollable = (childBar != null && childBar.isVisible() && (childBar.getMaximum() > childBar.getVisibleAmount()));
+
+            if (childScrollable) {
+                int oldVal = childBar.getValue();
+                int maxVal = childBar.getMaximum() - childBar.getVisibleAmount();
+                int minVal = childBar.getMinimum();
+
+                if (rot > 0) { // Scroll ke bawah
+                    if (oldVal < maxVal) {
+                        int delta = units * childBar.getUnitIncrement();
+                        childBar.setValue(Math.min(oldVal + delta, maxVal));
+                    } else if (parentBar != null && parentBar.isVisible()) {
+                        int delta = units * parentBar.getUnitIncrement();
+                        parentBar.setValue(Math.min(parentBar.getValue() + delta, parentBar.getMaximum() - parentBar.getVisibleAmount()));
+                    }
+                } else if (rot < 0) { // Scroll ke atas
+                    if (oldVal > minVal) {
+                        int delta = units * childBar.getUnitIncrement();
+                        childBar.setValue(Math.max(oldVal + delta, minVal));
+                    } else if (parentBar != null && parentBar.isVisible()) {
+                        int delta = units * parentBar.getUnitIncrement();
+                        parentBar.setValue(Math.max(parentBar.getValue() + delta, parentBar.getMinimum()));
+                    }
+                }
+            } else {
+                // Teks pendek, tidak butuh scrollbar di textarea -> LANGSUNG scroll parent (spSidebar)!
+                if (parentBar != null && parentBar.isVisible()) {
+                    int delta = units * parentBar.getUnitIncrement();
+                    if (rot > 0) {
+                        parentBar.setValue(Math.min(parentBar.getValue() + delta, parentBar.getMaximum() - parentBar.getVisibleAmount()));
+                    } else {
+                        parentBar.setValue(Math.max(parentBar.getValue() + delta, parentBar.getMinimum()));
+                    }
+                }
             }
+            e.consume();
         };
         childText.addMouseWheelListener(mwl);
-        childScroll.addMouseWheelListener(mwl);
     }
 
     private void bukaDialogCariObat() {
