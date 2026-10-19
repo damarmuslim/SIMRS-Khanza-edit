@@ -111,7 +111,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel headerLeft = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         headerLeft.setOpaque(false);
 
-        JLabel lblTitle = new JLabel("Rekonsiliasi Obat");
+        JLabel lblTitle = new JLabel(" Rekonsiliasi Obat");
+        lblTitle.setIcon(getIcon("/picture/Pills.png"));
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 15));
         lblTitle.setForeground(Color.WHITE);
 
@@ -142,8 +143,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         tabPaneUtama = new JTabbedPane();
         tabPaneUtama.setFont(new Font("Segoe UI", Font.BOLD, 12));
         tabPaneUtama.setBackground(Color.WHITE);
-        tabPaneUtama.addTab("  Input Rekonsiliasi Obat  ", buildTabInput());
-        tabPaneUtama.addTab("  Data Rekonsiliasi & Validasi Apoteker  ", buildTabData());
+        tabPaneUtama.addTab("  Input Rekonsiliasi Obat  ", getIcon("/picture/add-file-16x16.png"), buildTabInput());
+        tabPaneUtama.addTab("  Data Rekonsiliasi & Validasi Apoteker  ", getIcon("/picture/History2.png"), buildTabData());
 
         getContentPane().add(tabPaneUtama, BorderLayout.CENTER);
 
@@ -268,7 +269,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         txtContekanTataLaksana.setBackground(Color.WHITE);
         txtContekanTataLaksana.setBorder(new EmptyBorder(4, 4, 4, 4));
 
-        JButton btnKirimBlokKeTabel = new JButton("➕ Masukkan Teks yang Diblok ke Tabel Obat");
+        JButton btnKirimBlokKeTabel = new JButton(" Masukkan Teks Terblok ke Tabel Obat");
+        btnKirimBlokKeTabel.setIcon(getIcon("/picture/2rightarrow.png"));
         btnKirimBlokKeTabel.setBackground(TEAL_MAIN);
         btnKirimBlokKeTabel.setForeground(Color.WHITE);
         btnKirimBlokKeTabel.setFont(new Font("Segoe UI", Font.BOLD, 10));
@@ -298,7 +300,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         lblContekanAlergi.setFont(new Font("Segoe UI", Font.BOLD, 11));
         lblContekanAlergi.setForeground(new Color(159, 18, 57));
 
-        JButton btnSalinAlergi = new JButton("Salin Alergi ➔");
+        JButton btnSalinAlergi = new JButton(" Salin Alergi");
+        btnSalinAlergi.setIcon(getIcon("/picture/editcopy.png"));
         btnSalinAlergi.setBackground(new Color(225, 29, 72));
         btnSalinAlergi.setForeground(Color.WHITE);
         btnSalinAlergi.setFont(new Font("Segoe UI", Font.BOLD, 10));
@@ -362,7 +365,10 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         NmPetugas.setEditable(false);
         NmPetugas.setFont(new Font("Segoe UI", Font.BOLD, 11));
 
-        JButton btnCariPetugas = new JButton("🔍");
+        JButton btnCariPetugas = new JButton();
+        btnCariPetugas.setIcon(getIcon("/picture/190.png"));
+        btnCariPetugas.setToolTipText("Cari Petugas / Apoteker");
+        btnCariPetugas.setPreferredSize(new Dimension(28, 23));
         btnCariPetugas.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnCariPetugas.addActionListener(e -> {
             petugas.isCek();
@@ -477,16 +483,19 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel btnGroupTabel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
         btnGroupTabel.setOpaque(false);
 
-        btnHapusBarisObat = new JButton("Hapus Baris");
+        btnHapusBarisObat = new JButton(" Hapus Baris");
+        btnHapusBarisObat.setIcon(getIcon("/picture/stop_f2.png"));
         btnHapusBarisObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         btnHapusBarisObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btnPilihMasterObat = new JButton("🔍 Pilih dari Data Obat/Infus");
+        btnPilihMasterObat = new JButton(" Master Obat/Infus (Spasi)");
+        btnPilihMasterObat.setIcon(getIcon("/picture/190.png"));
         btnPilihMasterObat.setBackground(AMBER_BORDER);
         btnPilihMasterObat.setFont(new Font("Segoe UI", Font.BOLD, 11));
         btnPilihMasterObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btnTambahInline = new JButton("+ Tambah Obat (Inline)");
+        btnTambahInline = new JButton(" Tambah Obat (Inline)");
+        btnTambahInline.setIcon(getIcon("/picture/plus_16.png"));
         btnTambahInline.setBackground(TEAL_MAIN);
         btnTambahInline.setForeground(Color.WHITE);
         btnTambahInline.setFont(new Font("Segoe UI", Font.BOLD, 11));
@@ -646,10 +655,20 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         TCari.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         TCari.addActionListener(e -> tampilDataRekonsiliasi());
 
-        JButton btnCariData = new JButton("🔍 Cari");
+        JButton btnCariData = new JButton(" Cari");
+        btnCariData.setIcon(getIcon("/picture/accept.png"));
         btnCariData.setFont(new Font("Segoe UI", Font.BOLD, 11));
         btnCariData.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnCariData.addActionListener(e -> tampilDataRekonsiliasi());
+
+        JButton btnSemuaData = new JButton(" Semua");
+        btnSemuaData.setIcon(getIcon("/picture/Search-16x16.png"));
+        btnSemuaData.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        btnSemuaData.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnSemuaData.addActionListener(e -> {
+            TCari.setText("");
+            tampilDataRekonsiliasi();
+        });
 
         LCount = new JLabel("Record : 0");
         LCount.setFont(new Font("Segoe UI", Font.BOLD, 11));
@@ -662,6 +681,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelFilter.add(new JLabel("Kata Kunci:"));
         panelFilter.add(TCari);
         panelFilter.add(btnCariData);
+        panelFilter.add(btnSemuaData);
         panelFilter.add(LCount);
 
         panelKiri.add(new JScrollPane(tbDataRekon), BorderLayout.CENTER);
@@ -692,14 +712,16 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelFooterInput = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         panelFooterInput.setOpaque(false);
 
-        JButton btnSimpan = new JButton("💾 Simpan");
+        JButton btnSimpan = new JButton(" Simpan");
+        btnSimpan.setIcon(getIcon("/picture/save-16x16.png"));
         btnSimpan.setBackground(TEAL_MAIN);
         btnSimpan.setForeground(Color.WHITE);
         btnSimpan.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnSimpan.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnSimpan.addActionListener(e -> simpanRekonsiliasi());
 
-        JButton btnBaru = new JButton("+ Baru / Reset");
+        JButton btnBaru = new JButton(" Baru");
+        btnBaru.setIcon(getIcon("/picture/Cancel-2-16x16.png"));
         btnBaru.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnBaru.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnBaru.addActionListener(e -> emptTeks());
@@ -712,23 +734,27 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelFooterData.setOpaque(false);
         panelFooterData.setVisible(false);
 
-        JButton btnKonfirmApoteker = new JButton("✓ Konfirm / Validasi Apoteker");
+        JButton btnKonfirmApoteker = new JButton(" Konfirmasi / Validasi Apoteker");
+        btnKonfirmApoteker.setIcon(getIcon("/picture/checked.png"));
         btnKonfirmApoteker.setBackground(AMBER_BORDER);
         btnKonfirmApoteker.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnKonfirmApoteker.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnKonfirmApoteker.addActionListener(e -> konfirmasiApoteker());
 
-        JButton btnGantiData = new JButton("✏️ Ganti / Edit Data");
+        JButton btnGantiData = new JButton(" Ganti / Edit Data");
+        btnGantiData.setIcon(getIcon("/picture/inventaris.png"));
         btnGantiData.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnGantiData.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnGantiData.addActionListener(e -> gantiDataRekonsiliasi());
 
-        JButton btnHapusRekon = new JButton("🗑 Hapus");
+        JButton btnHapusRekon = new JButton(" Hapus");
+        btnHapusRekon.setIcon(getIcon("/picture/stop_f2.png"));
         btnHapusRekon.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnHapusRekon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnHapusRekon.addActionListener(e -> hapusRekonsiliasi());
 
-        JButton btnCetak = new JButton("🖨 Cetak RM 03-06A");
+        JButton btnCetak = new JButton(" Cetak RM 03-06A");
+        btnCetak.setIcon(getIcon("/picture/b_print.png"));
         btnCetak.setBackground(TEAL_MAIN);
         btnCetak.setForeground(Color.WHITE);
         btnCetak.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -745,7 +771,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         leftFooterWrapper.add(panelFooterInput);
         leftFooterWrapper.add(panelFooterData);
 
-        JButton btnKeluar = new JButton("➔ Keluar");
+        JButton btnKeluar = new JButton(" Keluar");
+        btnKeluar.setIcon(getIcon("/picture/exit.png"));
         btnKeluar.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnKeluar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnKeluar.addActionListener(e -> dispose());
@@ -914,7 +941,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     l.toLowerCase().contains("ivfd") || l.toLowerCase().contains("tab") ||
                     l.toLowerCase().contains("syr") || l.toLowerCase().contains("mg") || count < 4)) {
                 final String item = l;
-                JButton chip = new JButton("+ " + (item.length() > 22 ? item.substring(0, 20) + ".." : item));
+                JButton chip = new JButton(item.length() > 22 ? item.substring(0, 20) + ".." : item);
+                chip.setIcon(getIcon("/picture/item.png"));
                 chip.setFont(new Font("Segoe UI", Font.PLAIN, 10));
                 chip.setBackground(Color.WHITE);
                 chip.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -1576,5 +1604,15 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         p.add(l, BorderLayout.WEST);
         p.add(comp, BorderLayout.CENTER);
         return p;
+    }
+
+    private ImageIcon getIcon(String path) {
+        try {
+            java.net.URL url = getClass().getResource(path);
+            if (url != null) {
+                return new ImageIcon(url);
+            }
+        } catch (Exception ignored) {}
+        return null;
     }
 }
