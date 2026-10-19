@@ -76,6 +76,13 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JButton btnTambahInline, btnPilihMasterObat, btnHapusBarisObat;
     private JLabel lblBadgeJmlObat;
 
+    // Autocomplete Popup Live Search Obat (Cara 1)
+    private JPopupMenu popupSaranObat;
+    private DefaultListModel<String> modelSaranObat;
+    private JList<String> listSaranObat;
+    private final Map<String, String> mapKodeObat = new HashMap<>();
+    private JTextField txtNamaObatEditor;
+
     // Komponen Alergi Obat (Tab 1)
     private JTextArea AlergiObat, ManifestasiAlergi;
     private JComboBox<String> CmbDampakAlergi;
@@ -529,7 +536,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         JPanel toolbarTabel = new JPanel(new BorderLayout());
         toolbarTabel.setOpaque(false);
-        lblBadgeJmlObat = new JLabel(" 0 obat direkonsiliasi (Ketik langsung di kolom Nama Obat atau tekan Spasi utk master obat) ");
+        lblBadgeJmlObat = new JLabel(" 0 obat direkonsiliasi (Ketik nama obat untuk Live Search / Spasi utk master obat) ");
         lblBadgeJmlObat.setFont(new Font("Segoe UI", Font.BOLD, 11));
         lblBadgeJmlObat.setForeground(TEAL_MAIN);
 
@@ -609,6 +616,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             "Lanjut aturan pakai sama", "Lanjut aturan pakai berubah", "Stop"
         });
         tbObat.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(cmbTindak));
+
+        // Pasang Live Autocomplete pada Kolom 1 (Nama Obat)
+        initAutoCompleteObat();
 
         cardTabelObat.add(toolbarTabel, BorderLayout.NORTH);
         cardTabelObat.add(new JScrollPane(tbObat), BorderLayout.CENTER);
@@ -969,6 +979,161 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         barang.setSize(getWidth() - 40, getHeight() - 40);
         barang.setLocationRelativeTo(this);
         barang.setVisible(true);
+    }
+
+    private void initAutoCompleteObat() {
+        popupSaranObat = new JPopupMenu();
+        popupSaranObat.setFocusable(false);
+        popupSaranObat.setBorder(new LineBorder(TEAL_MAIN, 1, false));
+
+        modelSaranObat = new DefaultListModel<>();
+        listSaranObat = new JList<>(modelSaranObat);
+        listSaranObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        listSaranObat.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listSaranObat.setSelectionBackground(TEAL_MAIN);
+        listSaranObat.setSelectionForeground(Color.WHITE);
+
+        JScrollPane scrollSaran = new JScrollPane(listSaranObat);
+        scrollSaran.setBorder(null);
+        scrollSaran.setPreferredSize(new Dimension(380, 150));
+        popupSaranObat.add(scrollSaran);
+
+        txtNamaObatEditor = new JTextField();
+        txtNamaObatEditor.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        DefaultCellEditor cellEditorObat = new DefaultCellEditor(txtNamaObatEditor) {
+            @Override
+            public boolean stopCellEditing() {
+                if (popupSaranObat != null && popupSaranObat.isVisible()) {
+                    popupSaranObat.setVisible(false);
+                }
+                return super.stopCellEditing();
+            }
+
+            @Override
+            public void cancelCellEditing() {
+                if (popupSaranObat != null && popupSaranObat.isVisible()) {
+                    popupSaranObat.setVisible(false);
+                }
+                super.cancelCellEditing();
+            }
+        };
+        tbObat.getColumnModel().getColumn(1).setCellEditor(cellEditorObat);
+
+        // Document Listener saat mengetik di sel
+        txtNamaObatEditor.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                SwingUtilities.invokeLater(() -> cariSaranLive());
+            }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                SwingUtilities.invokeLater(() -> cariSaranLive());
+            }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                SwingUtilities.invokeLater(() -> cariSaranLive());
+            }
+        });
+
+        // Key Listener navigasi keyboard
+        txtNamaObatEditor.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (popupSaranObat.isVisible()) {
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                        int next = listSaranObat.getSelectedIndex() + 1;
+                        if (next < modelSaranObat.getSize()) {
+                            listSaranObat.setSelectedIndex(next);
+                            listSaranObat.ensureIndexIsVisible(next);
+                        }
+                        e.consume();
+                    } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+                        int prev = listSaranObat.getSelectedIndex() - 1;
+                        if (prev >= 0) {
+                            listSaranObat.setSelectedIndex(prev);
+                            listSaranObat.ensureIndexIsVisible(prev);
+                        }
+                        e.consume();
+                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        if (listSaranObat.getSelectedIndex() != -1) {
+                            pilihObatDariSaran(listSaranObat.getSelectedValue());
+                            e.consume();
+                        }
+                    } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        popupSaranObat.setVisible(false);
+                        e.consume();
+                    }
+                }
+            }
+        });
+
+        // Mouse click listener pada list saran
+        listSaranObat.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (listSaranObat.getSelectedIndex() != -1) {
+                    pilihObatDariSaran(listSaranObat.getSelectedValue());
+                }
+            }
+        });
+    }
+
+    private void cariSaranLive() {
+        if (!txtNamaObatEditor.isShowing()) {
+            popupSaranObat.setVisible(false);
+            return;
+        }
+        String text = txtNamaObatEditor.getText().trim();
+        if (text.length() < 2) {
+            popupSaranObat.setVisible(false);
+            return;
+        }
+
+        modelSaranObat.clear();
+        mapKodeObat.clear();
+        try {
+            ps = koneksi.prepareStatement(
+                "SELECT kode_brng, nama_brng FROM databarang WHERE status='1' AND (nama_brng LIKE ? OR kode_brng LIKE ?) ORDER BY nama_brng ASC LIMIT 12"
+            );
+            ps.setString(1, "%" + text + "%");
+            ps.setString(2, "%" + text + "%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String kode = rs.getString("kode_brng");
+                String nama = rs.getString("nama_brng");
+                modelSaranObat.addElement(nama);
+                mapKodeObat.put(nama, kode);
+            }
+        } catch (Exception ex) {
+            System.out.println("Notif Cari Live: " + ex);
+        } finally {
+            try { if (rs != null) rs.close(); if (ps != null) ps.close(); } catch (Exception e) {}
+        }
+
+        if (modelSaranObat.getSize() > 0 && txtNamaObatEditor.isShowing()) {
+            listSaranObat.setSelectedIndex(0);
+            popupSaranObat.show(txtNamaObatEditor, 0, txtNamaObatEditor.getHeight());
+            txtNamaObatEditor.requestFocus();
+        } else {
+            popupSaranObat.setVisible(false);
+        }
+    }
+
+    private void pilihObatDariSaran(String nama) {
+        if (nama == null || nama.isEmpty()) return;
+        String kode = mapKodeObat.getOrDefault(nama, "");
+        popupSaranObat.setVisible(false);
+
+        int row = tbObat.getSelectedRow();
+        if (row != -1) {
+            tabModeObat.setValueAt(kode, row, 0);
+            tabModeObat.setValueAt(nama, row, 1);
+            if (tbObat.isEditing()) {
+                tbObat.getCellEditor().cancelCellEditing();
+            }
+            tbObat.changeSelection(row, 2, false, false);
+            tbObat.editCellAt(row, 2);
+            Component editor = tbObat.getEditorComponent();
+            if (editor != null) editor.requestFocus();
+        }
+        updateBadgeObat();
     }
 
     private void kirimTeksTerblokKeTabel() {
