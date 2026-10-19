@@ -719,6 +719,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         tbObat.setShowGrid(true);
         tbObat.setShowHorizontalLines(true);
         tbObat.setShowVerticalLines(true);
+        tbObat.setSurrendersFocusOnKeystroke(true);
+        tbObat.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 
         tbObat.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 11));
         tbObat.getTableHeader().setBackground(new Color(241, 245, 249));
@@ -739,12 +741,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         tbObat.getColumnModel().getColumn(5).setPreferredWidth(190);
         tbObat.getColumnModel().getColumn(6).setPreferredWidth(190);
 
-        // Text Editor Kolom 2 (Dosis), 3 (Frekuensi), 6 (Perubahan Aturan Pakai) dengan Ring Teal
+        // Text Editor Kolom 2 (Dosis), 3 (Frekuensi), 6 (Perubahan Aturan Pakai) dengan Ring Teal (Single Click)
         tbObat.getColumnModel().getColumn(2).setCellEditor(createModernTextEditor(SwingConstants.CENTER));
         tbObat.getColumnModel().getColumn(3).setCellEditor(createModernTextEditor(SwingConstants.CENTER));
         tbObat.getColumnModel().getColumn(6).setCellEditor(createModernTextEditor(SwingConstants.LEFT));
 
-        // ComboBox Cara Pemberian (Kolom 4) dengan Ring Teal Modern
+        // ComboBox Cara Pemberian (Kolom 4) dengan Ring Teal Modern (Single Click)
         JComboBox<String> cmbCara = new JComboBox<>(new String[]{
             "Oral", "Injeksi IV", "Injeksi IM", "Injeksi SC", "Infus", "Inhalasi", "Sublingual", "Topikal", "Rektal", "Tetes"
         });
@@ -765,9 +767,10 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 return c;
             }
         };
+        editorCara.setClickCountToStart(1);
         tbObat.getColumnModel().getColumn(4).setCellEditor(editorCara);
 
-        // ComboBox Tindak Lanjut DPJP (Kolom 5) dengan Ring Teal Modern
+        // ComboBox Tindak Lanjut DPJP (Kolom 5) dengan Ring Teal Modern (Single Click)
         JComboBox<String> cmbTindak = new JComboBox<>(new String[]{
             "Lanjut aturan pakai sama", "Lanjut aturan pakai berubah", "Stop"
         });
@@ -787,6 +790,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 return c;
             }
         };
+        editorTindak.setClickCountToStart(1);
         tbObat.getColumnModel().getColumn(5).setCellEditor(editorTindak);
 
         // Pasang Live Autocomplete pada Kolom 1 (Nama Obat)
@@ -1028,13 +1032,20 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         rbSumberPasien.addActionListener(sumberListener);
         rbSumberLain.addActionListener(sumberListener);
 
-        // Tambah Baris Obat Inline
+        // Tambah Baris Obat Inline (Otomatis fokus dan langsung buka edit nama obat)
         btnTambahInline.addActionListener(e -> {
             tabModeObat.addRow(new Object[]{"", "", "", "", "Oral", "Lanjut aturan pakai sama", "-"});
             updateBadgeObat();
             int lastRow = tabModeObat.getRowCount() - 1;
             tbObat.setRowSelectionInterval(lastRow, lastRow);
             tbObat.scrollRectToVisible(tbObat.getCellRect(lastRow, 1, true));
+            SwingUtilities.invokeLater(() -> {
+                tbObat.editCellAt(lastRow, 1);
+                Component comp = tbObat.getEditorComponent();
+                if (comp != null) {
+                    comp.requestFocusInWindow();
+                }
+            });
         });
 
         // Hapus Baris Obat
@@ -1202,7 +1213,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             new EmptyBorder(1, 6, 1, 6)
         ));
 
-        return new DefaultCellEditor(txt) {
+        DefaultCellEditor editor = new DefaultCellEditor(txt) {
             @Override
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
                 Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
@@ -1214,9 +1225,15 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 }
                 c.setBackground(Color.WHITE);
                 c.setForeground(new Color(15, 23, 42));
+                SwingUtilities.invokeLater(() -> {
+                    txt.selectAll();
+                    txt.requestFocusInWindow();
+                });
                 return c;
             }
         };
+        editor.setClickCountToStart(1); // CUKUP 1 KALI KLIK LANGSUNG AKTIF!
+        return editor;
     }
 
     private void initAutoCompleteObat() {
@@ -1256,6 +1273,10 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 }
                 c.setBackground(Color.WHITE);
                 c.setForeground(new Color(15, 23, 42));
+                SwingUtilities.invokeLater(() -> {
+                    txtNamaObatEditor.selectAll();
+                    txtNamaObatEditor.requestFocusInWindow();
+                });
                 return c;
             }
 
@@ -1275,6 +1296,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 super.cancelCellEditing();
             }
         };
+        cellEditorObat.setClickCountToStart(1); // CUKUP 1 KALI KLIK LANGSUNG AKTIF!
         tbObat.getColumnModel().getColumn(1).setCellEditor(cellEditorObat);
 
         // Document Listener saat mengetik di sel
