@@ -4,7 +4,6 @@ import fungsi.koneksiDB;
 import fungsi.sekuel;
 import fungsi.validasi;
 import fungsi.akses;
-import inventory.DlgBarang;
 import kepegawaian.DlgCariPetugas;
 
 import javax.swing.*;
@@ -38,7 +37,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private ResultSet rs, rsDetail;
 
     // Dialog Bawaan Khanza
-    private final DlgBarang barang = new DlgBarang(null, false);
     private final DlgCariPetugas petugas = new DlgCariPetugas(null, false);
 
     // Warna Tema Clean Medical UI (Modern Teal, Mint & Slate)
@@ -682,19 +680,19 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 }
 
                 if (isSelected) {
+                    // Baris terpilih 100% utuh Soft Ice Mint seragam dari kolom awal sampai akhir
+                    c.setBackground(new Color(204, 251, 241)); // #CCFBF1 Soft Ice Mint Selection
                     if (isCol6Disabled) {
-                        c.setBackground(new Color(226, 232, 240)); // Slate redup
-                        c.setForeground(new Color(148, 163, 184));
+                        c.setForeground(new Color(100, 116, 139)); // Slate muted saat kolom terkunci
                     } else {
-                        c.setBackground(new Color(204, 251, 241)); // #CCFBF1 Soft Ice Mint Selection
                         c.setForeground(new Color(15, 23, 42));    // #0F172A Slate 900 gelap tajam
                     }
                 } else {
+                    // Baris tidak terpilih: zebra striping rapi seragam
+                    c.setBackground((row % 2 == 0) ? Color.WHITE : new Color(248, 250, 252)); // Zebra #F8FAFC
                     if (isCol6Disabled) {
-                        c.setBackground(new Color(241, 245, 249)); // #F1F5F9 Slate abu-abu lembut (disabled)
-                        c.setForeground(new Color(148, 163, 184));
+                        c.setForeground(new Color(148, 163, 184)); // Muted saat kolom terkunci
                     } else {
-                        c.setBackground((row % 2 == 0) ? Color.WHITE : new Color(248, 250, 252)); // Zebra #F8FAFC
                         c.setForeground(new Color(30, 41, 59));
                     }
                 }
@@ -1075,26 +1073,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             }
         });
 
-        // Listener hasil pilihan dari DlgBarang (kolom 1 = kode_brng, kolom 2 = nama_brng)
-        barang.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if (barang.getTable().getSelectedRow() != -1) {
-                    int sel = barang.getTable().getSelectedRow();
-                    String kode = barang.getTable().getValueAt(sel, 1).toString();
-                    String nama = barang.getTable().getValueAt(sel, 2).toString();
-                    int selRow = tbObat.getSelectedRow();
-                    if (selRow != -1) {
-                        tabModeObat.setValueAt(kode, selRow, 0);
-                        tabModeObat.setValueAt(nama, selRow, 1);
-                    } else {
-                        tabModeObat.addRow(new Object[]{kode, nama, "", "", "Oral", "Lanjut aturan pakai sama", "-"});
-                    }
-                    updateBadgeObat();
-                    tbObat.requestFocus();
-                }
-            }
-        });
 
         // Listener hasil pilihan Petugas/Apoteker (kolom 0 = NIP, kolom 1 = Nama)
         petugas.addWindowListener(new WindowAdapter() {
@@ -1186,11 +1164,31 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
 
     private void bukaDialogCariObat() {
-        barang.emptTeks();
-        barang.isCek();
-        barang.setSize(getWidth() - 40, getHeight() - 40);
-        barang.setLocationRelativeTo(this);
-        barang.setVisible(true);
+        DlgCariNamaObat dlgObat = new DlgCariNamaObat(null, false);
+        dlgObat.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (dlgObat.getTable().getSelectedRow() != -1) {
+                    int sel = dlgObat.getTable().getSelectedRow();
+                    String kode = dlgObat.getTable().getValueAt(sel, 0).toString();
+                    String nama = dlgObat.getTable().getValueAt(sel, 1).toString();
+                    int selRow = tbObat.getSelectedRow();
+                    if (selRow != -1) {
+                        tabModeObat.setValueAt(kode, selRow, 0);
+                        tabModeObat.setValueAt(nama, selRow, 1);
+                    } else {
+                        tabModeObat.addRow(new Object[]{kode, nama, "", "", "Oral", "Lanjut aturan pakai sama", "-"});
+                        int last = tabModeObat.getRowCount() - 1;
+                        tbObat.setRowSelectionInterval(last, last);
+                    }
+                    updateBadgeObat();
+                    tbObat.requestFocus();
+                }
+            }
+        });
+        dlgObat.setSize(Math.min(780, getWidth() - 40), Math.min(520, getHeight() - 40));
+        dlgObat.setLocationRelativeTo(this);
+        dlgObat.setVisible(true);
     }
 
     private DefaultCellEditor createModernTextEditor(final int align) {
