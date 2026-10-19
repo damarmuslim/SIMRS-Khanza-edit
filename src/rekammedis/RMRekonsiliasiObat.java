@@ -10,6 +10,7 @@ import kepegawaian.DlgCariPetugas;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
@@ -648,11 +649,84 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             }
         };
 
-        tbObat = new JTable(tabModeObat);
-        tbObat.setRowHeight(28);
+        // Listener otomatis bersihkan kolom perubahan aturan jika bukan 'Lanjut aturan pakai berubah'
+        tabModeObat.addTableModelListener(e -> {
+            if (e.getType() == TableModelEvent.UPDATE && e.getColumn() == 5) {
+                int row = e.getFirstRow();
+                if (row >= 0 && row < tabModeObat.getRowCount()) {
+                    String tindak = String.valueOf(tabModeObat.getValueAt(row, 5));
+                    if (!"Lanjut aturan pakai berubah".equalsIgnoreCase(tindak)) {
+                        Object val6 = tabModeObat.getValueAt(row, 6);
+                        if (val6 != null && !val6.toString().trim().isEmpty()) {
+                            SwingUtilities.invokeLater(() -> {
+                                tabModeObat.setValueAt("", row, 6);
+                            });
+                        }
+                    }
+                }
+            }
+        });
+
+        // Rekomendasi 1: JTable dengan Soft Ice Mint Selection, Zebra Striping Halus, dan Modern Editor Ring
+        tbObat = new JTable(tabModeObat) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component c = super.prepareRenderer(renderer, row, column);
+                boolean isSelected = isRowSelected(row);
+                boolean isCol6Disabled = false;
+                if (column == 6) {
+                    String tindak = String.valueOf(getValueAt(row, 5));
+                    if (!"Lanjut aturan pakai berubah".equalsIgnoreCase(tindak)) {
+                        isCol6Disabled = true;
+                    }
+                }
+
+                if (isSelected) {
+                    if (isCol6Disabled) {
+                        c.setBackground(new Color(226, 232, 240)); // Slate redup
+                        c.setForeground(new Color(148, 163, 184));
+                    } else {
+                        c.setBackground(new Color(204, 251, 241)); // #CCFBF1 Soft Ice Mint Selection
+                        c.setForeground(new Color(15, 23, 42));    // #0F172A Slate 900 gelap tajam
+                    }
+                } else {
+                    if (isCol6Disabled) {
+                        c.setBackground(new Color(241, 245, 249)); // #F1F5F9 Slate abu-abu lembut (disabled)
+                        c.setForeground(new Color(148, 163, 184));
+                    } else {
+                        c.setBackground((row % 2 == 0) ? Color.WHITE : new Color(248, 250, 252)); // Zebra #F8FAFC
+                        c.setForeground(new Color(30, 41, 59));
+                    }
+                }
+
+                if (c instanceof JLabel) {
+                    JLabel lbl = (JLabel) c;
+                    lbl.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+                    if (column == 2 || column == 3) {
+                        lbl.setHorizontalAlignment(SwingConstants.CENTER);
+                    } else {
+                        lbl.setHorizontalAlignment(SwingConstants.LEFT);
+                    }
+                    lbl.setBorder(new EmptyBorder(0, 8, 0, 8));
+                }
+
+                return c;
+            }
+        };
+        tbObat.setRowHeight(30);
         tbObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        tbObat.setSelectionBackground(new Color(204, 251, 241)); // #CCFBF1 Soft Ice Mint
+        tbObat.setSelectionForeground(new Color(15, 23, 42));    // #0F172A Slate 900
+        tbObat.setGridColor(new Color(226, 232, 240));          // #E2E8F0 Grid halus
+        tbObat.setShowGrid(true);
+        tbObat.setShowHorizontalLines(true);
+        tbObat.setShowVerticalLines(true);
+
         tbObat.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 11));
         tbObat.getTableHeader().setBackground(new Color(241, 245, 249));
+        tbObat.getTableHeader().setForeground(new Color(51, 65, 85));
+        tbObat.getTableHeader().setPreferredSize(new Dimension(tbObat.getTableHeader().getWidth(), 30));
+        tbObat.getTableHeader().setReorderingAllowed(false);
 
         // Sembunyikan kolom Kode Obat (index 0)
         tbObat.getColumnModel().getColumn(0).setMinWidth(0);
@@ -667,18 +741,55 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         tbObat.getColumnModel().getColumn(5).setPreferredWidth(190);
         tbObat.getColumnModel().getColumn(6).setPreferredWidth(190);
 
-        // ComboBox Cara Pemberian (Kolom 4)
+        // Text Editor Kolom 2 (Dosis), 3 (Frekuensi), 6 (Perubahan Aturan Pakai) dengan Ring Teal
+        tbObat.getColumnModel().getColumn(2).setCellEditor(createModernTextEditor(SwingConstants.CENTER));
+        tbObat.getColumnModel().getColumn(3).setCellEditor(createModernTextEditor(SwingConstants.CENTER));
+        tbObat.getColumnModel().getColumn(6).setCellEditor(createModernTextEditor(SwingConstants.LEFT));
+
+        // ComboBox Cara Pemberian (Kolom 4) dengan Ring Teal Modern
         JComboBox<String> cmbCara = new JComboBox<>(new String[]{
             "Oral", "Injeksi IV", "Injeksi IM", "Injeksi SC", "Infus", "Inhalasi", "Sublingual", "Topikal", "Rektal", "Tetes"
         });
         cmbCara.setEditable(true);
-        tbObat.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(cmbCara));
+        cmbCara.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        cmbCara.setBackground(Color.WHITE);
+        cmbCara.setForeground(new Color(15, 23, 42));
+        cmbCara.setBorder(new LineBorder(new Color(13, 148, 136), 2, true));
+        DefaultCellEditor editorCara = new DefaultCellEditor(cmbCara) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+                if (c instanceof JComponent) {
+                    ((JComponent) c).setBorder(new LineBorder(new Color(13, 148, 136), 2, true));
+                }
+                c.setBackground(Color.WHITE);
+                c.setForeground(new Color(15, 23, 42));
+                return c;
+            }
+        };
+        tbObat.getColumnModel().getColumn(4).setCellEditor(editorCara);
 
-        // ComboBox Tindak Lanjut DPJP (Kolom 5)
+        // ComboBox Tindak Lanjut DPJP (Kolom 5) dengan Ring Teal Modern
         JComboBox<String> cmbTindak = new JComboBox<>(new String[]{
             "Lanjut aturan pakai sama", "Lanjut aturan pakai berubah", "Stop"
         });
-        tbObat.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(cmbTindak));
+        cmbTindak.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        cmbTindak.setBackground(Color.WHITE);
+        cmbTindak.setForeground(new Color(15, 23, 42));
+        cmbTindak.setBorder(new LineBorder(new Color(13, 148, 136), 2, true));
+        DefaultCellEditor editorTindak = new DefaultCellEditor(cmbTindak) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+                if (c instanceof JComponent) {
+                    ((JComponent) c).setBorder(new LineBorder(new Color(13, 148, 136), 2, true));
+                }
+                c.setBackground(Color.WHITE);
+                c.setForeground(new Color(15, 23, 42));
+                return c;
+            }
+        };
+        tbObat.getColumnModel().getColumn(5).setCellEditor(editorTindak);
 
         // Pasang Live Autocomplete pada Kolom 1 (Nama Obat)
         initAutoCompleteObat();
@@ -1082,6 +1193,34 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         barang.setVisible(true);
     }
 
+    private DefaultCellEditor createModernTextEditor(final int align) {
+        final JTextField txt = new JTextField();
+        txt.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        txt.setBackground(Color.WHITE);
+        txt.setForeground(new Color(15, 23, 42)); // Slate 900
+        txt.setHorizontalAlignment(align);
+        txt.setBorder(new CompoundBorder(
+            new LineBorder(new Color(13, 148, 136), 2, true),
+            new EmptyBorder(1, 6, 1, 6)
+        ));
+
+        return new DefaultCellEditor(txt) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+                if (c instanceof JComponent) {
+                    ((JComponent) c).setBorder(new CompoundBorder(
+                        new LineBorder(new Color(13, 148, 136), 2, true),
+                        new EmptyBorder(1, 6, 1, 6)
+                    ));
+                }
+                c.setBackground(Color.WHITE);
+                c.setForeground(new Color(15, 23, 42));
+                return c;
+            }
+        };
+    }
+
     private void initAutoCompleteObat() {
         popupSaranObat = new JPopupMenu();
         popupSaranObat.setFocusable(false);
@@ -1091,8 +1230,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         listSaranObat = new JList<>(modelSaranObat);
         listSaranObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         listSaranObat.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listSaranObat.setSelectionBackground(TEAL_MAIN);
-        listSaranObat.setSelectionForeground(Color.WHITE);
+        listSaranObat.setSelectionBackground(new Color(204, 251, 241)); // #CCFBF1 Soft Ice Mint
+        listSaranObat.setSelectionForeground(new Color(15, 23, 42));    // Slate 900
 
         JScrollPane scrollSaran = new JScrollPane(listSaranObat);
         scrollSaran.setBorder(null);
@@ -1101,7 +1240,27 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         txtNamaObatEditor = new JTextField();
         txtNamaObatEditor.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        txtNamaObatEditor.setBackground(Color.WHITE);
+        txtNamaObatEditor.setForeground(new Color(15, 23, 42));
+        txtNamaObatEditor.setBorder(new CompoundBorder(
+            new LineBorder(new Color(13, 148, 136), 2, true),
+            new EmptyBorder(1, 6, 1, 6)
+        ));
         DefaultCellEditor cellEditorObat = new DefaultCellEditor(txtNamaObatEditor) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+                if (c instanceof JComponent) {
+                    ((JComponent) c).setBorder(new CompoundBorder(
+                        new LineBorder(new Color(13, 148, 136), 2, true),
+                        new EmptyBorder(1, 6, 1, 6)
+                    ));
+                }
+                c.setBackground(Color.WHITE);
+                c.setForeground(new Color(15, 23, 42));
+                return c;
+            }
+
             @Override
             public boolean stopCellEditing() {
                 if (popupSaranObat != null && popupSaranObat.isVisible()) {
