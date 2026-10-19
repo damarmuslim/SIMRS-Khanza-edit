@@ -83,6 +83,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private final Map<String, String> mapKodeObat = new HashMap<>();
     private JTextField txtNamaObatEditor;
 
+    // UX Maximize/Restore
+    private boolean isMaximized = false;
+    private Rectangle normalBounds = null;
+    private JButton btnMaximize;
+
     // Komponen Alergi Obat (Tab 1)
     private JTextArea AlergiObat, ManifestasiAlergi;
     private JComboBox<String> CmbDampakAlergi;
@@ -101,8 +106,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     public RMRekonsiliasiObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         setTitle("::[ Formulir Rekonsiliasi Obat (RM 03-06A) - RSUD Demang Sepulau Raya ]::");
-        setSize(1366, 768);
-        setMinimumSize(new Dimension(1180, 680));
+        Rectangle maxScreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        int targetW = Math.min(1420, (int) (maxScreen.width * 0.95));
+        int targetH = Math.min(860, (int) (maxScreen.height * 0.95));
+        setSize(targetW, targetH);
+        setMinimumSize(new Dimension(1100, 640));
         setLocationRelativeTo(null);
         initComponentsCustom();
         initListeners();
@@ -140,12 +148,38 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         headerLeft.add(lblTitle);
         headerLeft.add(lblKodeRM);
 
+        JPanel headerRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        headerRight.setOpaque(false);
+
         JLabel lblRS = new JLabel("RSUD Demang Sepulau Raya");
         lblRS.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblRS.setForeground(new Color(153, 246, 228));
 
+        btnMaximize = new JButton("▢");
+        btnMaximize.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnMaximize.setForeground(Color.WHITE);
+        btnMaximize.setBackground(TEAL_MAIN);
+        btnMaximize.setBorder(new LineBorder(new Color(13, 148, 136), 1, true));
+        btnMaximize.setPreferredSize(new Dimension(32, 24));
+        btnMaximize.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnMaximize.setToolTipText("Perbesar / Pulihkan Layar Penuh (Double click header juga bisa)");
+        btnMaximize.setFocusPainted(false);
+        btnMaximize.addActionListener(e -> toggleMaximize());
+
+        headerRight.add(lblRS);
+        headerRight.add(btnMaximize);
+
         headerBar.add(headerLeft, BorderLayout.WEST);
-        headerBar.add(lblRS, BorderLayout.EAST);
+        headerBar.add(headerRight, BorderLayout.EAST);
+        headerBar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    toggleMaximize();
+                }
+            }
+        });
+
         getContentPane().add(headerBar, BorderLayout.NORTH);
 
         // =====================================================================
@@ -370,6 +404,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             String teks = lblContekanAlergi.getText().replace("Alergi Medis:", "").trim();
             if (!teks.equals("-") && !teks.isEmpty()) {
                 AlergiObat.setText(teks);
+                AlergiObat.requestFocus();
             }
         });
 
@@ -394,19 +429,72 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         cardContekan.add(contekanBody, BorderLayout.CENTER);
 
+        // Card 3: Form Input Riwayat Alergi Obat Pasien (Dipindah ke Sidebar Kiri)
+        JPanel cardAlergi = createCardPanel("RIWAYAT ALERGI OBAT (KLINIS)", Color.WHITE, SLATE_BORDER);
+        cardAlergi.setLayout(new BoxLayout(cardAlergi, BoxLayout.Y_AXIS));
+        cardAlergi.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        AlergiObat = new JTextArea(2, 18);
+        AlergiObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        AlergiObat.setLineWrap(true);
+        AlergiObat.setWrapStyleWord(true);
+
+        ManifestasiAlergi = new JTextArea(2, 18);
+        ManifestasiAlergi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        ManifestasiAlergi.setLineWrap(true);
+        ManifestasiAlergi.setWrapStyleWord(true);
+
+        CmbDampakAlergi = new JComboBox<>(new String[]{"-", "Ringan", "Sedang", "Berat"});
+        CmbDampakAlergi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+
+        JPanel pAlergi1 = new JPanel(new BorderLayout(0, 2));
+        pAlergi1.setOpaque(false);
+        pAlergi1.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel lAlergi1 = new JLabel("Obat Penyebab Alergi:");
+        lAlergi1.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lAlergi1.setForeground(new Color(71, 85, 105));
+        pAlergi1.add(lAlergi1, BorderLayout.NORTH);
+        pAlergi1.add(new JScrollPane(AlergiObat), BorderLayout.CENTER);
+
+        JPanel pAlergi2 = new JPanel(new BorderLayout(0, 2));
+        pAlergi2.setOpaque(false);
+        pAlergi2.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel lAlergi2 = new JLabel("Gejala / Manifestasi Klinis:");
+        lAlergi2.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lAlergi2.setForeground(new Color(71, 85, 105));
+        pAlergi2.add(lAlergi2, BorderLayout.NORTH);
+        pAlergi2.add(new JScrollPane(ManifestasiAlergi), BorderLayout.CENTER);
+
+        JPanel pAlergi3 = new JPanel(new BorderLayout(0, 2));
+        pAlergi3.setOpaque(false);
+        pAlergi3.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel lAlergi3 = new JLabel("Dampak Alergi:");
+        lAlergi3.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lAlergi3.setForeground(new Color(71, 85, 105));
+        pAlergi3.add(lAlergi3, BorderLayout.NORTH);
+        pAlergi3.add(CmbDampakAlergi, BorderLayout.CENTER);
+
+        cardAlergi.add(pAlergi1);
+        cardAlergi.add(Box.createVerticalStrut(5));
+        cardAlergi.add(pAlergi2);
+        cardAlergi.add(Box.createVerticalStrut(5));
+        cardAlergi.add(pAlergi3);
+
         sidebarKiri.add(cardIdentitas);
         sidebarKiri.add(Box.createVerticalStrut(8));
         sidebarKiri.add(cardContekan);
+        sidebarKiri.add(Box.createVerticalStrut(8));
+        sidebarKiri.add(cardAlergi);
 
         // ---------------------------------------------------------------------
-        // PANEL KANAN: PARAMETER + INLINE TABLE + ALERGI
+        // PANEL KANAN: PARAMETER (KOMPAK 2 BARIS) + INLINE TABLE LUAS & TINGGI
         // ---------------------------------------------------------------------
         JPanel mainKanan = new JPanel(new BorderLayout(10, 10));
         mainKanan.setOpaque(false);
 
-        // A. Card Header Parameter Rekonsiliasi
+        // A. Card Header Parameter Rekonsiliasi (Dipadatkan Menjadi 2 Baris Kompak)
         JPanel cardHeader = createCardPanel("METADATA & PARAMETER WAWANCARA", Color.WHITE, SLATE_BORDER);
-        cardHeader.setLayout(new GridLayout(3, 1, 6, 6));
+        cardHeader.setLayout(new BoxLayout(cardHeader, BoxLayout.Y_AXIS));
 
         // Baris 1: Apoteker, No. Rekonsiliasi, Tanggal & Jam
         JPanel rowHeader1 = new JPanel(new GridLayout(1, 3, 10, 0));
@@ -483,54 +571,101 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         rowHeader1.add(pnlNoRekon);
         rowHeader1.add(pnlWaktu);
 
-        // Baris 2: Rekonsiliasi Saat & Penggunaan Obat Sebelum Admisi
-        JPanel rowHeader2 = new JPanel(new GridLayout(1, 2, 10, 0));
+        // Baris 2: Parameter Kompak (Rekonsiliasi Saat, Penggunaan Obat Sebelum Admisi, Sumber Informasi)
+        JPanel rowHeader2 = new JPanel(new GridLayout(1, 3, 8, 0));
         rowHeader2.setOpaque(false);
 
-        JPanel pnlSaat = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        // 1. Rekonsiliasi Saat
+        JPanel pnlSaat = new JPanel(new BorderLayout(0, 2));
         pnlSaat.setOpaque(false);
-        pnlSaat.setBorder(BorderFactory.createTitledBorder(new LineBorder(SLATE_BORDER), " Rekonsiliasi Saat ", TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 10), TEAL_DARK));
+        pnlSaat.setBorder(new CompoundBorder(
+            new LineBorder(new Color(226, 232, 240), 1, true),
+            new EmptyBorder(2, 6, 2, 6)
+        ));
+        pnlSaat.setBackground(new Color(248, 250, 252));
+        JLabel lblSaat = new JLabel("Rekonsiliasi Saat:");
+        lblSaat.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lblSaat.setForeground(TEAL_DARK);
+
+        JPanel pnlSaatRb = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
+        pnlSaatRb.setOpaque(false);
         rbAdmisi = new JRadioButton("Admisi", true);
-        rbTransfer = new JRadioButton("Transfer Antar Ruang");
+        rbTransfer = new JRadioButton("Transfer Ruang");
         rbPulang = new JRadioButton("Pulang");
+        rbAdmisi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        rbTransfer.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        rbPulang.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         ButtonGroup bgSaat = new ButtonGroup();
         bgSaat.add(rbAdmisi); bgSaat.add(rbTransfer); bgSaat.add(rbPulang);
-        pnlSaat.add(rbAdmisi); pnlSaat.add(rbTransfer); pnlSaat.add(rbPulang);
+        pnlSaatRb.add(rbAdmisi); pnlSaatRb.add(rbTransfer); pnlSaatRb.add(rbPulang);
+        pnlSaat.add(lblSaat, BorderLayout.NORTH);
+        pnlSaat.add(pnlSaatRb, BorderLayout.CENTER);
 
-        JPanel pnlPakaiObat = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        // 2. Penggunaan Obat Sebelum Admisi
+        JPanel pnlPakaiObat = new JPanel(new BorderLayout(0, 2));
         pnlPakaiObat.setOpaque(false);
-        pnlPakaiObat.setBorder(BorderFactory.createTitledBorder(new LineBorder(SLATE_BORDER), " Penggunaan Obat Sebelum Admisi * ", TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 10), TEAL_DARK));
-        rbPakaiYa = new JRadioButton("Ya, Dengan Rincian Sebagai Berikut", true);
-        rbPakaiTidak = new JRadioButton("Tidak Menggunakan Obat Sebelum Admisi");
+        pnlPakaiObat.setBorder(new CompoundBorder(
+            new LineBorder(new Color(226, 232, 240), 1, true),
+            new EmptyBorder(2, 6, 2, 6)
+        ));
+        pnlPakaiObat.setBackground(new Color(248, 250, 252));
+        JLabel lblPakai = new JLabel("Penggunaan Obat Sebelum Admisi *:");
+        lblPakai.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lblPakai.setForeground(TEAL_DARK);
+
+        JPanel pnlPakaiRb = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
+        pnlPakaiRb.setOpaque(false);
+        rbPakaiYa = new JRadioButton("Ya (Ada Rincian)", true);
+        rbPakaiTidak = new JRadioButton("Tidak Pakai");
+        rbPakaiYa.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        rbPakaiTidak.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         ButtonGroup bgPakai = new ButtonGroup();
         bgPakai.add(rbPakaiYa); bgPakai.add(rbPakaiTidak);
-        pnlPakaiObat.add(rbPakaiYa); pnlPakaiObat.add(rbPakaiTidak);
+        pnlPakaiRb.add(rbPakaiYa); pnlPakaiRb.add(rbPakaiTidak);
+        pnlPakaiObat.add(lblPakai, BorderLayout.NORTH);
+        pnlPakaiObat.add(pnlPakaiRb, BorderLayout.CENTER);
+
+        // 3. Sumber Informasi
+        JPanel pnlSumber = new JPanel(new BorderLayout(0, 2));
+        pnlSumber.setOpaque(false);
+        pnlSumber.setBorder(new CompoundBorder(
+            new LineBorder(new Color(226, 232, 240), 1, true),
+            new EmptyBorder(2, 6, 2, 6)
+        ));
+        pnlSumber.setBackground(new Color(248, 250, 252));
+        JLabel lblSumber = new JLabel("Sumber Informasi *:");
+        lblSumber.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lblSumber.setForeground(TEAL_DARK);
+
+        JPanel pnlSumberRb = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
+        pnlSumberRb.setOpaque(false);
+        rbSumberRM = new JRadioButton("Status RM", true);
+        rbSumberPasien = new JRadioButton("Pasien/Kel");
+        rbSumberLain = new JRadioButton("Lain:");
+        rbSumberRM.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        rbSumberPasien.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        rbSumberLain.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        ButtonGroup bgSumber = new ButtonGroup();
+        bgSumber.add(rbSumberRM); bgSumber.add(rbSumberPasien); bgSumber.add(rbSumberLain);
+        KetSumberLain = new JTextField(10);
+        KetSumberLain.setEnabled(false);
+        KetSumberLain.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        pnlSumberRb.add(rbSumberRM);
+        pnlSumberRb.add(rbSumberPasien);
+        pnlSumberRb.add(rbSumberLain);
+        pnlSumberRb.add(KetSumberLain);
+        pnlSumber.add(lblSumber, BorderLayout.NORTH);
+        pnlSumber.add(pnlSumberRb, BorderLayout.CENTER);
 
         rowHeader2.add(pnlSaat);
         rowHeader2.add(pnlPakaiObat);
-
-        // Baris 3: Sumber Informasi
-        JPanel rowHeader3 = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
-        rowHeader3.setOpaque(false);
-        rowHeader3.setBorder(BorderFactory.createTitledBorder(new LineBorder(SLATE_BORDER), " Sumber Informasi * ", TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 10), TEAL_DARK));
-        rbSumberRM = new JRadioButton("Status Pasien di Rekam Medis", true);
-        rbSumberPasien = new JRadioButton("Pasien/Keluarga Pasien");
-        rbSumberLain = new JRadioButton("Lain-lain :");
-        ButtonGroup bgSumber = new ButtonGroup();
-        bgSumber.add(rbSumberRM); bgSumber.add(rbSumberPasien); bgSumber.add(rbSumberLain);
-        KetSumberLain = new JTextField(24);
-        KetSumberLain.setEnabled(false);
-        KetSumberLain.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        rowHeader3.add(rbSumberRM);
-        rowHeader3.add(rbSumberPasien);
-        rowHeader3.add(rbSumberLain);
-        rowHeader3.add(KetSumberLain);
+        rowHeader2.add(pnlSumber);
 
         cardHeader.add(rowHeader1);
+        cardHeader.add(Box.createVerticalStrut(5));
         cardHeader.add(rowHeader2);
-        cardHeader.add(rowHeader3);
 
-        // B. Card Tengah: INLINE TABLE DAFTAR OBAT DIREKONSILIASI
+        // B. Card Tengah: INLINE TABLE DAFTAR OBAT DIREKONSILIASI (LUAS & PENUH)
         JPanel cardTabelObat = createCardPanel("DAFTAR OBAT DIREKONSILIASI (INLINE EDITABLE TABLE)", Color.WHITE, TEAL_MAIN);
         cardTabelObat.setLayout(new BorderLayout(6, 6));
 
@@ -623,51 +758,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         cardTabelObat.add(toolbarTabel, BorderLayout.NORTH);
         cardTabelObat.add(new JScrollPane(tbObat), BorderLayout.CENTER);
 
-        // C. Card Bawah: Riwayat Alergi Obat
-        JPanel cardAlergi = createCardPanel("INFORMASI KLINIS TAMBAHAN - RIWAYAT ALERGI OBAT", Color.WHITE, SLATE_BORDER);
-        cardAlergi.setLayout(new GridLayout(1, 3, 12, 0));
-
-        AlergiObat = new JTextArea(2, 18);
-        AlergiObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        AlergiObat.setLineWrap(true);
-        AlergiObat.setWrapStyleWord(true);
-
-        ManifestasiAlergi = new JTextArea(2, 18);
-        ManifestasiAlergi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        ManifestasiAlergi.setLineWrap(true);
-        ManifestasiAlergi.setWrapStyleWord(true);
-
-        CmbDampakAlergi = new JComboBox<>(new String[]{"-", "Ringan", "Sedang", "Berat"});
-        CmbDampakAlergi.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-
-        JPanel pAlergi1 = new JPanel(new BorderLayout(0, 3));
-        pAlergi1.setOpaque(false);
-        JLabel lAlergi1 = new JLabel("Obat Penyebab Alergi:");
-        lAlergi1.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        pAlergi1.add(lAlergi1, BorderLayout.NORTH);
-        pAlergi1.add(new JScrollPane(AlergiObat), BorderLayout.CENTER);
-
-        JPanel pAlergi2 = new JPanel(new BorderLayout(0, 3));
-        pAlergi2.setOpaque(false);
-        JLabel lAlergi2 = new JLabel("Gejala / Manifestasi Klinis:");
-        lAlergi2.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        pAlergi2.add(lAlergi2, BorderLayout.NORTH);
-        pAlergi2.add(new JScrollPane(ManifestasiAlergi), BorderLayout.CENTER);
-
-        JPanel pAlergi3 = new JPanel(new BorderLayout(0, 3));
-        pAlergi3.setOpaque(false);
-        JLabel lAlergi3 = new JLabel("Dampak Alergi:");
-        lAlergi3.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        pAlergi3.add(lAlergi3, BorderLayout.NORTH);
-        pAlergi3.add(CmbDampakAlergi, BorderLayout.CENTER);
-
-        cardAlergi.add(pAlergi1);
-        cardAlergi.add(pAlergi2);
-        cardAlergi.add(pAlergi3);
-
+        // Panel Kanan HANYA berisi Header Parameter (North) dan Tabel Obat (Center)
         mainKanan.add(cardHeader, BorderLayout.NORTH);
         mainKanan.add(cardTabelObat, BorderLayout.CENTER);
-        mainKanan.add(cardAlergi, BorderLayout.SOUTH);
 
         JScrollPane spSidebar = new JScrollPane(sidebarKiri);
         spSidebar.setBorder(null);
@@ -676,7 +769,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         spSidebar.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         spSidebar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         spSidebar.getVerticalScrollBar().setUnitIncrement(16);
-        spSidebar.setPreferredSize(new Dimension(360, 600));
+        spSidebar.setPreferredSize(new Dimension(365, 600));
 
         container.add(spSidebar, BorderLayout.WEST);
         container.add(mainKanan, BorderLayout.CENTER);
@@ -971,6 +1064,30 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 }
             }
         });
+    }
+
+    private void toggleMaximize() {
+        Rectangle maxScreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        if (!isMaximized) {
+            normalBounds = getBounds();
+            setBounds(maxScreen);
+            btnMaximize.setText("❐");
+            btnMaximize.setToolTipText("Pulihkan Ukuran Jendela (Restore)");
+            isMaximized = true;
+        } else {
+            if (normalBounds != null) {
+                setBounds(normalBounds);
+            } else {
+                Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+                int targetW = Math.min(1420, (int) (screen.width * 0.95));
+                int targetH = Math.min(860, (int) (screen.height * 0.95));
+                setSize(targetW, targetH);
+                setLocationRelativeTo(null);
+            }
+            btnMaximize.setText("▢");
+            btnMaximize.setToolTipText("Perbesar Layar Penuh (Maximize)");
+            isMaximized = false;
+        }
     }
 
     private void bukaDialogCariObat() {
