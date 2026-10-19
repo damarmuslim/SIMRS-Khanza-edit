@@ -40,12 +40,13 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private final DlgBarang barang = new DlgBarang(null, false);
     private final DlgCariPetugas petugas = new DlgCariPetugas(null, false);
 
-    // Warna Tema Modern Teal & Slate (Sesuai UI HTML & Argon)
+    // Warna Tema Clean Medical UI (Modern Teal, Mint & Slate)
     private final Color TEAL_DARK    = new Color(19, 78, 74);       // #134e4a
     private final Color TEAL_MAIN    = new Color(15, 118, 110);     // #0f766e
-    private final Color TEAL_LIGHT   = new Color(240, 253, 250);   // #f0fdfa
-    private final Color AMBER_BG     = new Color(255, 251, 235);   // #fffbeb
-    private final Color AMBER_BORDER = new Color(252, 211, 77);    // #fcd34d
+    private final Color TEAL_LIGHT   = new Color(240, 253, 250);   // #f0fdfa (Soft Ice Mint)
+    private final Color MINT_BORDER  = new Color(94, 234, 212);     // #5eead4 (Teal Lembut)
+    private final Color BLUE_OCEAN   = new Color(3, 105, 161);      // #0369a1 (Biru Medis / Ocean Blue)
+    private final Color GREEN_EMERALD= new Color(5, 150, 105);      // #059669 (Hijau Emerald)
     private final Color SLATE_BG     = new Color(241, 245, 249);   // #f1f5f9
     private final Color SLATE_BORDER = new Color(203, 213, 225);   // #cbd5e1
 
@@ -165,7 +166,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel sidebarKiri = new JPanel();
         sidebarKiri.setLayout(new BoxLayout(sidebarKiri, BoxLayout.Y_AXIS));
         sidebarKiri.setOpaque(false);
-        sidebarKiri.setPreferredSize(new Dimension(340, 600));
+        sidebarKiri.setPreferredSize(new Dimension(350, 600));
 
         // Card 1: Identitas Pasien (TERKUNCI)
         JPanel cardIdentitas = createCardPanel("IDENTITAS PASIEN", Color.WHITE, SLATE_BORDER);
@@ -233,22 +234,24 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         cardIdentitas.add(pnlIdRows, BorderLayout.CENTER);
 
         // Card 2: Panel Contekan Asesmen Awal Medis (Bebas Notepad!)
-        JPanel cardContekan = createCardPanel("CONTEKAN ASESMEN AWAL MEDIS", AMBER_BG, AMBER_BORDER);
+        JPanel cardContekan = createCardPanel("CONTEKAN ASESMEN AWAL MEDIS", TEAL_LIGHT, MINT_BORDER);
         cardContekan.setLayout(new BorderLayout(6, 6));
 
         JPanel pnlContekanHeader = new JPanel(new BorderLayout());
         pnlContekanHeader.setOpaque(false);
+        pnlContekanHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
+        pnlContekanHeader.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
 
-        JLabel lblSubJudul = new JLabel("📌 Otomatis dari Asesmen Medis");
+        JLabel lblSubJudul = new JLabel("Otomatis dari Asesmen Medis");
         lblSubJudul.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        lblSubJudul.setForeground(new Color(120, 53, 15));
+        lblSubJudul.setForeground(TEAL_DARK);
 
         lblBadgeSumberAsesmen = new JLabel(" MEDIS ");
         lblBadgeSumberAsesmen.setFont(new Font("Segoe UI", Font.BOLD, 9));
-        lblBadgeSumberAsesmen.setForeground(new Color(120, 53, 15));
+        lblBadgeSumberAsesmen.setForeground(TEAL_DARK);
         lblBadgeSumberAsesmen.setBackground(Color.WHITE);
         lblBadgeSumberAsesmen.setOpaque(true);
-        lblBadgeSumberAsesmen.setBorder(new LineBorder(AMBER_BORDER, 1, true));
+        lblBadgeSumberAsesmen.setBorder(new LineBorder(MINT_BORDER, 1, true));
 
         pnlContekanHeader.add(lblSubJudul, BorderLayout.WEST);
         pnlContekanHeader.add(lblBadgeSumberAsesmen, BorderLayout.EAST);
@@ -259,7 +262,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         JLabel lblRtl = new JLabel("1. Tata Laksana / Terapi Dokter:");
         lblRtl.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        lblRtl.setForeground(new Color(51, 65, 85));
+        lblRtl.setForeground(TEAL_DARK);
+        lblRtl.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblRtl.setHorizontalAlignment(SwingConstants.LEFT);
 
         txtContekanTataLaksana = new JTextArea(5, 20);
         txtContekanTataLaksana.setEditable(false);
@@ -269,20 +274,28 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         txtContekanTataLaksana.setBackground(Color.WHITE);
         txtContekanTataLaksana.setBorder(new EmptyBorder(4, 4, 4, 4));
 
-        JButton btnKirimBlokKeTabel = new JButton(" Masukkan Teks Terblok ke Tabel Obat");
+        JScrollPane spTataLaksana = new JScrollPane(txtContekanTataLaksana);
+        spTataLaksana.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JButton btnKirimBlokKeTabel = new JButton(" + Masukkan Teks Diblok ke Tabel");
         btnKirimBlokKeTabel.setIcon(getIcon("/picture/2rightarrow.png"));
         btnKirimBlokKeTabel.setBackground(TEAL_MAIN);
         btnKirimBlokKeTabel.setForeground(Color.WHITE);
         btnKirimBlokKeTabel.setFont(new Font("Segoe UI", Font.BOLD, 10));
         btnKirimBlokKeTabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnKirimBlokKeTabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnKirimBlokKeTabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
         btnKirimBlokKeTabel.addActionListener(e -> kirimTeksTerblokKeTabel());
 
         panelQuickChips = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 2));
         panelQuickChips.setOpaque(false);
+        panelQuickChips.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel lblRpo = new JLabel("2. Riwayat Penggunaan Obat Rumah (RPO):");
         lblRpo.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        lblRpo.setForeground(new Color(51, 65, 85));
+        lblRpo.setForeground(TEAL_DARK);
+        lblRpo.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblRpo.setHorizontalAlignment(SwingConstants.LEFT);
 
         txtContekanRPO = new JTextArea(2, 20);
         txtContekanRPO.setEditable(false);
@@ -292,9 +305,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         txtContekanRPO.setBackground(Color.WHITE);
         txtContekanRPO.setBorder(new EmptyBorder(4, 4, 4, 4));
 
+        JScrollPane spRPO = new JScrollPane(txtContekanRPO);
+        spRPO.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         JPanel panelAlergiContekan = new JPanel(new BorderLayout(4, 4));
-        panelAlergiContekan.setBackground(new Color(255, 241, 242));
-        panelAlergiContekan.setBorder(new CompoundBorder(new LineBorder(new Color(254, 205, 211)), new EmptyBorder(4, 6, 4, 6)));
+        panelAlergiContekan.setBackground(Color.WHITE);
+        panelAlergiContekan.setBorder(new CompoundBorder(
+            new LineBorder(new Color(253, 164, 175), 1, true),
+            new EmptyBorder(4, 6, 4, 6)
+        ));
+        panelAlergiContekan.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelAlergiContekan.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
 
         lblContekanAlergi = new JLabel("Alergi Medis: -");
         lblContekanAlergi.setFont(new Font("Segoe UI", Font.BOLD, 11));
@@ -320,7 +341,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         contekanBody.add(Box.createVerticalStrut(6));
         contekanBody.add(lblRtl);
         contekanBody.add(Box.createVerticalStrut(3));
-        contekanBody.add(new JScrollPane(txtContekanTataLaksana));
+        contekanBody.add(spTataLaksana);
         contekanBody.add(Box.createVerticalStrut(4));
         contekanBody.add(btnKirimBlokKeTabel);
         contekanBody.add(Box.createVerticalStrut(4));
@@ -328,7 +349,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         contekanBody.add(Box.createVerticalStrut(6));
         contekanBody.add(lblRpo);
         contekanBody.add(Box.createVerticalStrut(3));
-        contekanBody.add(new JScrollPane(txtContekanRPO));
+        contekanBody.add(spRPO);
         contekanBody.add(Box.createVerticalStrut(6));
         contekanBody.add(panelAlergiContekan);
 
@@ -488,9 +509,10 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnHapusBarisObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         btnHapusBarisObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btnPilihMasterObat = new JButton(" Master Obat/Infus (Spasi)");
+        btnPilihMasterObat = new JButton(" Pilih dari Data Obat/Infus");
         btnPilihMasterObat.setIcon(getIcon("/picture/190.png"));
-        btnPilihMasterObat.setBackground(AMBER_BORDER);
+        btnPilihMasterObat.setBackground(BLUE_OCEAN);
+        btnPilihMasterObat.setForeground(Color.WHITE);
         btnPilihMasterObat.setFont(new Font("Segoe UI", Font.BOLD, 11));
         btnPilihMasterObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
@@ -560,7 +582,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         cardTabelObat.add(new JScrollPane(tbObat), BorderLayout.CENTER);
 
         // C. Card Bawah: Riwayat Alergi Obat
-        JPanel cardAlergi = createCardPanel("INFORMASI KLINIS TAMBAHAN • RIWAYAT ALERGI OBAT", Color.WHITE, SLATE_BORDER);
+        JPanel cardAlergi = createCardPanel("INFORMASI KLINIS TAMBAHAN - RIWAYAT ALERGI OBAT", Color.WHITE, SLATE_BORDER);
         cardAlergi.setLayout(new GridLayout(1, 3, 12, 0));
 
         AlergiObat = new JTextArea(2, 18);
@@ -736,7 +758,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         JButton btnKonfirmApoteker = new JButton(" Konfirmasi / Validasi Apoteker");
         btnKonfirmApoteker.setIcon(getIcon("/picture/checked.png"));
-        btnKonfirmApoteker.setBackground(AMBER_BORDER);
+        btnKonfirmApoteker.setBackground(GREEN_EMERALD);
+        btnKonfirmApoteker.setForeground(Color.WHITE);
         btnKonfirmApoteker.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnKonfirmApoteker.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnKonfirmApoteker.addActionListener(e -> konfirmasiApoteker());
@@ -1497,7 +1520,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     .append("<div align='center' style='border-bottom:2px solid #0f766e; padding-bottom:6px; margin-bottom:10px;'>")
                     .append("<b style='font-size:11px; color:#64748b;'>PEMERINTAH KABUPATEN LAMPUNG TENGAH</b><br>")
                     .append("<b style='font-size:14px; color:#0f766e;'>RSUD DEMANG SEPULAU RAYA</b><br>")
-                    .append("<span style='font-size:9px; color:#64748b;'>Jalan Raya Lintas Sumatera, Sepulau Raya, Kec. Terbanggi Besar, Kab. Lampung Tengah</span>")
+                    .append("<span style='font-size:9px; color:#64748b;'>Jl. Lintas Sumatera, No. 4.A, Terbanggi Agung, Gunung Sugih, Lampung Tengah Kode Pos 34161</span>")
                     .append("</div>")
 
                     .append("<table width='100%' style='margin-bottom:10px; font-size:11px;'><tr>")
@@ -1558,8 +1581,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 html.append("<div style='margin-top:10px; padding:8px; border:1px solid #0f766e; background:#f0fdfa; font-size:10px;'>")
                     .append("<b>Apoteker yang Melakukan Rekonsiliasi:</b> ").append(rs.getString("nm_apoteker")).append(" (NIP: ").append(rs.getString("nip")).append(")<br>")
                     .append("<b>Status Validasi Elektronik Apoteker:</b> ")
-                    .append(tglKonfirm == null ? "<span style='color:#b45309; font-weight:bold;'>⚠️ Belum Dikonfirmasi Apoteker</span>"
-                            : "<span style='color:#15803d; font-weight:bold;'>✓ Terkonfirmasi Secara Sistem (" + tglKonfirm + ")</span>")
+                    .append(tglKonfirm == null ? "<span style='color:#b45309; font-weight:bold;'>[ Belum Dikonfirmasi Apoteker ]</span>"
+                            : "<span style='color:#15803d; font-weight:bold;'>&#10003; Terkonfirmasi Secara Sistem (" + tglKonfirm + ")</span>")
                     .append("</div></body></html>");
             }
             LoadHTML.setText(html.toString());
