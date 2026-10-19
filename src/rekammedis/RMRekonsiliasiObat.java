@@ -215,23 +215,24 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         lblBadgeTerkunci.setBorder(new LineBorder(new Color(203, 213, 225), 1, true));
         pnlAvatarNama.add(lblBadgeTerkunci, BorderLayout.EAST);
 
-        // Detail Baris Identitas
-        JPanel pnlIdRows = new JPanel(new GridLayout(0, 1, 3, 3));
+        // Detail Baris Identitas (Compact 2x2 Grid)
+        JPanel pnlIdRows = new JPanel(new GridLayout(2, 2, 4, 3));
         pnlIdRows.setOpaque(false);
-        pnlIdRows.setBorder(new CompoundBorder(new MatteBorder(1, 0, 0, 0, new Color(241, 245, 249)), new EmptyBorder(6, 0, 0, 0)));
+        pnlIdRows.setBorder(new CompoundBorder(new MatteBorder(1, 0, 0, 0, new Color(241, 245, 249)), new EmptyBorder(4, 0, 0, 0)));
 
         TNoRM = createReadOnlyField("-");
         TNoRw = createReadOnlyField("-");
         TTglLahir = createReadOnlyField("-");
         TUmurStatus = createReadOnlyField("-");
 
-        pnlIdRows.add(createLabeledRow("No. RM :", TNoRM));
-        pnlIdRows.add(createLabeledRow("No. Rawat :", TNoRw));
-        pnlIdRows.add(createLabeledRow("Tgl. Lahir :", TTglLahir));
-        pnlIdRows.add(createLabeledRow("Umur :", TUmurStatus));
+        pnlIdRows.add(createLabeledRowCompact("No. RM:", TNoRM));
+        pnlIdRows.add(createLabeledRowCompact("No. Rawat:", TNoRw));
+        pnlIdRows.add(createLabeledRowCompact("Lahir:", TTglLahir));
+        pnlIdRows.add(createLabeledRowCompact("Umur:", TUmurStatus));
 
         cardIdentitas.add(pnlAvatarNama, BorderLayout.NORTH);
         cardIdentitas.add(pnlIdRows, BorderLayout.CENTER);
+        cardIdentitas.setMaximumSize(new Dimension(Integer.MAX_VALUE, 95));
 
         // Card 2: Panel Contekan Asesmen Awal Medis (Bebas Notepad!)
         JPanel cardContekan = createCardPanel("CONTEKAN ASESMEN AWAL MEDIS", TEAL_LIGHT, MINT_BORDER);
@@ -251,7 +252,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         lblBadgeSumberAsesmen.setForeground(TEAL_DARK);
         lblBadgeSumberAsesmen.setBackground(Color.WHITE);
         lblBadgeSumberAsesmen.setOpaque(true);
-        lblBadgeSumberAsesmen.setBorder(new LineBorder(MINT_BORDER, 1, true));
+        lblBadgeSumberAsesmen.setBorder(new LineBorder(MINT_BORDER, 1, false));
 
         pnlContekanHeader.add(lblSubJudul, BorderLayout.WEST);
         pnlContekanHeader.add(lblBadgeSumberAsesmen, BorderLayout.EAST);
@@ -265,6 +266,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         lblRtl.setForeground(TEAL_DARK);
         lblRtl.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblRtl.setHorizontalAlignment(SwingConstants.LEFT);
+        lblRtl.setMaximumSize(new Dimension(Integer.MAX_VALUE, 18));
 
         txtContekanTataLaksana = new JTextArea(5, 20);
         txtContekanTataLaksana.setEditable(false);
@@ -272,10 +274,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         txtContekanTataLaksana.setLineWrap(true);
         txtContekanTataLaksana.setWrapStyleWord(true);
         txtContekanTataLaksana.setBackground(Color.WHITE);
-        txtContekanTataLaksana.setBorder(new EmptyBorder(4, 4, 4, 4));
+        txtContekanTataLaksana.setMargin(new Insets(5, 6, 5, 6));
 
         JScrollPane spTataLaksana = new JScrollPane(txtContekanTataLaksana);
         spTataLaksana.setAlignmentX(Component.LEFT_ALIGNMENT);
+        spTataLaksana.setPreferredSize(new Dimension(330, 115));
+        spTataLaksana.setMinimumSize(new Dimension(330, 95));
 
         JButton btnKirimBlokKeTabel = new JButton(" + Masukkan Teks Diblok ke Tabel");
         btnKirimBlokKeTabel.setIcon(getIcon("/picture/2rightarrow.png"));
@@ -284,37 +288,45 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnKirimBlokKeTabel.setFont(new Font("Segoe UI", Font.BOLD, 10));
         btnKirimBlokKeTabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnKirimBlokKeTabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnKirimBlokKeTabel.setPreferredSize(new Dimension(330, 26));
+        btnKirimBlokKeTabel.setMinimumSize(new Dimension(330, 26));
         btnKirimBlokKeTabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
         btnKirimBlokKeTabel.addActionListener(e -> kirimTeksTerblokKeTabel());
 
         panelQuickChips = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 2));
         panelQuickChips.setOpaque(false);
         panelQuickChips.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelQuickChips.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
 
         JLabel lblRpo = new JLabel("2. Riwayat Penggunaan Obat Rumah (RPO):");
         lblRpo.setFont(new Font("Segoe UI", Font.BOLD, 11));
         lblRpo.setForeground(TEAL_DARK);
         lblRpo.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblRpo.setHorizontalAlignment(SwingConstants.LEFT);
+        lblRpo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 18));
 
-        txtContekanRPO = new JTextArea(2, 20);
+        txtContekanRPO = new JTextArea(3, 20);
         txtContekanRPO.setEditable(false);
         txtContekanRPO.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         txtContekanRPO.setLineWrap(true);
         txtContekanRPO.setWrapStyleWord(true);
         txtContekanRPO.setBackground(Color.WHITE);
-        txtContekanRPO.setBorder(new EmptyBorder(4, 4, 4, 4));
+        txtContekanRPO.setMargin(new Insets(5, 6, 5, 6));
 
         JScrollPane spRPO = new JScrollPane(txtContekanRPO);
         spRPO.setAlignmentX(Component.LEFT_ALIGNMENT);
+        spRPO.setPreferredSize(new Dimension(330, 65));
+        spRPO.setMinimumSize(new Dimension(330, 52));
 
         JPanel panelAlergiContekan = new JPanel(new BorderLayout(4, 4));
         panelAlergiContekan.setBackground(Color.WHITE);
         panelAlergiContekan.setBorder(new CompoundBorder(
-            new LineBorder(new Color(253, 164, 175), 1, true),
+            new LineBorder(new Color(253, 164, 175), 1, false),
             new EmptyBorder(4, 6, 4, 6)
         ));
         panelAlergiContekan.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelAlergiContekan.setPreferredSize(new Dimension(330, 36));
+        panelAlergiContekan.setMinimumSize(new Dimension(330, 36));
         panelAlergiContekan.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
 
         lblContekanAlergi = new JLabel("Alergi Medis: -");
@@ -338,7 +350,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelAlergiContekan.add(btnSalinAlergi, BorderLayout.EAST);
 
         contekanBody.add(pnlContekanHeader);
-        contekanBody.add(Box.createVerticalStrut(6));
+        contekanBody.add(Box.createVerticalStrut(5));
         contekanBody.add(lblRtl);
         contekanBody.add(Box.createVerticalStrut(3));
         contekanBody.add(spTataLaksana);
@@ -346,7 +358,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         contekanBody.add(btnKirimBlokKeTabel);
         contekanBody.add(Box.createVerticalStrut(4));
         contekanBody.add(panelQuickChips);
-        contekanBody.add(Box.createVerticalStrut(6));
+        contekanBody.add(Box.createVerticalStrut(5));
         contekanBody.add(lblRpo);
         contekanBody.add(Box.createVerticalStrut(3));
         contekanBody.add(spRPO);
@@ -356,7 +368,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         cardContekan.add(contekanBody, BorderLayout.CENTER);
 
         sidebarKiri.add(cardIdentitas);
-        sidebarKiri.add(Box.createVerticalStrut(10));
+        sidebarKiri.add(Box.createVerticalStrut(8));
         sidebarKiri.add(cardContekan);
 
         // ---------------------------------------------------------------------
@@ -627,7 +639,16 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         mainKanan.add(cardTabelObat, BorderLayout.CENTER);
         mainKanan.add(cardAlergi, BorderLayout.SOUTH);
 
-        container.add(sidebarKiri, BorderLayout.WEST);
+        JScrollPane spSidebar = new JScrollPane(sidebarKiri);
+        spSidebar.setBorder(null);
+        spSidebar.setOpaque(false);
+        spSidebar.getViewport().setOpaque(false);
+        spSidebar.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        spSidebar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        spSidebar.getVerticalScrollBar().setUnitIncrement(16);
+        spSidebar.setPreferredSize(new Dimension(360, 600));
+
+        container.add(spSidebar, BorderLayout.WEST);
         container.add(mainKanan, BorderLayout.CENTER);
         return container;
     }
@@ -1600,7 +1621,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel p = new JPanel();
         p.setBackground(bg);
         TitledBorder tb = BorderFactory.createTitledBorder(
-            new LineBorder(borderColor, 1, true), " " + title + " ",
+            new LineBorder(borderColor, 1, false), " " + title + " ",
             TitledBorder.LEFT, TitledBorder.TOP,
             new Font("Segoe UI", Font.BOLD, 11), TEAL_DARK
         );
@@ -1623,6 +1644,18 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JLabel l = new JLabel(label);
         l.setPreferredSize(new Dimension(85, 22));
         l.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        l.setForeground(new Color(71, 85, 105));
+        p.add(l, BorderLayout.WEST);
+        p.add(comp, BorderLayout.CENTER);
+        return p;
+    }
+
+    private JPanel createLabeledRowCompact(String label, JComponent comp) {
+        JPanel p = new JPanel(new BorderLayout(4, 0));
+        p.setOpaque(false);
+        JLabel l = new JLabel(label);
+        l.setPreferredSize(new Dimension(55, 20));
+        l.setFont(new Font("Segoe UI", Font.PLAIN, 10));
         l.setForeground(new Color(71, 85, 105));
         p.add(l, BorderLayout.WEST);
         p.add(comp, BorderLayout.CENTER);
