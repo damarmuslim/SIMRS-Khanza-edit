@@ -90,6 +90,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JList<String> listSaranObat;
     private final Map<String, String> mapKodeObat = new HashMap<>();
     private JTextField txtNamaObatEditor;
+    private int rowObatSedangDiedit = -1;
+    private long lastPilihObatTime = 0;
 
     // UX Maximize/Restore
     private boolean isMaximized = false;
@@ -300,25 +302,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         lblSubJudul.setFont(new Font("Segoe UI", Font.BOLD, 11));
         lblSubJudul.setForeground(TEAL_DARK);
 
-        pnlToggle = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 0));
+        pnlToggle = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
         pnlToggle.setOpaque(false);
 
         btnToggleIGD = new JButton("IGD");
-        btnToggleIGD.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        btnToggleIGD.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnToggleIGD.setMargin(new Insets(1, 6, 1, 6));
-        btnToggleIGD.setBackground(Color.WHITE);
-        btnToggleIGD.setForeground(TEAL_DARK);
-        btnToggleIGD.setBorder(new LineBorder(MINT_BORDER, 1, false));
-        btnToggleIGD.addActionListener(e -> tampilkanContekanSumber("IGD"));
-
         btnToggleRanap = new JButton("Ranap");
-        btnToggleRanap.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        btnToggleRanap.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnToggleRanap.setMargin(new Insets(1, 6, 1, 6));
-        btnToggleRanap.setBackground(Color.WHITE);
-        btnToggleRanap.setForeground(TEAL_DARK);
-        btnToggleRanap.setBorder(new LineBorder(MINT_BORDER, 1, false));
+        styleToggleBtn(btnToggleIGD, false);
+        styleToggleBtn(btnToggleRanap, true);
+        pasangHoverToggleBtn(btnToggleIGD, "IGD");
+        pasangHoverToggleBtn(btnToggleRanap, "RANAP");
+
+        btnToggleIGD.addActionListener(e -> tampilkanContekanSumber("IGD"));
         btnToggleRanap.addActionListener(e -> tampilkanContekanSumber("RANAP"));
 
         pnlToggle.add(btnToggleIGD);
@@ -1450,6 +1444,23 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         listSaranObat.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listSaranObat.setSelectionBackground(new Color(204, 251, 241)); // #CCFBF1 Soft Ice Mint
         listSaranObat.setSelectionForeground(new Color(15, 23, 42));    // Slate 900
+        listSaranObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        listSaranObat.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel lbl = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                lbl.setBorder(new EmptyBorder(5, 10, 5, 10));
+                lbl.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+                if (isSelected) {
+                    lbl.setBackground(new Color(204, 251, 241));
+                    lbl.setForeground(new Color(15, 23, 42));
+                } else {
+                    lbl.setBackground(Color.WHITE);
+                    lbl.setForeground(new Color(30, 41, 59));
+                }
+                return lbl;
+            }
+        });
 
         JScrollPane scrollSaran = new JScrollPane(listSaranObat);
         scrollSaran.setBorder(null);
@@ -1472,6 +1483,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         DefaultCellEditor cellEditorObat = new DefaultCellEditor(txtNamaObatEditor) {
             @Override
             public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                rowObatSedangDiedit = row;
                 Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
                 if (c instanceof JComponent) {
                     ((JComponent) c).setBorder(new CompoundBorder(
@@ -1490,6 +1502,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
             @Override
             public boolean stopCellEditing() {
+                try {
+                    PointerInfo pi = MouseInfo.getPointerInfo();
+                    if (pi != null && popupSaranObat != null && popupSaranObat.isShowing()) {
+                        Point mousePos = pi.getLocation();
+                        Point popPos = popupSaranObat.getLocationOnScreen();
+                        Rectangle popBounds = new Rectangle(popPos.x, popPos.y, popupSaranObat.getWidth(), popupSaranObat.getHeight());
+                        if (popBounds.contains(mousePos)) {
+                            return super.stopCellEditing();
+                        }
+                    }
+                } catch (Exception ex) {}
                 if (popupSaranObat != null && popupSaranObat.isVisible()) {
                     popupSaranObat.setVisible(false);
                 }
@@ -1498,6 +1521,18 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
             @Override
             public void cancelCellEditing() {
+                try {
+                    PointerInfo pi = MouseInfo.getPointerInfo();
+                    if (pi != null && popupSaranObat != null && popupSaranObat.isShowing()) {
+                        Point mousePos = pi.getLocation();
+                        Point popPos = popupSaranObat.getLocationOnScreen();
+                        Rectangle popBounds = new Rectangle(popPos.x, popPos.y, popupSaranObat.getWidth(), popupSaranObat.getHeight());
+                        if (popBounds.contains(mousePos)) {
+                            super.cancelCellEditing();
+                            return;
+                        }
+                    }
+                } catch (Exception ex) {}
                 if (popupSaranObat != null && popupSaranObat.isVisible()) {
                     popupSaranObat.setVisible(false);
                 }
@@ -1561,15 +1596,29 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             }
         });
 
-        // Mouse click listener pada list saran
-        listSaranObat.addMouseListener(new MouseAdapter() {
+        // Mouse listener pada list saran (tangani klik mouse agar langsung terpilih)
+        MouseAdapter mouseHandlerSaran = new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                eksekusiPilihDariMouse(e);
+            }
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (listSaranObat.getSelectedIndex() != -1) {
-                    pilihObatDariSaran(listSaranObat.getSelectedValue());
+                eksekusiPilihDariMouse(e);
+            }
+            private void eksekusiPilihDariMouse(MouseEvent e) {
+                long now = System.currentTimeMillis();
+                if (now - lastPilihObatTime < 250) return;
+                int index = listSaranObat.locationToIndex(e.getPoint());
+                if (index != -1) {
+                    lastPilihObatTime = now;
+                    listSaranObat.setSelectedIndex(index);
+                    String terpilih = modelSaranObat.getElementAt(index);
+                    pilihObatDariSaran(terpilih);
                 }
             }
-        });
+        };
+        listSaranObat.addMouseListener(mouseHandlerSaran);
     }
 
     private void cariSaranLive() {
@@ -1616,19 +1665,38 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private void pilihObatDariSaran(String nama) {
         if (nama == null || nama.isEmpty()) return;
         String kode = mapKodeObat.getOrDefault(nama, "");
-        popupSaranObat.setVisible(false);
+        if (popupSaranObat != null) {
+            popupSaranObat.setVisible(false);
+        }
 
-        int row = tbObat.getSelectedRow();
-        if (row != -1) {
-            tabModeObat.setValueAt(kode, row, 0);
-            tabModeObat.setValueAt(nama, row, 1);
+        int row = rowObatSedangDiedit;
+        if (row < 0 || row >= tabModeObat.getRowCount()) {
+            row = tbObat.getEditingRow();
+        }
+        if (row < 0 || row >= tabModeObat.getRowCount()) {
+            row = tbObat.getSelectedRow();
+        }
+
+        if (row >= 0 && row < tabModeObat.getRowCount()) {
+            final int targetRow = row;
+            txtNamaObatEditor.setText(nama);
+            tabModeObat.setValueAt(kode, targetRow, 0);
+            tabModeObat.setValueAt(nama, targetRow, 1);
             if (tbObat.isEditing()) {
-                tbObat.getCellEditor().cancelCellEditing();
+                TableCellEditor ed = tbObat.getCellEditor();
+                if (ed != null) ed.cancelCellEditing();
             }
-            tbObat.changeSelection(row, 2, false, false);
-            tbObat.editCellAt(row, 2);
-            Component editor = tbObat.getEditorComponent();
-            if (editor != null) editor.requestFocus();
+            SwingUtilities.invokeLater(() -> {
+                tbObat.changeSelection(targetRow, 2, false, false);
+                tbObat.editCellAt(targetRow, 2);
+                Component editor = tbObat.getEditorComponent();
+                if (editor != null) {
+                    editor.requestFocusInWindow();
+                    if (editor instanceof JTextField) {
+                        ((JTextField) editor).selectAll();
+                    }
+                }
+            });
         }
         updateBadgeObat();
     }
@@ -1894,29 +1962,57 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         lblContekanAlergi.setText("Riwayat Alergi Pasien: " + alergi);
     }
 
+    private void styleToggleBtn(JButton btn, boolean aktif) {
+        btn.setFocusPainted(false);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        if (aktif) {
+            btn.setBackground(TEAL_MAIN);
+            btn.setForeground(Color.WHITE);
+            btn.setBorder(new CompoundBorder(
+                new LineBorder(TEAL_DARK, 1, true),
+                new EmptyBorder(4, 12, 4, 12)
+            ));
+        } else {
+            btn.setBackground(Color.WHITE);
+            btn.setForeground(new Color(71, 85, 105));
+            btn.setBorder(new CompoundBorder(
+                new LineBorder(new Color(203, 213, 225), 1, true),
+                new EmptyBorder(4, 12, 4, 12)
+            ));
+        }
+    }
+
+    private void pasangHoverToggleBtn(JButton btn, String sumber) {
+        btn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (!sumber.equalsIgnoreCase(sumberTerpilih)) {
+                    btn.setBackground(new Color(241, 245, 249));
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (!sumber.equalsIgnoreCase(sumberTerpilih)) {
+                    btn.setBackground(Color.WHITE);
+                }
+            }
+        });
+    }
+
     private void tampilkanContekanSumber(String sumber) {
         sumberTerpilih = sumber;
         if ("IGD".equalsIgnoreCase(sumber)) {
-            btnToggleIGD.setBackground(TEAL_MAIN);
-            btnToggleIGD.setForeground(Color.WHITE);
-            btnToggleIGD.setBorder(new LineBorder(TEAL_DARK, 1, false));
-
-            btnToggleRanap.setBackground(Color.WHITE);
-            btnToggleRanap.setForeground(TEAL_DARK);
-            btnToggleRanap.setBorder(new LineBorder(MINT_BORDER, 1, false));
+            styleToggleBtn(btnToggleIGD, true);
+            styleToggleBtn(btnToggleRanap, false);
 
             txtContekanTataLaksana.setText((tataIGD == null || tataIGD.trim().isEmpty()) ? "(Belum ada catatan Tata Laksana di Asesmen Medis IGD)" : tataIGD.trim());
             txtContekanRPO.setText((rpoIGD == null || rpoIGD.trim().isEmpty()) ? "(Belum ada catatan Riwayat Obat di Asesmen Medis IGD)" : rpoIGD.trim());
             lblContekanAlergi.setText("Riwayat Alergi Pasien (IGD): " + ((alergiIGD == null || alergiIGD.trim().isEmpty()) ? "-" : alergiIGD.trim()));
             generateQuickChips(tataIGD);
         } else {
-            btnToggleRanap.setBackground(TEAL_MAIN);
-            btnToggleRanap.setForeground(Color.WHITE);
-            btnToggleRanap.setBorder(new LineBorder(TEAL_DARK, 1, false));
-
-            btnToggleIGD.setBackground(Color.WHITE);
-            btnToggleIGD.setForeground(TEAL_DARK);
-            btnToggleIGD.setBorder(new LineBorder(MINT_BORDER, 1, false));
+            styleToggleBtn(btnToggleRanap, true);
+            styleToggleBtn(btnToggleIGD, false);
 
             txtContekanTataLaksana.setText((tataRanap == null || tataRanap.trim().isEmpty()) ? "(Belum ada catatan Tata Laksana di Asesmen Medis Ranap)" : tataRanap.trim());
             txtContekanRPO.setText((rpoRanap == null || rpoRanap.trim().isEmpty()) ? "(Belum ada catatan Riwayat Obat di Asesmen Medis Ranap)" : rpoRanap.trim());
