@@ -113,6 +113,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JTable tbDataRekon;
     private DefaultTableModel tabModeDataRekon;
     private JEditorPane LoadHTML;
+    private JScrollPane scrollPreviewHTML;
     private JTextField TCari;
     private Tanggal DTPCari1, DTPCari2;
     private JLabel LCount;
@@ -1018,8 +1019,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         LoadHTML.setContentType("text/html");
         LoadHTML.setEditable(false);
         LoadHTML.setBackground(Color.WHITE);
+        if (LoadHTML.getCaret() instanceof javax.swing.text.DefaultCaret) {
+            ((javax.swing.text.DefaultCaret) LoadHTML.getCaret()).setUpdatePolicy(javax.swing.text.DefaultCaret.NEVER_UPDATE);
+        }
 
-        panelKanan.add(new JScrollPane(LoadHTML), BorderLayout.CENTER);
+        scrollPreviewHTML = new JScrollPane(LoadHTML);
+        panelKanan.add(scrollPreviewHTML, BorderLayout.CENTER);
 
         container.add(panelKiri);
         container.add(panelKanan);
@@ -1129,6 +1134,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             panelFooterData.setVisible(!isInput);
             if (!isInput) {
                 tampilDataRekonsiliasi();
+                SwingUtilities.invokeLater(() -> {
+                    if (scrollPreviewHTML != null) {
+                        scrollPreviewHTML.getVerticalScrollBar().setValue(0);
+                    }
+                    LoadHTML.setCaretPosition(0);
+                });
             }
         });
 
@@ -3112,6 +3123,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 String noRm = rs.getString("no_rkm_medis");
                 String nmPasien = rs.getString("nm_pasien");
 
+                String tglWwncRaw = rs.getString("tanggal_wawancara");
+                String tglWwncTampil = (tglWwncRaw != null && tglWwncRaw.length() >= 10) ? tglWwncRaw.substring(0, 10) : (tglWwncRaw != null ? tglWwncRaw : "-");
+
                 html.append("<html><body style='font-family:sans-serif; font-size:11px; color:#1e293b; padding:10px;'>")
                     .append("<div align='center' style='border-bottom:2px solid #0f766e; padding-bottom:6px; margin-bottom:10px;'>")
                     .append("<b style='font-size:11px; color:#64748b;'>PEMERINTAH KABUPATEN LAMPUNG TENGAH</b><br>")
@@ -3129,7 +3143,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     .append("<b style='font-size:13px; color:#0f766e;'>REKONSILIASI OBAT (RM 03-06A)</b><br>")
                     .append("Tahap Saat: <b>").append(rs.getString("rekonsiliasi_obat_saat")).append("</b><br>")
                     .append("No. Rekonsiliasi: <code>").append(noRekon).append("</code><br>")
-                    .append("Wawancara: ").append(rs.getString("tanggal_wawancara")).append("</td>")
+                    .append("Wawancara: ").append(tglWwncTampil).append("</td>")
                     .append("</tr></table>");
 
                 // Info Penggunaan & Sumber
@@ -3175,7 +3189,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 // Lembar Tanda Tangan Fisik & TTE
                 String tglTtd = (tglKonfirm != null && tglKonfirm.length() >= 10)
                         ? tglKonfirm.substring(0, 10)
-                        : (rs.getString("tanggal_wawancara").length() >= 10 ? rs.getString("tanggal_wawancara").substring(0, 10) : "-");
+                        : (tglWwncTampil);
 
                 html.append("<table width='100%' style='margin-top:14px; font-size:10px;'>")
                     .append("<tr>")
@@ -3202,6 +3216,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                             + "\nID TTE: " + fingerHash
                             + "\nWaktu Validasi: " + tglKonfirm;
                     String qrUrl = generateQrCodeTTE(qrContent, noRekon);
+                    String tglKonfirmTampil = (tglKonfirm.length() >= 10) ? tglKonfirm.substring(0, 10) : tglKonfirm;
 
                     html.append("<table align='center' cellpadding='0' cellspacing='0' style='margin:auto; text-align:center;'>")
                         .append("<tr><td align='center'>");
@@ -3215,7 +3230,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                         .append("&#10003; TERVALIDASI TTE RESMI")
                         .append("</td></tr>")
                         .append("<tr><td align='center' style='font-size:7.5px; color:#64748b;'>")
-                        .append(tglKonfirm)
+                        .append(tglKonfirmTampil)
                         .append("</td></tr>")
                         .append("</table>");
                 } else {
@@ -3233,12 +3248,19 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     .append("</table>")
 
                     .append("<div style='margin-top:14px; border-top:1px solid #e2e8f0; padding-top:4px; font-size:8px; color:#94a3b8; text-align:right;'>")
-                    .append("SIMRS Khanza RME - RSUD Demang Sepulau Raya | Dicetak/Dilihat: ").append(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()))
+                    .append("SIMRS Khanza RME - RSUD Demang Sepulau Raya | Dicetak/Dilihat: ").append(new SimpleDateFormat("dd-MM-yyyy").format(new Date()))
                     .append("</div>")
 
                     .append("</body></html>");
             }
             LoadHTML.setText(html.toString());
+            LoadHTML.setCaretPosition(0);
+            SwingUtilities.invokeLater(() -> {
+                LoadHTML.setCaretPosition(0);
+                if (scrollPreviewHTML != null) {
+                    scrollPreviewHTML.getVerticalScrollBar().setValue(0);
+                }
+            });
         } catch (Exception e) {
             System.out.println("Notif Preview HTML: " + e);
         } finally {
