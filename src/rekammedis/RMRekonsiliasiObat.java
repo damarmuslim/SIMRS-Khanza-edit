@@ -2948,7 +2948,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         try {
             ps = koneksi.prepareStatement(
-                "SELECT r.*, p.no_rkm_medis, p.nm_pasien, p.tgl_lahir, pt.nama AS nm_apoteker, "
+                "SELECT r.*, p.no_rkm_medis, p.nm_pasien, p.tgl_lahir, IF(p.jk='L','Laki-Laki','Perempuan') AS jk, pt.nama AS nm_apoteker, "
                 + "k.dikonfirmasi_apoteker "
                 + "FROM rekonsiliasi_obat r "
                 + "INNER JOIN reg_periksa rp ON r.no_rawat = rp.no_rawat "
@@ -2978,22 +2978,32 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 param.put("logo", Sequel.cariGambar("SELECT setting.logo FROM setting"));
                 param.put("pNoRM", rs.getString("no_rkm_medis"));
                 param.put("pNamaPasien", rs.getString("nm_pasien"));
+                param.put("pJK", rs.getString("jk"));
                 param.put("pTglLahir", rs.getString("tgl_lahir"));
+                param.put("pNoRawat", rs.getString("no_rawat"));
+                param.put("pNoRekon", noRekon);
                 param.put("pPenggunaanObatSebelumAdmisi", rs.getString("penggunaan_obat_sebelum_admisi"));
                 param.put("pRekonsiliasiSaat", rs.getString("rekonsiliasi_obat_saat"));
                 param.put("pTanggalWawancara", rs.getString("tanggal_wawancara"));
                 param.put("pSumberInformasi", rs.getString("sumber_informasi"));
                 param.put("pSumberInformasiLain", rs.getString("sumber_informasi_lain"));
+                param.put("pAlergiObat", rs.getString("alergi_obat"));
+                param.put("pManifestasiAlergi", rs.getString("manifestasi_alergi"));
+                param.put("pDampakAlergi", rs.getString("dampak_alergi"));
                 param.put("pApotekerNama", namaApoteker);
                 param.put("pApotekerNip", nipApoteker);
+                param.put("pTglKonfirm", (tglKonfirm != null && tglKonfirm.length() >= 10 ? tglKonfirm.substring(0, 10) : ""));
 
                 if (tglKonfirm != null && !tglKonfirm.isEmpty()) {
-                    param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs()
-                            + "\nDitandatangani secara elektronik oleh " + namaApoteker
-                            + "\nID " + ((fingerHash == null || fingerHash.isEmpty()) ? nipApoteker : fingerHash)
-                            + "\n" + tglKonfirm);
+                    param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten " + akses.getkabupatenrs()
+                            + "\nDokumen: Rekonsiliasi Obat (RM 03-06A)"
+                            + "\nNo. Rekonsiliasi: " + noRekon
+                            + "\nPasien: " + rs.getString("nm_pasien") + " (RM: " + rs.getString("no_rkm_medis") + ")"
+                            + "\nDitandatangani secara elektronik oleh:\n" + namaApoteker + " (NIP: " + nipApoteker + ")"
+                            + "\nID TTE: " + ((fingerHash == null || fingerHash.isEmpty()) ? nipApoteker : fingerHash)
+                            + "\nWaktu Validasi: " + tglKonfirm);
                 } else {
-                    param.put("finger", "DRAF - BELUM DIVALIDASI");
+                    param.put("finger", "");
                 }
 
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
