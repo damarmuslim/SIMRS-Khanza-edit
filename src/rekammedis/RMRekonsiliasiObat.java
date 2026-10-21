@@ -65,9 +65,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JTextField TNoRw, TNoRM, TTglLahir, TUmurStatus;
     private JPanel cardSidebar;
     private TitledBorder borderCardSidebar;
-    private JLabel lblSubJudul, lblRtl;
+    private JLabel lblSubJudul, lblRtl, lblRpo;
     private JPanel pnlToggle;
     private JTextArea txtContekanTataLaksana, txtContekanRPO;
+    private JScrollPane spTataLaksana, spRPO;
+    private JPanel panelRPOContekan;
     private JLabel lblContekanAlergi;
     private JPanel panelQuickChips;
     private JButton btnToggleIGD, btnToggleRanap;
@@ -355,7 +357,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         txtContekanTataLaksana.setBackground(Color.WHITE);
         txtContekanTataLaksana.setMargin(new Insets(5, 6, 5, 6));
 
-        JScrollPane spTataLaksana = new JScrollPane(txtContekanTataLaksana);
+        spTataLaksana = new JScrollPane(txtContekanTataLaksana);
         spTataLaksana.setAlignmentX(Component.LEFT_ALIGNMENT);
         spTataLaksana.setPreferredSize(new Dimension(330, 115));
         spTataLaksana.setMinimumSize(new Dimension(330, 95));
@@ -377,7 +379,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelQuickChips.setAlignmentX(Component.LEFT_ALIGNMENT);
         panelQuickChips.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
 
-        JLabel lblRpo = new JLabel("2. Riwayat Penggunaan Obat Rumah (RPO):");
+        lblRpo = new JLabel("2. Riwayat Penggunaan Obat Rumah (RPO):");
         lblRpo.setFont(new Font("Segoe UI", Font.BOLD, 11));
         lblRpo.setForeground(TEAL_DARK);
         lblRpo.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -392,10 +394,19 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         txtContekanRPO.setBackground(Color.WHITE);
         txtContekanRPO.setMargin(new Insets(5, 6, 5, 6));
 
-        JScrollPane spRPO = new JScrollPane(txtContekanRPO);
+        spRPO = new JScrollPane(txtContekanRPO);
         spRPO.setAlignmentX(Component.LEFT_ALIGNMENT);
         spRPO.setPreferredSize(new Dimension(330, 65));
         spRPO.setMinimumSize(new Dimension(330, 52));
+
+        panelRPOContekan = new JPanel();
+        panelRPOContekan.setLayout(new BoxLayout(panelRPOContekan, BoxLayout.Y_AXIS));
+        panelRPOContekan.setOpaque(false);
+        panelRPOContekan.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelRPOContekan.add(Box.createVerticalStrut(5));
+        panelRPOContekan.add(lblRpo);
+        panelRPOContekan.add(Box.createVerticalStrut(3));
+        panelRPOContekan.add(spRPO);
 
         JPanel panelAlergiContekan = new JPanel(new BorderLayout(4, 4));
         panelAlergiContekan.setBackground(Color.WHITE);
@@ -423,10 +434,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         contekanBody.add(btnKirimBlokKeTabel);
         contekanBody.add(Box.createVerticalStrut(4));
         contekanBody.add(panelQuickChips);
-        contekanBody.add(Box.createVerticalStrut(5));
-        contekanBody.add(lblRpo);
-        contekanBody.add(Box.createVerticalStrut(3));
-        contekanBody.add(spRPO);
+        contekanBody.add(panelRPOContekan);
         contekanBody.add(Box.createVerticalStrut(6));
         contekanBody.add(panelAlergiContekan);
 
@@ -1949,6 +1957,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         if (lblRtl != null) {
             lblRtl.setText("1. Tata Laksana / Terapi Dokter:");
         }
+        if (panelRPOContekan != null) {
+            panelRPOContekan.setVisible(true);
+        }
+        if (spTataLaksana != null) {
+            spTataLaksana.setPreferredSize(new Dimension(330, 115));
+            spTataLaksana.setMaximumSize(new Dimension(Integer.MAX_VALUE, 115));
+        }
+        if (cardSidebar != null) {
+            cardSidebar.revalidate();
+            cardSidebar.repaint();
+        }
         boolean adaRanap = !tataRanap.trim().isEmpty() || !rpoRanap.trim().isEmpty();
         boolean adaIGD = !tataIGD.trim().isEmpty() || !rpoIGD.trim().isEmpty();
         if (adaRanap) {
@@ -1996,7 +2015,18 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             pnlToggle.repaint();
         }
         if (lblRtl != null) {
-            lblRtl.setText("1. Daftar Resep Dokter (Tervalidasi Farmasi):");
+            lblRtl.setText("Daftar Resep Dokter Ranap (Tervalidasi Farmasi):");
+        }
+        if (panelRPOContekan != null) {
+            panelRPOContekan.setVisible(false);
+        }
+        if (spTataLaksana != null) {
+            spTataLaksana.setPreferredSize(new Dimension(330, 245));
+            spTataLaksana.setMaximumSize(new Dimension(Integer.MAX_VALUE, 245));
+        }
+        if (cardSidebar != null) {
+            cardSidebar.revalidate();
+            cardSidebar.repaint();
         }
         txtContekanTataLaksana.setText((resepRanapTervalidasi == null || resepRanapTervalidasi.trim().isEmpty())
             ? "(Belum ada resep dokter rawat inap yang tervalidasi farmasi untuk no rawat ini)"
@@ -2004,11 +2034,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         txtContekanTataLaksana.setCaretPosition(0);
 
         generateQuickChipsResep(listObatResepTervalidasi);
-
-        // Kotak 2: RPO dari Ranap/IGD
-        String rpo = !rpoRanap.trim().isEmpty() ? rpoRanap : (!rpoIGD.trim().isEmpty() ? rpoIGD : "");
-        txtContekanRPO.setText(rpo.trim().isEmpty() ? "(Tidak ada catatan riwayat obat rumah)" : rpo.trim());
-        txtContekanRPO.setCaretPosition(0);
 
         // Alergi
         String alergi = !alergiRanap.trim().isEmpty() ? alergiRanap : (!alergiIGD.trim().isEmpty() ? alergiIGD : "-");
@@ -2094,7 +2119,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 + "IFNULL(d.nm_dokter, '-') AS nm_dokter, ro.status "
                 + "FROM resep_obat ro "
                 + "LEFT JOIN dokter d ON ro.kd_dokter = d.kd_dokter "
-                + "WHERE ro.no_rawat = ? AND ro.tgl_perawatan <> '0000-00-00' "
+                + "WHERE ro.no_rawat = ? AND ro.tgl_perawatan <> '0000-00-00' AND LOWER(ro.status) = 'ranap' "
                 + "ORDER BY ro.tgl_perawatan DESC, ro.jam DESC, ro.no_resep DESC"
             );
             psResep.setString(1, norwt);
@@ -2212,7 +2237,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     + "LEFT JOIN kodesatuan k ON b.kode_sat = k.kode_sat "
                     + "LEFT JOIN aturan_pakai ap ON dpo.no_rawat = ap.no_rawat "
                     + "AND dpo.tgl_perawatan = ap.tgl_perawatan AND dpo.jam = ap.jam AND dpo.kode_brng = ap.kode_brng "
-                    + "WHERE dpo.no_rawat = ? "
+                    + "WHERE dpo.no_rawat = ? AND LOWER(dpo.status) = 'ranap' "
                     + "ORDER BY dpo.tgl_perawatan DESC, dpo.jam DESC"
                 );
                 psDpo.setString(1, norwt);
