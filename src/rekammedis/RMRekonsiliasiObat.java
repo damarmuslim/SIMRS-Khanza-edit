@@ -92,7 +92,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     // Inline Table Obat Direkonsiliasi (Tab 1)
     private JTable tbObat;
     private DefaultTableModel tabModeObat;
-    private JButton btnTambahInline, btnPilihMasterObat, btnHapusBarisObat, btnAmbilRekonSebelumnya;
+    private JButton btnTambahInline, btnPilihMasterObat, btnHapusBarisObat;
     private JLabel lblBadgeJmlObat;
 
     // Autocomplete Popup Live Search Obat (Cara 1)
@@ -635,15 +635,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnHapusBarisObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         btnHapusBarisObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btnAmbilRekonSebelumnya = new JButton(" Ambil dari Rekonsiliasi Sebelumnya");
-        btnAmbilRekonSebelumnya.setIcon(IconStyle.muat("refresh.svg", 14, Color.WHITE));
-        btnAmbilRekonSebelumnya.setBackground(new Color(79, 70, 229)); // Indigo modern
-        btnAmbilRekonSebelumnya.setForeground(Color.WHITE);
-        btnAmbilRekonSebelumnya.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        btnAmbilRekonSebelumnya.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnAmbilRekonSebelumnya.setVisible(false); // Muncul jika Transfer Ruang atau Pulang
-        btnAmbilRekonSebelumnya.addActionListener(e -> ambilRekonsiliasiSebelumnya());
-
         btnPilihMasterObat = new JButton(" Pilih dari Data Obat/Infus");
         btnPilihMasterObat.setIcon(IconStyle.muat("search.svg", 14, Color.WHITE));
         btnPilihMasterObat.setBackground(BLUE_OCEAN);
@@ -659,7 +650,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnTambahInline.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         btnGroupTabel.add(btnHapusBarisObat);
-        btnGroupTabel.add(btnAmbilRekonSebelumnya);
         btnGroupTabel.add(btnPilihMasterObat);
         btnGroupTabel.add(btnTambahInline);
 
@@ -1939,9 +1929,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         } else {
             tampilkanAsesmenMedis();
         }
-        if (btnAmbilRekonSebelumnya != null) {
-            btnAmbilRekonSebelumnya.setVisible(!rbAdmisi.isSelected());
-        }
     }
 
     private void tampilkanAsesmenMedis() {
@@ -2407,148 +2394,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         );
     }
 
-    /**
-     * Menyalin daftar obat dari rekonsiliasi Admisi / sebelumnya pasien ini ke tabel obat saat ini
-     */
-    private void ambilRekonsiliasiSebelumnya() {
-        if (TNoRw.getText().trim().isEmpty() || TNoRw.getText().trim().equals("-")) {
-            JOptionPane.showMessageDialog(this, "Silakan pilih pasien terlebih dahulu!");
-            return;
-        }
 
-        String noRawat = TNoRw.getText().trim();
-        String curNoRekon = NoRekonsiliasi.getText().trim();
-        String noRekonSumber = null;
-        String saatSumber = null;
-        String tglSumber = null;
-
-        try {
-            // 1. Cari rekonsiliasi Admisi (atau rekonsiliasi sebelumnya) pada rawat inap ini
-            String sql = "SELECT r.no_rekonsiliasi, r.rekonsiliasi_obat_saat, r.tanggal_wawancara "
-                    + "FROM rekonsiliasi_obat r "
-                    + "WHERE r.no_rawat = ? AND r.no_rekonsiliasi <> ? "
-                    + "ORDER BY CASE WHEN r.rekonsiliasi_obat_saat = 'Admisi' THEN 1 ELSE 2 END, r.tanggal_wawancara DESC "
-                    + "LIMIT 1";
-            ps = koneksi.prepareStatement(sql);
-            ps.setString(1, noRawat);
-            ps.setString(2, curNoRekon);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                noRekonSumber = rs.getString("no_rekonsiliasi");
-                saatSumber = rs.getString("rekonsiliasi_obat_saat");
-                tglSumber = rs.getString("tanggal_wawancara");
-            }
-            rs.close();
-            ps.close();
-
-            // 2. Jika tidak ditemukan di no_rawat ini, coba cari berdasarkan No. RM pasien
-            if (noRekonSumber == null && TNoRM != null && !TNoRM.getText().trim().isEmpty() && !TNoRM.getText().trim().equals("-")) {
-                String sqlRm = "SELECT r.no_rekonsiliasi, r.rekonsiliasi_obat_saat, r.tanggal_wawancara "
-                        + "FROM rekonsiliasi_obat r "
-                        + "INNER JOIN reg_periksa rp ON r.no_rawat = rp.no_rawat "
-                        + "WHERE rp.no_rkm_medis = ? AND r.no_rekonsiliasi <> ? "
-                        + "ORDER BY CASE WHEN r.rekonsiliasi_obat_saat = 'Admisi' THEN 1 ELSE 2 END, r.tanggal_wawancara DESC "
-                        + "LIMIT 1";
-                ps = koneksi.prepareStatement(sqlRm);
-                ps.setString(1, TNoRM.getText().trim());
-                ps.setString(2, curNoRekon);
-                rs = ps.executeQuery();
-                if (rs.next()) {
-                    noRekonSumber = rs.getString("no_rekonsiliasi");
-                    saatSumber = rs.getString("rekonsiliasi_obat_saat");
-                    tglSumber = rs.getString("tanggal_wawancara");
-                }
-                rs.close();
-                ps.close();
-            }
-
-            if (noRekonSumber == null) {
-                JOptionPane.showMessageDialog(this,
-                    "Tidak ditemukan data Rekonsiliasi Obat sebelumnya (Admisi) untuk pasien ini.",
-                    "Informasi Rekonsiliasi", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-
-            int konfirm = JOptionPane.showConfirmDialog(
-                this,
-                "Ditemukan data Rekonsiliasi Obat sebelumnya:\n"
-                + "• No. Rekonsiliasi : " + noRekonSumber + "\n"
-                + "• Tahap Saat       : " + saatSumber + "\n"
-                + "• Tgl. Wawancara   : " + tglSumber + "\n\n"
-                + "Apakah Anda ingin menyalin daftar obat dari rekonsiliasi tersebut ke tabel saat ini?",
-                "Ambil dari Rekonsiliasi Sebelumnya",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-            );
-
-            if (konfirm != JOptionPane.YES_OPTION) return;
-
-            // Opsi jika tabel saat ini sudah ada isinya
-            boolean replace = true;
-            if (tabModeObat.getRowCount() > 0) {
-                Object[] opsiTabel = {"Ganti / Timpa Semua", "Tambahkan (Append)", "Batal"};
-                int pilihan = JOptionPane.showOptionDialog(
-                    this,
-                    "Tabel obat saat ini sudah berisi " + tabModeObat.getRowCount() + " item obat.\n"
-                    + "Pilih metode penggabungan daftar obat:",
-                    "Metode Penggabungan Obat",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opsiTabel, opsiTabel[0]
-                );
-                if (pilihan == 0) {
-                    replace = true;
-                } else if (pilihan == 1) {
-                    replace = false;
-                } else {
-                    return;
-                }
-            }
-
-            if (replace) {
-                tabModeObat.setRowCount(0);
-            }
-
-            psDetail = koneksi.prepareStatement(
-                "SELECT nama_obat, dosis_obat, frekuensi, cara_pemberian, tindak_lanjut, perubahan_aturan_pakai "
-                + "FROM rekonsiliasi_obat_detail_obat WHERE no_rekonsiliasi = ?"
-            );
-            psDetail.setString(1, noRekonSumber);
-            rsDetail = psDetail.executeQuery();
-            int disalin = 0;
-            while (rsDetail.next()) {
-                tabModeObat.addRow(new Object[]{
-                    "",
-                    rsDetail.getString("nama_obat"),
-                    rsDetail.getString("dosis_obat"),
-                    rsDetail.getString("frekuensi"),
-                    rsDetail.getString("cara_pemberian"),
-                    rsDetail.getString("tindak_lanjut"),
-                    rsDetail.getString("perubahan_aturan_pakai")
-                });
-                disalin++;
-            }
-            rsDetail.close();
-            psDetail.close();
-
-            if (disalin > 0) {
-                rbPakaiYa.setSelected(true);
-                tbObat.setEnabled(true);
-                updateBadgeObat();
-                JOptionPane.showMessageDialog(this,
-                    "Berhasil menyalin " + disalin + " item obat dari rekonsiliasi " + saatSumber + " (" + noRekonSumber + ")!",
-                    "Sukses Salin Obat", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this,
-                    "Rekonsiliasi sebelumnya (" + noRekonSumber + ") tidak memiliki rincian obat.",
-                    "Informasi", JOptionPane.INFORMATION_MESSAGE);
-            }
-
-        } catch (Exception ex) {
-            System.out.println("Notif Ambil Rekon Sebelumnya: " + ex);
-            JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat mengambil rekonsiliasi sebelumnya: " + ex.getMessage());
-        } finally {
-            try { if (rs != null) rs.close(); if (ps != null) ps.close(); if (rsDetail != null) rsDetail.close(); if (psDetail != null) psDetail.close(); } catch (Exception e) {}
-        }
-    }
 
     // =========================================================================
     // OPERASI DATABASE: SIMPAN, KONFIRMASI, EDIT, HAPUS, CETAK
