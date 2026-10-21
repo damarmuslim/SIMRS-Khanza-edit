@@ -588,11 +588,52 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" x="359" y="23" width="109" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000069"/>
+				<reportElement positionType="Float" x="359" y="23" width="38" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000069"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6"/>
 				</textElement>
 				<text><![CDATA[Stop]]></text>
+			</staticText>
+
+			<!-- Opsi 4: Baru -->
+			<rectangle radius="1">
+				<reportElement positionType="Float" mode="Opaque" x="402" y="25" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000068a">
+					<printWhenExpression><![CDATA[Boolean.valueOf("Baru".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<line>
+				<reportElement positionType="Float" x="403" y="29" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-000000000068b">
+					<printWhenExpression><![CDATA[Boolean.valueOf("Baru".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="405" y="26" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-000000000068c">
+					<printWhenExpression><![CDATA[Boolean.valueOf("Baru".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<rectangle radius="1">
+				<reportElement positionType="Float" mode="Transparent" x="402" y="25" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000068d">
+					<printWhenExpression><![CDATA[Boolean.valueOf(!"Baru".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.6" lineColor="#475569"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement positionType="Float" x="413" y="23" width="52" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000069b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="6"/>
+				</textElement>
+				<text><![CDATA[Baru]]></text>
 			</staticText>
 
 			<!-- Kolom Perubahan Aturan Pakai -->

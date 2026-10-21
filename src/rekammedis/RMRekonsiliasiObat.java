@@ -157,6 +157,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         headerBar.setBackground(TEAL_DARK);
         headerBar.setBorder(new EmptyBorder(8, 20, 8, 20));
 
+        try {
+            koneksi.createStatement().executeUpdate("ALTER TABLE rekonsiliasi_obat_detail_obat MODIFY COLUMN tindak_lanjut ENUM('Lanjut','Stop','Lanjut aturan pakai sama','Lanjut aturan pakai berubah','Baru') DEFAULT NULL");
+        } catch (Exception ignored) {
+        }
+
         JPanel headerLeft = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         headerLeft.setOpaque(false);
 
@@ -868,7 +873,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         // ComboBox Tindak Lanjut DPJP (Kolom 5) dengan Ring Teal Modern (Single Click + TAB navigation)
         JComboBox<String> cmbTindak = new JComboBox<>(new String[]{
-            "Lanjut aturan pakai sama", "Lanjut aturan pakai berubah", "Stop"
+            "Lanjut aturan pakai sama", "Lanjut aturan pakai berubah", "Stop", "Baru"
         });
         cmbTindak.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         cmbTindak.setBackground(Color.WHITE);

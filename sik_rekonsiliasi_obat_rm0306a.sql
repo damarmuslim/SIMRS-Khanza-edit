@@ -15,4 +15,4 @@ ALTER TABLE rekonsiliasi_obat
 -- valid, 2 nilai baru ditambahkan sesuai kolom "Tindak Lanjut Oleh DPJP"
 -- pada formulir fisik.
 ALTER TABLE rekonsiliasi_obat_detail_obat
-  MODIFY COLUMN tindak_lanjut ENUM('Lanjut','Stop','Lanjut aturan pakai sama','Lanjut aturan pakai berubah') DEFAULT NULL;
+  MODIFY COLUMN tindak_lanjut ENUM('Lanjut','Stop','Lanjut aturan pakai sama','Lanjut aturan pakai berubah','Baru') DEFAULT NULL;
