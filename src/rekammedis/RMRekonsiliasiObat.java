@@ -533,7 +533,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         ));
         DTPTgl.addItemListener(e -> {
             if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
-                autoNomorRekonsiliasi();
+                if (currentModeInput != ModeInput.MODE_EDIT) {
+                    autoNomorRekonsiliasi();
+                }
             }
         });
 
@@ -683,7 +685,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         // Setup Model & JTable Inline
         tabModeObat = new DefaultTableModel(null, new Object[]{
-            "Kode", "Nama Obat (Ketik Manual / Spasi utk Cari)", "Dosis Obat",
+            "Kode", "Nama Obat", "Dosis Obat",
             "Frekuensi", "Cara Pemberian", "Tindak Lanjut DPJP", "Perubahan Aturan Pakai"
         }) {
             @Override
@@ -2526,6 +2528,10 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
 
     private void autoNomorRekonsiliasi() {
+        if (currentModeInput == ModeInput.MODE_EDIT && noRekonSedangDiedit != null && !noRekonSedangDiedit.trim().isEmpty()) {
+            NoRekonsiliasi.setText(noRekonSedangDiedit);
+            return;
+        }
         String tglYmd = Valid.SetTgl(DTPTgl.getSelectedItem() + "");
         String tgl = tglYmd.replace("-", "");
         Valid.autoNomer3(
@@ -2566,7 +2572,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             tbObat.getCellEditor().stopCellEditing();
         }
 
-        String noRekon = NoRekonsiliasi.getText().trim();
+        String noRekon = (currentModeInput == ModeInput.MODE_EDIT && noRekonSedangDiedit != null && !noRekonSedangDiedit.trim().isEmpty())
+                ? noRekonSedangDiedit : NoRekonsiliasi.getText().trim();
         String noRawat = TNoRw.getText().trim();
         String tglJam = Valid.SetTgl(DTPTgl.getSelectedItem() + "") + " "
                 + new SimpleDateFormat("HH:mm:ss").format(new Date());
@@ -2583,58 +2590,95 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         Sequel.AutoComitFalse();
         boolean sukses = true;
 
-        // Bersihkan data lama jika no_rekonsiliasi sudah pernah disimpan (mode edit/update)
-        Sequel.meghapus("rekonsiliasi_obat_detail_obat", "no_rekonsiliasi", noRekon);
-        Sequel.meghapus("rekonsiliasi_obat", "no_rekonsiliasi", noRekon);
+        if (currentModeInput == ModeInput.MODE_EDIT) {
+            // MODE EDIT: UPDATE record rekonsiliasi_obat yang lama (tidak membuat record baru)
+            if (Sequel.mengedittf2("rekonsiliasi_obat", "no_rekonsiliasi=?",
+                "no_rawat=?,tanggal_wawancara=?,rekonsiliasi_obat_saat=?,alergi_obat=?,manifestasi_alergi=?,dampak_alergi=?,nip=?,penggunaan_obat_sebelum_admisi=?,sumber_informasi=?,sumber_informasi_lain=?",
+                11, new String[]{
+                    noRawat, tglJam, saat, alergi, manifestasi, dampak, nip, penggunaanObat, sumberInfo, sumberLain, noRekon
+                })) {
 
-        // 1. Simpan Header rekonsiliasi_obat (WAJIB 11 KOLOM POSISIONAL LENGKAP)
-        if (Sequel.menyimpantf2("rekonsiliasi_obat", "?,?,?,?,?,?,?,?,?,?,?", "No.Rekonsiliasi", 11, new String[]{
-            noRekon, noRawat, tglJam, saat, alergi, manifestasi, dampak, nip, penggunaanObat, sumberInfo, sumberLain
-        })) {
+                // Refresh detail obat: hapus detail lama milik noRekon ini lalu simpan detail baru
+                Sequel.meghapus("rekonsiliasi_obat_detail_obat", "no_rekonsiliasi", noRekon);
+                boolean simpanDetail = isAdmisi ? rbPakaiYa.isSelected() : true;
+                if (simpanDetail) {
+                    for (int i = 0; i < tabModeObat.getRowCount(); i++) {
+                        String namaObat = String.valueOf(tabModeObat.getValueAt(i, 1)).trim();
+                        if (!namaObat.isEmpty()) {
+                            String dosis = String.valueOf(tabModeObat.getValueAt(i, 2)).trim();
+                            String frek = String.valueOf(tabModeObat.getValueAt(i, 3)).trim();
+                            String cara = String.valueOf(tabModeObat.getValueAt(i, 4)).trim();
+                            String tindak = String.valueOf(tabModeObat.getValueAt(i, 5)).trim();
+                            String ubah = String.valueOf(tabModeObat.getValueAt(i, 6)).trim();
 
-            // 2. Simpan Detail rekonsiliasi_obat_detail_obat (8 KOLOM POSISIONAL)
-            boolean simpanDetail = isAdmisi ? rbPakaiYa.isSelected() : true;
-            if (simpanDetail) {
-                for (int i = 0; i < tabModeObat.getRowCount(); i++) {
-                    String namaObat = String.valueOf(tabModeObat.getValueAt(i, 1)).trim();
-                    if (!namaObat.isEmpty()) {
-                        String dosis = String.valueOf(tabModeObat.getValueAt(i, 2)).trim();
-                        String frek = String.valueOf(tabModeObat.getValueAt(i, 3)).trim();
-                        String cara = String.valueOf(tabModeObat.getValueAt(i, 4)).trim();
-                        String tindak = String.valueOf(tabModeObat.getValueAt(i, 5)).trim();
-                        String ubah = String.valueOf(tabModeObat.getValueAt(i, 6)).trim();
-
-                        if (!Sequel.menyimpantf2("rekonsiliasi_obat_detail_obat", "?,?,?,?,?,?,?,?", "Detail Obat", 8, new String[]{
-                            noRekon,
-                            namaObat,
-                            (dosis.isEmpty() ? "-" : dosis),
-                            (frek.isEmpty() ? "-" : frek),
-                            (cara.isEmpty() ? "Oral" : cara),
-                            "-", // waktu_pemberian_terakhir default "-"
-                            (tindak.isEmpty() ? "Lanjut aturan pakai sama" : tindak),
-                            (ubah.isEmpty() ? "-" : ubah)
-                        })) {
-                            sukses = false;
-                            break;
+                            if (!Sequel.menyimpantf2("rekonsiliasi_obat_detail_obat", "?,?,?,?,?,?,?,?", "Detail Obat", 8, new String[]{
+                                noRekon,
+                                namaObat,
+                                (dosis.isEmpty() ? "-" : dosis),
+                                (frek.isEmpty() ? "-" : frek),
+                                (cara.isEmpty() ? "Oral" : cara),
+                                "-", // waktu_pemberian_terakhir default "-"
+                                (tindak.isEmpty() ? "Lanjut aturan pakai sama" : tindak),
+                                (ubah.isEmpty() ? "-" : ubah)
+                            })) {
+                                sukses = false;
+                                break;
+                            }
                         }
                     }
                 }
-            }
-
-            // 3. Jika checkbox 'Langsung Validasi & Bubuhkan TTE' dicentang saat MODE_INPUT_BARU
-            if (sukses && currentModeInput == ModeInput.MODE_INPUT_BARU && chkLangsungTTE.isSelected()) {
-                String waktuSekarang = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                String nipApoteker = (akses.getkode() == null || akses.getkode().trim().isEmpty() || akses.getkode().equals("Admin Utama"))
-                        ? nip : akses.getkode();
-                Sequel.meghapus("rekonsiliasi_obat_konfirmasi", "no_rekonsiliasi", noRekon);
-                if (!Sequel.menyimpantf("rekonsiliasi_obat_konfirmasi", "?,?,?,?,?", "Konfirmasi Apoteker", 5, new String[]{
-                    noRekon, waktuSekarang, waktuSekarang, nipApoteker, waktuSekarang
-                })) {
-                    sukses = false;
-                }
+            } else {
+                sukses = false;
             }
         } else {
-            sukses = false;
+            // MODE INPUT BARU: INSERT record baru
+            if (Sequel.menyimpantf2("rekonsiliasi_obat", "?,?,?,?,?,?,?,?,?,?,?", "No.Rekonsiliasi", 11, new String[]{
+                noRekon, noRawat, tglJam, saat, alergi, manifestasi, dampak, nip, penggunaanObat, sumberInfo, sumberLain
+            })) {
+
+                boolean simpanDetail = isAdmisi ? rbPakaiYa.isSelected() : true;
+                if (simpanDetail) {
+                    for (int i = 0; i < tabModeObat.getRowCount(); i++) {
+                        String namaObat = String.valueOf(tabModeObat.getValueAt(i, 1)).trim();
+                        if (!namaObat.isEmpty()) {
+                            String dosis = String.valueOf(tabModeObat.getValueAt(i, 2)).trim();
+                            String frek = String.valueOf(tabModeObat.getValueAt(i, 3)).trim();
+                            String cara = String.valueOf(tabModeObat.getValueAt(i, 4)).trim();
+                            String tindak = String.valueOf(tabModeObat.getValueAt(i, 5)).trim();
+                            String ubah = String.valueOf(tabModeObat.getValueAt(i, 6)).trim();
+
+                            if (!Sequel.menyimpantf2("rekonsiliasi_obat_detail_obat", "?,?,?,?,?,?,?,?", "Detail Obat", 8, new String[]{
+                                noRekon,
+                                namaObat,
+                                (dosis.isEmpty() ? "-" : dosis),
+                                (frek.isEmpty() ? "-" : frek),
+                                (cara.isEmpty() ? "Oral" : cara),
+                                "-", // waktu_pemberian_terakhir default "-"
+                                (tindak.isEmpty() ? "Lanjut aturan pakai sama" : tindak),
+                                (ubah.isEmpty() ? "-" : ubah)
+                            })) {
+                                sukses = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Jika checkbox 'Langsung Validasi & Bubuhkan TTE' dicentang saat MODE_INPUT_BARU
+                if (sukses && chkLangsungTTE.isSelected()) {
+                    String waktuSekarang = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                    String nipApoteker = (akses.getkode() == null || akses.getkode().trim().isEmpty() || akses.getkode().equals("Admin Utama"))
+                            ? nip : akses.getkode();
+                    Sequel.meghapus("rekonsiliasi_obat_konfirmasi", "no_rekonsiliasi", noRekon);
+                    if (!Sequel.menyimpantf("rekonsiliasi_obat_konfirmasi", "?,?,?,?,?", "Konfirmasi Apoteker", 5, new String[]{
+                        noRekon, waktuSekarang, waktuSekarang, nipApoteker, waktuSekarang
+                    })) {
+                        sukses = false;
+                    }
+                }
+            } else {
+                sukses = false;
+            }
         }
 
         if (sukses) {
@@ -2812,18 +2856,21 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             return;
         }
 
-        // 1. Set mode form ke MODE_EDIT dan set nomor rekonsiliasi
+        // 1. Muat data identitas pasien dan contekan catatan dokter TERLEBIH DAHULU
+        setNoRm(noRawat);
+
+        // 2. Set mode form ke MODE_EDIT dan kunci nomor rekonsiliasi yang sedang diedit
         setModeInput(ModeInput.MODE_EDIT, noRekon);
         NoRekonsiliasi.setText(noRekon);
-
-        // 2. Muat data identitas pasien dan contekan catatan dokter
-        setNoRm(noRawat);
 
         // 3. Waktu wawancara
         try {
             Date dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tglWawancara);
             DTPTgl.setDate(dt);
         } catch (Exception ex) {}
+
+        // Pastikan kembali nomor rekonsiliasi tidak tertimpa setelah setDate
+        NoRekonsiliasi.setText(noRekon);
 
         // 4. Tahap Rekonsiliasi Saat
         if ("Transfer Antar Ruang".equalsIgnoreCase(saat)) {
