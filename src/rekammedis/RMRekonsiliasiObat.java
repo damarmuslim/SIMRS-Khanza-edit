@@ -6,6 +6,7 @@ import fungsi.validasi;
 import fungsi.akses;
 import kepegawaian.DlgCariPetugas;
 import widget.IconStyle;
+import widget.Tanggal;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -72,7 +73,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
     // Header Input Rekonsiliasi (Tab 1)
     private JTextField KdPetugas, NmPetugas, NoRekonsiliasi, KetSumberLain;
-    private JSpinner DTPTgl, DTPJam;
+    private Tanggal DTPTgl;
     private JRadioButton rbAdmisi, rbTransfer, rbPulang;
     private JRadioButton rbPakaiYa, rbPakaiTidak;
     private JRadioButton rbSumberRM, rbSumberPasien, rbSumberLain;
@@ -488,24 +489,21 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         JPanel pnlWaktu = new JPanel(new BorderLayout(4, 2));
         pnlWaktu.setOpaque(false);
-        JLabel lblWaktuJudul = new JLabel("Tanggal & Jam Wawancara");
+        JLabel lblWaktuJudul = new JLabel("Tanggal Wawancara");
         lblWaktuJudul.setFont(new Font("Segoe UI", Font.BOLD, 10));
         lblWaktuJudul.setForeground(new Color(71, 85, 105));
 
-        DTPTgl = new JSpinner(new SpinnerDateModel());
-        DTPTgl.setEditor(new JSpinner.DateEditor(DTPTgl, "dd-MM-yyyy"));
+        DTPTgl = new Tanggal();
+        DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        DTPTgl.addItemListener(e -> {
+            if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+                autoNomorRekonsiliasi();
+            }
+        });
 
-        DTPJam = new JSpinner(new SpinnerDateModel());
-        DTPJam.setEditor(new JSpinner.DateEditor(DTPJam, "HH:mm:ss"));
-        DTPJam.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-
-        JPanel pnlWaktuInput = new JPanel(new GridLayout(1, 2, 6, 0));
-        pnlWaktuInput.setOpaque(false);
-        pnlWaktuInput.add(DTPTgl);
-        pnlWaktuInput.add(DTPJam);
         pnlWaktu.add(lblWaktuJudul, BorderLayout.NORTH);
-        pnlWaktu.add(pnlWaktuInput, BorderLayout.CENTER);
+        pnlWaktu.add(DTPTgl, BorderLayout.CENTER);
 
         rowHeader1.add(pnlApoteker);
         rowHeader1.add(pnlNoRekon);
@@ -2180,6 +2178,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
 
     public void emptTeks() {
+        DTPTgl.setDate(new Date());
         tabModeObat.setRowCount(0);
         rbAdmisi.setSelected(true);
         updateModeSidebarSaat();
@@ -2196,10 +2195,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
 
     private void autoNomorRekonsiliasi() {
-        String tgl = new SimpleDateFormat("yyyyMMdd").format((Date) DTPTgl.getValue());
+        String tglYmd = Valid.SetTgl(DTPTgl.getSelectedItem() + "");
+        String tgl = tglYmd.replace("-", "");
         Valid.autoNomer3(
             "SELECT IFNULL(MAX(CONVERT(RIGHT(no_rekonsiliasi,4),signed)),0) FROM rekonsiliasi_obat WHERE tanggal_wawancara LIKE '"
-            + new SimpleDateFormat("yyyy-MM-dd").format((Date) DTPTgl.getValue()) + "%'",
+            + tglYmd + "%'",
             "RO" + tgl, 4, NoRekonsiliasi
         );
     }
@@ -2227,8 +2227,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         String noRekon = NoRekonsiliasi.getText().trim();
         String noRawat = TNoRw.getText().trim();
-        String tglJam = new SimpleDateFormat("yyyy-MM-dd").format((Date) DTPTgl.getValue()) + " "
-                + new SimpleDateFormat("HH:mm:ss").format((Date) DTPJam.getValue());
+        String tglJam = Valid.SetTgl(DTPTgl.getSelectedItem() + "") + " "
+                + new SimpleDateFormat("HH:mm:ss").format(new Date());
         String saat = rbAdmisi.isSelected() ? "Admisi" : (rbTransfer.isSelected() ? "Transfer Antar Ruang" : "Pulang");
         String alergi = "-";
         String manifestasi = "-";
@@ -2341,8 +2341,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 // Waktu wawancara
                 try {
                     Date dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("tanggal_wawancara"));
-                    DTPTgl.setValue(dt);
-                    DTPJam.setValue(dt);
+                    DTPTgl.setDate(dt);
                 } catch (Exception ex) {}
 
                 // Saat
