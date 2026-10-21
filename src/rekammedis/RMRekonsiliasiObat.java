@@ -114,7 +114,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private DefaultTableModel tabModeDataRekon;
     private JEditorPane LoadHTML;
     private JTextField TCari;
-    private JSpinner DTPCari1, DTPCari2;
+    private Tanggal DTPCari1, DTPCari2;
     private JLabel LCount;
 
     // Tombol Footer Tab 1 & Tab 2
@@ -954,13 +954,15 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel panelFilter = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
         panelFilter.setOpaque(false);
 
-        DTPCari1 = new JSpinner(new SpinnerDateModel());
-        DTPCari1.setEditor(new JSpinner.DateEditor(DTPCari1, "yyyy-MM-dd"));
+        DTPCari1 = new Tanggal();
+        DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        DTPCari1.setPreferredSize(new Dimension(105, 23));
 
-        DTPCari2 = new JSpinner(new SpinnerDateModel());
-        DTPCari2.setEditor(new JSpinner.DateEditor(DTPCari2, "yyyy-MM-dd"));
+        DTPCari2 = new Tanggal();
+        DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        DTPCari2.setPreferredSize(new Dimension(105, 23));
 
         TCari = new JTextField(15);
         TCari.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -1832,7 +1834,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 lblAvatarInitials.setText(init);
 
                 if (DTPCari1 != null && rs.getDate("tgl_registrasi") != null) {
-                    DTPCari1.setValue(rs.getDate("tgl_registrasi"));
+                    DTPCari1.setDate(rs.getDate("tgl_registrasi"));
                 }
             }
         } catch (Exception e) {
@@ -2950,8 +2952,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private void tampilDataRekonsiliasi() {
         Valid.tabelKosong(tabModeDataRekon);
         try {
-            String tgl1 = new SimpleDateFormat("yyyy-MM-dd").format((Date) DTPCari1.getValue()) + " 00:00:00";
-            String tgl2 = new SimpleDateFormat("yyyy-MM-dd").format((Date) DTPCari2.getValue()) + " 23:59:59";
+            String tgl1 = Valid.SetTgl(DTPCari1.getSelectedItem() + "") + " 00:00:00";
+            String tgl2 = Valid.SetTgl(DTPCari2.getSelectedItem() + "") + " 23:59:59";
             String kw = "%" + TCari.getText().trim() + "%";
 
             String sql = "SELECT r.no_rekonsiliasi, r.no_rawat, p.no_rkm_medis, p.nm_pasien, r.tanggal_wawancara, "
