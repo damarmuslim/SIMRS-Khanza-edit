@@ -21,6 +21,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
@@ -125,7 +129,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JPanel panelFooterInput, panelFooterData;
     private JButton btnSimpan, btnBaru;
     private JCheckBox chkLangsungTTE;
-    private JButton btnValidasiTTE, btnGantiData, btnHapusRekon, btnCetak;
+    private JButton btnValidasiTTE, btnGantiData, btnHapusRekon, btnCetak, btnFullPreview;
 
     public RMRekonsiliasiObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -1035,6 +1039,28 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel panelKanan = createCardPanel("PREVIEW FORM FISIK RM 03-06A & VALIDASI APOTEKER", Color.WHITE, SLATE_BORDER);
         panelKanan.setLayout(new BorderLayout(6, 6));
 
+        JPanel panelToolbarPreview = new JPanel(new BorderLayout(6, 0));
+        panelToolbarPreview.setOpaque(false);
+        panelToolbarPreview.setBorder(new EmptyBorder(0, 0, 4, 0));
+
+        JLabel lblInfoPreview = new JLabel(" Pratinjau Ringkas Dokumen (HTML)");
+        lblInfoPreview.setFont(new Font("Segoe UI", Font.ITALIC, 11));
+        lblInfoPreview.setForeground(new Color(100, 116, 139));
+
+        btnFullPreview = new JButton(" ⛶ Pratinjau Layar Penuh / Cetak RM 03-06A ");
+        btnFullPreview.setIcon(IconStyle.muat("printer.svg", 14, Color.WHITE));
+        btnFullPreview.setBackground(TEAL_MAIN);
+        btnFullPreview.setForeground(Color.WHITE);
+        btnFullPreview.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnFullPreview.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnFullPreview.setEnabled(false);
+        btnFullPreview.setToolTipText("Buka Pratinjau Layar Penuh (100% identik dengan hasil cetak fisik RM 03-06A, Cetak ke Kertas atau Simpan ke PDF)");
+        btnFullPreview.addActionListener(e -> cetakRM0306A("Preview"));
+        pasangMenuCetakOpsional(btnFullPreview);
+
+        panelToolbarPreview.add(lblInfoPreview, BorderLayout.WEST);
+        panelToolbarPreview.add(btnFullPreview, BorderLayout.EAST);
+
         LoadHTML = new JEditorPane();
         LoadHTML.setContentType("text/html");
         LoadHTML.setEditable(false);
@@ -1044,6 +1070,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         }
 
         scrollPreviewHTML = new JScrollPane(LoadHTML);
+        panelKanan.add(panelToolbarPreview, BorderLayout.NORTH);
         panelKanan.add(scrollPreviewHTML, BorderLayout.CENTER);
 
         container.add(panelKiri);
@@ -1113,14 +1140,16 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnHapusRekon.setEnabled(false);
         btnHapusRekon.addActionListener(e -> hapusRekonsiliasi());
 
-        btnCetak = new JButton(" Cetak RM 03-06A");
+        btnCetak = new JButton(" ⛶ Pratinjau & Cetak RM 03-06A");
         btnCetak.setIcon(IconStyle.muat("printer.svg", 15, Color.WHITE));
         btnCetak.setBackground(TEAL_MAIN);
         btnCetak.setForeground(Color.WHITE);
         btnCetak.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnCetak.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnCetak.setEnabled(false);
-        btnCetak.addActionListener(e -> cetakRM0306A());
+        btnCetak.setToolTipText("Buka Pratinjau Layar Penuh (100% identik dengan hasil cetak fisik RM 03-06A, Cetak ke Kertas atau Simpan ke PDF)");
+        btnCetak.addActionListener(e -> cetakRM0306A("Preview"));
+        pasangMenuCetakOpsional(btnCetak);
 
         panelFooterData.add(btnValidasiTTE);
         panelFooterData.add(btnGantiData);
@@ -2611,6 +2640,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             btnGantiData.setEnabled(false);
             btnHapusRekon.setEnabled(false);
             btnCetak.setEnabled(false);
+            if (btnFullPreview != null) btnFullPreview.setEnabled(false);
             return;
         }
 
@@ -2618,6 +2648,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         boolean isTervalidasi = status.contains("Tervalidasi");
 
         btnCetak.setEnabled(true);
+        if (btnFullPreview != null) btnFullPreview.setEnabled(true);
 
         if (isTervalidasi) {
             btnValidasiTTE.setEnabled(true);
@@ -2874,17 +2905,16 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
 
     private void cetakRM0306A() {
+        cetakRM0306A("Preview");
+    }
+
+    private void cetakRM0306A(String modeCetak) {
         int r = tbDataRekon.getSelectedRow();
         if (r == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih dulu baris data rekonsiliasi yang akan dicetak!");
+            JOptionPane.showMessageDialog(this, "Pilih dulu baris data rekonsiliasi yang akan dicetak / dilihat pratinjaunya!");
             return;
         }
         String noRekon = tbDataRekon.getValueAt(r, 0).toString();
-        String modeCetak = (String) JOptionPane.showInputDialog(
-            this, "Silakan pilih mode cetak:", "Cetak Rekonsiliasi Obat (RM 03-06A)",
-            JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Lembar", "PDF"}, "Lembar"
-        );
-        if (modeCetak == null) return;
 
         try {
             ps = koneksi.prepareStatement(
@@ -2949,10 +2979,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 String qryCetak = "SELECT nama_obat, dosis_obat, frekuensi, cara_pemberian, tindak_lanjut, perubahan_aturan_pakai "
                         + "FROM rekonsiliasi_obat_detail_obat WHERE no_rekonsiliasi='" + noRekon + "'";
-                if ("PDF".equals(modeCetak)) {
+
+                if ("PDF".equalsIgnoreCase(modeCetak)) {
                     Valid.MyReportqrypdf("rptRekonsiliasiObatForm.jasper", "report", "::[ Form Rekonsiliasi Obat - RM 03-06A ]::", qryCetak, param);
-                } else {
+                } else if ("DirectPrint".equalsIgnoreCase(modeCetak)) {
                     Valid.MyReportqry("rptRekonsiliasiObatForm.jasper", "report", "::[ Form Rekonsiliasi Obat - RM 03-06A ]::", qryCetak, param);
+                } else {
+                    // Default: Buka Pratinjau Layar Penuh (Maximized JasperViewer)
+                    bukaJasperViewerFullscreen("rptRekonsiliasiObatForm.jasper", "report", "::[ Pratinjau Dokumen Rekonsiliasi Obat - RM 03-06A ]::", qryCetak, param);
                 }
                 this.setCursor(Cursor.getDefaultCursor());
             }
@@ -2968,6 +3002,65 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         } finally {
             try { if (rs != null) rs.close(); if (ps != null) ps.close(); } catch (Exception e) {}
         }
+    }
+
+    private void bukaJasperViewerFullscreen(String reportName, String reportDirName, String judul, String qry, Map<String, Object> parameters) {
+        PreparedStatement psReport = null;
+        ResultSet rsReport = null;
+        try {
+            psReport = koneksi.prepareStatement(qry);
+            rsReport = psReport.executeQuery();
+            JRResultSetDataSource rsdt = new JRResultSetDataSource(rsReport);
+
+            String reportFile = "./" + reportDirName + "/" + reportName;
+            File f = new File(reportFile);
+            if (!f.exists()) {
+                File f2 = new File(reportDirName + "/" + reportName);
+                if (f2.exists()) {
+                    reportFile = f2.getAbsolutePath();
+                }
+            }
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reportFile, parameters, rsdt);
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint, false);
+            jasperViewer.setTitle(judul);
+            jasperViewer.setExtendedState(Frame.MAXIMIZED_BOTH);
+            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+            jasperViewer.setSize(screen.width - 20, screen.height - 40);
+            jasperViewer.setModalExclusionType(Dialog.ModalExclusionType.TOOLKIT_EXCLUDE);
+            jasperViewer.setLocationRelativeTo(null);
+            jasperViewer.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("Error bukaJasperViewerFullscreen: " + e);
+            // Fallback ke MyReportqry bawaan Khanza jika ada kendala
+            Valid.MyReportqry(reportName, reportDirName, judul, qry, parameters);
+        } finally {
+            try { if (rsReport != null) rsReport.close(); } catch (Exception ignored) {}
+            try { if (psReport != null) psReport.close(); } catch (Exception ignored) {}
+        }
+    }
+
+    private void pasangMenuCetakOpsional(JButton btn) {
+        JPopupMenu menuCetak = new JPopupMenu();
+
+        JMenuItem itemPreview = new JMenuItem(" ⛶ Pratinjau Layar Penuh (Lihat Dahulu)");
+        itemPreview.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        itemPreview.addActionListener(e -> cetakRM0306A("Preview"));
+
+        JMenuItem itemLembar = new JMenuItem(" 🖨️ Cetak Langsung ke Printer");
+        itemLembar.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        itemLembar.addActionListener(e -> cetakRM0306A("DirectPrint"));
+
+        JMenuItem itemPDF = new JMenuItem(" 💾 Ekspor / Simpan ke PDF");
+        itemPDF.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        itemPDF.addActionListener(e -> cetakRM0306A("PDF"));
+
+        menuCetak.add(itemPreview);
+        menuCetak.addSeparator();
+        menuCetak.add(itemLembar);
+        menuCetak.add(itemPDF);
+
+        btn.setComponentPopupMenu(menuCetak);
     }
 
     private void tampilDataRekonsiliasi() {
