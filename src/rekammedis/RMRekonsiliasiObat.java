@@ -514,6 +514,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         DTPTgl = new Tanggal();
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        DTPTgl.setPreferredSize(new Dimension(115, 23));
         DTPTgl.setBackground(Color.WHITE);
         DTPTgl.setBorder(new CompoundBorder(
             new LineBorder(new Color(203, 213, 225), 1, true),
@@ -525,8 +526,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             }
         });
 
+        JPanel pnlWaktuInput = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        pnlWaktuInput.setOpaque(false);
+        pnlWaktuInput.add(DTPTgl);
+
         pnlWaktu.add(lblWaktuJudul, BorderLayout.NORTH);
-        pnlWaktu.add(DTPTgl, BorderLayout.CENTER);
+        pnlWaktu.add(pnlWaktuInput, BorderLayout.CENTER);
 
         rowHeader1.add(pnlApoteker);
         rowHeader1.add(pnlNoRekon);
@@ -968,14 +973,30 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         DTPCari1.setPreferredSize(new Dimension(105, 23));
+        DTPCari1.setBackground(Color.WHITE);
+        DTPCari1.setBorder(new CompoundBorder(
+            new LineBorder(new Color(203, 213, 225), 1, true),
+            new EmptyBorder(2, 6, 2, 4)
+        ));
 
         DTPCari2 = new Tanggal();
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         DTPCari2.setPreferredSize(new Dimension(105, 23));
+        DTPCari2.setBackground(Color.WHITE);
+        DTPCari2.setBorder(new CompoundBorder(
+            new LineBorder(new Color(203, 213, 225), 1, true),
+            new EmptyBorder(2, 6, 2, 4)
+        ));
 
         TCari = new JTextField(15);
         TCari.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        TCari.setPreferredSize(new Dimension(130, 23));
+        TCari.setBackground(Color.WHITE);
+        TCari.setBorder(new CompoundBorder(
+            new LineBorder(new Color(203, 213, 225), 1, true),
+            new EmptyBorder(2, 6, 2, 4)
+        ));
         TCari.addActionListener(e -> tampilDataRekonsiliasi());
 
         JButton btnCariData = new JButton(" Cari");
