@@ -496,14 +496,19 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         DTPTgl = new Tanggal();
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        DTPTgl.setPreferredSize(new Dimension(105, 23));
         DTPTgl.addItemListener(e -> {
             if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
                 autoNomorRekonsiliasi();
             }
         });
 
+        JPanel pnlWaktuInput = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        pnlWaktuInput.setOpaque(false);
+        pnlWaktuInput.add(DTPTgl);
+
         pnlWaktu.add(lblWaktuJudul, BorderLayout.NORTH);
-        pnlWaktu.add(DTPTgl, BorderLayout.CENTER);
+        pnlWaktu.add(pnlWaktuInput, BorderLayout.CENTER);
 
         rowHeader1.add(pnlApoteker);
         rowHeader1.add(pnlNoRekon);
