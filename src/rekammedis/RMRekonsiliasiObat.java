@@ -119,7 +119,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     // Komponen Tab 2 (Data Rekonsiliasi & Validasi Apoteker)
     private JPanel containerTabData, panelKiriData, panelKananData;
     private boolean isPreviewMaximized = false;
-    private JButton btnTogglePreview, btnPopupPreview, btnCetakLembarTop, btnSimpanPdfTop;
+    private JButton btnTogglePreview, btnPopupPreview;
     private JTable tbDataRekon;
     private DefaultTableModel tabModeDataRekon;
     private JEditorPane LoadHTML;
@@ -132,7 +132,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JPanel panelFooterInput, panelFooterData;
     private JButton btnSimpan, btnBaru;
     private JCheckBox chkLangsungTTE;
-    private JButton btnValidasiTTE, btnGantiData, btnHapusRekon, btnFullPreviewFooter, btnCetak;
+    private JButton btnValidasiTTE, btnGantiData, btnHapusRekon, btnCetak;
 
     public RMRekonsiliasiObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -1079,30 +1079,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             }
         });
 
-        btnCetakLembarTop = new JButton(" 🖨️ Cetak Lembar");
-        btnCetakLembarTop.setIcon(IconStyle.muat("printer.svg", 14, Color.WHITE));
-        btnCetakLembarTop.setBackground(GREEN_EMERALD);
-        btnCetakLembarTop.setForeground(Color.WHITE);
-        btnCetakLembarTop.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        btnCetakLembarTop.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnCetakLembarTop.setEnabled(false);
-        btnCetakLembarTop.setToolTipText("Cetak dokumen langsung ke printer");
-        btnCetakLembarTop.addActionListener(e -> cetakRM0306A("DirectPrint"));
-
-        btnSimpanPdfTop = new JButton(" 💾 Simpan PDF");
-        btnSimpanPdfTop.setIcon(IconStyle.muat("save.svg", 14, Color.WHITE));
-        btnSimpanPdfTop.setBackground(new Color(217, 119, 6));
-        btnSimpanPdfTop.setForeground(Color.WHITE);
-        btnSimpanPdfTop.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        btnSimpanPdfTop.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnSimpanPdfTop.setEnabled(false);
-        btnSimpanPdfTop.setToolTipText("Simpan / ekspor dokumen sebagai file PDF");
-        btnSimpanPdfTop.addActionListener(e -> cetakRM0306A("PDF"));
-
         pnlActionPreview.add(btnTogglePreview);
         pnlActionPreview.add(btnPopupPreview);
-        pnlActionPreview.add(btnCetakLembarTop);
-        pnlActionPreview.add(btnSimpanPdfTop);
 
         panelToolbarPreview.add(lblTitlePreview, BorderLayout.WEST);
         panelToolbarPreview.add(pnlActionPreview, BorderLayout.EAST);
@@ -1197,23 +1175,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnHapusRekon.setEnabled(false);
         btnHapusRekon.addActionListener(e -> hapusRekonsiliasi());
 
-        btnFullPreviewFooter = new JButton(" ⛶ Pratinjau Dokumen");
-        btnFullPreviewFooter.setIcon(IconStyle.muat("maximize.svg", 15, Color.WHITE));
-        btnFullPreviewFooter.setBackground(TEAL_MAIN);
-        btnFullPreviewFooter.setForeground(Color.WHITE);
-        btnFullPreviewFooter.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        btnFullPreviewFooter.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnFullPreviewFooter.setEnabled(false);
-        btnFullPreviewFooter.setToolTipText("Buka pratinjau formulir RM 03-06A layar penuh tanpa harus mencetak");
-        btnFullPreviewFooter.addActionListener(e -> {
-            int r = tbDataRekon.getSelectedRow();
-            if (r != -1) {
-                bukaDialogPreviewFullscreen(tbDataRekon.getValueAt(r, 0).toString());
-            } else {
-                JOptionPane.showMessageDialog(this, "Silakan pilih baris data rekonsiliasi yang ingin dilihat pratinjaunya!");
-            }
-        });
-
         btnCetak = new JButton(" 🖨️ Cetak RM 03-06A");
         btnCetak.setIcon(IconStyle.muat("printer.svg", 15, Color.WHITE));
         btnCetak.setBackground(GREEN_EMERALD);
@@ -1228,7 +1189,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelFooterData.add(btnValidasiTTE);
         panelFooterData.add(btnGantiData);
         panelFooterData.add(btnHapusRekon);
-        panelFooterData.add(btnFullPreviewFooter);
         panelFooterData.add(btnCetak);
 
         JPanel leftFooterWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -2715,10 +2675,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             btnGantiData.setEnabled(false);
             btnHapusRekon.setEnabled(false);
             btnCetak.setEnabled(false);
-            if (btnFullPreviewFooter != null) btnFullPreviewFooter.setEnabled(false);
             if (btnPopupPreview != null) btnPopupPreview.setEnabled(false);
-            if (btnCetakLembarTop != null) btnCetakLembarTop.setEnabled(false);
-            if (btnSimpanPdfTop != null) btnSimpanPdfTop.setEnabled(false);
             return;
         }
 
@@ -2726,10 +2683,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         boolean isTervalidasi = status.contains("Tervalidasi");
 
         btnCetak.setEnabled(true);
-        if (btnFullPreviewFooter != null) btnFullPreviewFooter.setEnabled(true);
         if (btnPopupPreview != null) btnPopupPreview.setEnabled(true);
-        if (btnCetakLembarTop != null) btnCetakLembarTop.setEnabled(true);
-        if (btnSimpanPdfTop != null) btnSimpanPdfTop.setEnabled(true);
 
         if (isTervalidasi) {
             btnValidasiTTE.setEnabled(true);
@@ -3406,8 +3360,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     boolean pakaiObat = "Ya".equalsIgnoreCase(rsPrev.getString("penggunaan_obat_sebelum_admisi"));
                     html.append("<div style='background:#f8fafc; border:1px solid #cbd5e1; padding:6px 10px; margin-bottom:8px; font-size:10px;'>")
                         .append("<b>Penggunaan Obat Sebelum Admisi:</b> &nbsp;&nbsp;")
-                        .append(pakaiObat ? "<b>[&#9632; &#10003;] Ya, dengan rincian berikut</b> &nbsp;&nbsp;&nbsp;&nbsp; [ &nbsp; ] Tidak Menggunakan Obat Sebelum Admisi"
-                                          : "[ &nbsp; ] Ya, dengan rincian berikut &nbsp;&nbsp;&nbsp;&nbsp; <b>[&#9632; &#10003;] Tidak Menggunakan Obat Sebelum Admisi</b>")
+                        .append(pakaiObat ? "<b>[ &#10003; ] Ya, dengan rincian berikut</b> &nbsp;&nbsp;&nbsp;&nbsp; [ &nbsp; ] Tidak Menggunakan Obat Sebelum Admisi"
+                                          : "[ &nbsp; ] Ya, dengan rincian berikut &nbsp;&nbsp;&nbsp;&nbsp; <b>[ &#10003; ] Tidak Menggunakan Obat Sebelum Admisi</b>")
                         .append("</div>");
                 }
 
@@ -3463,9 +3417,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     .append("<td width='52%' valign='top' style='border:1px solid #cbd5e1; background:#f8fafc; padding:8px;'>")
                     .append("<b style='color:#0f766e;'>SUMBER INFORMASI:</b><br>")
                     .append("<span style='font-size:9.5px; color:#64748b;'>Daftar obat yang digunakan sebelum admisi diperoleh dari:</span><br><br>")
-                    .append(sRM ? "<b>[&#9632; &#10003;] Rekam Medis</b><br>" : "[ &nbsp; ] Rekam Medis<br>")
-                    .append(sPasien ? "<b>[&#9632; &#10003;] Pasien / Keluarga Pasien</b><br>" : "[ &nbsp; ] Pasien / Keluarga Pasien<br>")
-                    .append(sLain ? "<b>[&#9632; &#10003;] Obat / Resep / Lain-lain</b> (" + sInformasiLain + ")" : "[ &nbsp; ] Obat / Resep / Lain-lain")
+                    .append(sRM ? "<b>[ &#10003; ] Rekam Medis</b><br>" : "[ &nbsp; ] Rekam Medis<br>")
+                    .append(sPasien ? "<b>[ &#10003; ] Pasien / Keluarga Pasien</b><br>" : "[ &nbsp; ] Pasien / Keluarga Pasien<br>")
+                    .append(sLain ? "<b>[ &#10003; ] Obat / Resep / Lain-lain</b> (" + sInformasiLain + ")" : "[ &nbsp; ] Obat / Resep / Lain-lain")
                     .append("</td>")
                     .append("<td width='6%'>&nbsp;</td>")
                     .append("<td width='42%' align='center' valign='top' style='border:1px solid #cbd5e1; background:#ffffff; padding:8px;'>")
