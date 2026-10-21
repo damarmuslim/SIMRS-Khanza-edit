@@ -239,7 +239,7 @@
 		</groupHeader>
 	</group>
 	<title>
-		<band height="98" splitType="Prevent">
+		<band height="116" splitType="Prevent">
 			<!-- KOP SURAT (Dua Logo: Pemkab Lampung Tengah di Kiri & RSUD Demang di Kanan) -->
 			<image scaleImage="RetainShape" onErrorType="Blank">
 				<reportElement positionType="Float" x="6" y="2" width="46" height="46" uuid="a1b2c3d4-0001-4000-8000-000000000003"/>
@@ -293,45 +293,48 @@
 				</graphicElement>
 			</line>
 
-			<!-- BAGIAN IDENTITAS PASIEN (KIRI) -->
+			<!-- 1. JUDUL DOKUMEN DI TENGAH (DI ATAS DATA PASIEN) -->
 			<staticText>
-				<reportElement positionType="Float" x="4" y="58" width="58" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000011"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8"/>
+				<reportElement positionType="Float" x="0" y="56" width="569" height="16" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000020"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[No. RM]]></text>
+				<text><![CDATA[REKONSILIASI OBAT]]></text>
 			</staticText>
+
+			<!-- KODE FORMULIR DI POJOK KANAN ATAS -->
 			<staticText>
-				<reportElement positionType="Float" x="63" y="58" width="4" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000012"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8"/>
+				<reportElement positionType="Float" x="469" y="56" width="96" height="14" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000021"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[:]]></text>
+				<text><![CDATA[RM 03-06A]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="68" y="58" width="126" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000013"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="8" isBold="true"/>
+			<textField>
+				<reportElement positionType="Float" x="420" y="69" width="145" height="10" forecolor="#64748B" uuid="a1b2c3d4-0001-4000-8000-000000000022"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{pNoRM}!=null?$P{pNoRM}:"-"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{pNoRekon}!=null && !$P{pNoRekon}.isEmpty() ? "No. Rekon: " + $P{pNoRekon} : ""]]></textFieldExpression>
 			</textField>
 
+			<!-- 2. BAGIAN IDENTITAS PASIEN (DI BAWAH JUDUL: NAMA, NO RM, TANGGAL LAHIR) -->
 			<staticText>
-				<reportElement positionType="Float" x="4" y="70" width="58" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000014"/>
+				<reportElement positionType="Float" x="4" y="76" width="65" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000014"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[Nama Pasien]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="63" y="70" width="4" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000015"/>
+				<reportElement positionType="Float" x="70" y="76" width="5" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000015"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="68" y="70" width="126" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000016"/>
+				<reportElement positionType="Float" x="76" y="76" width="320" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000016"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
@@ -339,50 +342,47 @@
 			</textField>
 
 			<staticText>
-				<reportElement positionType="Float" x="4" y="82" width="58" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000017"/>
+				<reportElement positionType="Float" x="4" y="88" width="65" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000011"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
-				<text><![CDATA[Tanggal Lahir]]></text>
+				<text><![CDATA[No. RM]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="63" y="82" width="4" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000018"/>
+				<reportElement positionType="Float" x="70" y="88" width="5" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000012"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="68" y="82" width="126" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000019"/>
+				<reportElement positionType="Float" x="76" y="88" width="320" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000013"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pNoRM}!=null?$P{pNoRM}:"-"]]></textFieldExpression>
+			</textField>
+
+			<staticText>
+				<reportElement positionType="Float" x="4" y="100" width="65" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000017"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Tanggal Lahir]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="70" y="100" width="5" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000018"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="76" y="100" width="320" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000019"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pTglLahir}!=null?$P{pTglLahir}:"-"]]></textFieldExpression>
-			</textField>
-
-			<!-- JUDUL DOKUMEN DI TENGAH (BERJARAK LEGA DARI DATA PASIEN) -->
-			<staticText>
-				<reportElement positionType="Float" x="204" y="66" width="160" height="18" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000020"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[REKONSILIASI OBAT]]></text>
-			</staticText>
-
-			<!-- KODE FORMULIR DI KANAN -->
-			<staticText>
-				<reportElement positionType="Float" x="469" y="70" width="96" height="14" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000021"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9" isBold="true"/>
-				</textElement>
-				<text><![CDATA[RM 03-06A]]></text>
-			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="420" y="84" width="145" height="10" forecolor="#64748B" uuid="a1b2c3d4-0001-4000-8000-000000000022"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="6"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{pNoRekon}!=null && !$P{pNoRekon}.isEmpty() ? "No. Rekon: " + $P{pNoRekon} : ""]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
