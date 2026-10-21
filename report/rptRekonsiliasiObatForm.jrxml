@@ -59,21 +59,40 @@
 					<text><![CDATA[Penggunaan Obat Sebelum Admisi]]></text>
 				</staticText>
 
+				<!-- Opsi Ya: Terpilih (Kotak Solid #0F172A + Checklist Putih) -->
 				<rectangle radius="1">
-					<reportElement positionType="Float" x="26" y="14" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000030"/>
-					<graphicElement>
-						<pen lineWidth="0.5" lineColor="#94A3B8"/>
-					</graphicElement>
-				</rectangle>
-				<textField>
-					<reportElement positionType="Float" x="26" y="13" width="8" height="9" uuid="a1b2c3d4-0001-4000-8000-000000000031">
+					<reportElement positionType="Float" mode="Opaque" x="26" y="14" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000030a">
 						<printWhenExpression><![CDATA[Boolean.valueOf("Ya".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="7" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA["V"]]></textFieldExpression>
-				</textField>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
+				<line>
+					<reportElement positionType="Float" x="27" y="18" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-000000000030b">
+						<printWhenExpression><![CDATA[Boolean.valueOf("Ya".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+					</graphicElement>
+				</line>
+				<line direction="BottomUp">
+					<reportElement positionType="Float" x="29" y="15" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-000000000030c">
+						<printWhenExpression><![CDATA[Boolean.valueOf("Ya".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+					</graphicElement>
+				</line>
+				<!-- Opsi Ya: Tidak Terpilih (Kotak Transparan Border Abu-abu) -->
+				<rectangle radius="1">
+					<reportElement positionType="Float" mode="Transparent" x="26" y="14" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000030d">
+						<printWhenExpression><![CDATA[Boolean.valueOf(!"Ya".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.6" lineColor="#475569"/>
+					</graphicElement>
+				</rectangle>
 				<staticText>
 					<reportElement positionType="Float" x="38" y="12" width="220" height="12" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000032"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -82,21 +101,40 @@
 					<text><![CDATA[Ya, Dengan Rincian Sebagai Berikut]]></text>
 				</staticText>
 
+				<!-- Opsi Tidak: Terpilih (Kotak Solid #0F172A + Checklist Putih) -->
 				<rectangle radius="1">
-					<reportElement positionType="Float" x="290" y="14" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000033"/>
-					<graphicElement>
-						<pen lineWidth="0.5" lineColor="#94A3B8"/>
-					</graphicElement>
-				</rectangle>
-				<textField>
-					<reportElement positionType="Float" x="290" y="13" width="8" height="9" uuid="a1b2c3d4-0001-4000-8000-000000000034">
+					<reportElement positionType="Float" mode="Opaque" x="290" y="14" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000033a">
 						<printWhenExpression><![CDATA[Boolean.valueOf("Tidak".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
 					</reportElement>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="7" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA["V"]]></textFieldExpression>
-				</textField>
+					<graphicElement>
+						<pen lineWidth="0.0"/>
+					</graphicElement>
+				</rectangle>
+				<line>
+					<reportElement positionType="Float" x="291" y="18" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-000000000033b">
+						<printWhenExpression><![CDATA[Boolean.valueOf("Tidak".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+					</graphicElement>
+				</line>
+				<line direction="BottomUp">
+					<reportElement positionType="Float" x="293" y="15" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-000000000033c">
+						<printWhenExpression><![CDATA[Boolean.valueOf("Tidak".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+					</graphicElement>
+				</line>
+				<!-- Opsi Tidak: Tidak Terpilih (Kotak Transparan Border Abu-abu) -->
+				<rectangle radius="1">
+					<reportElement positionType="Float" mode="Transparent" x="290" y="14" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000033d">
+						<printWhenExpression><![CDATA[Boolean.valueOf(!"Tidak".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.6" lineColor="#475569"/>
+					</graphicElement>
+				</rectangle>
 				<staticText>
 					<reportElement positionType="Float" x="302" y="12" width="250" height="12" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000035"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -257,21 +295,21 @@
 
 			<!-- BAGIAN IDENTITAS PASIEN (KIRI) -->
 			<staticText>
-				<reportElement positionType="Float" x="4" y="58" width="70" height="12" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000011"/>
+				<reportElement positionType="Float" x="4" y="58" width="58" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000011"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[No. RM]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="75" y="58" width="5" height="12" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000012"/>
+				<reportElement positionType="Float" x="63" y="58" width="4" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000012"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="84" y="58" width="110" height="12" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000013"/>
+				<reportElement positionType="Float" x="68" y="58" width="126" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000013"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8" isBold="true"/>
 				</textElement>
@@ -279,21 +317,21 @@
 			</textField>
 
 			<staticText>
-				<reportElement positionType="Float" x="4" y="70" width="70" height="12" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000014"/>
+				<reportElement positionType="Float" x="4" y="70" width="58" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000014"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[Nama Pasien]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="75" y="70" width="5" height="12" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000015"/>
+				<reportElement positionType="Float" x="63" y="70" width="4" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000015"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="84" y="70" width="140" height="12" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000016"/>
+				<reportElement positionType="Float" x="68" y="70" width="126" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000016"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
@@ -301,30 +339,30 @@
 			</textField>
 
 			<staticText>
-				<reportElement positionType="Float" x="4" y="82" width="70" height="12" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000017"/>
+				<reportElement positionType="Float" x="4" y="82" width="58" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000017"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[Tanggal Lahir]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="75" y="82" width="5" height="12" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000018"/>
+				<reportElement positionType="Float" x="63" y="82" width="4" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000018"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="84" y="82" width="110" height="12" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000019"/>
+				<reportElement positionType="Float" x="68" y="82" width="126" height="12" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000019"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pTglLahir}!=null?$P{pTglLahir}:"-"]]></textFieldExpression>
 			</textField>
 
-			<!-- JUDUL DOKUMEN DI TENGAH -->
+			<!-- JUDUL DOKUMEN DI TENGAH (BERJARAK LEGA DARI DATA PASIEN) -->
 			<staticText>
-				<reportElement positionType="Float" x="185" y="58" width="200" height="16" forecolor="#000000" uuid="a1b2c3d4-0001-4000-8000-000000000020"/>
+				<reportElement positionType="Float" x="204" y="66" width="160" height="18" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000020"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="true"/>
 				</textElement>
@@ -418,22 +456,39 @@
 
 			<!-- Opsi 1: Lanjut aturan pakai sama -->
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="348" y="3" width="7" height="7" uuid="a1b2c3d4-0001-4000-8000-000000000061"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#334155"/>
-				</graphicElement>
-			</rectangle>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="348" y="2" width="7" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000062">
+				<reportElement positionType="Float" mode="Opaque" x="348" y="3" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000061a">
 					<printWhenExpression><![CDATA[Boolean.valueOf("Lanjut aturan pakai sama".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="6" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
-			</textField>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<line>
+				<reportElement positionType="Float" x="349" y="7" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-000000000061b">
+					<printWhenExpression><![CDATA[Boolean.valueOf("Lanjut aturan pakai sama".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="351" y="4" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-000000000061c">
+					<printWhenExpression><![CDATA[Boolean.valueOf("Lanjut aturan pakai sama".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<rectangle radius="1">
+				<reportElement positionType="Float" mode="Transparent" x="348" y="3" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000061d">
+					<printWhenExpression><![CDATA[Boolean.valueOf(!"Lanjut aturan pakai sama".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.6" lineColor="#475569"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" x="358" y="1" width="110" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000063"/>
+				<reportElement positionType="Float" x="359" y="1" width="109" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000063"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6"/>
 				</textElement>
@@ -442,22 +497,39 @@
 
 			<!-- Opsi 2: Lanjut aturan pakai berubah -->
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="348" y="14" width="7" height="7" uuid="a1b2c3d4-0001-4000-8000-000000000064"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#334155"/>
-				</graphicElement>
-			</rectangle>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="348" y="13" width="7" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000065">
+				<reportElement positionType="Float" mode="Opaque" x="348" y="14" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000064a">
 					<printWhenExpression><![CDATA[Boolean.valueOf("Lanjut aturan pakai berubah".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="6" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
-			</textField>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<line>
+				<reportElement positionType="Float" x="349" y="18" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-000000000064b">
+					<printWhenExpression><![CDATA[Boolean.valueOf("Lanjut aturan pakai berubah".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="351" y="15" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-000000000064c">
+					<printWhenExpression><![CDATA[Boolean.valueOf("Lanjut aturan pakai berubah".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<rectangle radius="1">
+				<reportElement positionType="Float" mode="Transparent" x="348" y="14" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000064d">
+					<printWhenExpression><![CDATA[Boolean.valueOf(!"Lanjut aturan pakai berubah".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.6" lineColor="#475569"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" x="358" y="12" width="110" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000066"/>
+				<reportElement positionType="Float" x="359" y="12" width="109" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000066"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6"/>
 				</textElement>
@@ -466,22 +538,39 @@
 
 			<!-- Opsi 3: Stop -->
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="348" y="25" width="7" height="7" uuid="a1b2c3d4-0001-4000-8000-000000000067"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#334155"/>
-				</graphicElement>
-			</rectangle>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="348" y="24" width="7" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000068">
+				<reportElement positionType="Float" mode="Opaque" x="348" y="25" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000067a">
 					<printWhenExpression><![CDATA[Boolean.valueOf("Stop".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="6" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
-			</textField>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<line>
+				<reportElement positionType="Float" x="349" y="29" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-000000000067b">
+					<printWhenExpression><![CDATA[Boolean.valueOf("Stop".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="351" y="26" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-000000000067c">
+					<printWhenExpression><![CDATA[Boolean.valueOf("Stop".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<rectangle radius="1">
+				<reportElement positionType="Float" mode="Transparent" x="348" y="25" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000067d">
+					<printWhenExpression><![CDATA[Boolean.valueOf(!"Stop".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.6" lineColor="#475569"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" x="358" y="23" width="110" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000069"/>
+				<reportElement positionType="Float" x="359" y="23" width="109" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000069"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6"/>
 				</textElement>
@@ -683,22 +772,39 @@
 
 			<!-- Pilihan 1: Status Pasien di Rekam Medis -->
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="12" y="64" width="9" height="9" uuid="a1b2c3d4-0001-4000-8000-000000000094"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#94A3B8"/>
-				</graphicElement>
-			</rectangle>
-			<textField>
-				<reportElement positionType="Float" x="12" y="61" width="9" height="10" uuid="a1b2c3d4-0001-4000-8000-000000000095">
+				<reportElement positionType="Float" mode="Opaque" x="14" y="64" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000094a">
 					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} != null && ($P{pSumberInformasi}.toLowerCase().contains("rekam medis") || $P{pSumberInformasi}.toLowerCase().contains("status")))]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
-			</textField>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<line>
+				<reportElement positionType="Float" x="15" y="68" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-000000000094b">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} != null && ($P{pSumberInformasi}.toLowerCase().contains("rekam medis") || $P{pSumberInformasi}.toLowerCase().contains("status")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="17" y="65" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-000000000094c">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} != null && ($P{pSumberInformasi}.toLowerCase().contains("rekam medis") || $P{pSumberInformasi}.toLowerCase().contains("status")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<rectangle radius="1">
+				<reportElement positionType="Float" mode="Transparent" x="14" y="64" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000094d">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} == null || (!$P{pSumberInformasi}.toLowerCase().contains("rekam medis") && !$P{pSumberInformasi}.toLowerCase().contains("status")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.6" lineColor="#475569"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" x="27" y="60" width="245" height="13" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000096"/>
+				<reportElement positionType="Float" x="26" y="62" width="245" height="13" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000096"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7"/>
 				</textElement>
@@ -707,22 +813,39 @@
 
 			<!-- Pilihan 2: Pasien/ Keluarga Pasien -->
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="12" y="86" width="9" height="9" uuid="a1b2c3d4-0001-4000-8000-000000000097"/>
-				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#94A3B8"/>
-				</graphicElement>
-			</rectangle>
-			<textField>
-				<reportElement positionType="Float" x="12" y="83" width="9" height="10" uuid="a1b2c3d4-0001-4000-8000-000000000098">
+				<reportElement positionType="Float" mode="Opaque" x="14" y="86" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000097a">
 					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} != null && ($P{pSumberInformasi}.toLowerCase().contains("pasien") || $P{pSumberInformasi}.toLowerCase().contains("keluarga")))]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
-			</textField>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<line>
+				<reportElement positionType="Float" x="15" y="90" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-000000000097b">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} != null && ($P{pSumberInformasi}.toLowerCase().contains("pasien") || $P{pSumberInformasi}.toLowerCase().contains("keluarga")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="17" y="87" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-000000000097c">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} != null && ($P{pSumberInformasi}.toLowerCase().contains("pasien") || $P{pSumberInformasi}.toLowerCase().contains("keluarga")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<rectangle radius="1">
+				<reportElement positionType="Float" mode="Transparent" x="14" y="86" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000097d">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} == null || (!$P{pSumberInformasi}.toLowerCase().contains("pasien") && !$P{pSumberInformasi}.toLowerCase().contains("keluarga")))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.6" lineColor="#475569"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" x="27" y="82" width="245" height="13" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000099"/>
+				<reportElement positionType="Float" x="26" y="84" width="245" height="13" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000099"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7"/>
 				</textElement>
@@ -731,22 +854,39 @@
 
 			<!-- Pilihan 3: Lain-lain -->
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="12" y="108" width="9" height="9" uuid="a1b2c3d4-0001-4000-8000-0000000100"/>
+				<reportElement positionType="Float" mode="Opaque" x="14" y="108" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-0000000100a">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} != null && $P{pSumberInformasi}.toLowerCase().contains("lain"))]]></printWhenExpression>
+				</reportElement>
 				<graphicElement>
-					<pen lineWidth="0.5" lineColor="#94A3B8"/>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<line>
+				<reportElement positionType="Float" x="15" y="112" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-0000000100b">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} != null && $P{pSumberInformasi}.toLowerCase().contains("lain"))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement positionType="Float" x="17" y="109" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-0000000100c">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} != null && $P{pSumberInformasi}.toLowerCase().contains("lain"))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.2" lineColor="#FFFFFF"/>
+				</graphicElement>
+			</line>
+			<rectangle radius="1">
+				<reportElement positionType="Float" mode="Transparent" x="14" y="108" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-0000000100d">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} == null || !$P{pSumberInformasi}.toLowerCase().contains("lain"))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.6" lineColor="#475569"/>
 				</graphicElement>
 			</rectangle>
 			<textField>
-				<reportElement positionType="Float" x="12" y="105" width="9" height="10" uuid="a1b2c3d4-0001-4000-8000-0000000101">
-					<printWhenExpression><![CDATA[Boolean.valueOf($P{pSumberInformasi} != null && $P{pSumberInformasi}.toLowerCase().contains("lain"))]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="7" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="27" y="104" width="245" height="13" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-0000000102"/>
+				<reportElement positionType="Float" x="26" y="106" width="245" height="13" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-0000000102"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7"/>
 				</textElement>
