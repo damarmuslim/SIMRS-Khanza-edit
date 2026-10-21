@@ -119,7 +119,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     // Komponen Tab 2 (Data Rekonsiliasi & Validasi Apoteker)
     private JPanel containerTabData, panelKiriData, panelKananData;
     private boolean isPreviewMaximized = false;
-    private JButton btnTogglePreview, btnCetakLembarTop, btnSimpanPdfTop;
+    private JButton btnTogglePreview, btnPopupPreview, btnCetakLembarTop, btnSimpanPdfTop;
     private JTable tbDataRekon;
     private DefaultTableModel tabModeDataRekon;
     private JEditorPane LoadHTML;
@@ -132,7 +132,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JPanel panelFooterInput, panelFooterData;
     private JButton btnSimpan, btnBaru;
     private JCheckBox chkLangsungTTE;
-    private JButton btnValidasiTTE, btnGantiData, btnHapusRekon, btnCetak;
+    private JButton btnValidasiTTE, btnGantiData, btnHapusRekon, btnFullPreviewFooter, btnCetak;
 
     public RMRekonsiliasiObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -1053,14 +1053,31 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel pnlActionPreview = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
         pnlActionPreview.setOpaque(false);
 
-        btnTogglePreview = new JButton(" ⛶ Perbesar Pratinjau");
+        btnTogglePreview = new JButton(" ⛶ Perbesar Tab");
         btnTogglePreview.setIcon(IconStyle.muat("maximize.svg", 14, Color.WHITE));
-        btnTogglePreview.setBackground(TEAL_MAIN);
+        btnTogglePreview.setBackground(new Color(71, 85, 105)); // Slate
         btnTogglePreview.setForeground(Color.WHITE);
         btnTogglePreview.setFont(new Font("Segoe UI", Font.BOLD, 11));
         btnTogglePreview.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnTogglePreview.setToolTipText("Perbesar panel pratinjau memenuhi seluruh layar (sembunyikan tabel)");
+        btnTogglePreview.setToolTipText("Perbesar pratinjau memenuhi tab ini (sembunyikan / pulihkan tabel riwayat)");
         btnTogglePreview.addActionListener(e -> toggleMaximizePreview());
+
+        btnPopupPreview = new JButton(" 🔍 Jendela Layar Penuh");
+        btnPopupPreview.setIcon(IconStyle.muat("maximize.svg", 14, Color.WHITE));
+        btnPopupPreview.setBackground(TEAL_MAIN);
+        btnPopupPreview.setForeground(Color.WHITE);
+        btnPopupPreview.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnPopupPreview.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnPopupPreview.setEnabled(false);
+        btnPopupPreview.setToolTipText("Buka pratinjau dokumen di jendela modal terpisah layar penuh (Full Screen Preview)");
+        btnPopupPreview.addActionListener(e -> {
+            int r = tbDataRekon.getSelectedRow();
+            if (r != -1) {
+                bukaDialogPreviewFullscreen(tbDataRekon.getValueAt(r, 0).toString());
+            } else {
+                JOptionPane.showMessageDialog(this, "Silakan pilih baris data rekonsiliasi yang ingin dilihat pratinjaunya!");
+            }
+        });
 
         btnCetakLembarTop = new JButton(" 🖨️ Cetak Lembar");
         btnCetakLembarTop.setIcon(IconStyle.muat("printer.svg", 14, Color.WHITE));
@@ -1083,6 +1100,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnSimpanPdfTop.addActionListener(e -> cetakRM0306A("PDF"));
 
         pnlActionPreview.add(btnTogglePreview);
+        pnlActionPreview.add(btnPopupPreview);
         pnlActionPreview.add(btnCetakLembarTop);
         pnlActionPreview.add(btnSimpanPdfTop);
 
@@ -1096,6 +1114,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         if (LoadHTML.getCaret() instanceof javax.swing.text.DefaultCaret) {
             ((javax.swing.text.DefaultCaret) LoadHTML.getCaret()).setUpdatePolicy(javax.swing.text.DefaultCaret.NEVER_UPDATE);
         }
+        LoadHTML.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
+                    int r = tbDataRekon.getSelectedRow();
+                    if (r != -1) {
+                        bukaDialogPreviewFullscreen(tbDataRekon.getValueAt(r, 0).toString());
+                    }
+                }
+            }
+        });
 
         scrollPreviewHTML = new JScrollPane(LoadHTML);
         panelKananData.add(panelToolbarPreview, BorderLayout.NORTH);
@@ -1168,9 +1197,26 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnHapusRekon.setEnabled(false);
         btnHapusRekon.addActionListener(e -> hapusRekonsiliasi());
 
-        btnCetak = new JButton(" Cetak Dokumen RM 03-06A");
+        btnFullPreviewFooter = new JButton(" ⛶ Pratinjau Dokumen");
+        btnFullPreviewFooter.setIcon(IconStyle.muat("maximize.svg", 15, Color.WHITE));
+        btnFullPreviewFooter.setBackground(TEAL_MAIN);
+        btnFullPreviewFooter.setForeground(Color.WHITE);
+        btnFullPreviewFooter.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnFullPreviewFooter.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnFullPreviewFooter.setEnabled(false);
+        btnFullPreviewFooter.setToolTipText("Buka pratinjau formulir RM 03-06A layar penuh tanpa harus mencetak");
+        btnFullPreviewFooter.addActionListener(e -> {
+            int r = tbDataRekon.getSelectedRow();
+            if (r != -1) {
+                bukaDialogPreviewFullscreen(tbDataRekon.getValueAt(r, 0).toString());
+            } else {
+                JOptionPane.showMessageDialog(this, "Silakan pilih baris data rekonsiliasi yang ingin dilihat pratinjaunya!");
+            }
+        });
+
+        btnCetak = new JButton(" 🖨️ Cetak RM 03-06A");
         btnCetak.setIcon(IconStyle.muat("printer.svg", 15, Color.WHITE));
-        btnCetak.setBackground(TEAL_MAIN);
+        btnCetak.setBackground(GREEN_EMERALD);
         btnCetak.setForeground(Color.WHITE);
         btnCetak.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnCetak.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -1182,6 +1228,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelFooterData.add(btnValidasiTTE);
         panelFooterData.add(btnGantiData);
         panelFooterData.add(btnHapusRekon);
+        panelFooterData.add(btnFullPreviewFooter);
         panelFooterData.add(btnCetak);
 
         JPanel leftFooterWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -2668,6 +2715,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             btnGantiData.setEnabled(false);
             btnHapusRekon.setEnabled(false);
             btnCetak.setEnabled(false);
+            if (btnFullPreviewFooter != null) btnFullPreviewFooter.setEnabled(false);
+            if (btnPopupPreview != null) btnPopupPreview.setEnabled(false);
             if (btnCetakLembarTop != null) btnCetakLembarTop.setEnabled(false);
             if (btnSimpanPdfTop != null) btnSimpanPdfTop.setEnabled(false);
             return;
@@ -2677,6 +2726,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         boolean isTervalidasi = status.contains("Tervalidasi");
 
         btnCetak.setEnabled(true);
+        if (btnFullPreviewFooter != null) btnFullPreviewFooter.setEnabled(true);
+        if (btnPopupPreview != null) btnPopupPreview.setEnabled(true);
         if (btnCetakLembarTop != null) btnCetakLembarTop.setEnabled(true);
         if (btnSimpanPdfTop != null) btnSimpanPdfTop.setEnabled(true);
 
@@ -2939,15 +2990,15 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         if (isPreviewMaximized) {
             panelKiriData.setVisible(false);
             containerTabData.setLayout(new GridLayout(1, 1));
-            btnTogglePreview.setText(" 🗗 Perkecil Pratinjau");
+            btnTogglePreview.setText(" 🗗 Perkecil Tab");
             btnTogglePreview.setToolTipText("Kembalikan ke tampilan normal berdampingan dengan tabel riwayat");
             btnTogglePreview.setBackground(new Color(71, 85, 105)); // Slate
         } else {
             panelKiriData.setVisible(true);
             containerTabData.setLayout(new GridLayout(1, 2, 12, 12));
-            btnTogglePreview.setText(" ⛶ Perbesar Pratinjau");
-            btnTogglePreview.setToolTipText("Perbesar panel pratinjau memenuhi seluruh layar (sembunyikan tabel)");
-            btnTogglePreview.setBackground(TEAL_MAIN);
+            btnTogglePreview.setText(" ⛶ Perbesar Tab");
+            btnTogglePreview.setToolTipText("Perbesar pratinjau memenuhi tab ini (sembunyikan tabel riwayat)");
+            btnTogglePreview.setBackground(new Color(71, 85, 105));
         }
         containerTabData.revalidate();
         containerTabData.repaint();
@@ -3159,9 +3210,142 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
 
     private void muatPreviewHTML(String noRekon) {
+        String content = generateHTMLPreviewContent(noRekon);
+        LoadHTML.setText(content);
+        LoadHTML.setCaretPosition(0);
+        SwingUtilities.invokeLater(() -> {
+            LoadHTML.setCaretPosition(0);
+            if (scrollPreviewHTML != null) {
+                scrollPreviewHTML.getVerticalScrollBar().setValue(0);
+            }
+        });
+    }
+
+    /**
+     * Membuka Jendela Modal Dialog Pratinjau Layar Penuh (Clean Document Viewer)
+     * Tidak langsung mencetak, melainkan menampilkan dokumen secara utuh,
+     * dan menyediakan tombol aksi langsung [Cetak Lembar] dan [Simpan PDF].
+     */
+    private void bukaDialogPreviewFullscreen(String noRekon) {
+        if (noRekon == null || noRekon.isEmpty()) {
+            int r = tbDataRekon.getSelectedRow();
+            if (r != -1) {
+                noRekon = tbDataRekon.getValueAt(r, 0).toString();
+            }
+        }
+        if (noRekon == null || noRekon.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Silakan pilih data rekonsiliasi terlebih dahulu!");
+            return;
+        }
+
+        final String targetRekon = noRekon;
+        String htmlDokumen = generateHTMLPreviewContent(targetRekon);
+        if (htmlDokumen == null || htmlDokumen.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Gagal memuat pratinjau dokumen!");
+            return;
+        }
+
+        Window parentWin = SwingUtilities.getWindowAncestor(this);
+        JDialog dlg = new JDialog(parentWin, "::[ Pratinjau Dokumen Rekonsiliasi Obat (RM 03-06A) ]::", Dialog.ModalityType.APPLICATION_MODAL);
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        int dlgW = Math.min(1120, screen.width - 40);
+        int dlgH = Math.min(860, screen.height - 60);
+        dlg.setSize(dlgW, dlgH);
+        dlg.setLocationRelativeTo(this);
+        dlg.setLayout(new BorderLayout());
+
+        // Header Dialog Toolbar
+        JPanel topBar = new JPanel(new BorderLayout(10, 0));
+        topBar.setBackground(new Color(15, 23, 42)); // Slate-900
+        topBar.setBorder(new EmptyBorder(8, 16, 8, 16));
+
+        JLabel lblJudul = new JLabel(" PRATINJAU DOKUMEN REKONSILIASI OBAT (RM 03-06A) — NO. " + targetRekon);
+        lblJudul.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblJudul.setForeground(Color.WHITE);
+
+        JPanel pnlAksi = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        pnlAksi.setOpaque(false);
+
+        JButton btnCetakLembar = new JButton(" 🖨️ Cetak Lembar ke Printer");
+        btnCetakLembar.setIcon(IconStyle.muat("printer.svg", 14, Color.WHITE));
+        btnCetakLembar.setBackground(GREEN_EMERALD);
+        btnCetakLembar.setForeground(Color.WHITE);
+        btnCetakLembar.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnCetakLembar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCetakLembar.setToolTipText("Cetak dokumen langsung ke printer fisik");
+        btnCetakLembar.addActionListener(e -> cetakRM0306A("DirectPrint"));
+
+        JButton btnSimpanPdf = new JButton(" 💾 Simpan PDF");
+        btnSimpanPdf.setIcon(IconStyle.muat("save.svg", 14, Color.WHITE));
+        btnSimpanPdf.setBackground(new Color(217, 119, 6)); // Amber
+        btnSimpanPdf.setForeground(Color.WHITE);
+        btnSimpanPdf.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnSimpanPdf.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnSimpanPdf.setToolTipText("Simpan / ekspor dokumen sebagai file PDF");
+        btnSimpanPdf.addActionListener(e -> cetakRM0306A("PDF"));
+
+        JButton btnTutup = new JButton(" ✖️ Tutup (ESC)");
+        btnTutup.setBackground(new Color(71, 85, 105)); // Slate
+        btnTutup.setForeground(Color.WHITE);
+        btnTutup.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnTutup.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnTutup.setToolTipText("Tutup jendela pratinjau dokumen");
+        btnTutup.addActionListener(e -> dlg.dispose());
+
+        pnlAksi.add(btnCetakLembar);
+        pnlAksi.add(btnSimpanPdf);
+        pnlAksi.add(btnTutup);
+
+        topBar.add(lblJudul, BorderLayout.WEST);
+        topBar.add(pnlAksi, BorderLayout.EAST);
+
+        // Center: Dokumen Viewer
+        JEditorPane epDokumen = new JEditorPane();
+        epDokumen.setContentType("text/html");
+        epDokumen.setEditable(false);
+        epDokumen.setBackground(new Color(241, 245, 249)); // Slate-100 canvas
+        if (epDokumen.getCaret() instanceof javax.swing.text.DefaultCaret) {
+            ((javax.swing.text.DefaultCaret) epDokumen.getCaret()).setUpdatePolicy(javax.swing.text.DefaultCaret.NEVER_UPDATE);
+        }
+        epDokumen.setText(htmlDokumen);
+
+        JScrollPane sp = new JScrollPane(epDokumen);
+        sp.setBorder(null);
+
+        dlg.add(topBar, BorderLayout.NORTH);
+        dlg.add(sp, BorderLayout.CENTER);
+
+        // Shortcut ESC untuk menutup dialog
+        KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
+        Action escapeAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dlg.dispose();
+            }
+        };
+        dlg.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
+        dlg.getRootPane().getActionMap().put("ESCAPE", escapeAction);
+
+        SwingUtilities.invokeLater(() -> {
+            epDokumen.setCaretPosition(0);
+            sp.getVerticalScrollBar().setValue(0);
+        });
+
+        dlg.setVisible(true);
+    }
+
+    /**
+     * Menghasilkan struktur HTML pratinjau dokumen RM 03-06A
+     * yang 100% selaras dengan cetakan fisik rptRekonsiliasiObatForm.jrxml
+     */
+    private String generateHTMLPreviewContent(String noRekon) {
         StringBuilder html = new StringBuilder();
+        PreparedStatement psPrev = null;
+        ResultSet rsPrev = null;
+        PreparedStatement psDet = null;
+        ResultSet rsDet = null;
         try {
-            ps = koneksi.prepareStatement(
+            psPrev = koneksi.prepareStatement(
                 "SELECT r.*, p.no_rkm_medis, p.nm_pasien, p.tgl_lahir, IF(p.jk='L','Laki-Laki','Perempuan') AS jk, pt.nama AS nm_apoteker, "
                 + "k.diterima_farmasi, k.dikonfirmasi_apoteker, k.diserahkan_pasien "
                 + "FROM rekonsiliasi_obat r "
@@ -3171,69 +3355,83 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 + "LEFT JOIN rekonsiliasi_obat_konfirmasi k ON r.no_rekonsiliasi = k.no_rekonsiliasi "
                 + "WHERE r.no_rekonsiliasi = ?"
             );
-            ps.setString(1, noRekon);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                String tglKonfirm = rs.getString("dikonfirmasi_apoteker");
-                String nipApoteker = rs.getString("nip");
-                String nmApoteker = rs.getString("nm_apoteker");
-                String noRm = rs.getString("no_rkm_medis");
-                String nmPasien = rs.getString("nm_pasien");
+            psPrev.setString(1, noRekon);
+            rsPrev = psPrev.executeQuery();
+            if (rsPrev.next()) {
+                String tglKonfirm = rsPrev.getString("dikonfirmasi_apoteker");
+                String nipApoteker = rsPrev.getString("nip");
+                String nmApoteker = rsPrev.getString("nm_apoteker");
+                String noRm = rsPrev.getString("no_rkm_medis");
+                String nmPasien = rsPrev.getString("nm_pasien");
 
-                String tglWwncRaw = rs.getString("tanggal_wawancara");
+                String tglWwncRaw = rsPrev.getString("tanggal_wawancara");
                 String tglWwncTampil = (tglWwncRaw != null && tglWwncRaw.length() >= 10) ? tglWwncRaw.substring(0, 10) : (tglWwncRaw != null ? tglWwncRaw : "-");
 
-                String saat = rs.getString("rekonsiliasi_obat_saat");
+                String saat = rsPrev.getString("rekonsiliasi_obat_saat");
                 boolean isAdmisi = "Admisi".equalsIgnoreCase(saat);
-                String judulTahap = "REKONSILIASI OBAT " + (isAdmisi ? "SAAT ADMISI" : ("SAAT " + (saat != null ? saat.toUpperCase() : ""))) + " (RM 03-06A)";
+                String judulTahap = "REKONSILIASI OBAT " + (isAdmisi ? "SAAT ADMISI" : ("SAAT " + (saat != null ? saat.toUpperCase() : "")));
 
-                html.append("<html><body style='font-family:sans-serif; font-size:11px; color:#1e293b; padding:12px;'>")
-                    .append("<div align='center' style='border-bottom:2px solid #0f766e; padding-bottom:6px; margin-bottom:10px;'>")
+                html.append("<html><body style='font-family:sans-serif; font-size:11px; color:#1e293b; padding:12px; background:#ffffff;'>")
+                    // Kop Instansi RSUD Demang Sepulau Raya
+                    .append("<div align='center' style='border-bottom:2px solid #0f766e; padding-bottom:6px; margin-bottom:12px;'>")
                     .append("<b style='font-size:11px; color:#64748b;'>PEMERINTAH KABUPATEN LAMPUNG TENGAH</b><br>")
                     .append("<b style='font-size:14px; color:#0f766e;'>RSUD DEMANG SEPULAU RAYA</b><br>")
                     .append("<span style='font-size:9px; color:#64748b;'>Jl. Lintas Sumatera, No. 4.A, Terbanggi Agung, Gunung Sugih, Lampung Tengah Kode Pos 34161</span>")
                     .append("</div>")
 
-                    .append("<table width='100%' style='margin-bottom:8px; font-size:11px;'><tr>")
+                    // 1. JUDUL FORMULIR DI TENGAH (DI ATAS DATA PASIEN)
+                    .append("<table width='100%' style='margin-bottom:8px;' cellpadding='0' cellspacing='0'><tr>")
+                    .append("<td width='20%'>&nbsp;</td>")
+                    .append("<td width='60%' align='center'><b style='font-size:13px; color:#0f172a; letter-spacing:1px;'>REKONSILIASI OBAT</b></td>")
+                    .append("<td width='20%' align='right' valign='top'><b style='font-size:10px; color:#0f172a;'>RM 03-06A</b><br><span style='font-size:8px; color:#64748b;'>No. ").append(noRekon).append("</span></td>")
+                    .append("</tr></table>")
+
+                    // 2. DATA IDENTITAS PASIEN (DI BAWAH JUDUL)
+                    .append("<table width='100%' style='margin-bottom:8px; font-size:10.5px; border:1px solid #cbd5e1; background:#f8fafc; padding:6px 10px;' cellpadding='2' cellspacing='0'>")
+                    .append("<tr>")
                     .append("<td width='55%' valign='top'>")
+                    .append("Nama Pasien : <b>").append(nmPasien).append(" (").append(rsPrev.getString("jk")).append(")</b><br>")
                     .append("No. RM : <b>").append(noRm).append("</b><br>")
-                    .append("Nama Pasien : <b>").append(nmPasien).append(" (").append(rs.getString("jk")).append(")</b><br>")
-                    .append("Tgl. Lahir : <b>").append(rs.getString("tgl_lahir")).append("</b><br>")
-                    .append("No. Rawat : ").append(rs.getString("no_rawat")).append("</td>")
-                    .append("<td width='45%' align='right' valign='top'>")
-                    .append("<b style='font-size:12px; color:#0f766e;'>").append(judulTahap).append("</b><br>")
-                    .append("No. Rekonsiliasi : <code>").append(noRekon).append("</code><br>")
-                    .append("Tanggal Wawancara : ").append(tglWwncTampil).append("</td>")
+                    .append("Tanggal Lahir : <b>").append(rsPrev.getString("tgl_lahir")).append("</b>")
+                    .append("</td>")
+                    .append("<td width='45%' valign='top'>")
+                    .append("No. Rawat : <b>").append(rsPrev.getString("no_rawat")).append("</b><br>")
+                    .append("Tanggal Wawancara : <b>").append(tglWwncTampil).append("</b><br>")
+                    .append("Tahap Rekonsiliasi : <b style='color:#0f766e;'>").append(saat != null ? saat.toUpperCase() : "-").append("</b>")
+                    .append("</td>")
                     .append("</tr></table>");
 
-                // Info Penggunaan Obat Sebelum Admisi (Khusus Admisi)
+                // 3. KOTAK PENGGUNAAN OBAT SEBELUM ADMISI (KHUSUS ADMISI)
                 if (isAdmisi) {
-                    boolean pakaiObat = "Ya".equalsIgnoreCase(rs.getString("penggunaan_obat_sebelum_admisi"));
+                    boolean pakaiObat = "Ya".equalsIgnoreCase(rsPrev.getString("penggunaan_obat_sebelum_admisi"));
                     html.append("<div style='background:#f8fafc; border:1px solid #cbd5e1; padding:6px 10px; margin-bottom:8px; font-size:10px;'>")
                         .append("<b>Penggunaan Obat Sebelum Admisi:</b> &nbsp;&nbsp;")
-                        .append(pakaiObat ? "<b>[&#10003;] Ya, dengan rincian berikut</b> &nbsp;&nbsp;&nbsp;&nbsp; [ &nbsp; ] Tidak Menggunakan Obat Sebelum Admisi"
-                                          : "[ &nbsp; ] Ya, dengan rincian berikut &nbsp;&nbsp;&nbsp;&nbsp; <b>[&#10003;] Tidak Menggunakan Obat Sebelum Admisi</b>")
+                        .append(pakaiObat ? "<b>[&#9632; &#10003;] Ya, dengan rincian berikut</b> &nbsp;&nbsp;&nbsp;&nbsp; [ &nbsp; ] Tidak Menggunakan Obat Sebelum Admisi"
+                                          : "[ &nbsp; ] Ya, dengan rincian berikut &nbsp;&nbsp;&nbsp;&nbsp; <b>[&#9632; &#10003;] Tidak Menggunakan Obat Sebelum Admisi</b>")
                         .append("</div>");
                 }
 
-                // Tabel Detail Obat
+                // 4. TABEL DETAIL OBAT
                 html.append("<table width='100%' border='1' cellspacing='0' cellpadding='5' style='border-collapse:collapse; border:1px solid #94a3b8; font-size:10px;'>")
+                    .append("<tr bgcolor='#ffffff'><td colspan='7' align='center' style='padding:5px; font-weight:bold; font-size:10.5px; color:#0f172a;'>")
+                    .append(judulTahap)
+                    .append("</td></tr>")
                     .append("<tr bgcolor='#f1f5f9' align='center' style='font-weight:bold; color:#0f766e;'>")
                     .append("<td width='4%'>No</td><td width='30%'>Nama Obat</td><td width='10%'>Dosis</td><td width='10%'>Frekuensi</td><td width='12%'>Cara Pemberian</td><td width='18%'>Tindak Lanjut DPJP</td><td width='16%'>Perubahan Aturan Pakai</td></tr>");
 
-                psDetail = koneksi.prepareStatement("SELECT * FROM rekonsiliasi_obat_detail_obat WHERE no_rekonsiliasi=?");
-                psDetail.setString(1, noRekon);
-                rsDetail = psDetail.executeQuery();
+                psDet = koneksi.prepareStatement("SELECT * FROM rekonsiliasi_obat_detail_obat WHERE no_rekonsiliasi=?");
+                psDet.setString(1, noRekon);
+                rsDet = psDet.executeQuery();
                 int no = 1;
-                while (rsDetail.next()) {
+                while (rsDet.next()) {
                     html.append("<tr>")
                         .append("<td align='center'>").append(no++).append("</td>")
-                        .append("<td><b>").append(rsDetail.getString("nama_obat")).append("</b></td>")
-                        .append("<td align='center'>").append(rsDetail.getString("dosis_obat")).append("</td>")
-                        .append("<td align='center'>").append(rsDetail.getString("frekuensi")).append("</td>")
-                        .append("<td align='center'>").append(rsDetail.getString("cara_pemberian")).append("</td>")
-                        .append("<td>").append(rsDetail.getString("tindak_lanjut")).append("</td>")
-                        .append("<td align='center'>").append(rsDetail.getString("perubahan_aturan_pakai")).append("</td>")
+                        .append("<td><b>").append(rsDet.getString("nama_obat")).append("</b></td>")
+                        .append("<td align='center'>").append(rsDet.getString("dosis_obat")).append("</td>")
+                        .append("<td align='center'>").append(rsDet.getString("frekuensi")).append("</td>")
+                        .append("<td align='center'>").append(rsDet.getString("cara_pemberian")).append("</td>")
+                        .append("<td>").append(rsDet.getString("tindak_lanjut")).append("</td>")
+                        .append("<td align='center'>").append(rsDet.getString("perubahan_aturan_pakai")).append("</td>")
                         .append("</tr>");
                 }
                 if (no == 1) {
@@ -3241,21 +3439,21 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 }
                 html.append("</table>");
 
-                // Riwayat Alergi
+                // 5. RIWAYAT ALERGI
                 html.append("<div style='margin-top:8px; font-size:10px; background:#fff1f2; border:1px solid #fecdd3; padding:6px 10px;'>")
                     .append("<b style='color:#9f1239;'>RIWAYAT ALERGI OBAT:</b> &nbsp;&nbsp;")
-                    .append("Obat Alergi: <b>").append(rs.getString("alergi_obat")).append("</b> | ")
-                    .append("Manifestasi / Gejala: <b>").append(rs.getString("manifestasi_alergi")).append("</b> | ")
-                    .append("Dampak Alergi: <b>").append(rs.getString("dampak_alergi")).append("</b>")
+                    .append("Obat Alergi: <b>").append(rsPrev.getString("alergi_obat")).append("</b> | ")
+                    .append("Manifestasi / Gejala: <b>").append(rsPrev.getString("manifestasi_alergi")).append("</b> | ")
+                    .append("Dampak Alergi: <b>").append(rsPrev.getString("dampak_alergi")).append("</b>")
                     .append("</div>");
 
-                // Lembar Bawah: Sumber Informasi (Kiri) & TTE Apoteker (Kanan)
+                // 6. LEMBAR BAWAH: SUMBER INFORMASI (KIRI) & TTE APOTEKER (KANAN)
                 String tglTtd = (tglKonfirm != null && tglKonfirm.length() >= 10)
                         ? tglKonfirm.substring(0, 10)
                         : (tglWwncTampil);
 
-                String sInformasi = rs.getString("sumber_informasi");
-                String sInformasiLain = rs.getString("sumber_informasi_lain");
+                String sInformasi = rsPrev.getString("sumber_informasi");
+                String sInformasiLain = rsPrev.getString("sumber_informasi_lain");
                 boolean sRM = "Rekam Medis".equalsIgnoreCase(sInformasi);
                 boolean sPasien = "Pasien / Keluarga Pasien".equalsIgnoreCase(sInformasi) || "Pasien".equalsIgnoreCase(sInformasi) || "Keluarga".equalsIgnoreCase(sInformasi);
                 boolean sLain = "Obat / Resep / Lain-lain".equalsIgnoreCase(sInformasi) || (!sRM && !sPasien && sInformasi != null && !sInformasi.isEmpty());
@@ -3265,9 +3463,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     .append("<td width='52%' valign='top' style='border:1px solid #cbd5e1; background:#f8fafc; padding:8px;'>")
                     .append("<b style='color:#0f766e;'>SUMBER INFORMASI:</b><br>")
                     .append("<span style='font-size:9.5px; color:#64748b;'>Daftar obat yang digunakan sebelum admisi diperoleh dari:</span><br><br>")
-                    .append(sRM ? "<b>[&#10003;] Rekam Medis</b><br>" : "[ &nbsp; ] Rekam Medis<br>")
-                    .append(sPasien ? "<b>[&#10003;] Pasien / Keluarga Pasien</b><br>" : "[ &nbsp; ] Pasien / Keluarga Pasien<br>")
-                    .append(sLain ? "<b>[&#10003;] Obat / Resep / Lain-lain</b> (" + sInformasiLain + ")" : "[ &nbsp; ] Obat / Resep / Lain-lain")
+                    .append(sRM ? "<b>[&#9632; &#10003;] Rekam Medis</b><br>" : "[ &nbsp; ] Rekam Medis<br>")
+                    .append(sPasien ? "<b>[&#9632; &#10003;] Pasien / Keluarga Pasien</b><br>" : "[ &nbsp; ] Pasien / Keluarga Pasien<br>")
+                    .append(sLain ? "<b>[&#9632; &#10003;] Obat / Resep / Lain-lain</b> (" + sInformasiLain + ")" : "[ &nbsp; ] Obat / Resep / Lain-lain")
                     .append("</td>")
                     .append("<td width='6%'>&nbsp;</td>")
                     .append("<td width='42%' align='center' valign='top' style='border:1px solid #cbd5e1; background:#ffffff; padding:8px;'>")
@@ -3327,19 +3525,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
                     .append("</body></html>");
             }
-            LoadHTML.setText(html.toString());
-            LoadHTML.setCaretPosition(0);
-            SwingUtilities.invokeLater(() -> {
-                LoadHTML.setCaretPosition(0);
-                if (scrollPreviewHTML != null) {
-                    scrollPreviewHTML.getVerticalScrollBar().setValue(0);
-                }
-            });
         } catch (Exception e) {
-            System.out.println("Notif Preview HTML: " + e);
+            System.out.println("Notif Generate HTML Preview: " + e);
         } finally {
-            try { if (rsDetail != null) rsDetail.close(); if (psDetail != null) psDetail.close(); if (rs != null) rs.close(); if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (rsDet != null) rsDet.close(); if (psDet != null) psDet.close(); if (rsPrev != null) rsPrev.close(); if (psPrev != null) psPrev.close(); } catch (Exception e) {}
         }
+        return html.toString();
     }
 
     // =========================================================================
