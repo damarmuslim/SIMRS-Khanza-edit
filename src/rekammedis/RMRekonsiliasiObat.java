@@ -14,11 +14,17 @@ import javax.swing.table.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 /**
  * FORMULIR REKONSILIASI OBAT TERPADU (RM 03-06A) - RSUD DEMANG SEPULAU RAYA
@@ -78,10 +84,15 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JRadioButton rbPakaiYa, rbPakaiTidak;
     private JRadioButton rbSumberRM, rbSumberPasien, rbSumberLain;
 
+    // State Form Tab 1 (Input Rekonsiliasi Obat)
+    public enum ModeInput { MODE_INPUT_BARU, MODE_EDIT }
+    private ModeInput currentModeInput = ModeInput.MODE_INPUT_BARU;
+    private String noRekonSedangDiedit = "";
+
     // Inline Table Obat Direkonsiliasi (Tab 1)
     private JTable tbObat;
     private DefaultTableModel tabModeObat;
-    private JButton btnTambahInline, btnPilihMasterObat, btnHapusBarisObat;
+    private JButton btnTambahInline, btnPilihMasterObat, btnHapusBarisObat, btnAmbilRekonSebelumnya;
     private JLabel lblBadgeJmlObat;
 
     // Autocomplete Popup Live Search Obat (Cara 1)
@@ -106,8 +117,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JSpinner DTPCari1, DTPCari2;
     private JLabel LCount;
 
-    // Tombol Footer
+    // Tombol Footer Tab 1 & Tab 2
     private JPanel panelFooterInput, panelFooterData;
+    private JButton btnSimpan, btnBaru;
+    private JCheckBox chkLangsungTTE;
+    private JButton btnValidasiTTE, btnGantiData, btnHapusRekon, btnCetak;
 
     public RMRekonsiliasiObat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -620,6 +634,15 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnHapusBarisObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         btnHapusBarisObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        btnAmbilRekonSebelumnya = new JButton(" Ambil dari Rekonsiliasi Sebelumnya");
+        btnAmbilRekonSebelumnya.setIcon(IconStyle.muat("refresh.svg", 14, Color.WHITE));
+        btnAmbilRekonSebelumnya.setBackground(new Color(79, 70, 229)); // Indigo modern
+        btnAmbilRekonSebelumnya.setForeground(Color.WHITE);
+        btnAmbilRekonSebelumnya.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnAmbilRekonSebelumnya.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnAmbilRekonSebelumnya.setVisible(false); // Muncul jika Transfer Ruang atau Pulang
+        btnAmbilRekonSebelumnya.addActionListener(e -> ambilRekonsiliasiSebelumnya());
+
         btnPilihMasterObat = new JButton(" Pilih dari Data Obat/Infus");
         btnPilihMasterObat.setIcon(IconStyle.muat("search.svg", 14, Color.WHITE));
         btnPilihMasterObat.setBackground(BLUE_OCEAN);
@@ -635,6 +658,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnTambahInline.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         btnGroupTabel.add(btnHapusBarisObat);
+        btnGroupTabel.add(btnAmbilRekonSebelumnya);
         btnGroupTabel.add(btnPilihMasterObat);
         btnGroupTabel.add(btnTambahInline);
 
@@ -910,15 +934,19 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             public boolean isCellEditable(int r, int c) { return false; }
         };
         tbDataRekon = new JTable(tabModeDataRekon);
+        tbDataRekon.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tbDataRekon.setRowHeight(26);
         tbDataRekon.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         tbDataRekon.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 11));
-        tbDataRekon.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (tbDataRekon.getSelectedRow() != -1) {
-                    String noRekon = tbDataRekon.getValueAt(tbDataRekon.getSelectedRow(), 0).toString();
+        tbDataRekon.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int r = tbDataRekon.getSelectedRow();
+                updateStateButtonsTab2(r);
+                if (r != -1) {
+                    String noRekon = tbDataRekon.getValueAt(r, 0).toString();
                     muatPreviewHTML(noRekon);
+                } else {
+                    LoadHTML.setText("");
                 }
             }
         });
@@ -995,7 +1023,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelFooterInput = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         panelFooterInput.setOpaque(false);
 
-        JButton btnSimpan = new JButton(" Simpan");
+        btnSimpan = new JButton(" Simpan");
         btnSimpan.setIcon(IconStyle.muat("save.svg", 15, Color.WHITE));
         btnSimpan.setBackground(TEAL_MAIN);
         btnSimpan.setForeground(Color.WHITE);
@@ -1003,49 +1031,61 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnSimpan.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnSimpan.addActionListener(e -> simpanRekonsiliasi());
 
-        JButton btnBaru = new JButton(" Baru");
+        btnBaru = new JButton(" Reset / Baru");
         btnBaru.setIcon(IconStyle.muat("refresh.svg", 15, new Color(71, 85, 105)));
         btnBaru.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnBaru.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnBaru.addActionListener(e -> emptTeks());
+        btnBaru.addActionListener(e -> batalEditAtauBaru());
+
+        chkLangsungTTE = new JCheckBox(" Langsung Validasi & Bubuhkan TTE setelah simpan");
+        chkLangsungTTE.setOpaque(false);
+        chkLangsungTTE.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        chkLangsungTTE.setForeground(new Color(51, 65, 85));
+        chkLangsungTTE.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         panelFooterInput.add(btnSimpan);
         panelFooterInput.add(btnBaru);
+        panelFooterInput.add(Box.createHorizontalStrut(6));
+        panelFooterInput.add(chkLangsungTTE);
 
-        // Tombol saat Tab 2 Aktif (Validasi Apoteker + Ganti + Hapus + Cetak)
+        // Tombol saat Tab 2 Aktif (Validasi TTE + Ganti + Hapus + Cetak)
         panelFooterData = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         panelFooterData.setOpaque(false);
         panelFooterData.setVisible(false);
 
-        JButton btnKonfirmApoteker = new JButton(" Konfirmasi / Validasi Apoteker");
-        btnKonfirmApoteker.setIcon(IconStyle.muat("check.svg", 15, Color.WHITE));
-        btnKonfirmApoteker.setBackground(GREEN_EMERALD);
-        btnKonfirmApoteker.setForeground(Color.WHITE);
-        btnKonfirmApoteker.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        btnKonfirmApoteker.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnKonfirmApoteker.addActionListener(e -> konfirmasiApoteker());
+        btnValidasiTTE = new JButton(" Validasi & Bubuhkan TTE");
+        btnValidasiTTE.setIcon(IconStyle.muat("check.svg", 15, Color.WHITE));
+        btnValidasiTTE.setBackground(GREEN_EMERALD);
+        btnValidasiTTE.setForeground(Color.WHITE);
+        btnValidasiTTE.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnValidasiTTE.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnValidasiTTE.setEnabled(false);
+        btnValidasiTTE.addActionListener(e -> validasiAtauTarikTTE());
 
-        JButton btnGantiData = new JButton(" Ganti / Edit Data");
+        btnGantiData = new JButton(" Ganti / Edit Data");
         btnGantiData.setIcon(IconStyle.muat("pencil.svg", 15, new Color(71, 85, 105)));
         btnGantiData.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnGantiData.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnGantiData.setEnabled(false);
         btnGantiData.addActionListener(e -> gantiDataRekonsiliasi());
 
-        JButton btnHapusRekon = new JButton(" Hapus");
+        btnHapusRekon = new JButton(" Hapus");
         btnHapusRekon.setIcon(IconStyle.muat("trash.svg", 15, new Color(225, 29, 72)));
         btnHapusRekon.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnHapusRekon.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnHapusRekon.setEnabled(false);
         btnHapusRekon.addActionListener(e -> hapusRekonsiliasi());
 
-        JButton btnCetak = new JButton(" Cetak RM 03-06A");
+        btnCetak = new JButton(" Cetak RM 03-06A");
         btnCetak.setIcon(IconStyle.muat("printer.svg", 15, Color.WHITE));
         btnCetak.setBackground(TEAL_MAIN);
         btnCetak.setForeground(Color.WHITE);
         btnCetak.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnCetak.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCetak.setEnabled(false);
         btnCetak.addActionListener(e -> cetakRM0306A());
 
-        panelFooterData.add(btnKonfirmApoteker);
+        panelFooterData.add(btnValidasiTTE);
         panelFooterData.add(btnGantiData);
         panelFooterData.add(btnHapusRekon);
         panelFooterData.add(btnCetak);
@@ -1876,6 +1916,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         } else {
             tampilkanAsesmenMedis();
         }
+        if (btnAmbilRekonSebelumnya != null) {
+            btnAmbilRekonSebelumnya.setVisible(!rbAdmisi.isSelected());
+        }
     }
 
     private void tampilkanAsesmenMedis() {
@@ -2278,7 +2321,43 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         }
     }
 
+    public void setModeInput(ModeInput mode, String noRekon) {
+        this.currentModeInput = mode;
+        this.noRekonSedangDiedit = (mode == ModeInput.MODE_EDIT) ? noRekon : "";
+        if (mode == ModeInput.MODE_EDIT) {
+            btnSimpan.setText(" Simpan Perubahan / Update");
+            btnSimpan.setBackground(BLUE_OCEAN);
+            btnBaru.setText(" Batal Edit");
+            btnBaru.setIcon(IconStyle.muat("trash.svg", 15, new Color(225, 29, 72)));
+            chkLangsungTTE.setVisible(false);
+            chkLangsungTTE.setSelected(false);
+            NoRekonsiliasi.setText(noRekon);
+        } else {
+            btnSimpan.setText(" Simpan");
+            btnSimpan.setBackground(TEAL_MAIN);
+            btnBaru.setText(" Reset / Baru");
+            btnBaru.setIcon(IconStyle.muat("refresh.svg", 15, new Color(71, 85, 105)));
+            chkLangsungTTE.setVisible(true);
+            chkLangsungTTE.setSelected(false);
+        }
+    }
+
+    private void batalEditAtauBaru() {
+        if (currentModeInput == ModeInput.MODE_EDIT) {
+            int konfirm = JOptionPane.showConfirmDialog(
+                this,
+                "Batalkan proses edit data Rekonsiliasi Obat (" + noRekonSedangDiedit + ")?\nPerubahan yang belum disimpan akan dibatalkan.",
+                "Konfirmasi Batal Edit",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+            if (konfirm != JOptionPane.YES_OPTION) return;
+        }
+        emptTeks();
+    }
+
     public void emptTeks() {
+        setModeInput(ModeInput.MODE_INPUT_BARU, "");
         DTPTgl.setDate(new Date());
         tabModeObat.setRowCount(0);
         rbAdmisi.setSelected(true);
@@ -2303,6 +2382,149 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             + tglYmd + "%'",
             "RO" + tgl, 4, NoRekonsiliasi
         );
+    }
+
+    /**
+     * Menyalin daftar obat dari rekonsiliasi Admisi / sebelumnya pasien ini ke tabel obat saat ini
+     */
+    private void ambilRekonsiliasiSebelumnya() {
+        if (TNoRw.getText().trim().isEmpty() || TNoRw.getText().trim().equals("-")) {
+            JOptionPane.showMessageDialog(this, "Silakan pilih pasien terlebih dahulu!");
+            return;
+        }
+
+        String noRawat = TNoRw.getText().trim();
+        String curNoRekon = NoRekonsiliasi.getText().trim();
+        String noRekonSumber = null;
+        String saatSumber = null;
+        String tglSumber = null;
+
+        try {
+            // 1. Cari rekonsiliasi Admisi (atau rekonsiliasi sebelumnya) pada rawat inap ini
+            String sql = "SELECT r.no_rekonsiliasi, r.rekonsiliasi_obat_saat, r.tanggal_wawancara "
+                    + "FROM rekonsiliasi_obat r "
+                    + "WHERE r.no_rawat = ? AND r.no_rekonsiliasi <> ? "
+                    + "ORDER BY CASE WHEN r.rekonsiliasi_obat_saat = 'Admisi' THEN 1 ELSE 2 END, r.tanggal_wawancara DESC "
+                    + "LIMIT 1";
+            ps = koneksi.prepareStatement(sql);
+            ps.setString(1, noRawat);
+            ps.setString(2, curNoRekon);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                noRekonSumber = rs.getString("no_rekonsiliasi");
+                saatSumber = rs.getString("rekonsiliasi_obat_saat");
+                tglSumber = rs.getString("tanggal_wawancara");
+            }
+            rs.close();
+            ps.close();
+
+            // 2. Jika tidak ditemukan di no_rawat ini, coba cari berdasarkan No. RM pasien
+            if (noRekonSumber == null && TNoRM != null && !TNoRM.getText().trim().isEmpty() && !TNoRM.getText().trim().equals("-")) {
+                String sqlRm = "SELECT r.no_rekonsiliasi, r.rekonsiliasi_obat_saat, r.tanggal_wawancara "
+                        + "FROM rekonsiliasi_obat r "
+                        + "INNER JOIN reg_periksa rp ON r.no_rawat = rp.no_rawat "
+                        + "WHERE rp.no_rkm_medis = ? AND r.no_rekonsiliasi <> ? "
+                        + "ORDER BY CASE WHEN r.rekonsiliasi_obat_saat = 'Admisi' THEN 1 ELSE 2 END, r.tanggal_wawancara DESC "
+                        + "LIMIT 1";
+                ps = koneksi.prepareStatement(sqlRm);
+                ps.setString(1, TNoRM.getText().trim());
+                ps.setString(2, curNoRekon);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    noRekonSumber = rs.getString("no_rekonsiliasi");
+                    saatSumber = rs.getString("rekonsiliasi_obat_saat");
+                    tglSumber = rs.getString("tanggal_wawancara");
+                }
+                rs.close();
+                ps.close();
+            }
+
+            if (noRekonSumber == null) {
+                JOptionPane.showMessageDialog(this,
+                    "Tidak ditemukan data Rekonsiliasi Obat sebelumnya (Admisi) untuk pasien ini.",
+                    "Informasi Rekonsiliasi", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            int konfirm = JOptionPane.showConfirmDialog(
+                this,
+                "Ditemukan data Rekonsiliasi Obat sebelumnya:\n"
+                + "• No. Rekonsiliasi : " + noRekonSumber + "\n"
+                + "• Tahap Saat       : " + saatSumber + "\n"
+                + "• Tgl. Wawancara   : " + tglSumber + "\n\n"
+                + "Apakah Anda ingin menyalin daftar obat dari rekonsiliasi tersebut ke tabel saat ini?",
+                "Ambil dari Rekonsiliasi Sebelumnya",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (konfirm != JOptionPane.YES_OPTION) return;
+
+            // Opsi jika tabel saat ini sudah ada isinya
+            boolean replace = true;
+            if (tabModeObat.getRowCount() > 0) {
+                Object[] opsiTabel = {"Ganti / Timpa Semua", "Tambahkan (Append)", "Batal"};
+                int pilihan = JOptionPane.showOptionDialog(
+                    this,
+                    "Tabel obat saat ini sudah berisi " + tabModeObat.getRowCount() + " item obat.\n"
+                    + "Pilih metode penggabungan daftar obat:",
+                    "Metode Penggabungan Obat",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opsiTabel, opsiTabel[0]
+                );
+                if (pilihan == 0) {
+                    replace = true;
+                } else if (pilihan == 1) {
+                    replace = false;
+                } else {
+                    return;
+                }
+            }
+
+            if (replace) {
+                tabModeObat.setRowCount(0);
+            }
+
+            psDetail = koneksi.prepareStatement(
+                "SELECT nama_obat, dosis_obat, frekuensi, cara_pemberian, tindak_lanjut, perubahan_aturan_pakai "
+                + "FROM rekonsiliasi_obat_detail_obat WHERE no_rekonsiliasi = ?"
+            );
+            psDetail.setString(1, noRekonSumber);
+            rsDetail = psDetail.executeQuery();
+            int disalin = 0;
+            while (rsDetail.next()) {
+                tabModeObat.addRow(new Object[]{
+                    "",
+                    rsDetail.getString("nama_obat"),
+                    rsDetail.getString("dosis_obat"),
+                    rsDetail.getString("frekuensi"),
+                    rsDetail.getString("cara_pemberian"),
+                    rsDetail.getString("tindak_lanjut"),
+                    rsDetail.getString("perubahan_aturan_pakai")
+                });
+                disalin++;
+            }
+            rsDetail.close();
+            psDetail.close();
+
+            if (disalin > 0) {
+                rbPakaiYa.setSelected(true);
+                tbObat.setEnabled(true);
+                updateBadgeObat();
+                JOptionPane.showMessageDialog(this,
+                    "Berhasil menyalin " + disalin + " item obat dari rekonsiliasi " + saatSumber + " (" + noRekonSumber + ")!",
+                    "Sukses Salin Obat", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "Rekonsiliasi sebelumnya (" + noRekonSumber + ") tidak memiliki rincian obat.",
+                    "Informasi", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Notif Ambil Rekon Sebelumnya: " + ex);
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat mengambil rekonsiliasi sebelumnya: " + ex.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); if (ps != null) ps.close(); if (rsDetail != null) rsDetail.close(); if (psDetail != null) psDetail.close(); } catch (Exception e) {}
+        }
     }
 
     // =========================================================================
@@ -2379,16 +2601,35 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     }
                 }
             }
+
+            // 3. Jika checkbox 'Langsung Validasi & Bubuhkan TTE' dicentang saat MODE_INPUT_BARU
+            if (sukses && currentModeInput == ModeInput.MODE_INPUT_BARU && chkLangsungTTE.isSelected()) {
+                String waktuSekarang = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                String nipApoteker = (akses.getkode() == null || akses.getkode().trim().isEmpty() || akses.getkode().equals("Admin Utama"))
+                        ? nip : akses.getkode();
+                Sequel.meghapus("rekonsiliasi_obat_konfirmasi", "no_rekonsiliasi", noRekon);
+                if (!Sequel.menyimpantf("rekonsiliasi_obat_konfirmasi", "?,?,?,?,?", "Konfirmasi Apoteker", 5, new String[]{
+                    noRekon, waktuSekarang, waktuSekarang, nipApoteker, waktuSekarang
+                })) {
+                    sukses = false;
+                }
+            }
         } else {
             sukses = false;
         }
 
         if (sukses) {
             Sequel.Commit();
-            JOptionPane.showMessageDialog(this, "Data Rekonsiliasi Obat (" + noRekon + ") berhasil disimpan!");
+            String msg = (currentModeInput == ModeInput.MODE_EDIT)
+                ? "Perubahan Data Rekonsiliasi Obat (" + noRekon + ") berhasil disimpan!"
+                : (chkLangsungTTE.isSelected()
+                    ? "Data Rekonsiliasi Obat (" + noRekon + ") berhasil disimpan dan langsung divalidasi (TTE)!"
+                    : "Data Rekonsiliasi Obat (" + noRekon + ") berhasil disimpan sebagai Draf!");
+            JOptionPane.showMessageDialog(this, msg);
             emptTeks();
             tabPaneUtama.setSelectedIndex(1);
             tampilDataRekonsiliasi();
+            pilihBarisRekon(noRekon);
         } else {
             Sequel.RollBack();
             JOptionPane.showMessageDialog(this, "Gagal menyimpan data Rekonsiliasi Obat! Periksa kelengkapan data.");
@@ -2397,26 +2638,101 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     }
 
     /**
-     * Fitur Konfirmasi / Validasi Apoteker Terpadu di Tab 2
+     * Mengatur state tombol-tombol aksi di Tab 2 berdasarkan baris dan status data yang dipilih
      */
-    private void konfirmasiApoteker() {
-        int r = tbDataRekon.getSelectedRow();
-        if (r == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih dulu baris data rekonsiliasi yang akan dikonfirmasi Apoteker!");
+    private void updateStateButtonsTab2(int selectedRow) {
+        if (selectedRow == -1 || selectedRow >= tbDataRekon.getRowCount()) {
+            btnValidasiTTE.setEnabled(false);
+            btnValidasiTTE.setText(" Validasi & Bubuhkan TTE");
+            btnValidasiTTE.setBackground(GREEN_EMERALD);
+            btnValidasiTTE.setForeground(Color.WHITE);
+            btnGantiData.setEnabled(false);
+            btnHapusRekon.setEnabled(false);
+            btnCetak.setEnabled(false);
             return;
         }
-        String noRekon = tbDataRekon.getValueAt(r, 0).toString();
-        String waktuSekarang = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        String nipApoteker = akses.getkode().equals("Admin Utama") ? tbDataRekon.getValueAt(r, 6).toString() : akses.getkode();
 
-        // Simpan / update ke tabel rekonsiliasi_obat_konfirmasi (5 parameter)
-        Sequel.meghapus("rekonsiliasi_obat_konfirmasi", "no_rekonsiliasi", noRekon);
-        if (Sequel.menyimpantf("rekonsiliasi_obat_konfirmasi", "?,?,?,?,?", "Konfirmasi Apoteker", 5, new String[]{
-            noRekon, waktuSekarang, waktuSekarang, nipApoteker, waktuSekarang
-        })) {
-            JOptionPane.showMessageDialog(this, "Berhasil dikonfirmasi / divalidasi oleh Apoteker!");
-            tampilDataRekonsiliasi();
-            muatPreviewHTML(noRekon);
+        String status = String.valueOf(tbDataRekon.getValueAt(selectedRow, 8));
+        boolean isTervalidasi = status.contains("Tervalidasi");
+
+        btnCetak.setEnabled(true);
+
+        if (isTervalidasi) {
+            btnValidasiTTE.setEnabled(true);
+            btnValidasiTTE.setText(" Batal Validasi / Tarik TTE");
+            btnValidasiTTE.setBackground(new Color(217, 119, 6)); // Amber / Orange
+            btnValidasiTTE.setForeground(Color.WHITE);
+
+            // Kunci Edit dan Hapus demi integritas data rekam medis ber-TTE
+            btnGantiData.setEnabled(false);
+            btnHapusRekon.setEnabled(false);
+        } else {
+            btnValidasiTTE.setEnabled(true);
+            btnValidasiTTE.setText(" Validasi & Bubuhkan TTE");
+            btnValidasiTTE.setBackground(GREEN_EMERALD);
+            btnValidasiTTE.setForeground(Color.WHITE);
+
+            // Buka Edit dan Hapus untuk Draf
+            btnGantiData.setEnabled(true);
+            btnHapusRekon.setEnabled(true);
+        }
+    }
+
+    /**
+     * Logika Validasi & Bubuhkan TTE atau Pembatalan Validasi (Tarik TTE)
+     */
+    private void validasiAtauTarikTTE() {
+        int r = tbDataRekon.getSelectedRow();
+        if (r == -1) {
+            JOptionPane.showMessageDialog(this, "Silakan pilih baris data rekonsiliasi yang akan diproses!");
+            return;
+        }
+
+        String noRekon = tbDataRekon.getValueAt(r, 0).toString();
+        String status = String.valueOf(tbDataRekon.getValueAt(r, 8));
+        boolean isTervalidasi = status.contains("Tervalidasi");
+
+        if (!isTervalidasi) {
+            // Validasi & Bubuhkan TTE
+            int konfirm = JOptionPane.showConfirmDialog(
+                this,
+                "Apakah Anda yakin ingin memvalidasi dan membubuhkan TTE pada dokumen ini?\n"
+                + "Data yang sudah ber-TTE akan dikunci demi keamanan dan integritas rekam medis.",
+                "Konfirmasi Validasi & TTE",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+            if (konfirm == JOptionPane.YES_OPTION) {
+                String waktuSekarang = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                String nipApoteker = (akses.getkode() == null || akses.getkode().trim().isEmpty() || akses.getkode().equals("Admin Utama"))
+                        ? tbDataRekon.getValueAt(r, 6).toString()
+                        : akses.getkode();
+
+                Sequel.meghapus("rekonsiliasi_obat_konfirmasi", "no_rekonsiliasi", noRekon);
+                if (Sequel.menyimpantf("rekonsiliasi_obat_konfirmasi", "?,?,?,?,?", "Konfirmasi Apoteker", 5, new String[]{
+                    noRekon, waktuSekarang, waktuSekarang, nipApoteker, waktuSekarang
+                })) {
+                    JOptionPane.showMessageDialog(this, "Dokumen rekonsiliasi (" + noRekon + ") berhasil divalidasi dan TTE telah dibubuhkan!");
+                    tampilDataRekonsiliasi();
+                    pilihBarisRekon(noRekon);
+                }
+            }
+        } else {
+            // Batal Validasi / Tarik TTE
+            int konfirm = JOptionPane.showConfirmDialog(
+                this,
+                "Apakah Anda yakin ingin MEMBATALKAN validasi dan MENARIK TTE dari dokumen ini?\n"
+                + "Status dokumen akan kembali menjadi Draf dan kunci edit/hapus akan dibuka kembali.",
+                "Konfirmasi Batal Validasi / Tarik TTE",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+            if (konfirm == JOptionPane.YES_OPTION) {
+                Sequel.meghapus("rekonsiliasi_obat_konfirmasi", "no_rekonsiliasi", noRekon);
+                JOptionPane.showMessageDialog(this, "TTE berhasil ditarik. Dokumen (" + noRekon + ") kembali menjadi Draf (Belum Validasi).");
+                tampilDataRekonsiliasi();
+                pilihBarisRekon(noRekon);
+            }
         }
     }
 
@@ -2429,6 +2745,16 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Pilih dulu baris data rekonsiliasi yang akan diedit!");
             return;
         }
+
+        String status = String.valueOf(tbDataRekon.getValueAt(r, 8));
+        if (status.contains("Tervalidasi")) {
+            JOptionPane.showMessageDialog(this,
+                "Data Rekonsiliasi ini sudah berstatus TERVALIDASI (TTE) dan dikunci!\n"
+                + "Silakan klik 'Batal Validasi / Tarik TTE' terlebih dahulu jika ingin mengedit.",
+                "Peringatan - Data Terkunci", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String noRekon = tbDataRekon.getValueAt(r, 0).toString();
         try {
             ps = koneksi.prepareStatement("SELECT * FROM rekonsiliasi_obat WHERE no_rekonsiliasi = ?");
@@ -2436,6 +2762,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             rs = ps.executeQuery();
             if (rs.next()) {
                 emptTeks();
+                setModeInput(ModeInput.MODE_EDIT, noRekon);
                 NoRekonsiliasi.setText(noRekon);
                 setNoRm(rs.getString("no_rawat"));
 
@@ -2509,6 +2836,16 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Pilih dulu baris data rekonsiliasi yang akan dihapus!");
             return;
         }
+
+        String status = String.valueOf(tbDataRekon.getValueAt(r, 8));
+        if (status.contains("Tervalidasi")) {
+            JOptionPane.showMessageDialog(this,
+                "Data Rekonsiliasi ini sudah berstatus TERVALIDASI (TTE) dan dikunci!\n"
+                + "Data yang sudah ber-TTE tidak boleh dihapus demi integritas rekam medis.",
+                "Peringatan - Data Terkunci", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String noRekon = tbDataRekon.getValueAt(r, 0).toString();
         if (JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data Rekonsiliasi " + noRekon + "?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             Sequel.AutoComitFalse();
@@ -2538,11 +2875,13 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         try {
             ps = koneksi.prepareStatement(
-                "SELECT r.*, p.no_rkm_medis, p.nm_pasien, p.tgl_lahir, pt.nama AS nm_apoteker "
+                "SELECT r.*, p.no_rkm_medis, p.nm_pasien, p.tgl_lahir, pt.nama AS nm_apoteker, "
+                + "k.dikonfirmasi_apoteker "
                 + "FROM rekonsiliasi_obat r "
                 + "INNER JOIN reg_periksa rp ON r.no_rawat = rp.no_rawat "
                 + "INNER JOIN pasien p ON rp.no_rkm_medis = p.no_rkm_medis "
                 + "INNER JOIN petugas pt ON r.nip = pt.nip "
+                + "LEFT JOIN rekonsiliasi_obat_konfirmasi k ON r.no_rekonsiliasi = k.no_rekonsiliasi "
                 + "WHERE r.no_rekonsiliasi = ?"
             );
             ps.setString(1, noRekon);
@@ -2550,6 +2889,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             if (rs.next()) {
                 String nipApoteker = rs.getString("nip");
                 String namaApoteker = rs.getString("nm_apoteker");
+                String tglKonfirm = rs.getString("dikonfirmasi_apoteker");
                 String fingerHash = Sequel.cariIsi(
                     "SELECT SHA1(sidikjari.sidikjari) FROM sidikjari "
                     + "INNER JOIN pegawai ON pegawai.id=sidikjari.id WHERE pegawai.nik=?", nipApoteker
@@ -2573,10 +2913,15 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 param.put("pSumberInformasiLain", rs.getString("sumber_informasi_lain"));
                 param.put("pApotekerNama", namaApoteker);
                 param.put("pApotekerNip", nipApoteker);
-                param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs()
-                        + "\nDitandatangani secara elektronik oleh " + namaApoteker
-                        + "\nID " + ((fingerHash == null || fingerHash.isEmpty()) ? nipApoteker : fingerHash)
-                        + "\n" + rs.getString("tanggal_wawancara"));
+
+                if (tglKonfirm != null && !tglKonfirm.isEmpty()) {
+                    param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs()
+                            + "\nDitandatangani secara elektronik oleh " + namaApoteker
+                            + "\nID " + ((fingerHash == null || fingerHash.isEmpty()) ? nipApoteker : fingerHash)
+                            + "\n" + tglKonfirm);
+                } else {
+                    param.put("finger", "DRAF - BELUM DIVALIDASI");
+                }
 
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 String qryCetak = "SELECT nama_obat, dosis_obat, frekuensi, cara_pemberian, tindak_lanjut, perubahan_aturan_pakai "
@@ -2610,7 +2955,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             String kw = "%" + TCari.getText().trim() + "%";
 
             String sql = "SELECT r.no_rekonsiliasi, r.no_rawat, p.no_rkm_medis, p.nm_pasien, r.tanggal_wawancara, "
-                    + "r.rekonsiliasi_obat_saat, r.nip, pt.nama, IF(k.no_rekonsiliasi IS NULL, 'Belum Konfirm', 'Terkonfirmasi') AS status_konfirm "
+                    + "r.rekonsiliasi_obat_saat, r.nip, pt.nama, "
+                    + "IF(k.no_rekonsiliasi IS NULL, 'Belum Validasi (Draf)', 'Tervalidasi (TTE)') AS status_konfirm "
                     + "FROM rekonsiliasi_obat r "
                     + "INNER JOIN reg_periksa rp ON r.no_rawat = rp.no_rawat "
                     + "INNER JOIN pasien p ON rp.no_rkm_medis = p.no_rkm_medis "
@@ -2646,6 +2992,39 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             System.out.println("Notif Tampil Data: " + e);
         } finally {
             try { if (rs != null) rs.close(); if (ps != null) ps.close(); } catch (Exception e) {}
+            updateStateButtonsTab2(tbDataRekon.getSelectedRow());
+        }
+    }
+
+    private void pilihBarisRekon(String noRekon) {
+        if (noRekon == null || noRekon.isEmpty()) return;
+        for (int i = 0; i < tabModeDataRekon.getRowCount(); i++) {
+            if (noRekon.equals(String.valueOf(tabModeDataRekon.getValueAt(i, 0)))) {
+                tbDataRekon.setRowSelectionInterval(i, i);
+                tbDataRekon.scrollRectToVisible(tbDataRekon.getCellRect(i, 0, true));
+                updateStateButtonsTab2(i);
+                muatPreviewHTML(noRekon);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Membuat file gambar QR Code untuk keperluan stempel digital TTE pada preview dokumen fisik RM 03-06A
+     */
+    private String generateQrCodeTTE(String content, String noRekon) {
+        try {
+            File dir = new File("temp");
+            if (!dir.exists()) dir.mkdirs();
+            String safeNo = noRekon.replaceAll("[^a-zA-Z0-9]", "_");
+            File file = new File(dir, "qr_rekon_" + safeNo + ".png");
+            QRCodeWriter writer = new QRCodeWriter();
+            BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 140, 140);
+            MatrixToImageWriter.writeToPath(bitMatrix, "PNG", file.toPath());
+            return file.toURI().toURL().toString();
+        } catch (Exception e) {
+            System.out.println("Notif Generate QR TTE: " + e);
+            return null;
         }
     }
 
@@ -2665,6 +3044,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             ps.setString(1, noRekon);
             rs = ps.executeQuery();
             if (rs.next()) {
+                String tglKonfirm = rs.getString("dikonfirmasi_apoteker");
+                String nipApoteker = rs.getString("nip");
+                String nmApoteker = rs.getString("nm_apoteker");
+                String noRm = rs.getString("no_rkm_medis");
+                String nmPasien = rs.getString("nm_pasien");
+
                 html.append("<html><body style='font-family:sans-serif; font-size:11px; color:#1e293b; padding:10px;'>")
                     .append("<div align='center' style='border-bottom:2px solid #0f766e; padding-bottom:6px; margin-bottom:10px;'>")
                     .append("<b style='font-size:11px; color:#64748b;'>PEMERINTAH KABUPATEN LAMPUNG TENGAH</b><br>")
@@ -2674,8 +3059,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
                     .append("<table width='100%' style='margin-bottom:10px; font-size:11px;'><tr>")
                     .append("<td width='60%' valign='top'>")
-                    .append("No. RM : <b>").append(rs.getString("no_rkm_medis")).append("</b><br>")
-                    .append("Nama Pasien : <b>").append(rs.getString("nm_pasien")).append(" (").append(rs.getString("jk")).append(")</b><br>")
+                    .append("No. RM : <b>").append(noRm).append("</b><br>")
+                    .append("Nama Pasien : <b>").append(nmPasien).append(" (").append(rs.getString("jk")).append(")</b><br>")
                     .append("Tgl. Lahir : <b>").append(rs.getString("tgl_lahir")).append("</b><br>")
                     .append("No. Rawat : ").append(rs.getString("no_rawat")).append("</td>")
                     .append("<td width='40%' align='right' valign='top'>")
@@ -2725,14 +3110,71 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     .append("Dampak: <b>").append(rs.getString("dampak_alergi")).append("</b>")
                     .append("</div>");
 
-                // Status Validasi Apoteker
-                String tglKonfirm = rs.getString("dikonfirmasi_apoteker");
-                html.append("<div style='margin-top:10px; padding:8px; border:1px solid #0f766e; background:#f0fdfa; font-size:10px;'>")
-                    .append("<b>Apoteker yang Melakukan Rekonsiliasi:</b> ").append(rs.getString("nm_apoteker")).append(" (NIP: ").append(rs.getString("nip")).append(")<br>")
-                    .append("<b>Status Validasi Elektronik Apoteker:</b> ")
-                    .append(tglKonfirm == null ? "<span style='color:#b45309; font-weight:bold;'>[ Belum Dikonfirmasi Apoteker ]</span>"
-                            : "<span style='color:#15803d; font-weight:bold;'>&#10003; Terkonfirmasi Secara Sistem (" + tglKonfirm + ")</span>")
-                    .append("</div></body></html>");
+                // Lembar Tanda Tangan Fisik & TTE
+                String tglTtd = (tglKonfirm != null && tglKonfirm.length() >= 10)
+                        ? tglKonfirm.substring(0, 10)
+                        : (rs.getString("tanggal_wawancara").length() >= 10 ? rs.getString("tanggal_wawancara").substring(0, 10) : "-");
+
+                html.append("<table width='100%' style='margin-top:14px; font-size:10px;'>")
+                    .append("<tr>")
+                    .append("<td width='50%' align='center' valign='top'>")
+                    .append("Pasien / Keluarga Pasien Yang Diwawancarai,<br><br><br><br><br>")
+                    .append("( <b>").append(nmPasien).append("</b> )")
+                    .append("</td>")
+                    .append("<td width='50%' align='center' valign='top'>")
+                    .append("Gunung Sugih, <b>").append(tglTtd).append("</b><br>")
+                    .append("<b>Apoteker / Farmasis Yang Merekonsiliasi,</b><br><br>");
+
+                if (tglKonfirm != null && !tglKonfirm.isEmpty()) {
+                    String fingerHash = Sequel.cariIsi(
+                        "SELECT SHA1(sidikjari.sidikjari) FROM sidikjari "
+                        + "INNER JOIN pegawai ON pegawai.id=sidikjari.id WHERE pegawai.nik=?", nipApoteker
+                    );
+                    if (fingerHash == null || fingerHash.isEmpty()) fingerHash = nipApoteker;
+
+                    String qrContent = "Dikeluarkan di " + akses.getnamars() + ", Kabupaten " + akses.getkabupatenrs()
+                            + "\nDokumen: Rekonsiliasi Obat (RM 03-06A)"
+                            + "\nNo. Rekonsiliasi: " + noRekon
+                            + "\nPasien: " + nmPasien + " (RM: " + noRm + ")"
+                            + "\nDitandatangani secara elektronik oleh:\n" + nmApoteker + " (NIP: " + nipApoteker + ")"
+                            + "\nID TTE: " + fingerHash
+                            + "\nWaktu Validasi: " + tglKonfirm;
+                    String qrUrl = generateQrCodeTTE(qrContent, noRekon);
+
+                    html.append("<table align='center' cellpadding='0' cellspacing='0' style='margin:auto; text-align:center;'>")
+                        .append("<tr><td align='center'>");
+                    if (qrUrl != null) {
+                        html.append("<img src='").append(qrUrl).append("' width='85' height='85' style='border:1px solid #0f766e; background:#ffffff;'>");
+                    } else {
+                        html.append("<div style='border:1px solid #15803d; padding:6px; color:#15803d;'><b>[ TTE TERVERIFIKASI ]</b></div>");
+                    }
+                    html.append("</td></tr>")
+                        .append("<tr><td align='center' style='font-size:8px; color:#15803d; font-weight:bold; padding-top:2px;'>")
+                        .append("&#10003; TERVALIDASI TTE RESMI")
+                        .append("</td></tr>")
+                        .append("<tr><td align='center' style='font-size:7.5px; color:#64748b;'>")
+                        .append(tglKonfirm)
+                        .append("</td></tr>")
+                        .append("</table>");
+                } else {
+                    html.append("<div style='border:1px dashed #94a3b8; background:#f8fafc; color:#64748b; padding:12px 8px; width:130px; margin:auto; text-align:center;'>")
+                        .append("<b style='font-size:10px; color:#475569;'>[ DRAF ]</b><br>")
+                        .append("<span style='font-size:8px; color:#94a3b8;'>Belum Divalidasi<br>Belum Ber-TTE</span>")
+                        .append("</div>");
+                }
+
+                html.append("<br>")
+                    .append("<u><b>").append(nmApoteker).append("</b></u><br>")
+                    .append("NIP. ").append(nipApoteker)
+                    .append("</td>")
+                    .append("</tr>")
+                    .append("</table>")
+
+                    .append("<div style='margin-top:14px; border-top:1px solid #e2e8f0; padding-top:4px; font-size:8px; color:#94a3b8; text-align:right;'>")
+                    .append("SIMRS Khanza RME - RSUD Demang Sepulau Raya | Dicetak/Dilihat: ").append(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()))
+                    .append("</div>")
+
+                    .append("</body></html>");
             }
             LoadHTML.setText(html.toString());
         } catch (Exception e) {
