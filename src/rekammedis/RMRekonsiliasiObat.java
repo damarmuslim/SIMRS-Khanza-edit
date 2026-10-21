@@ -118,8 +118,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
     // Komponen Tab 2 (Data Rekonsiliasi & Validasi Apoteker)
     private JPanel containerTabData, panelKiriData, panelKananData;
-    private boolean isPreviewMaximized = false;
-    private JButton btnTogglePreview, btnPopupPreview;
+    private JButton btnPopupPreview;
     private JTable tbDataRekon;
     private DefaultTableModel tabModeDataRekon;
     private JEditorPane LoadHTML;
@@ -1053,17 +1052,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel pnlActionPreview = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
         pnlActionPreview.setOpaque(false);
 
-        btnTogglePreview = new JButton(" ⛶ Perbesar Tab");
-        btnTogglePreview.setIcon(IconStyle.muat("maximize.svg", 14, Color.WHITE));
-        btnTogglePreview.setBackground(new Color(71, 85, 105)); // Slate
-        btnTogglePreview.setForeground(Color.WHITE);
-        btnTogglePreview.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        btnTogglePreview.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnTogglePreview.setToolTipText("Perbesar pratinjau memenuhi tab ini (sembunyikan / pulihkan tabel riwayat)");
-        btnTogglePreview.addActionListener(e -> toggleMaximizePreview());
-
-        btnPopupPreview = new JButton(" 🔍 Jendela Layar Penuh");
-        btnPopupPreview.setIcon(IconStyle.muat("maximize.svg", 14, Color.WHITE));
+        btnPopupPreview = new JButton("Jendela Layar Penuh");
         btnPopupPreview.setBackground(TEAL_MAIN);
         btnPopupPreview.setForeground(Color.WHITE);
         btnPopupPreview.setFont(new Font("Segoe UI", Font.BOLD, 11));
@@ -1079,7 +1068,6 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             }
         });
 
-        pnlActionPreview.add(btnTogglePreview);
         pnlActionPreview.add(btnPopupPreview);
 
         panelToolbarPreview.add(lblTitlePreview, BorderLayout.WEST);
@@ -1175,7 +1163,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnHapusRekon.setEnabled(false);
         btnHapusRekon.addActionListener(e -> hapusRekonsiliasi());
 
-        btnCetak = new JButton(" 🖨️ Cetak RM 03-06A");
+        btnCetak = new JButton(" Cetak RM 03-06A");
         btnCetak.setIcon(IconStyle.muat("printer.svg", 15, Color.WHITE));
         btnCetak.setBackground(GREEN_EMERALD);
         btnCetak.setForeground(Color.WHITE);
@@ -2939,27 +2927,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         }
     }
 
-    private void toggleMaximizePreview() {
-        isPreviewMaximized = !isPreviewMaximized;
-        if (isPreviewMaximized) {
-            panelKiriData.setVisible(false);
-            containerTabData.setLayout(new GridLayout(1, 1));
-            btnTogglePreview.setText(" 🗗 Perkecil Tab");
-            btnTogglePreview.setToolTipText("Kembalikan ke tampilan normal berdampingan dengan tabel riwayat");
-            btnTogglePreview.setBackground(new Color(71, 85, 105)); // Slate
-        } else {
-            panelKiriData.setVisible(true);
-            containerTabData.setLayout(new GridLayout(1, 2, 12, 12));
-            btnTogglePreview.setText(" ⛶ Perbesar Tab");
-            btnTogglePreview.setToolTipText("Perbesar pratinjau memenuhi tab ini (sembunyikan tabel riwayat)");
-            btnTogglePreview.setBackground(new Color(71, 85, 105));
-        }
-        containerTabData.revalidate();
-        containerTabData.repaint();
-    }
-
     private void cetakRM0306A() {
-        String[] opsi = {"🖨️ Cetak Lembar ke Printer", "💾 Simpan / Buka File PDF"};
+        String[] opsi = {"Cetak Lembar ke Printer", "Simpan / Buka File PDF"};
         String pilih = (String) JOptionPane.showInputDialog(
             this, "Silakan pilih tindakan cetak Rekonsiliasi Obat (RM 03-06A):", "Cetak Dokumen",
             JOptionPane.QUESTION_MESSAGE, null, opsi, opsi[0]
@@ -3068,11 +3037,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private void pasangMenuCetakOpsional(JButton btn) {
         JPopupMenu menuCetak = new JPopupMenu();
 
-        JMenuItem itemLembar = new JMenuItem(" 🖨️ Cetak Lembar ke Printer");
+        JMenuItem itemLembar = new JMenuItem(" Cetak Lembar ke Printer");
         itemLembar.setFont(new Font("Segoe UI", Font.BOLD, 11));
         itemLembar.addActionListener(e -> cetakRM0306A("DirectPrint"));
 
-        JMenuItem itemPDF = new JMenuItem(" 💾 Ekspor / Simpan ke PDF");
+        JMenuItem itemPDF = new JMenuItem(" Ekspor / Simpan ke PDF");
         itemPDF.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         itemPDF.addActionListener(e -> cetakRM0306A("PDF"));
 
@@ -3220,7 +3189,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel pnlAksi = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         pnlAksi.setOpaque(false);
 
-        JButton btnCetakLembar = new JButton(" 🖨️ Cetak Lembar ke Printer");
+        JButton btnCetakLembar = new JButton(" Cetak Lembar ke Printer");
         btnCetakLembar.setIcon(IconStyle.muat("printer.svg", 14, Color.WHITE));
         btnCetakLembar.setBackground(GREEN_EMERALD);
         btnCetakLembar.setForeground(Color.WHITE);
@@ -3229,7 +3198,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnCetakLembar.setToolTipText("Cetak dokumen langsung ke printer fisik");
         btnCetakLembar.addActionListener(e -> cetakRM0306A("DirectPrint"));
 
-        JButton btnSimpanPdf = new JButton(" 💾 Simpan PDF");
+        JButton btnSimpanPdf = new JButton(" Simpan PDF");
         btnSimpanPdf.setIcon(IconStyle.muat("save.svg", 14, Color.WHITE));
         btnSimpanPdf.setBackground(new Color(217, 119, 6)); // Amber
         btnSimpanPdf.setForeground(Color.WHITE);
@@ -3238,7 +3207,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnSimpanPdf.setToolTipText("Simpan / ekspor dokumen sebagai file PDF");
         btnSimpanPdf.addActionListener(e -> cetakRM0306A("PDF"));
 
-        JButton btnTutup = new JButton(" ✖️ Tutup (ESC)");
+        JButton btnTutup = new JButton(" Tutup (ESC)");
         btnTutup.setBackground(new Color(71, 85, 105)); // Slate
         btnTutup.setForeground(Color.WHITE);
         btnTutup.setFont(new Font("Segoe UI", Font.BOLD, 11));
