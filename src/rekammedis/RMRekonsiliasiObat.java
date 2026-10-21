@@ -85,6 +85,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JRadioButton rbAdmisi, rbTransfer, rbPulang;
     private JRadioButton rbPakaiYa, rbPakaiTidak;
     private JRadioButton rbSumberRM, rbSumberPasien, rbSumberLain;
+    private JPanel rowHeader2, pnlSaat, pnlPakaiObat, pnlSumber;
 
     // State Form Tab 1 (Input Rekonsiliasi Obat)
     public enum ModeInput { MODE_INPUT_BARU, MODE_EDIT }
@@ -513,30 +514,30 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         DTPTgl = new Tanggal();
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        DTPTgl.setPreferredSize(new Dimension(105, 23));
+        DTPTgl.setBackground(Color.WHITE);
+        DTPTgl.setBorder(new CompoundBorder(
+            new LineBorder(new Color(203, 213, 225), 1, true),
+            new EmptyBorder(2, 6, 2, 4)
+        ));
         DTPTgl.addItemListener(e -> {
             if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
                 autoNomorRekonsiliasi();
             }
         });
 
-        JPanel pnlWaktuInput = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        pnlWaktuInput.setOpaque(false);
-        pnlWaktuInput.add(DTPTgl);
-
         pnlWaktu.add(lblWaktuJudul, BorderLayout.NORTH);
-        pnlWaktu.add(pnlWaktuInput, BorderLayout.CENTER);
+        pnlWaktu.add(DTPTgl, BorderLayout.CENTER);
 
         rowHeader1.add(pnlApoteker);
         rowHeader1.add(pnlNoRekon);
         rowHeader1.add(pnlWaktu);
 
         // Baris 2: Parameter Kompak (Rekonsiliasi Saat, Penggunaan Obat Sebelum Admisi, Sumber Informasi)
-        JPanel rowHeader2 = new JPanel(new GridLayout(1, 3, 8, 0));
+        rowHeader2 = new JPanel(new GridLayout(1, 3, 8, 0));
         rowHeader2.setOpaque(false);
 
         // 1. Rekonsiliasi Saat
-        JPanel pnlSaat = new JPanel(new BorderLayout(0, 2));
+        pnlSaat = new JPanel(new BorderLayout(0, 2));
         pnlSaat.setOpaque(false);
         pnlSaat.setBorder(new CompoundBorder(
             new LineBorder(new Color(226, 232, 240), 1, true),
@@ -562,7 +563,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         pnlSaat.add(pnlSaatRb, BorderLayout.CENTER);
 
         // 2. Penggunaan Obat Sebelum Admisi
-        JPanel pnlPakaiObat = new JPanel(new BorderLayout(0, 2));
+        pnlPakaiObat = new JPanel(new BorderLayout(0, 2));
         pnlPakaiObat.setOpaque(false);
         pnlPakaiObat.setBorder(new CompoundBorder(
             new LineBorder(new Color(226, 232, 240), 1, true),
@@ -586,7 +587,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         pnlPakaiObat.add(pnlPakaiRb, BorderLayout.CENTER);
 
         // 3. Sumber Informasi
-        JPanel pnlSumber = new JPanel(new BorderLayout(0, 2));
+        pnlSumber = new JPanel(new BorderLayout(0, 2));
         pnlSumber.setOpaque(false);
         pnlSumber.setBorder(new CompoundBorder(
             new LineBorder(new Color(226, 232, 240), 1, true),
@@ -1142,7 +1143,10 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         });
 
         // Listener Perubahan Tahap Rekonsiliasi Saat (Admisi, Transfer, Pulang)
-        ActionListener saatListener = e -> updateModeSidebarSaat();
+        ActionListener saatListener = e -> {
+            updateVisibilityPenggunaanObat();
+            updateModeSidebarSaat();
+        };
         rbAdmisi.addActionListener(saatListener);
         rbTransfer.addActionListener(saatListener);
         rbPulang.addActionListener(saatListener);
@@ -1931,6 +1935,39 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         autoNomorRekonsiliasi();
     }
 
+    private void updateVisibilityPenggunaanObat() {
+        if (rowHeader2 == null || pnlPakaiObat == null) return;
+        boolean isAdmisi = rbAdmisi.isSelected();
+        if (isAdmisi) {
+            rowHeader2.removeAll();
+            rowHeader2.setLayout(new GridLayout(1, 3, 8, 0));
+            rowHeader2.add(pnlSaat);
+            rowHeader2.add(pnlPakaiObat);
+            rowHeader2.add(pnlSumber);
+            pnlPakaiObat.setVisible(true);
+
+            boolean pakai = rbPakaiYa.isSelected();
+            tbObat.setEnabled(pakai);
+            btnTambahInline.setEnabled(pakai);
+            btnPilihMasterObat.setEnabled(pakai);
+            btnHapusBarisObat.setEnabled(pakai);
+        } else {
+            pnlPakaiObat.setVisible(false);
+            rowHeader2.removeAll();
+            rowHeader2.setLayout(new GridLayout(1, 2, 8, 0));
+            rowHeader2.add(pnlSaat);
+            rowHeader2.add(pnlSumber);
+
+            // Pada Transfer Ruang atau Pulang: tabel obat selalu aktif
+            tbObat.setEnabled(true);
+            btnTambahInline.setEnabled(true);
+            btnPilihMasterObat.setEnabled(true);
+            btnHapusBarisObat.setEnabled(true);
+        }
+        rowHeader2.revalidate();
+        rowHeader2.repaint();
+    }
+
     private void updateModeSidebarSaat() {
         if (rbPulang.isSelected()) {
             tampilkanResepRanap();
@@ -2396,6 +2433,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         DTPTgl.setDate(new Date());
         tabModeObat.setRowCount(0);
         rbAdmisi.setSelected(true);
+        updateVisibilityPenggunaanObat();
         updateModeSidebarSaat();
         rbPakaiYa.setSelected(true);
         rbSumberRM.setSelected(true);
@@ -2433,9 +2471,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Silakan pilih Apoteker / Petugas Farmasi terlebih dahulu!");
             return;
         }
-        if (rbPakaiYa.isSelected() && tabModeObat.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "Tambahkan minimal 1 baris obat, atau pilih 'Tidak Menggunakan Obat Sebelum Admisi'!");
-            return;
+        boolean isAdmisi = rbAdmisi.isSelected();
+        if (isAdmisi) {
+            if (rbPakaiYa.isSelected() && tabModeObat.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Tambahkan minimal 1 baris obat, atau pilih 'Tidak Menggunakan Obat Sebelum Admisi'!");
+                return;
+            }
+        } else {
+            if (tabModeObat.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Tambahkan minimal 1 baris obat yang direkonsiliasi!");
+                return;
+            }
         }
 
         if (tbObat.isEditing()) {
@@ -2446,12 +2492,12 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         String noRawat = TNoRw.getText().trim();
         String tglJam = Valid.SetTgl(DTPTgl.getSelectedItem() + "") + " "
                 + new SimpleDateFormat("HH:mm:ss").format(new Date());
-        String saat = rbAdmisi.isSelected() ? "Admisi" : (rbTransfer.isSelected() ? "Transfer Antar Ruang" : "Pulang");
+        String saat = isAdmisi ? "Admisi" : (rbTransfer.isSelected() ? "Transfer Antar Ruang" : "Pulang");
         String alergi = "-";
         String manifestasi = "-";
         String dampak = "-";
         String nip = KdPetugas.getText().trim();
-        String penggunaanObat = rbPakaiYa.isSelected() ? "Ya" : "Tidak";
+        String penggunaanObat = isAdmisi ? (rbPakaiYa.isSelected() ? "Ya" : "Tidak") : "Tidak";
         String sumberInfo = rbSumberRM.isSelected() ? "Status Pasien di Rekam Medis" :
                 (rbSumberPasien.isSelected() ? "Pasien/Keluarga Pasien" : "Lain-lain");
         String sumberLain = rbSumberLain.isSelected() ? KetSumberLain.getText().trim() : "-";
@@ -2469,7 +2515,8 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         })) {
 
             // 2. Simpan Detail rekonsiliasi_obat_detail_obat (8 KOLOM POSISIONAL)
-            if (rbPakaiYa.isSelected()) {
+            boolean simpanDetail = isAdmisi ? rbPakaiYa.isSelected() : true;
+            if (simpanDetail) {
                 for (int i = 0; i < tabModeObat.getRowCount(); i++) {
                     String namaObat = String.valueOf(tabModeObat.getValueAt(i, 1)).trim();
                     if (!namaObat.isEmpty()) {
@@ -2706,6 +2753,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         } else {
             rbAdmisi.setSelected(true);
         }
+        updateVisibilityPenggunaanObat();
         updateModeSidebarSaat();
 
         // 5. Penggunaan Obat Sebelum Admisi

@@ -225,13 +225,13 @@
 					<pen lineWidth="0.5" lineColor="#CBD5E1"/>
 				</graphicElement>
 			</rectangle>
-			<staticText>
+			<textField>
 				<reportElement positionType="Float" x="8" y="97" width="550" height="13" forecolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000027"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[A. INFORMASI PENGGUNAAN OBAT & SUMBER DATA]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[($P{pRekonsiliasiSaat}!=null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi")) ? "A. SUMBER DATA REKONSILIASI OBAT" : "A. INFORMASI PENGGUNAAN OBAT SEBELUM ADMISI & SUMBER DATA"]]></textFieldExpression>
+			</textField>
 
 			<rectangle>
 				<reportElement positionType="Float" mode="Transparent" x="0" y="111" width="569" height="38" uuid="a1b2c3d4-0001-4000-8000-000000000028"/>
@@ -240,9 +240,11 @@
 				</graphicElement>
 			</rectangle>
 
-			<!-- Baris 1: Penggunaan Obat Sebelum Admisi -->
+			<!-- Baris 1: Penggunaan Obat Sebelum Admisi (HANYA MUNCUL JIKA REKONSILIASI SAAT ADMISI) -->
 			<staticText>
-				<reportElement positionType="Float" x="8" y="114" width="150" height="14" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000029"/>
+				<reportElement positionType="Float" x="8" y="114" width="150" height="14" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000029">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="true"/>
 				</textElement>
@@ -250,14 +252,16 @@
 			</staticText>
 
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="162" y="117" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000030"/>
+				<reportElement positionType="Float" x="162" y="117" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000030">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#334155"/>
 				</graphicElement>
 			</rectangle>
 			<textField>
 				<reportElement positionType="Float" x="162" y="116" width="8" height="9" uuid="a1b2c3d4-0001-4000-8000-000000000031">
-					<printWhenExpression><![CDATA[Boolean.valueOf("Ya".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[Boolean.valueOf(($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi")) && "Ya".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="true"/>
@@ -265,7 +269,9 @@
 				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="174" y="114" width="180" height="14" forecolor="#334155" uuid="a1b2c3d4-0001-4000-8000-000000000032"/>
+				<reportElement positionType="Float" x="174" y="114" width="180" height="14" forecolor="#334155" uuid="a1b2c3d4-0001-4000-8000-000000000032">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7"/>
 				</textElement>
@@ -273,14 +279,16 @@
 			</staticText>
 
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="365" y="117" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000033"/>
+				<reportElement positionType="Float" x="365" y="117" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000033">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#334155"/>
 				</graphicElement>
 			</rectangle>
 			<textField>
 				<reportElement positionType="Float" x="365" y="116" width="8" height="9" uuid="a1b2c3d4-0001-4000-8000-000000000034">
-					<printWhenExpression><![CDATA[Boolean.valueOf("Tidak".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[Boolean.valueOf(($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi")) && "Tidak".equalsIgnoreCase($P{pPenggunaanObatSebelumAdmisi}))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="true"/>
@@ -288,16 +296,20 @@
 				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="377" y="114" width="185" height="14" forecolor="#334155" uuid="a1b2c3d4-0001-4000-8000-000000000035"/>
+				<reportElement positionType="Float" x="377" y="114" width="185" height="14" forecolor="#334155" uuid="a1b2c3d4-0001-4000-8000-000000000035">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7"/>
 				</textElement>
 				<text><![CDATA[Tidak Menggunakan Obat Sebelum Admisi]]></text>
 			</staticText>
 
-			<!-- Baris 2: Sumber Informasi -->
+			<!-- Baris 2: Sumber Informasi (POSISI UNTUK ADMISI, y=130) -->
 			<staticText>
-				<reportElement positionType="Float" x="8" y="130" width="90" height="14" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000036"/>
+				<reportElement positionType="Float" x="8" y="130" width="90" height="14" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000036">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="true"/>
 				</textElement>
@@ -305,14 +317,16 @@
 			</staticText>
 
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="102" y="133" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000037"/>
+				<reportElement positionType="Float" x="102" y="133" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000037">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#334155"/>
 				</graphicElement>
 			</rectangle>
 			<textField>
 				<reportElement positionType="Float" x="102" y="132" width="8" height="9" uuid="a1b2c3d4-0001-4000-8000-000000000038">
-					<printWhenExpression><![CDATA[Boolean.valueOf("Status Pasien di Rekam Medis".equalsIgnoreCase($P{pSumberInformasi}))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[Boolean.valueOf(($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi")) && "Status Pasien di Rekam Medis".equalsIgnoreCase($P{pSumberInformasi}))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="true"/>
@@ -320,7 +334,9 @@
 				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="114" y="130" width="115" height="14" forecolor="#334155" uuid="a1b2c3d4-0001-4000-8000-000000000039"/>
+				<reportElement positionType="Float" x="114" y="130" width="115" height="14" forecolor="#334155" uuid="a1b2c3d4-0001-4000-8000-000000000039">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7"/>
 				</textElement>
@@ -328,14 +344,16 @@
 			</staticText>
 
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="235" y="133" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000040"/>
+				<reportElement positionType="Float" x="235" y="133" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000040">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#334155"/>
 				</graphicElement>
 			</rectangle>
 			<textField>
 				<reportElement positionType="Float" x="235" y="132" width="8" height="9" uuid="a1b2c3d4-0001-4000-8000-000000000041">
-					<printWhenExpression><![CDATA[Boolean.valueOf("Pasien/Keluarga Pasien".equalsIgnoreCase($P{pSumberInformasi}))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[Boolean.valueOf(($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi")) && "Pasien/Keluarga Pasien".equalsIgnoreCase($P{pSumberInformasi}))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="true"/>
@@ -343,7 +361,9 @@
 				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="247" y="130" width="115" height="14" forecolor="#334155" uuid="a1b2c3d4-0001-4000-8000-000000000042"/>
+				<reportElement positionType="Float" x="247" y="130" width="115" height="14" forecolor="#334155" uuid="a1b2c3d4-0001-4000-8000-000000000042">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7"/>
 				</textElement>
@@ -351,14 +371,16 @@
 			</staticText>
 
 			<rectangle radius="1">
-				<reportElement positionType="Float" x="365" y="133" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000043"/>
+				<reportElement positionType="Float" x="365" y="133" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000043">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#334155"/>
 				</graphicElement>
 			</rectangle>
 			<textField>
 				<reportElement positionType="Float" x="365" y="132" width="8" height="9" uuid="a1b2c3d4-0001-4000-8000-000000000044">
-					<printWhenExpression><![CDATA[Boolean.valueOf("Lain-lain".equalsIgnoreCase($P{pSumberInformasi}))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[Boolean.valueOf(($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi")) && "Lain-lain".equalsIgnoreCase($P{pSumberInformasi}))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="true"/>
@@ -366,7 +388,101 @@
 				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="377" y="130" width="185" height="14" forecolor="#334155" uuid="a1b2c3d4-0001-4000-8000-000000000045"/>
+				<reportElement positionType="Float" x="377" y="130" width="185" height="14" forecolor="#334155" uuid="a1b2c3d4-0001-4000-8000-000000000045">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} == null || "Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) || $P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Lain-lain : " + ($P{pSumberInformasiLain}!=null && !$P{pSumberInformasiLain}.equals("-") ? $P{pSumberInformasiLain} : "-")]]></textFieldExpression>
+			</textField>
+
+			<!-- Baris Tunggal: Sumber Informasi (POSISI UNTUK TRANSFER / PULANG, CENTER DI y=123) -->
+			<staticText>
+				<reportElement positionType="Float" x="8" y="123" width="90" height="14" forecolor="#1E293B" uuid="b1b2c3d4-0001-4000-8000-000000000001">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} != null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sumber Informasi :]]></text>
+			</staticText>
+
+			<rectangle radius="1">
+				<reportElement positionType="Float" x="102" y="126" width="8" height="8" uuid="b1b2c3d4-0001-4000-8000-000000000002">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} != null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#334155"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" x="102" y="125" width="8" height="9" uuid="b1b2c3d4-0001-4000-8000-000000000003">
+					<printWhenExpression><![CDATA[Boolean.valueOf(($P{pRekonsiliasiSaat} != null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi")) && "Status Pasien di Rekam Medis".equalsIgnoreCase($P{pSumberInformasi}))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="114" y="123" width="115" height="14" forecolor="#334155" uuid="b1b2c3d4-0001-4000-8000-000000000004">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} != null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+				</textElement>
+				<text><![CDATA[Status Rekam Medis]]></text>
+			</staticText>
+
+			<rectangle radius="1">
+				<reportElement positionType="Float" x="235" y="126" width="8" height="8" uuid="b1b2c3d4-0001-4000-8000-000000000005">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} != null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#334155"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" x="235" y="125" width="8" height="9" uuid="b1b2c3d4-0001-4000-8000-000000000006">
+					<printWhenExpression><![CDATA[Boolean.valueOf(($P{pRekonsiliasiSaat} != null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi")) && "Pasien/Keluarga Pasien".equalsIgnoreCase($P{pSumberInformasi}))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="247" y="123" width="115" height="14" forecolor="#334155" uuid="b1b2c3d4-0001-4000-8000-000000000007">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} != null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7"/>
+				</textElement>
+				<text><![CDATA[Pasien / Keluarga Pasien]]></text>
+			</staticText>
+
+			<rectangle radius="1">
+				<reportElement positionType="Float" x="365" y="126" width="8" height="8" uuid="b1b2c3d4-0001-4000-8000-000000000008">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} != null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#334155"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" x="365" y="125" width="8" height="9" uuid="b1b2c3d4-0001-4000-8000-000000000009">
+					<printWhenExpression><![CDATA[Boolean.valueOf(($P{pRekonsiliasiSaat} != null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi")) && "Lain-lain".equalsIgnoreCase($P{pSumberInformasi}))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["V"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="377" y="123" width="185" height="14" forecolor="#334155" uuid="b1b2c3d4-0001-4000-8000-000000000010">
+					<printWhenExpression><![CDATA[Boolean.valueOf($P{pRekonsiliasiSaat} != null && !"Admisi".equalsIgnoreCase($P{pRekonsiliasiSaat}) && !$P{pRekonsiliasiSaat}.toLowerCase().contains("admisi"))]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7"/>
 				</textElement>
