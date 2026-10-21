@@ -950,6 +950,16 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 }
             }
         });
+        tbDataRekon.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
+                    if (tbDataRekon.getSelectedRow() != -1) {
+                        gantiDataRekonsiliasi();
+                    }
+                }
+            }
+        });
 
         JPanel panelFilter = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 4));
         panelFilter.setOpaque(false);
@@ -2758,78 +2768,128 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         }
 
         String noRekon = tbDataRekon.getValueAt(r, 0).toString();
+        String noRawat = "";
+        String tglWawancara = "";
+        String saat = "";
+        String pakai = "";
+        String sumber = "";
+        String sumberLain = "";
+        String nip = "";
+
+        // Gunakan PreparedStatement dan ResultSet lokal agar tidak ditimpa/ditutup oleh pemanggilan setNoRm()
+        PreparedStatement psRekon = null;
+        ResultSet rsRekon = null;
         try {
-            ps = koneksi.prepareStatement("SELECT * FROM rekonsiliasi_obat WHERE no_rekonsiliasi = ?");
-            ps.setString(1, noRekon);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                emptTeks();
-                setModeInput(ModeInput.MODE_EDIT, noRekon);
-                NoRekonsiliasi.setText(noRekon);
-                setNoRm(rs.getString("no_rawat"));
-
-                // Waktu wawancara
-                try {
-                    Date dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("tanggal_wawancara"));
-                    DTPTgl.setDate(dt);
-                } catch (Exception ex) {}
-
-                // Saat
-                String saat = rs.getString("rekonsiliasi_obat_saat");
-                if ("Transfer Antar Ruang".equalsIgnoreCase(saat)) rbTransfer.setSelected(true);
-                else if ("Pulang".equalsIgnoreCase(saat)) rbPulang.setSelected(true);
-                else rbAdmisi.setSelected(true);
-                updateModeSidebarSaat();
-
-                // Penggunaan Obat
-                String pakai = rs.getString("penggunaan_obat_sebelum_admisi");
-                if ("Tidak".equalsIgnoreCase(pakai)) {
-                    rbPakaiTidak.setSelected(true);
-                    tbObat.setEnabled(false);
-                } else {
-                    rbPakaiYa.setSelected(true);
-                    tbObat.setEnabled(true);
-                }
-
-                // Sumber Informasi
-                String sumber = rs.getString("sumber_informasi");
-                if ("Pasien/Keluarga Pasien".equalsIgnoreCase(sumber)) rbSumberPasien.setSelected(true);
-                else if ("Lain-lain".equalsIgnoreCase(sumber)) {
-                    rbSumberLain.setSelected(true);
-                    KetSumberLain.setEnabled(true);
-                    KetSumberLain.setText(rs.getString("sumber_informasi_lain"));
-                } else {
-                    rbSumberRM.setSelected(true);
-                }
-
-                // Petugas
-                KdPetugas.setText(rs.getString("nip"));
-                NmPetugas.setText(Sequel.CariPetugas(KdPetugas.getText()));
-
-                // Muat Detail Obat
-                tabModeObat.setRowCount(0);
-                psDetail = koneksi.prepareStatement("SELECT * FROM rekonsiliasi_obat_detail_obat WHERE no_rekonsiliasi = ?");
-                psDetail.setString(1, noRekon);
-                rsDetail = psDetail.executeQuery();
-                while (rsDetail.next()) {
-                    tabModeObat.addRow(new Object[]{
-                        "",
-                        rsDetail.getString("nama_obat"),
-                        rsDetail.getString("dosis_obat"),
-                        rsDetail.getString("frekuensi"),
-                        rsDetail.getString("cara_pemberian"),
-                        rsDetail.getString("tindak_lanjut"),
-                        rsDetail.getString("perubahan_aturan_pakai")
-                    });
-                }
-                updateBadgeObat();
-                tabPaneUtama.setSelectedIndex(0);
+            psRekon = koneksi.prepareStatement("SELECT * FROM rekonsiliasi_obat WHERE no_rekonsiliasi = ?");
+            psRekon.setString(1, noRekon);
+            rsRekon = psRekon.executeQuery();
+            if (rsRekon.next()) {
+                noRawat = rsRekon.getString("no_rawat");
+                tglWawancara = rsRekon.getString("tanggal_wawancara");
+                saat = rsRekon.getString("rekonsiliasi_obat_saat");
+                pakai = rsRekon.getString("penggunaan_obat_sebelum_admisi");
+                sumber = rsRekon.getString("sumber_informasi");
+                sumberLain = rsRekon.getString("sumber_informasi_lain");
+                nip = rsRekon.getString("nip");
             }
         } catch (Exception e) {
-            System.out.println("Notif Ganti Data: " + e);
+            System.out.println("Notif Ganti Data (Query Header): " + e);
         } finally {
-            try { if (rsDetail != null) rsDetail.close(); if (psDetail != null) psDetail.close(); if (rs != null) rs.close(); if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (rsRekon != null) rsRekon.close(); if (psRekon != null) psRekon.close(); } catch (Exception e) {}
         }
+
+        if (noRawat == null || noRawat.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Data rekonsiliasi tidak ditemukan di database!");
+            return;
+        }
+
+        // 1. Set mode form ke MODE_EDIT dan set nomor rekonsiliasi
+        setModeInput(ModeInput.MODE_EDIT, noRekon);
+        NoRekonsiliasi.setText(noRekon);
+
+        // 2. Muat data identitas pasien dan contekan catatan dokter
+        setNoRm(noRawat);
+
+        // 3. Waktu wawancara
+        try {
+            Date dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tglWawancara);
+            DTPTgl.setDate(dt);
+        } catch (Exception ex) {}
+
+        // 4. Tahap Rekonsiliasi Saat
+        if ("Transfer Antar Ruang".equalsIgnoreCase(saat)) {
+            rbTransfer.setSelected(true);
+        } else if ("Pulang".equalsIgnoreCase(saat)) {
+            rbPulang.setSelected(true);
+        } else {
+            rbAdmisi.setSelected(true);
+        }
+        updateModeSidebarSaat();
+
+        // 5. Penggunaan Obat Sebelum Admisi
+        if ("Tidak".equalsIgnoreCase(pakai)) {
+            rbPakaiTidak.setSelected(true);
+            tbObat.setEnabled(false);
+            btnTambahInline.setEnabled(false);
+            btnPilihMasterObat.setEnabled(false);
+            btnHapusBarisObat.setEnabled(false);
+        } else {
+            rbPakaiYa.setSelected(true);
+            tbObat.setEnabled(true);
+            btnTambahInline.setEnabled(true);
+            btnPilihMasterObat.setEnabled(true);
+            btnHapusBarisObat.setEnabled(true);
+        }
+
+        // 6. Sumber Informasi
+        if ("Pasien/Keluarga Pasien".equalsIgnoreCase(sumber)) {
+            rbSumberPasien.setSelected(true);
+            KetSumberLain.setText("");
+            KetSumberLain.setEnabled(false);
+        } else if ("Lain-lain".equalsIgnoreCase(sumber)) {
+            rbSumberLain.setSelected(true);
+            KetSumberLain.setEnabled(true);
+            KetSumberLain.setText(sumberLain != null && !sumberLain.equals("-") ? sumberLain : "");
+        } else {
+            rbSumberRM.setSelected(true);
+            KetSumberLain.setText("");
+            KetSumberLain.setEnabled(false);
+        }
+
+        // 7. Apoteker / Petugas Farmasi
+        KdPetugas.setText(nip != null ? nip : "");
+        NmPetugas.setText(Sequel.CariPetugas(KdPetugas.getText()));
+
+        // 8. Muat Detail Daftar Obat
+        tabModeObat.setRowCount(0);
+        PreparedStatement psDet = null;
+        ResultSet rsDet = null;
+        try {
+            psDet = koneksi.prepareStatement("SELECT * FROM rekonsiliasi_obat_detail_obat WHERE no_rekonsiliasi = ?");
+            psDet.setString(1, noRekon);
+            rsDet = psDet.executeQuery();
+            while (rsDet.next()) {
+                tabModeObat.addRow(new Object[]{
+                    "",
+                    rsDet.getString("nama_obat"),
+                    rsDet.getString("dosis_obat"),
+                    rsDet.getString("frekuensi"),
+                    rsDet.getString("cara_pemberian"),
+                    rsDet.getString("tindak_lanjut"),
+                    rsDet.getString("perubahan_aturan_pakai")
+                });
+            }
+        } catch (Exception e) {
+            System.out.println("Notif Ganti Data (Query Detail): " + e);
+        } finally {
+            try { if (rsDet != null) rsDet.close(); if (psDet != null) psDet.close(); } catch (Exception e) {}
+        }
+        updateBadgeObat();
+
+        // 9. Berpindah ke Tab 1 (Input Rekonsiliasi Obat)
+        SwingUtilities.invokeLater(() -> {
+            tabPaneUtama.setSelectedIndex(0);
+        });
     }
 
     private void hapusRekonsiliasi() {
