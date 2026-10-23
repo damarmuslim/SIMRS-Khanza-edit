@@ -73,9 +73,17 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
     private JPanel pnlToggle;
     private JTextArea txtContekanTataLaksana, txtContekanRPO;
     private JScrollPane spTataLaksana, spRPO;
-    private JPanel panelRPOContekan;
-    private JLabel lblContekanAlergi;
-    private JPanel panelQuickChips;
+    private JPanel panelQuickChips, panelRPOContekan;
+    // Riwayat Alergi Input Fields (Tersinkronisasi & Dicetak)
+    private JTextField txtAlergiObat, txtManifestasiAlergi;
+    private JComboBox<String> cmbDampakAlergi;
+
+    // Tombol Aksi Tambahan (Pilih Pasien, Batch Salin Obat, Tarik Rekon Sebelumnya, Cetak Rekap)
+    private JButton btnPilihPasien;
+    private JButton btnSalinSemuaObat;
+    private JButton btnSalinRekonSebelumnya;
+    private JButton btnCetakRekap;
+
     private JButton btnToggleIGD, btnToggleRanap;
     private String tataRanap = "", rpoRanap = "", alergiRanap = "";
     private String tataIGD = "", rpoIGD = "", alergiIGD = "";
@@ -284,13 +292,29 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         pnlAvatarNama.add(lblAvatarInitials, BorderLayout.WEST);
         pnlAvatarNama.add(pnlNamaDetail, BorderLayout.CENTER);
 
+        JPanel pnlBadgePasien = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
+        pnlBadgePasien.setOpaque(false);
+
+        btnPilihPasien = new JButton("Pilih Pasien");
+        btnPilihPasien.setIcon(IconStyle.muat("search.svg", 11, TEAL_MAIN));
+        btnPilihPasien.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        btnPilihPasien.setBackground(Color.WHITE);
+        btnPilihPasien.setForeground(TEAL_DARK);
+        btnPilihPasien.setBorder(new CompoundBorder(new LineBorder(TEAL_MAIN, 1, true), new EmptyBorder(2, 6, 2, 6)));
+        btnPilihPasien.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnPilihPasien.setToolTipText("Cari dan pilih registrasi pasien dari database");
+        btnPilihPasien.addActionListener(e -> bukaDialogCariRegPasien());
+
         JLabel lblBadgeTerkunci = new JLabel(" TERKUNCI ");
         lblBadgeTerkunci.setFont(new Font("Segoe UI", Font.BOLD, 9));
         lblBadgeTerkunci.setForeground(new Color(71, 85, 105));
         lblBadgeTerkunci.setBackground(new Color(241, 245, 249));
         lblBadgeTerkunci.setOpaque(true);
         lblBadgeTerkunci.setBorder(new LineBorder(new Color(203, 213, 225), 1, true));
-        pnlAvatarNama.add(lblBadgeTerkunci, BorderLayout.EAST);
+
+        pnlBadgePasien.add(btnPilihPasien);
+        pnlBadgePasien.add(lblBadgeTerkunci);
+        pnlAvatarNama.add(pnlBadgePasien, BorderLayout.EAST);
 
         // Detail Baris Identitas (Compact 2x2 Grid)
         JPanel pnlIdRows = new JPanel(new GridLayout(2, 2, 4, 3));
@@ -374,17 +398,33 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         spTataLaksana.setPreferredSize(new Dimension(330, 115));
         spTataLaksana.setMinimumSize(new Dimension(330, 95));
 
-        JButton btnKirimBlokKeTabel = new JButton(" Masukkan Teks Diblok ke Tabel");
-        btnKirimBlokKeTabel.setIcon(IconStyle.muat("plus.svg", 13, Color.WHITE));
+        JPanel pnlActionContekan = new JPanel(new GridLayout(1, 2, 6, 0));
+        pnlActionContekan.setOpaque(false);
+        pnlActionContekan.setAlignmentX(Component.LEFT_ALIGNMENT);
+        pnlActionContekan.setPreferredSize(new Dimension(330, 26));
+        pnlActionContekan.setMinimumSize(new Dimension(330, 26));
+        pnlActionContekan.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+
+        JButton btnKirimBlokKeTabel = new JButton(" Teks Diblok");
+        btnKirimBlokKeTabel.setIcon(IconStyle.muat("plus.svg", 12, Color.WHITE));
         btnKirimBlokKeTabel.setBackground(TEAL_MAIN);
         btnKirimBlokKeTabel.setForeground(Color.WHITE);
         btnKirimBlokKeTabel.setFont(new Font("Segoe UI", Font.BOLD, 10));
         btnKirimBlokKeTabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnKirimBlokKeTabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btnKirimBlokKeTabel.setPreferredSize(new Dimension(330, 26));
-        btnKirimBlokKeTabel.setMinimumSize(new Dimension(330, 26));
-        btnKirimBlokKeTabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+        btnKirimBlokKeTabel.setToolTipText("Masukkan bagian teks yang diblok pada kotak Tata Laksana ke tabel obat");
         btnKirimBlokKeTabel.addActionListener(e -> kirimTeksTerblokKeTabel());
+
+        btnSalinSemuaObat = new JButton(" Salin Semua Obat");
+        btnSalinSemuaObat.setIcon(IconStyle.muat("arrow-right-left.svg", 12, Color.WHITE));
+        btnSalinSemuaObat.setBackground(BLUE_OCEAN);
+        btnSalinSemuaObat.setForeground(Color.WHITE);
+        btnSalinSemuaObat.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        btnSalinSemuaObat.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnSalinSemuaObat.setToolTipText("Salin seluruh obat dari catatan terapi dokter / resep ranap sekaligus ke tabel rekonsiliasi");
+        btnSalinSemuaObat.addActionListener(e -> salinSemuaObatKeTabel());
+
+        pnlActionContekan.add(btnKirimBlokKeTabel);
+        pnlActionContekan.add(btnSalinSemuaObat);
 
         panelQuickChips = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 2));
         panelQuickChips.setOpaque(false);
@@ -420,22 +460,71 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelRPOContekan.add(Box.createVerticalStrut(3));
         panelRPOContekan.add(spRPO);
 
-        JPanel panelAlergiContekan = new JPanel(new BorderLayout(4, 4));
-        panelAlergiContekan.setBackground(Color.WHITE);
+        JPanel panelAlergiContekan = new JPanel();
+        panelAlergiContekan.setLayout(new BoxLayout(panelAlergiContekan, BoxLayout.Y_AXIS));
+        panelAlergiContekan.setBackground(new Color(255, 241, 242)); // Soft Rose-50
         panelAlergiContekan.setBorder(new CompoundBorder(
-            new LineBorder(new Color(253, 164, 175), 1, false),
-            new EmptyBorder(4, 6, 4, 6)
+            new LineBorder(new Color(253, 164, 175), 1, true),
+            new EmptyBorder(6, 8, 6, 8)
         ));
         panelAlergiContekan.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panelAlergiContekan.setPreferredSize(new Dimension(330, 36));
-        panelAlergiContekan.setMinimumSize(new Dimension(330, 36));
-        panelAlergiContekan.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
+        panelAlergiContekan.setMaximumSize(new Dimension(Integer.MAX_VALUE, 115));
 
-        lblContekanAlergi = new JLabel("Riwayat Alergi Pasien: -");
-        lblContekanAlergi.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        lblContekanAlergi.setForeground(new Color(159, 18, 57));
+        JLabel lblAlergiTitle = new JLabel("RIWAYAT ALERGI OBAT (TERSINKRONISASI & DICETAK)");
+        lblAlergiTitle.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        lblAlergiTitle.setForeground(new Color(159, 18, 57));
+        lblAlergiTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        panelAlergiContekan.add(lblContekanAlergi, BorderLayout.CENTER);
+        JPanel pnlRowAlergi1 = new JPanel(new BorderLayout(4, 0));
+        pnlRowAlergi1.setOpaque(false);
+        JLabel lblObat = new JLabel("Obat Alergi:");
+        lblObat.setPreferredSize(new Dimension(68, 20));
+        lblObat.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lblObat.setForeground(new Color(159, 18, 57));
+        txtAlergiObat = new JTextField("-");
+        txtAlergiObat.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        txtAlergiObat.setBackground(Color.WHITE);
+        txtAlergiObat.setBorder(new CompoundBorder(new LineBorder(new Color(253, 164, 175), 1, true), new EmptyBorder(1, 4, 1, 4)));
+        pnlRowAlergi1.add(lblObat, BorderLayout.WEST);
+        pnlRowAlergi1.add(txtAlergiObat, BorderLayout.CENTER);
+
+        JPanel pnlRowAlergi2 = new JPanel(new GridLayout(1, 2, 6, 0));
+        pnlRowAlergi2.setOpaque(false);
+
+        JPanel pnlGejala = new JPanel(new BorderLayout(4, 0));
+        pnlGejala.setOpaque(false);
+        JLabel lblGejala = new JLabel("Gejala:");
+        lblGejala.setPreferredSize(new Dimension(38, 20));
+        lblGejala.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lblGejala.setForeground(new Color(159, 18, 57));
+        txtManifestasiAlergi = new JTextField("-");
+        txtManifestasiAlergi.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        txtManifestasiAlergi.setBackground(Color.WHITE);
+        txtManifestasiAlergi.setBorder(new CompoundBorder(new LineBorder(new Color(253, 164, 175), 1, true), new EmptyBorder(1, 4, 1, 4)));
+        pnlGejala.add(lblGejala, BorderLayout.WEST);
+        pnlGejala.add(txtManifestasiAlergi, BorderLayout.CENTER);
+
+        JPanel pnlDampak = new JPanel(new BorderLayout(4, 0));
+        pnlDampak.setOpaque(false);
+        JLabel lblDampak = new JLabel("Dampak:");
+        lblDampak.setPreferredSize(new Dimension(46, 20));
+        lblDampak.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        lblDampak.setForeground(new Color(159, 18, 57));
+        cmbDampakAlergi = new JComboBox<>(new String[]{"-", "Ringan", "Sedang", "Berat"});
+        cmbDampakAlergi.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+        cmbDampakAlergi.setBackground(Color.WHITE);
+        cmbDampakAlergi.setBorder(new LineBorder(new Color(253, 164, 175), 1, true));
+        pnlDampak.add(lblDampak, BorderLayout.WEST);
+        pnlDampak.add(cmbDampakAlergi, BorderLayout.CENTER);
+
+        pnlRowAlergi2.add(pnlGejala);
+        pnlRowAlergi2.add(pnlDampak);
+
+        panelAlergiContekan.add(lblAlergiTitle);
+        panelAlergiContekan.add(Box.createVerticalStrut(4));
+        panelAlergiContekan.add(pnlRowAlergi1);
+        panelAlergiContekan.add(Box.createVerticalStrut(3));
+        panelAlergiContekan.add(pnlRowAlergi2);
 
         contekanBody.add(pnlContekanHeader);
         contekanBody.add(Box.createVerticalStrut(5));
@@ -443,7 +532,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         contekanBody.add(Box.createVerticalStrut(3));
         contekanBody.add(spTataLaksana);
         contekanBody.add(Box.createVerticalStrut(4));
-        contekanBody.add(btnKirimBlokKeTabel);
+        contekanBody.add(pnlActionContekan);
         contekanBody.add(Box.createVerticalStrut(4));
         contekanBody.add(panelQuickChips);
         contekanBody.add(panelRPOContekan);
@@ -657,6 +746,13 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         JPanel btnGroupTabel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
         btnGroupTabel.setOpaque(false);
 
+        btnSalinRekonSebelumnya = new JButton(" Tarik Rekon Sebelumnya");
+        btnSalinRekonSebelumnya.setIcon(IconStyle.muat("refresh.svg", 13, new Color(71, 85, 105)));
+        btnSalinRekonSebelumnya.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        btnSalinRekonSebelumnya.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnSalinRekonSebelumnya.setToolTipText("Salin daftar obat dari rekonsiliasi pasien sebelumnya (misal saat Admisi atau Transfer)");
+        btnSalinRekonSebelumnya.addActionListener(e -> tarikRekonsiliasiSebelumnya());
+
         btnHapusBarisObat = new JButton(" Hapus Baris");
         btnHapusBarisObat.setIcon(IconStyle.muat("trash.svg", 14, new Color(225, 29, 72)));
         btnHapusBarisObat.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -676,6 +772,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         btnTambahInline.setFont(new Font("Segoe UI", Font.BOLD, 11));
         btnTambahInline.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        btnGroupTabel.add(btnSalinRekonSebelumnya);
         btnGroupTabel.add(btnHapusBarisObat);
         btnGroupTabel.add(btnPilihMasterObat);
         btnGroupTabel.add(btnTambahInline);
@@ -1031,6 +1128,13 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         LCount.setFont(new Font("Segoe UI", Font.BOLD, 11));
         LCount.setForeground(TEAL_MAIN);
 
+        btnCetakRekap = new JButton(" Rekap");
+        btnCetakRekap.setIcon(IconStyle.muat("printer.svg", 13, new Color(71, 85, 105)));
+        btnCetakRekap.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        btnCetakRekap.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCetakRekap.setToolTipText("Cetak rekapitulasi data rekonsiliasi obat (rptDataRekonsiliasiObat.jasper)");
+        btnCetakRekap.addActionListener(e -> cetakRekapitulasi());
+
         panelFilter.add(new JLabel("Tgl:"));
         panelFilter.add(DTPCari1);
         panelFilter.add(new JLabel("s.d."));
@@ -1039,6 +1143,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         panelFilter.add(TCari);
         panelFilter.add(btnCariData);
         panelFilter.add(btnSemuaData);
+        panelFilter.add(btnCetakRekap);
         panelFilter.add(LCount);
 
         panelKiriData.add(new JScrollPane(tbDataRekon), BorderLayout.CENTER);
@@ -1242,6 +1347,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             btnTambahInline.setEnabled(pakai);
             btnPilihMasterObat.setEnabled(pakai);
             btnHapusBarisObat.setEnabled(pakai);
+            if (btnSalinRekonSebelumnya != null) btnSalinRekonSebelumnya.setEnabled(pakai);
         };
         rbPakaiYa.addActionListener(pakaiListener);
         rbPakaiTidak.addActionListener(pakaiListener);
@@ -2031,6 +2137,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             btnTambahInline.setEnabled(pakai);
             btnPilihMasterObat.setEnabled(pakai);
             btnHapusBarisObat.setEnabled(pakai);
+            if (btnSalinRekonSebelumnya != null) btnSalinRekonSebelumnya.setEnabled(pakai);
         } else {
             pnlPakaiObat.setVisible(false);
             rowHeader2.removeAll();
@@ -2043,6 +2150,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             btnTambahInline.setEnabled(true);
             btnPilihMasterObat.setEnabled(true);
             btnHapusBarisObat.setEnabled(true);
+            if (btnSalinRekonSebelumnya != null) btnSalinRekonSebelumnya.setEnabled(true);
         }
         rowHeader2.revalidate();
         rowHeader2.repaint();
@@ -2154,7 +2262,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         // Alergi
         String alergi = !alergiRanap.trim().isEmpty() ? alergiRanap : (!alergiIGD.trim().isEmpty() ? alergiIGD : "-");
-        lblContekanAlergi.setText("Riwayat Alergi Pasien: " + alergi);
+        if (txtAlergiObat != null) {
+            txtAlergiObat.setText(alergi);
+        }
     }
 
     private void styleToggleBtn(JButton btn, boolean aktif) {
@@ -2203,7 +2313,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
             txtContekanTataLaksana.setText((tataIGD == null || tataIGD.trim().isEmpty()) ? "(Belum ada catatan Tata Laksana di Asesmen Medis IGD)" : tataIGD.trim());
             txtContekanRPO.setText((rpoIGD == null || rpoIGD.trim().isEmpty()) ? "(Belum ada catatan Riwayat Obat di Asesmen Medis IGD)" : rpoIGD.trim());
-            lblContekanAlergi.setText("Riwayat Alergi Pasien (IGD): " + ((alergiIGD == null || alergiIGD.trim().isEmpty()) ? "-" : alergiIGD.trim()));
+            if (txtAlergiObat != null && alergiIGD != null && !alergiIGD.trim().isEmpty()) {
+                txtAlergiObat.setText(alergiIGD.trim());
+            }
             generateQuickChips(tataIGD);
         } else {
             styleToggleBtn(btnToggleRanap, true);
@@ -2211,7 +2323,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
             txtContekanTataLaksana.setText((tataRanap == null || tataRanap.trim().isEmpty()) ? "(Belum ada catatan Tata Laksana di Asesmen Medis Ranap)" : tataRanap.trim());
             txtContekanRPO.setText((rpoRanap == null || rpoRanap.trim().isEmpty()) ? "(Belum ada catatan Riwayat Obat di Asesmen Medis Ranap)" : rpoRanap.trim());
-            lblContekanAlergi.setText("Riwayat Alergi Pasien (Ranap): " + ((alergiRanap == null || alergiRanap.trim().isEmpty()) ? "-" : alergiRanap.trim()));
+            if (txtAlergiObat != null && alergiRanap != null && !alergiRanap.trim().isEmpty()) {
+                txtAlergiObat.setText(alergiRanap.trim());
+            }
             generateQuickChips(tataRanap);
         }
         txtContekanTataLaksana.setCaretPosition(0);
@@ -2519,10 +2633,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         rbSumberRM.setSelected(true);
         KetSumberLain.setText("");
         KetSumberLain.setEnabled(false);
+        if (txtAlergiObat != null) txtAlergiObat.setText("-");
+        if (txtManifestasiAlergi != null) txtManifestasiAlergi.setText("-");
+        if (cmbDampakAlergi != null) cmbDampakAlergi.setSelectedIndex(0);
         tbObat.setEnabled(true);
         btnTambahInline.setEnabled(true);
         btnPilihMasterObat.setEnabled(true);
         btnHapusBarisObat.setEnabled(true);
+        if (btnSalinRekonSebelumnya != null) btnSalinRekonSebelumnya.setEnabled(true);
         updateBadgeObat();
         autoNomorRekonsiliasi();
     }
@@ -2578,9 +2696,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         String tglJam = Valid.SetTgl(DTPTgl.getSelectedItem() + "") + " "
                 + new SimpleDateFormat("HH:mm:ss").format(new Date());
         String saat = isAdmisi ? "Admisi" : (rbTransfer.isSelected() ? "Transfer Antar Ruang" : "Pulang");
-        String alergi = "-";
-        String manifestasi = "-";
-        String dampak = "-";
+        String alergi = (txtAlergiObat != null && !txtAlergiObat.getText().trim().isEmpty()) ? txtAlergiObat.getText().trim() : "-";
+        String manifestasi = (txtManifestasiAlergi != null && !txtManifestasiAlergi.getText().trim().isEmpty()) ? txtManifestasiAlergi.getText().trim() : "-";
+        String dampak = (cmbDampakAlergi != null && cmbDampakAlergi.getSelectedItem() != null) ? cmbDampakAlergi.getSelectedItem().toString() : "-";
         String nip = KdPetugas.getText().trim();
         String penggunaanObat = isAdmisi ? (rbPakaiYa.isSelected() ? "Ya" : "Tidak") : "Tidak";
         String sumberInfo = rbSumberRM.isSelected() ? "Status Pasien di Rekam Medis" :
@@ -2828,6 +2946,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         String sumber = "";
         String sumberLain = "";
         String nip = "";
+        String alergi = "";
+        String manifestasi = "";
+        String dampak = "";
 
         // Gunakan PreparedStatement dan ResultSet lokal agar tidak ditimpa/ditutup oleh pemanggilan setNoRm()
         PreparedStatement psRekon = null;
@@ -2844,6 +2965,9 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 sumber = rsRekon.getString("sumber_informasi");
                 sumberLain = rsRekon.getString("sumber_informasi_lain");
                 nip = rsRekon.getString("nip");
+                alergi = rsRekon.getString("alergi_obat");
+                manifestasi = rsRekon.getString("manifestasi_alergi");
+                dampak = rsRekon.getString("dampak_alergi");
             }
         } catch (Exception e) {
             System.out.println("Notif Ganti Data (Query Header): " + e);
@@ -2858,6 +2982,11 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
         // 1. Muat data identitas pasien dan contekan catatan dokter TERLEBIH DAHULU
         setNoRm(noRawat);
+
+        // Pulihkan nilai alergi dari data rekonsiliasi yang tersimpan
+        if (txtAlergiObat != null) txtAlergiObat.setText((alergi != null && !alergi.trim().isEmpty()) ? alergi : "-");
+        if (txtManifestasiAlergi != null) txtManifestasiAlergi.setText((manifestasi != null && !manifestasi.trim().isEmpty()) ? manifestasi : "-");
+        if (cmbDampakAlergi != null) cmbDampakAlergi.setSelectedItem((dampak != null && !dampak.trim().isEmpty()) ? dampak : "-");
 
         // 2. Set mode form ke MODE_EDIT dan kunci nomor rekonsiliasi yang sedang diedit
         setModeInput(ModeInput.MODE_EDIT, noRekon);
@@ -2890,12 +3019,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             btnTambahInline.setEnabled(false);
             btnPilihMasterObat.setEnabled(false);
             btnHapusBarisObat.setEnabled(false);
+            if (btnSalinRekonSebelumnya != null) btnSalinRekonSebelumnya.setEnabled(false);
         } else {
             rbPakaiYa.setSelected(true);
             tbObat.setEnabled(true);
             btnTambahInline.setEnabled(true);
             btnPilihMasterObat.setEnabled(true);
             btnHapusBarisObat.setEnabled(true);
+            if (btnSalinRekonSebelumnya != null) btnSalinRekonSebelumnya.setEnabled(true);
         }
 
         // 6. Sumber Informasi
@@ -3564,5 +3695,320 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             }
         } catch (Exception ignored) {}
         return null;
+    }
+
+    /**
+     * Buka form langsung dari menu utama Khanza (frmUtama)
+     */
+    public void bukaDariMenuUtama() {
+        emptTeks();
+        tabPaneUtama.setSelectedIndex(1);
+        tampilDataRekonsiliasi();
+    }
+
+    /**
+     * Dialog pencarian registrasi pasien saat dibuka standalone
+     */
+    private void bukaDialogCariRegPasien() {
+        simrskhanza.DlgCariReg reg = new simrskhanza.DlgCariReg(null, false);
+        reg.setSize(Math.min(1000, getWidth() - 40), Math.min(650, getHeight() - 40));
+        reg.setLocationRelativeTo(this);
+        reg.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (reg.getTable().getSelectedRow() != -1) {
+                    int r = reg.getTable().getSelectedRow();
+                    String norwt = reg.getTable().getValueAt(r, 1).toString();
+                    setNoRm(norwt);
+                }
+            }
+        });
+        reg.setVisible(true);
+    }
+
+    /**
+     * Salin seluruh obat dari resep ranap tervalidasi atau catatan terapi dokter ke tabel rekonsiliasi
+     */
+    private void salinSemuaObatKeTabel() {
+        if (TNoRw.getText().trim().isEmpty() || TNoRw.getText().trim().equals("-")) {
+            JOptionPane.showMessageDialog(this, "Silakan pilih pasien terlebih dahulu!");
+            return;
+        }
+
+        Set<String> existingNames = new HashSet<>();
+        for (int i = 0; i < tabModeObat.getRowCount(); i++) {
+            Object val = tabModeObat.getValueAt(i, 1);
+            if (val != null) existingNames.add(val.toString().trim().toLowerCase());
+        }
+
+        if (rbAdmisi.isSelected() && rbPakaiTidak.isSelected()) {
+            rbPakaiYa.setSelected(true);
+            tbObat.setEnabled(true);
+            btnTambahInline.setEnabled(true);
+            btnPilihMasterObat.setEnabled(true);
+            btnHapusBarisObat.setEnabled(true);
+            if (btnSalinRekonSebelumnya != null) btnSalinRekonSebelumnya.setEnabled(true);
+        }
+
+        int disalin = 0;
+        if (rbPulang.isSelected()) {
+            if (listObatResepTervalidasi == null || listObatResepTervalidasi.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Tidak ada data resep rawat inap tervalidasi yang dapat disalin.");
+                return;
+            }
+            for (Map<String, String> item : listObatResepTervalidasi) {
+                String nama = item.get("nama");
+                String kode = item.get("kode");
+                String aturan = item.get("aturan");
+                if (nama == null || nama.trim().isEmpty() || existingNames.contains(nama.trim().toLowerCase())) continue;
+
+                String tindakLanjut = "Lanjut aturan pakai sama";
+                String caraPemberian = "Oral";
+                if (nama.toLowerCase().contains("inj") || nama.toLowerCase().contains("infus") || nama.toLowerCase().contains("ivfd")) {
+                    caraPemberian = "Injeksi/IV";
+                }
+                tabModeObat.addRow(new Object[]{
+                    kode != null ? kode : "",
+                    nama.trim(),
+                    "",
+                    (aturan != null && !"-".equals(aturan)) ? aturan.trim() : "",
+                    caraPemberian,
+                    tindakLanjut,
+                    "-"
+                });
+                existingNames.add(nama.trim().toLowerCase());
+                disalin++;
+            }
+            updateBadgeObat();
+            JOptionPane.showMessageDialog(this, disalin + " obat dari Resep Ranap berhasil disalin ke tabel rekonsiliasi.");
+        } else {
+            String tataLaksana = txtContekanTataLaksana.getText();
+            if (tataLaksana == null || tataLaksana.trim().isEmpty() || tataLaksana.startsWith("(Belum ada")) {
+                JOptionPane.showMessageDialog(this, "Tidak ada catatan tata laksana / terapi dokter yang dapat disalin.");
+                return;
+            }
+            String[] lines = tataLaksana.split("\n");
+            for (String line : lines) {
+                String l = line.trim().replaceAll("^[\\-\\*\u2022\\d+\\.\\)\\s]+", "");
+                if (l.length() < 3 || existingNames.contains(l.toLowerCase())) continue;
+                String caraPemberian = "Oral";
+                if (l.toLowerCase().contains("inj") || l.toLowerCase().contains("infus") || l.toLowerCase().contains("ivfd")) {
+                    caraPemberian = "Injeksi/IV";
+                }
+                tabModeObat.addRow(new Object[]{
+                    "",
+                    l,
+                    "",
+                    "",
+                    caraPemberian,
+                    "Lanjut aturan pakai sama",
+                    "-"
+                });
+                existingNames.add(l.toLowerCase());
+                disalin++;
+            }
+            updateBadgeObat();
+            if (disalin > 0) {
+                JOptionPane.showMessageDialog(this, disalin + " item terapi dari Asesmen Medis berhasil disalin ke tabel.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Tidak ada item terapi baru yang dapat disalin (atau semua item sudah ada di tabel).");
+            }
+        }
+    }
+
+    /**
+     * Menarik / menyalin daftar obat dari rekonsiliasi pasien sebelumnya (misal dari tahap Admisi)
+     */
+    private void tarikRekonsiliasiSebelumnya() {
+        String noRawat = TNoRw.getText().trim();
+        if (noRawat.isEmpty() || noRawat.equals("-")) {
+            JOptionPane.showMessageDialog(this, "Silakan pilih pasien terlebih dahulu!");
+            return;
+        }
+
+        java.util.List<String[]> listRekon = new ArrayList<>();
+        PreparedStatement psPrev = null;
+        ResultSet rsPrev = null;
+        try {
+            String sql = "SELECT no_rekonsiliasi, tanggal_wawancara, rekonsiliasi_obat_saat "
+                       + "FROM rekonsiliasi_obat WHERE no_rawat = ? ";
+            if (currentModeInput == ModeInput.MODE_EDIT && noRekonSedangDiedit != null && !noRekonSedangDiedit.isEmpty()) {
+                sql += "AND no_rekonsiliasi <> ? ";
+            }
+            sql += "ORDER BY tanggal_wawancara DESC";
+            psPrev = koneksi.prepareStatement(sql);
+            psPrev.setString(1, noRawat);
+            if (currentModeInput == ModeInput.MODE_EDIT && noRekonSedangDiedit != null && !noRekonSedangDiedit.isEmpty()) {
+                psPrev.setString(2, noRekonSedangDiedit);
+            }
+            rsPrev = psPrev.executeQuery();
+            while (rsPrev.next()) {
+                listRekon.add(new String[]{
+                    rsPrev.getString("no_rekonsiliasi"),
+                    rsPrev.getString("tanggal_wawancara"),
+                    rsPrev.getString("rekonsiliasi_obat_saat")
+                });
+            }
+        } catch (Exception e) {
+            System.out.println("Notif Cek Rekon Sebelumnya: " + e);
+        } finally {
+            try { if (rsPrev != null) rsPrev.close(); if (psPrev != null) psPrev.close(); } catch (Exception e) {}
+        }
+
+        if (listRekon.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Belum ditemukan riwayat rekonsiliasi obat sebelumnya untuk nomor rawat ini (" + noRawat + ").");
+            return;
+        }
+
+        String targetNoRekon = "";
+        if (listRekon.size() == 1) {
+            String[] rk = listRekon.get(0);
+            int konfirm = JOptionPane.showConfirmDialog(
+                this,
+                "Ditemukan rekonsiliasi obat sebelumnya:\n"
+                + "No. Rekonsiliasi : " + rk[0] + "\n"
+                + "Tahap            : " + rk[2] + "\n"
+                + "Tanggal          : " + rk[1] + "\n\n"
+                + "Salin daftar obat dari rekonsiliasi tersebut ke tabel saat ini?",
+                "Konfirmasi Salin Data",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+            if (konfirm != JOptionPane.YES_OPTION) return;
+            targetNoRekon = rk[0];
+        } else {
+            String[] opsi = new String[listRekon.size()];
+            for (int i = 0; i < listRekon.size(); i++) {
+                String[] rk = listRekon.get(i);
+                opsi[i] = rk[0] + " | " + rk[2] + " (" + rk[1] + ")";
+            }
+            String pilih = (String) JOptionPane.showInputDialog(
+                this, "Pilih rekonsiliasi obat sebelumnya yang ingin disalin:", "Pilih Rekonsiliasi",
+                JOptionPane.QUESTION_MESSAGE, null, opsi, opsi[0]
+            );
+            if (pilih == null) return;
+            targetNoRekon = pilih.split(" \\| ")[0].trim();
+        }
+
+        PreparedStatement psDet = null;
+        ResultSet rsDet = null;
+        int disalin = 0;
+        try {
+            psDet = koneksi.prepareStatement("SELECT * FROM rekonsiliasi_obat_detail_obat WHERE no_rekonsiliasi = ?");
+            psDet.setString(1, targetNoRekon);
+            rsDet = psDet.executeQuery();
+
+            Set<String> existingNames = new HashSet<>();
+            for (int i = 0; i < tabModeObat.getRowCount(); i++) {
+                Object val = tabModeObat.getValueAt(i, 1);
+                if (val != null) existingNames.add(val.toString().trim().toLowerCase());
+            }
+
+            if (rbAdmisi.isSelected() && rbPakaiTidak.isSelected()) {
+                rbPakaiYa.setSelected(true);
+                tbObat.setEnabled(true);
+                btnTambahInline.setEnabled(true);
+                btnPilihMasterObat.setEnabled(true);
+                btnHapusBarisObat.setEnabled(true);
+            }
+
+            while (rsDet.next()) {
+                String nama = rsDet.getString("nama_obat");
+                if (nama == null || nama.trim().isEmpty()) continue;
+                if (existingNames.contains(nama.trim().toLowerCase())) continue;
+
+                tabModeObat.addRow(new Object[]{
+                    "",
+                    nama.trim(),
+                    rsDet.getString("dosis_obat"),
+                    rsDet.getString("frekuensi"),
+                    rsDet.getString("cara_pemberian"),
+                    rsDet.getString("tindak_lanjut"),
+                    rsDet.getString("perubahan_aturan_pakai")
+                });
+                existingNames.add(nama.trim().toLowerCase());
+                disalin++;
+            }
+            updateBadgeObat();
+            JOptionPane.showMessageDialog(this, disalin + " obat dari Rekonsiliasi (" + targetNoRekon + ") berhasil disalin ke tabel!");
+        } catch (Exception e) {
+            System.out.println("Notif Salin Detail Rekon: " + e);
+            JOptionPane.showMessageDialog(this, "Gagal menyalin obat: " + e.getMessage());
+        } finally {
+            try { if (rsDet != null) rsDet.close(); if (psDet != null) psDet.close(); } catch (Exception e) {}
+        }
+    }
+
+    /**
+     * Cetak rekapitulasi register data rekonsiliasi obat (rptDataRekonsiliasiObat.jasper)
+     */
+    private void cetakRekapitulasi() {
+        if (tabModeDataRekon.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Tidak ada data rekonsiliasi yang bisa dicetak pada periode filter saat ini!");
+            return;
+        }
+
+        try {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            Sequel.queryu("delete from temporary where temp37='" + akses.getalamatip() + "'");
+
+            String tgl1 = Valid.SetTgl(DTPCari1.getSelectedItem() + "") + " 00:00:00";
+            String tgl2 = Valid.SetTgl(DTPCari2.getSelectedItem() + "") + " 23:59:59";
+            String kw = "%" + TCari.getText().trim() + "%";
+
+            String sql = "SELECT r.no_rekonsiliasi, CONCAT(p.no_rkm_medis, ' ', p.nm_pasien) AS pasien, "
+                       + "r.tanggal_wawancara, r.rekonsiliasi_obat_saat, r.alergi_obat, "
+                       + "r.dampak_alergi, r.manifestasi_alergi, CONCAT(r.nip, ' ', pt.nama) AS petugas "
+                       + "FROM rekonsiliasi_obat r "
+                       + "INNER JOIN reg_periksa rp ON r.no_rawat = rp.no_rawat "
+                       + "INNER JOIN pasien p ON rp.no_rkm_medis = p.no_rkm_medis "
+                       + "INNER JOIN petugas pt ON r.nip = pt.nip "
+                       + "WHERE r.tanggal_wawancara BETWEEN ? AND ? "
+                       + "AND (r.no_rekonsiliasi LIKE ? OR r.no_rawat LIKE ? OR p.no_rkm_medis LIKE ? OR p.nm_pasien LIKE ? OR pt.nama LIKE ?) "
+                       + "ORDER BY r.tanggal_wawancara DESC";
+
+            PreparedStatement psRekap = koneksi.prepareStatement(sql);
+            psRekap.setString(1, tgl1);
+            psRekap.setString(2, tgl2);
+            psRekap.setString(3, kw);
+            psRekap.setString(4, kw);
+            psRekap.setString(5, kw);
+            psRekap.setString(6, kw);
+            psRekap.setString(7, kw);
+            ResultSet rsRekap = psRekap.executeQuery();
+
+            int idx = 0;
+            while (rsRekap.next()) {
+                Sequel.menyimpan("temporary", "'" + idx + "','" +
+                    rsRekap.getString("no_rekonsiliasi") + "','" +
+                    rsRekap.getString("pasien") + "','" +
+                    rsRekap.getString("tanggal_wawancara") + "','" +
+                    rsRekap.getString("rekonsiliasi_obat_saat") + "','" +
+                    rsRekap.getString("alergi_obat") + "','" +
+                    rsRekap.getString("dampak_alergi") + "','" +
+                    rsRekap.getString("manifestasi_alergi") + "','" +
+                    rsRekap.getString("petugas") + "','','','','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Rekapitulasi Rekonsiliasi Obat");
+                idx++;
+            }
+            rsRekap.close();
+            psRekap.close();
+
+            Map<String, Object> param = new HashMap<>();
+            param.put("namars", akses.getnamars());
+            param.put("alamatrs", akses.getalamatrs());
+            param.put("kotars", akses.getkabupatenrs());
+            param.put("propinsirs", akses.getpropinsirs());
+            param.put("kontakrs", akses.getkontakrs());
+            param.put("emailrs", akses.getemailrs());
+            param.put("logo", Sequel.cariGambar("SELECT setting.logo FROM setting"));
+
+            Valid.MyReportqry("rptDataRekonsiliasiObat.jasper", "report", "::[ Data Rekonsiliasi Obat ]::",
+                "SELECT * FROM temporary WHERE temporary.temp37='" + akses.getalamatip() + "' ORDER BY temporary.no", param);
+        } catch (Exception ex) {
+            System.out.println("Notif Cetak Rekapitulasi: " + ex);
+            JOptionPane.showMessageDialog(this, "Gagal mencetak rekapitulasi: " + ex.getMessage());
+        } finally {
+            this.setCursor(Cursor.getDefaultCursor());
+        }
     }
 }

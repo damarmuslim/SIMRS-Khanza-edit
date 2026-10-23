@@ -926,7 +926,7 @@ import rekammedis.MasterTriaseSkala2;
 import rekammedis.MasterTriaseSkala3;
 import rekammedis.MasterTriaseSkala4;
 import rekammedis.MasterTriaseSkala5;
-import rekammedis.RMCariRekonsiliasiObat;
+import rekammedis.RMRekonsiliasiObat;
 import rekammedis.RMCatatanADIMEGizi;
 import rekammedis.RMCatatanAnastesiSedasi;
 import rekammedis.RMCatatanPengkajianPaskaOperasi;
@@ -20577,9 +20577,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         isTutup();
         DlgHome.dispose();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        RMCariRekonsiliasiObat aplikasi=new RMCariRekonsiliasiObat(this,false);
+        RMRekonsiliasiObat aplikasi=new RMRekonsiliasiObat(this,false);
+        aplikasi.isCek();
         aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
         aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.bukaDariMenuUtama();
         aplikasi.setVisible(true);
         this.setCursor(Cursor.getDefaultCursor());
     }
