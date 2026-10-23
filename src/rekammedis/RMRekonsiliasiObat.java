@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.*;
 import net.sf.jasperreports.engine.JRResultSetDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -1952,14 +1953,224 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         updateBadgeObat();
     }
 
+    public static class ItemObatTerdeteksi {
+        public String kode = "";
+        public String nama = "";
+        public String dosis = "-";
+        public String aturan = "-";
+        public String rute = "Oral";
+        public String tindakLanjut = "Lanjut aturan pakai sama";
+        public String perubahan = "-";
+    }
+
+    private static final Pattern PATTERN_NON_OBAT = Pattern.compile(
+            "^(bedrest|tirah\\s+baring|diet|puasa|observasi|pantau|monitoring|balance|konsul|rujuk|cek\\s+lab|rontgen|usg|ekg|aff|lepas|ganti\\s+perban|edukasi|rawat\\s+luka|alih\\s+rawat|persiapan|posisi|oksigen|o2|npo|pasang\\s+dc|pasang\\s+ngt)\\b",
+            Pattern.CASE_INSENSITIVE
+    );
+
+    private static final Pattern PATTERN_DOSIS = Pattern.compile(
+            "\\b(\\d+([.,]\\d+)?\\s*(mg|mcg|gr|gram|iu|ml|tpm|tab|tablet|kaps|kapsul|amp|ampul|vial|kolf|fls|cth|c|sendok|supp)\\b)",
+            Pattern.CASE_INSENSITIVE
+    );
+
+    private static final Pattern PATTERN_FREKUENSI = Pattern.compile(
+            "(\\b\\d+\\s*[xX]\\s*\\d+([.,/]\\d+)?(\\s*\\([^)]+\\))?|\\/\\s*\\d+\\s*(jam|hours?)|\\b(tiap|setiap|bila|jika|k\\/p|prn)\\s+[^,\\-]+|\\b\\d+\\s*(jam|hari)\\s*sekali|\\/\\s*bab\\s*cair)",
+            Pattern.CASE_INSENSITIVE
+    );
+
+    private String cariKodeBarangMaster(String nama) {
+        if (nama == null || nama.trim().isEmpty()) return "";
+        String clean = nama.toLowerCase()
+                           .replaceAll("^(inj|injeksi|tab|tablet|kaps|kapsul|syr|sirup|ivfd|infus|drop|salep)\\.?\\s+", "")
+                           .trim();
+        String[] words = clean.split("[\\s\\/\\-]+");
+        String keyword = words.length > 0 ? words[0] : clean;
+        if (keyword.length() < 3) return "";
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = koneksi.prepareStatement("SELECT kode_brng FROM databarang WHERE status='1' AND (nama_brng LIKE ? OR kode_brng LIKE ?) ORDER BY LENGTH(nama_brng) ASC LIMIT 1");
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, keyword + "%");
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("kode_brng");
+            }
+        } catch (Exception e) {
+            // diamkan error untuk menjaga kelancaran antarmuka
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (Exception ex) {}
+        }
+        return "";
+    }
+
+    private boolean isBukanObat(String token) {
+        String lower = token.toLowerCase();
+        if (PATTERN_NON_OBAT.matcher(lower).find()) {
+            if (!PATTERN_DOSIS.matcher(lower).find() && !lower.contains("inj") && !lower.contains("ivfd") && !lower.contains("tab")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isObat(String token) {
+        String lower = token.toLowerCase();
+
+        // 1. Bentuk sediaan obat
+        if (lower.contains("inj") || lower.contains("injeksi") || lower.contains("ivfd") ||
+            lower.contains("infus") || lower.contains("drip") || lower.contains("tab") ||
+            lower.contains("kaps") || lower.contains("syr") || lower.contains("sirup") ||
+            lower.contains("drop") || lower.contains("salep") || lower.contains("cream") ||
+            lower.contains("supp") || lower.contains("neb") || lower.contains("pulv") ||
+            lower.contains("fls") || lower.contains("amp") || lower.contains("vial")) {
+            return true;
+        }
+
+        // 2. Cairan infus umum / nama generik umum
+        if (lower.matches(".*\\b(rl|nacl|ns|d5|d10|kaen|tutofusin|ringer|asering|maltose|gelafusal|paracetamol|ceftriaxone|ondansentron|pantoprazole|omeprazole|ketorolac|ranitidin|amoxicillin|cefixime|zink|diatab)\\b.*")) {
+            return true;
+        }
+
+        // 3. Mengandung dosis (misal 500 mg, 4mg, 20 tpm)
+        if (PATTERN_DOSIS.matcher(lower).find()) {
+            return true;
+        }
+
+        // 4. Mengandung pola aturan pakai (3x1, 1x1, /8 jam)
+        if (lower.matches(".*\\b\\d+\\s*[xX]\\s*\\d+.*") || lower.matches(".*\\/\\s*\\d+\\s*jam.*")) {
+            return true;
+        }
+
+        // 5. Cek apakah ada di master databarang RS
+        String kode = cariKodeBarangMaster(token);
+        return (kode != null && !kode.isEmpty());
+    }
+
+    private ItemObatTerdeteksi ekstrakDetailObat(String token) {
+        ItemObatTerdeteksi item = new ItemObatTerdeteksi();
+        String sisa = token;
+
+        // Tentukan rute pemberian
+        String lower = token.toLowerCase();
+        if (lower.contains("inj") || lower.contains("injeksi") || lower.contains("ivfd") ||
+            lower.contains("infus") || lower.contains("drip") || lower.contains("iv") ||
+            lower.contains("im") || lower.contains("sc")) {
+            item.rute = "Injeksi/IV";
+        } else if (lower.contains("salep") || lower.contains("cream") || lower.contains("krim") ||
+                   lower.contains("gel") || lower.contains("tetes") || lower.contains("drop")) {
+            item.rute = "Topikal";
+        } else if (lower.contains("supp") || lower.contains("rectal")) {
+            item.rute = "Rektal";
+        } else if (lower.contains("neb") || lower.contains("inhalasi")) {
+            item.rute = "Inhalasi";
+        } else {
+            item.rute = "Oral";
+        }
+
+        // Ekstrak pola gabungan misal "3x500mg" atau "3x1 tab"
+        Matcher mComb = Pattern.compile("(\\b\\d+\\s*[xX])\\s*(\\d+([.,]\\d+)?\\s*(mg|mcg|gr|gram|iu|ml|tab|tablet|kaps|kapsul|amp|ampul))\\b", Pattern.CASE_INSENSITIVE).matcher(sisa);
+        if (mComb.find()) {
+            item.aturan = mComb.group(1).trim() + "1";
+            item.dosis = mComb.group(2).trim();
+            sisa = sisa.substring(0, mComb.start()) + " " + sisa.substring(mComb.end());
+        } else {
+            // Ekstrak Aturan Pakai / Frekuensi biasa
+            Matcher mFrek = PATTERN_FREKUENSI.matcher(sisa);
+            if (mFrek.find()) {
+                item.aturan = mFrek.group(0).trim();
+                if (item.aturan.equalsIgnoreCase("/bab cair")) {
+                    item.aturan = "tiap BAB cair";
+                }
+                sisa = sisa.substring(0, mFrek.start()) + " " + sisa.substring(mFrek.end());
+            }
+
+            // Ekstrak Dosis biasa
+            Matcher mDosis = PATTERN_DOSIS.matcher(sisa);
+            if (mDosis.find()) {
+                item.dosis = mDosis.group(0).trim();
+                if (item.dosis.toLowerCase().contains("tpm")) {
+                    if (item.aturan.isEmpty() || item.aturan.equals("-")) {
+                        item.aturan = item.dosis;
+                        item.dosis = "-";
+                    }
+                }
+                sisa = sisa.substring(0, mDosis.start()) + " " + sisa.substring(mDosis.end());
+            }
+        }
+
+        // Cek jika ada sisa keterangan seperti "bila demam", "jika nyeri"
+        Matcher mKet = Pattern.compile("\\b(bila|jika|k\\/p|prn)\\s+[^,\\-]+", Pattern.CASE_INSENSITIVE).matcher(sisa);
+        if (mKet.find()) {
+            String ket = mKet.group(0).trim();
+            if (!item.aturan.contains(ket)) {
+                item.aturan = (item.aturan.isEmpty() || item.aturan.equals("-")) ? ket : (item.aturan + " (" + ket + ")");
+            }
+            sisa = sisa.substring(0, mKet.start()) + " " + sisa.substring(mKet.end());
+        }
+
+        // Bersihkan sisa nama obat
+        String namaBersih = sisa.replaceAll("[\\(\\)\\/\\-;,]", " ")
+                                .replaceAll("\\s+", " ")
+                                .trim();
+
+        if (namaBersih.isEmpty() || namaBersih.length() < 2) {
+            namaBersih = token;
+        }
+
+        item.nama = namaBersih;
+        if (item.dosis.isEmpty()) item.dosis = "-";
+        if (item.aturan.isEmpty()) item.aturan = "-";
+
+        // Cari kode obat di master database
+        item.kode = cariKodeBarangMaster(item.nama);
+
+        return item;
+    }
+
+    private java.util.List<ItemObatTerdeteksi> parseDaftarObatDariTeks(String teks) {
+        java.util.List<ItemObatTerdeteksi> hasil = new ArrayList<>();
+        if (teks == null || teks.trim().isEmpty() || teks.startsWith("(Belum ada")) {
+            return hasil;
+        }
+
+        // Multi-delimiter split: newline, dash with spaces, semicolon, comma (not in decimal), numbered inline list (1. 2. 1) 2)), or bullets
+        String[] tokens = teks.split("(\\r?\\n|\\s+[-–—]+\\s+|(?<=\\s|^)[\\-\\*\u2022]\\s+|(?<=\\s|^)\\d+[\\.\\)]\\s+|\\s*;\\s*|\\s*(?<!\\d),(?!\\d)\\s*)");
+
+        for (String raw : tokens) {
+            if (raw == null) continue;
+            String token = raw.trim().replaceAll("^[\\-\\*\u2022\\d+\\.\\)\\s]+", "").trim();
+            if (token.length() < 3) continue;
+
+            if (isBukanObat(token)) continue;
+            if (!isObat(token)) continue;
+
+            ItemObatTerdeteksi item = ekstrakDetailObat(token);
+            hasil.add(item);
+        }
+        return hasil;
+    }
+
     private void kirimTeksTerblokKeTabel() {
         String selected = txtContekanTataLaksana.getSelectedText();
         if (selected == null || selected.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Blok/sorot dulu nama obat pada kotak Tata Laksana di sebelah kiri, lalu klik tombol ini.");
             return;
         }
-        String bersih = selected.trim().replaceAll("^[\\-\\*\u2022\\d+\\.\\)\\s]+", "");
-        tabModeObat.addRow(new Object[]{"", bersih, "", "", "Oral", "Lanjut aturan pakai sama", "-"});
+        ItemObatTerdeteksi item = ekstrakDetailObat(selected.trim());
+        tabModeObat.addRow(new Object[]{
+            item.kode,
+            item.nama,
+            item.dosis,
+            item.aturan,
+            item.rute,
+            item.tindakLanjut,
+            item.perubahan
+        });
         updateBadgeObat();
     }
 
@@ -1972,34 +2183,40 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
      */
     private void generateQuickChips(String tataLaksana) {
         panelQuickChips.removeAll();
-        if (tataLaksana == null || tataLaksana.trim().isEmpty()) {
+        if (tataLaksana == null || tataLaksana.trim().isEmpty() || tataLaksana.startsWith("(Belum ada")) {
             panelQuickChips.revalidate();
             panelQuickChips.repaint();
             return;
         }
 
-        String[] lines = tataLaksana.split("\n");
+        java.util.List<ItemObatTerdeteksi> listObat = parseDaftarObatDariTeks(tataLaksana);
         int count = 0;
-        for (String line : lines) {
-            String l = line.trim().replaceAll("^[\\-\\*\u2022\\d+\\.\\)\\s]+", "");
-            if (l.length() > 3 && (l.toLowerCase().contains("po") || l.toLowerCase().contains("inj") ||
-                    l.toLowerCase().contains("ivfd") || l.toLowerCase().contains("tab") ||
-                    l.toLowerCase().contains("syr") || l.toLowerCase().contains("mg") || count < 4)) {
-                final String item = l;
-                JButton chip = new JButton(item.length() > 22 ? item.substring(0, 20) + ".." : item);
-                chip.setIcon(IconStyle.muat("plus.svg", 10, TEAL_MAIN));
-                chip.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-                chip.setBackground(Color.WHITE);
-                chip.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                chip.setToolTipText(item);
-                chip.addActionListener(e -> {
-                    tabModeObat.addRow(new Object[]{"", item, "", "", "Oral", "Lanjut aturan pakai sama", "-"});
-                    updateBadgeObat();
-                });
-                panelQuickChips.add(chip);
-                count++;
-                if (count >= 5) break;
+        for (ItemObatTerdeteksi item : listObat) {
+            String label = item.nama;
+            if (label.length() > 20) {
+                label = label.substring(0, 18) + "..";
             }
+            JButton chip = new JButton(label);
+            chip.setIcon(IconStyle.muat("plus.svg", 10, TEAL_MAIN));
+            chip.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+            chip.setBackground(Color.WHITE);
+            chip.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            chip.setToolTipText(item.nama + " (" + item.dosis + ", " + item.aturan + ", " + item.rute + ")");
+            chip.addActionListener(e -> {
+                tabModeObat.addRow(new Object[]{
+                    item.kode,
+                    item.nama,
+                    item.dosis,
+                    item.aturan,
+                    item.rute,
+                    item.tindakLanjut,
+                    item.perubahan
+                });
+                updateBadgeObat();
+            });
+            panelQuickChips.add(chip);
+            count++;
+            if (count >= 8) break;
         }
         panelQuickChips.revalidate();
         panelQuickChips.repaint();
@@ -3787,31 +4004,26 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "Tidak ada catatan tata laksana / terapi dokter yang dapat disalin.");
                 return;
             }
-            String[] lines = tataLaksana.split("\n");
-            for (String line : lines) {
-                String l = line.trim().replaceAll("^[\\-\\*\u2022\\d+\\.\\)\\s]+", "");
-                if (l.length() < 3 || existingNames.contains(l.toLowerCase())) continue;
-                String caraPemberian = "Oral";
-                if (l.toLowerCase().contains("inj") || l.toLowerCase().contains("infus") || l.toLowerCase().contains("ivfd")) {
-                    caraPemberian = "Injeksi/IV";
-                }
+            java.util.List<ItemObatTerdeteksi> listObat = parseDaftarObatDariTeks(tataLaksana);
+            for (ItemObatTerdeteksi item : listObat) {
+                if (existingNames.contains(item.nama.toLowerCase())) continue;
                 tabModeObat.addRow(new Object[]{
-                    "",
-                    l,
-                    "",
-                    "",
-                    caraPemberian,
-                    "Lanjut aturan pakai sama",
-                    "-"
+                    item.kode,
+                    item.nama,
+                    item.dosis,
+                    item.aturan,
+                    item.rute,
+                    item.tindakLanjut,
+                    item.perubahan
                 });
-                existingNames.add(l.toLowerCase());
+                existingNames.add(item.nama.toLowerCase());
                 disalin++;
             }
             updateBadgeObat();
             if (disalin > 0) {
-                JOptionPane.showMessageDialog(this, disalin + " item terapi dari Asesmen Medis berhasil disalin ke tabel.");
+                JOptionPane.showMessageDialog(this, disalin + " item obat dari Asesmen Medis berhasil dideteksi dan disalin ke tabel.");
             } else {
-                JOptionPane.showMessageDialog(this, "Tidak ada item terapi baru yang dapat disalin (atau semua item sudah ada di tabel).");
+                JOptionPane.showMessageDialog(this, "Tidak ada item obat baru yang terdeteksi (atau semua obat sudah ada di tabel).");
             }
         }
     }
