@@ -2423,7 +2423,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
     private void tampilkanResepRanap() {
         if (borderCardSidebar != null) {
-            String judul = rbTransfer.isSelected() ? " RESEP DOKTER (TRANSFER RUANG) " : " RESEP OBAT (PULANG) ";
+            String judul = rbTransfer.isSelected() ? " RESEP RANAP (TRANSFER RUANG) " : " RESEP RANAP (PULANG) ";
             borderCardSidebar.setTitle(judul);
             if (cardSidebar != null) cardSidebar.repaint();
         }
@@ -2432,7 +2432,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         }
         if (pnlToggle != null) {
             pnlToggle.removeAll();
-            JLabel lblBadgeResep = new JLabel(rbTransfer.isSelected() ? " Resep Dokter Transfer " : " Resep Dokter Pulang ");
+            JLabel lblBadgeResep = new JLabel(rbTransfer.isSelected() ? " Resep Dokter Ranap (Transfer) " : " Resep Dokter Ranap (Pulang) ");
             lblBadgeResep.setFont(new Font("Segoe UI", Font.BOLD, 10));
             lblBadgeResep.setForeground(new Color(15, 118, 110));
             lblBadgeResep.setBackground(new Color(204, 251, 241));
@@ -2444,7 +2444,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
 
             JButton btnRefreshResep = new JButton();
             btnRefreshResep.setIcon(IconStyle.muat("refresh.svg", 12, new Color(71, 85, 105)));
-            btnRefreshResep.setToolTipText("Muat Ulang Resep Dokter");
+            btnRefreshResep.setToolTipText("Muat Ulang Resep Ranap");
             btnRefreshResep.setPreferredSize(new Dimension(24, 20));
             btnRefreshResep.setCursor(new Cursor(Cursor.HAND_CURSOR));
             btnRefreshResep.addActionListener(e -> {
@@ -2458,7 +2458,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             pnlToggle.repaint();
         }
         if (lblRtl != null) {
-            lblRtl.setText(rbTransfer.isSelected() ? "Daftar Resep Dokter Saat Transfer:" : "Daftar Resep Dokter Pulang:");
+            lblRtl.setText(rbTransfer.isSelected() ? "Daftar Resep Dokter Ranap Saat Transfer:" : "Daftar Resep Dokter Ranap Pulang:");
         }
         if (panelRPOContekan != null) {
             panelRPOContekan.setVisible(false);
@@ -2472,7 +2472,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
             cardSidebar.repaint();
         }
         txtContekanTataLaksana.setText((resepRanapTervalidasi == null || resepRanapTervalidasi.trim().isEmpty())
-            ? "(Belum ada resep dokter yang tercatat untuk no rawat ini)"
+            ? "(Belum ada resep dokter rawat inap yang tercatat untuk no rawat ini)"
             : resepRanapTervalidasi);
         txtContekanTataLaksana.setCaretPosition(0);
 
@@ -2561,14 +2561,14 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
         int totalResep = 0;
         int totalItem = 0;
 
-        // 1. Ambil dari resep_obat (baik tervalidasi maupun order baru dokter)
+        // 1. Ambil dari resep_obat khusus status ranap saja (baik tervalidasi maupun order baru dokter)
         try {
             PreparedStatement psResep = koneksi.prepareStatement(
                 "SELECT ro.no_resep, ro.tgl_peresepan, ro.jam_peresepan, ro.tgl_perawatan, ro.jam, "
                 + "IFNULL(d.nm_dokter, '-') AS nm_dokter, ro.status "
                 + "FROM resep_obat ro "
                 + "LEFT JOIN dokter d ON ro.kd_dokter = d.kd_dokter "
-                + "WHERE ro.no_rawat = ? "
+                + "WHERE ro.no_rawat = ? AND LOWER(ro.status) = 'ranap' "
                 + "ORDER BY (ro.tgl_perawatan <> '0000-00-00') DESC, ro.tgl_peresepan DESC, ro.jam_peresepan DESC, ro.no_resep DESC"
             );
             psResep.setString(1, norwt);
@@ -2689,7 +2689,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                     + "LEFT JOIN kodesatuan k ON b.kode_sat = k.kode_sat "
                     + "LEFT JOIN aturan_pakai ap ON dpo.no_rawat = ap.no_rawat "
                     + "AND dpo.tgl_perawatan = ap.tgl_perawatan AND dpo.jam = ap.jam AND dpo.kode_brng = ap.kode_brng "
-                    + "WHERE dpo.no_rawat = ? "
+                    + "WHERE dpo.no_rawat = ? AND LOWER(dpo.status) = 'ranap' "
                     + "ORDER BY dpo.tgl_perawatan DESC, dpo.jam DESC"
                 );
                 psDpo.setString(1, norwt);
@@ -4001,7 +4001,7 @@ public final class RMRekonsiliasiObat extends javax.swing.JDialog {
                 disalin++;
             }
             updateBadgeObat();
-            String asal = rbTransfer.isSelected() ? "Resep Dokter Transfer Ruang" : "Resep Dokter Pulang";
+            String asal = rbTransfer.isSelected() ? "Resep Ranap Transfer Ruang" : "Resep Ranap Pulang";
             JOptionPane.showMessageDialog(this, disalin + " obat dari " + asal + " berhasil disalin ke tabel rekonsiliasi.");
         } else {
             String tataLaksana = txtContekanTataLaksana.getText();
