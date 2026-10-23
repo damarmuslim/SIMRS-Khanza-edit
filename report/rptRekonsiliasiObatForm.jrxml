@@ -411,10 +411,10 @@
 		<band splitType="Prevent"/>
 	</columnHeader>
 	<detail>
-		<band height="36" splitType="Prevent">
+		<band height="48" splitType="Prevent">
 			<!-- Baris Data Detail Obat -->
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="0" width="24" height="36" uuid="a1b2c3d4-0001-4000-8000-000000000055"/>
+				<reportElement positionType="Float" x="0" y="0" width="24" height="48" uuid="a1b2c3d4-0001-4000-8000-000000000055"/>
 				<box>
 					<pen lineWidth="0.5" lineColor="#CBD5E1"/>
 				</box>
@@ -424,7 +424,7 @@
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="24" y="0" width="145" height="36" uuid="a1b2c3d4-0001-4000-8000-000000000056"/>
+				<reportElement positionType="Float" x="24" y="0" width="145" height="48" uuid="a1b2c3d4-0001-4000-8000-000000000056"/>
 				<box leftPadding="4" rightPadding="2">
 					<pen lineWidth="0.5" lineColor="#CBD5E1"/>
 				</box>
@@ -434,7 +434,7 @@
 				<textFieldExpression><![CDATA[$F{nama_obat}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="169" y="0" width="55" height="36" uuid="a1b2c3d4-0001-4000-8000-000000000057"/>
+				<reportElement positionType="Float" x="169" y="0" width="55" height="48" uuid="a1b2c3d4-0001-4000-8000-000000000057"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="0.5" lineColor="#CBD5E1"/>
 				</box>
@@ -444,7 +444,7 @@
 				<textFieldExpression><![CDATA[$F{dosis_obat}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="224" y="0" width="55" height="36" uuid="a1b2c3d4-0001-4000-8000-000000000058"/>
+				<reportElement positionType="Float" x="224" y="0" width="55" height="48" uuid="a1b2c3d4-0001-4000-8000-000000000058"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="0.5" lineColor="#CBD5E1"/>
 				</box>
@@ -454,7 +454,7 @@
 				<textFieldExpression><![CDATA[$F{frekuensi}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="279" y="0" width="65" height="36" uuid="a1b2c3d4-0001-4000-8000-000000000059"/>
+				<reportElement positionType="Float" x="279" y="0" width="65" height="48" uuid="a1b2c3d4-0001-4000-8000-000000000059"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="0.5" lineColor="#CBD5E1"/>
 				</box>
@@ -464,9 +464,9 @@
 				<textFieldExpression><![CDATA[$F{cara_pemberian}]]></textFieldExpression>
 			</textField>
 
-			<!-- Pilihan Tindak Lanjut DPJP (3 Opsi Checkbox Rapi) -->
+			<!-- Pilihan Tindak Lanjut DPJP (4 Opsi Checkbox Rapi Sejajar Vertikal) -->
 			<rectangle>
-				<reportElement positionType="Float" mode="Transparent" x="344" y="0" width="125" height="36" uuid="a1b2c3d4-0001-4000-8000-000000000060"/>
+				<reportElement positionType="Float" mode="Transparent" x="344" y="0" width="125" height="48" uuid="a1b2c3d4-0001-4000-8000-000000000060"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#CBD5E1"/>
 				</graphicElement>
@@ -588,16 +588,16 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" x="359" y="23" width="38" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000069"/>
+				<reportElement positionType="Float" x="359" y="23" width="109" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000069"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6"/>
 				</textElement>
 				<text><![CDATA[Stop]]></text>
 			</staticText>
 
-			<!-- Opsi 4: Baru -->
+			<!-- Opsi 4: Baru (di bawah Stop, sejajar di x=348) -->
 			<rectangle radius="1">
-				<reportElement positionType="Float" mode="Opaque" x="402" y="25" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000068a">
+				<reportElement positionType="Float" mode="Opaque" x="348" y="36" width="8" height="8" backcolor="#0F172A" uuid="a1b2c3d4-0001-4000-8000-000000000068a">
 					<printWhenExpression><![CDATA[Boolean.valueOf("Baru".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -605,7 +605,7 @@
 				</graphicElement>
 			</rectangle>
 			<line>
-				<reportElement positionType="Float" x="403" y="29" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-000000000068b">
+				<reportElement positionType="Float" x="349" y="40" width="2" height="2" uuid="a1b2c3d4-0001-4000-8000-000000000068b">
 					<printWhenExpression><![CDATA[Boolean.valueOf("Baru".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -613,7 +613,7 @@
 				</graphicElement>
 			</line>
 			<line direction="BottomUp">
-				<reportElement positionType="Float" x="405" y="26" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-000000000068c">
+				<reportElement positionType="Float" x="351" y="37" width="3" height="5" uuid="a1b2c3d4-0001-4000-8000-000000000068c">
 					<printWhenExpression><![CDATA[Boolean.valueOf("Baru".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -621,7 +621,7 @@
 				</graphicElement>
 			</line>
 			<rectangle radius="1">
-				<reportElement positionType="Float" mode="Transparent" x="402" y="25" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000068d">
+				<reportElement positionType="Float" mode="Transparent" x="348" y="36" width="8" height="8" uuid="a1b2c3d4-0001-4000-8000-000000000068d">
 					<printWhenExpression><![CDATA[Boolean.valueOf(!"Baru".equalsIgnoreCase($F{tindak_lanjut}))]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -629,7 +629,7 @@
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" x="413" y="23" width="52" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000069b"/>
+				<reportElement positionType="Float" x="359" y="34" width="109" height="11" forecolor="#1E293B" uuid="a1b2c3d4-0001-4000-8000-000000000069b"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6"/>
 				</textElement>
@@ -638,7 +638,7 @@
 
 			<!-- Kolom Perubahan Aturan Pakai -->
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="469" y="0" width="100" height="36" uuid="a1b2c3d4-0001-4000-8000-000000000070"/>
+				<reportElement positionType="Float" x="469" y="0" width="100" height="48" uuid="a1b2c3d4-0001-4000-8000-000000000070"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="0.5" lineColor="#CBD5E1"/>
 				</box>
