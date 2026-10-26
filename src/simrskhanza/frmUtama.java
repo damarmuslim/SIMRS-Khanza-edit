@@ -7384,12 +7384,12 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame1.setWarnaBawah(java.awt.Color.WHITE);
         internalFrame1.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.JPanel pnlLeftTools = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 8));
+        javax.swing.JPanel pnlLeftTools = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 8));
         pnlLeftTools.setOpaque(false);
-        javax.swing.JPanel pnlRightActions = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 8));
+        javax.swing.JPanel pnlRightActions = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 6, 8));
         pnlRightActions.setOpaque(false);
 
-        BtnMenu.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/menu.svg", 32, 32));
+        BtnMenu.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/menu.svg", 24, 24));
         BtnMenu.setRolloverIcon(svgIconHover("picture/icons/toolbar/menu.svg"));
         BtnMenu.setPressedIcon(svgIconHover("picture/icons/toolbar/menu.svg"));
         BtnMenu.setMnemonic('M');
@@ -7400,7 +7400,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnMenu.setIconTextGap(6);
         BtnMenu.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnMenu.setName("BtnMenu"); // NOI18N
-        BtnMenu.setPreferredSize(new java.awt.Dimension(98, 40));
+        BtnMenu.setPreferredSize(new java.awt.Dimension(88, 40));
         BtnMenu.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnMenu.putClientProperty("JButton.buttonType", "toolBarButton");
         BtnMenu.putClientProperty("JButton.arc", 8);
@@ -7424,7 +7424,7 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator4.setPreferredSize(new java.awt.Dimension(1, 24));
         pnlLeftTools.add(jSeparator4);
 
-        BtnToolReg.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/registration.svg", 32, 32));
+        BtnToolReg.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/registration.svg", 24, 24));
         BtnToolReg.setRolloverIcon(svgIconHover("picture/icons/toolbar/registration.svg"));
         BtnToolReg.setPressedIcon(svgIconHover("picture/icons/toolbar/registration.svg"));
         BtnToolReg.setMnemonic('R');
@@ -7435,7 +7435,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolReg.setIconTextGap(6);
         BtnToolReg.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolReg.setName("BtnToolReg"); // NOI18N
-        BtnToolReg.setPreferredSize(new java.awt.Dimension(124, 40));
+        BtnToolReg.setPreferredSize(new java.awt.Dimension(118, 40));
         BtnToolReg.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolReg.putClientProperty("JButton.buttonType", "toolBarButton");
         BtnToolReg.putClientProperty("JButton.arc", 8);
@@ -7450,7 +7450,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(BtnToolReg);
 
-        btnToolIGD.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/emergency.svg", 32, 32));
+        btnToolIGD.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/emergency.svg", 24, 24));
         btnToolIGD.setRolloverIcon(svgIconHover("picture/icons/toolbar/emergency.svg"));
         btnToolIGD.setPressedIcon(svgIconHover("picture/icons/toolbar/emergency.svg"));
         btnToolIGD.setMnemonic('D');
@@ -7461,7 +7461,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnToolIGD.setIconTextGap(6);
         btnToolIGD.setMargin(new java.awt.Insets(0, 4, 0, 4));
         btnToolIGD.setName("btnToolIGD"); // NOI18N
-        btnToolIGD.setPreferredSize(new java.awt.Dimension(122, 40));
+        btnToolIGD.setPreferredSize(new java.awt.Dimension(108, 40));
         btnToolIGD.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         btnToolIGD.putClientProperty("JButton.buttonType", "toolBarButton");
         btnToolIGD.putClientProperty("JButton.arc", 8);
@@ -7485,7 +7485,7 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator5.setPreferredSize(new java.awt.Dimension(1, 24));
         pnlLeftTools.add(jSeparator5);
 
-        btnToolLab.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/laboratory.svg", 32, 32));
+        btnToolLab.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/laboratory.svg", 24, 24));
         btnToolLab.setRolloverIcon(svgIconHover("picture/icons/toolbar/laboratory.svg"));
         btnToolLab.setPressedIcon(svgIconHover("picture/icons/toolbar/laboratory.svg"));
         btnToolLab.setMnemonic('O');
@@ -7495,7 +7495,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnToolLab.setIconTextGap(6);
         btnToolLab.setMargin(new java.awt.Insets(0, 4, 0, 4));
         btnToolLab.setName("btnToolLab"); // NOI18N
-        btnToolLab.setPreferredSize(new java.awt.Dimension(108, 40));
+        btnToolLab.setPreferredSize(new java.awt.Dimension(102, 40));
         btnToolLab.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         btnToolLab.putClientProperty("JButton.buttonType", "toolBarButton");
         btnToolLab.putClientProperty("JButton.arc", 8);
@@ -7510,7 +7510,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(btnToolLab);
 
-        btnToolRad.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/radiology.svg", 32, 32));
+        btnToolRad.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/radiology.svg", 24, 24));
         btnToolRad.setRolloverIcon(svgIconHover("picture/icons/toolbar/radiology.svg"));
         btnToolRad.setPressedIcon(svgIconHover("picture/icons/toolbar/radiology.svg"));
         btnToolRad.setMnemonic('A');
@@ -7520,7 +7520,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnToolRad.setIconTextGap(6);
         btnToolRad.setMargin(new java.awt.Insets(0, 4, 0, 4));
         btnToolRad.setName("btnToolRad"); // NOI18N
-        btnToolRad.setPreferredSize(new java.awt.Dimension(116, 40));
+        btnToolRad.setPreferredSize(new java.awt.Dimension(110, 40));
         btnToolRad.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         btnToolRad.putClientProperty("JButton.buttonType", "toolBarButton");
         btnToolRad.putClientProperty("JButton.arc", 8);
@@ -7535,7 +7535,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(btnToolRad);
 
-        BtnToolJualObat.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/pharmacy.svg", 32, 32));
+        BtnToolJualObat.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/pharmacy.svg", 24, 24));
         BtnToolJualObat.setRolloverIcon(svgIconHover("picture/icons/toolbar/pharmacy.svg"));
         BtnToolJualObat.setPressedIcon(svgIconHover("picture/icons/toolbar/pharmacy.svg"));
         BtnToolJualObat.setMnemonic('j');
@@ -7545,7 +7545,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolJualObat.setIconTextGap(6);
         BtnToolJualObat.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolJualObat.setName("BtnToolJualObat"); // NOI18N
-        BtnToolJualObat.setPreferredSize(new java.awt.Dimension(108, 40));
+        BtnToolJualObat.setPreferredSize(new java.awt.Dimension(102, 40));
         BtnToolJualObat.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolJualObat.putClientProperty("JButton.buttonType", "toolBarButton");
         BtnToolJualObat.putClientProperty("JButton.arc", 8);
@@ -7569,7 +7569,7 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator9.setPreferredSize(new java.awt.Dimension(1, 24));
         pnlLeftTools.add(jSeparator9);
 
-        BtnToolKamnap.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/inpatient.svg", 32, 32));
+        BtnToolKamnap.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/inpatient.svg", 24, 24));
         BtnToolKamnap.setRolloverIcon(svgIconHover("picture/icons/toolbar/inpatient.svg"));
         BtnToolKamnap.setPressedIcon(svgIconHover("picture/icons/toolbar/inpatient.svg"));
         BtnToolKamnap.setMnemonic('K');
@@ -7580,7 +7580,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolKamnap.setIconTextGap(6);
         BtnToolKamnap.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolKamnap.setName("BtnToolKamnap"); // NOI18N
-        BtnToolKamnap.setPreferredSize(new java.awt.Dimension(126, 40));
+        BtnToolKamnap.setPreferredSize(new java.awt.Dimension(124, 40));
         BtnToolKamnap.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolKamnap.putClientProperty("JButton.buttonType", "toolBarButton");
         BtnToolKamnap.putClientProperty("JButton.arc", 8);
@@ -7595,7 +7595,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         pnlLeftTools.add(BtnToolKamnap);
 
-        BtnToolKasir.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/outpatient.svg", 32, 32));
+        BtnToolKasir.setIcon(new com.formdev.flatlaf.extras.FlatSVGIcon("picture/icons/toolbar/outpatient.svg", 24, 24));
         BtnToolKasir.setRolloverIcon(svgIconHover("picture/icons/toolbar/outpatient.svg"));
         BtnToolKasir.setPressedIcon(svgIconHover("picture/icons/toolbar/outpatient.svg"));
         BtnToolKasir.setMnemonic('S');
@@ -7606,7 +7606,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnToolKasir.setIconTextGap(6);
         BtnToolKasir.setMargin(new java.awt.Insets(0, 4, 0, 4));
         BtnToolKasir.setName("BtnToolKasir"); // NOI18N
-        BtnToolKasir.setPreferredSize(new java.awt.Dimension(130, 40));
+        BtnToolKasir.setPreferredSize(new java.awt.Dimension(126, 40));
         BtnToolKasir.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnToolKasir.putClientProperty("JButton.buttonType", "toolBarButton");
         BtnToolKasir.putClientProperty("JButton.arc", 8);
@@ -7629,7 +7629,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnLog.setIconTextGap(6);
         BtnLog.setMargin(new java.awt.Insets(0, 0, 0, 0));
         BtnLog.setName("BtnLog"); // NOI18N
-        BtnLog.setPreferredSize(new java.awt.Dimension(108, 40));
+        BtnLog.setPreferredSize(new java.awt.Dimension(96, 40));
         BtnLog.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnLog.putClientProperty("JButton.arc", 8);
         BtnLog.setBackground(new java.awt.Color(13, 148, 136));
@@ -7652,7 +7652,7 @@ public class frmUtama extends javax.swing.JFrame {
         BtnClose.setIconTextGap(6);
         BtnClose.setMargin(new java.awt.Insets(0, 0, 0, 0));
         BtnClose.setName("BtnClose"); // NOI18N
-        BtnClose.setPreferredSize(new java.awt.Dimension(98, 40));
+        BtnClose.setPreferredSize(new java.awt.Dimension(86, 40));
         BtnClose.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
         BtnClose.putClientProperty("JButton.arc", 8);
         BtnClose.setBackground(new java.awt.Color(255, 241, 242));
@@ -7679,10 +7679,10 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame4.setBackground(java.awt.Color.WHITE);
         internalFrame4.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(217, 226, 232)));
         internalFrame4.setName("internalFrame4"); // NOI18N
-        internalFrame4.setPreferredSize(new java.awt.Dimension(330, 28));
+        internalFrame4.setPreferredSize(new java.awt.Dimension(330, 32));
         internalFrame4.setWarnaAtas(java.awt.Color.WHITE);
         internalFrame4.setWarnaBawah(java.awt.Color.WHITE);
-        internalFrame4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 3));
+        internalFrame4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 4));
 
         lblStts.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         lblStts.setForeground(new java.awt.Color(104, 120, 135));
@@ -7758,13 +7758,13 @@ public class frmUtama extends javax.swing.JFrame {
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(104, 120, 135));
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/file-edit-16x16.png"))); // NOI18N
-        jLabel7.setText(" Didesain & dibuat oleh Khanza.Soft Media di Modifikasi Oleh Damar Muslim Satriawan");
+        jLabel7.setText(" © Khanza.Soft Media - Dimodifikasi oleh IT RSUD Demang Sepulau Raya");
         jLabel7.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel7.setIconTextGap(3);
         jLabel7.setName("jLabel7"); // NOI18N
-        jLabel7.setPreferredSize(new java.awt.Dimension(287, 23));
+        jLabel7.setPreferredSize(new java.awt.Dimension(520, 23));
         internalFrame4.add(jLabel7);
 
         getContentPane().add(internalFrame4, java.awt.BorderLayout.PAGE_END);
@@ -18500,7 +18500,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         isTutup();
         DlgHome.dispose();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        RMPenilaianAwalMedisRanapDewasa aplikasi=new RMPenilaianAwalMedisRanapDewasa(this,false);
+        RMAsesmenMedisRanap20_1 aplikasi=new RMAsesmenMedisRanap20_1(this,false);
         aplikasi.isCek();
         aplikasi.emptTeks();
         aplikasi.setTampil();
@@ -24835,7 +24835,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     }
 
     private static com.formdev.flatlaf.extras.FlatSVGIcon svgIconHover(String path){
-        com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon(path, 32, 32);
+        com.formdev.flatlaf.extras.FlatSVGIcon icon = new com.formdev.flatlaf.extras.FlatSVGIcon(path, 24, 24);
         icon.setColorFilter(new com.formdev.flatlaf.extras.FlatSVGIcon.ColorFilter()
             .add(new java.awt.Color(0x17, 0x32, 0x4D), new java.awt.Color(0x0F, 0x76, 0x6E))
             .add(new java.awt.Color(0x0E, 0x2F, 0x49), new java.awt.Color(0x0F, 0x76, 0x6E)));
@@ -24919,7 +24919,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                         panelTopBar.updateHospitalName(namaInstansi);
                     }
                     try {
-                        jLabel7.setText(" © " + namaInstansi + " - SIMRS Khanza Modern");
+                        jLabel7.setText(" © Khanza.Soft Media - Dimodifikasi oleh IT " + (namaInstansi != null && !namaInstansi.trim().isEmpty() ? namaInstansi : "RSUD Demang Sepulau Raya"));
                     } catch (Exception exCopy) {}
                     repaint();
                 }

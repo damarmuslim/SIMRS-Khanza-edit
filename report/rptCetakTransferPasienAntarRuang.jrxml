@@ -208,7 +208,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<text><![CDATA[RM 04-1]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="304" y="2" width="65" height="10"/>
+				<reportElement positionType="Float" x="304" y="2" width="65" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="7.5"/>
 					<paragraph lineSpacing="Single"/>
@@ -216,7 +216,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<text><![CDATA[Nomor RM]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="370" y="2" width="130" height="10"/>
+				<reportElement positionType="Float" x="370" y="2" width="130" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="7.5" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -224,7 +224,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<textFieldExpression><![CDATA[": "+$F{no_rkm_medis}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="304" y="12" width="65" height="10"/>
+				<reportElement positionType="Float" x="304" y="12" width="65" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="7.5"/>
 					<paragraph lineSpacing="Single"/>
@@ -232,7 +232,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<text><![CDATA[Nama]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="370" y="12" width="195" height="10"/>
+				<reportElement positionType="Float" x="370" y="12" width="195" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="7.5" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -240,7 +240,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<textFieldExpression><![CDATA[": "+$F{nm_pasien}+($F{jk}==null?"":" ("+$F{jk}+")")]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="304" y="22" width="65" height="10"/>
+				<reportElement positionType="Float" x="304" y="22" width="65" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="7.5"/>
 					<paragraph lineSpacing="Single"/>
@@ -248,7 +248,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<text><![CDATA[Tgl Lahir / Umur]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="370" y="22" width="195" height="10"/>
+				<reportElement positionType="Float" x="370" y="22" width="195" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="7.5"/>
 					<paragraph lineSpacing="Single"/>
@@ -256,7 +256,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<textFieldExpression><![CDATA[": "+($F{tgl_lahir}==null?"-":new SimpleDateFormat("dd-MM-yyyy").format($F{tgl_lahir}))]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="304" y="32" width="65" height="10"/>
+				<reportElement positionType="Float" x="304" y="32" width="65" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="7.5"/>
 					<paragraph lineSpacing="Single"/>
@@ -264,7 +264,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<text><![CDATA[Tgl Masuk RS]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="370" y="32" width="195" height="10"/>
+				<reportElement positionType="Float" x="370" y="32" width="195" height="11"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="7.5"/>
 					<paragraph lineSpacing="Single"/>
@@ -272,7 +272,7 @@ left join dokter as doktertujuan3 on transfer_pasien_antar_ruang.kd_dokter_meraw
 				<textFieldExpression><![CDATA[": "+($F{tanggal_masuk}==null?"-":new SimpleDateFormat("dd-MM-yyyy HH:mm").format($F{tanggal_masuk}))]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="304" y="41" width="260" height="8"/>
+				<reportElement positionType="Float" x="304" y="41" width="260" height="11"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Times New Roman" size="6" isItalic="true"/>
 					<paragraph lineSpacing="Single"/>

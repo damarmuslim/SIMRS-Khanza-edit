@@ -253,6 +253,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         widget.IconStyle.pasang(this);
+        widget.IconStyle.pasangAksi(BtnIn, "log-in.svg", widget.IconStyle.HIJAU, false);
+        widget.IconStyle.pasangAksi(BtnOut, "house.svg", widget.IconStyle.ORANYE, false);
+        widget.IconStyle.pasangAksi(btnPindah, "arrow-right-left.svg", widget.IconStyle.BIRU, false);
         initKamarInap();
         initMenuAsesmenMedisRanap();
         tabMode=new DefaultTableModel(null,new Object[]{
@@ -12131,15 +12134,19 @@ public class DlgKamarInap extends javax.swing.JDialog {
         }else{
             if(tbKamIn.getSelectedRow()>-1){
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                RMPenilaianAwalMedisRanapDewasa form=new RMPenilaianAwalMedisRanapDewasa(null,false);
+                rekammedis.RMAsesmenMedisRanap20_1 form=new rekammedis.RMAsesmenMedisRanap20_1(null,false);
                 form.isCek();
                 form.emptTeks();
+                String nrw = norawat.getText().trim();
+                if (nrw.isEmpty() && tbKamIn.getSelectedRow() > -1) {
+                    nrw = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString();
+                }
                 if(R1.isSelected()==true){
-                    form.setNoRm(norawat.getText(),new Date());
+                    form.setNoRm(nrw,new Date());
                 }else if(R2.isSelected()==true){
-                    form.setNoRm(norawat.getText(),DTPCari2.getDate());
+                    form.setNoRm(nrw,DTPCari2.getDate());
                 }else if(R3.isSelected()==true){
-                    form.setNoRm(norawat.getText(),DTPCari4.getDate());
+                    form.setNoRm(nrw,DTPCari4.getDate());
                 }
                 form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                 form.setLocationRelativeTo(internalFrame1);
@@ -12167,21 +12174,24 @@ public class DlgKamarInap extends javax.swing.JDialog {
      * 2 Keperawatan Neonatus, 3 Keperawatan Bayi/Anak, 4 Medis Umum.</p>
      */
     private void initMenuAsesmenMedisRanap() {
-        javax.swing.JMenuItem mnAsesmen = new javax.swing.JMenuItem();
-        mnAsesmen.setBackground(new java.awt.Color(255, 255, 254));
-        mnAsesmen.setFont(new java.awt.Font("Segoe UI", 0, 11));
-        mnAsesmen.setForeground(new java.awt.Color(50, 50, 50));
-        mnAsesmen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png")));
-        mnAsesmen.setText("Asesmen Medis Ranap (RM 20)");
-        mnAsesmen.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        mnAsesmen.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        mnAsesmen.setName("MnAsesmenMedisRanap");
-        mnAsesmen.setPreferredSize(new java.awt.Dimension(240, 26));
-        mnAsesmen.addActionListener(this::MnAsesmenMedisRanapActionPerformed);
-        MnPenilaianAwal.insert(mnAsesmen, 5);
+        // Sembunyikan form lama Medis Umum & RM 20 terpisah sesuai instruksi konsolidasi
+        MnPenilaianAwalMedisRanap.setVisible(false);
 
-        // RM 20-1 - Asesmen Medis Rawat Inap (Lanjutan), disisipkan tepat di
-        // bawah RM 20 (indeks 6). Dibangun di LUAR blok GEN.
+        // RM 20 - Asesmen Medis Rawat Inap (Rekomendasi Argon)
+        javax.swing.JMenuItem mnAsesmen20 = new javax.swing.JMenuItem();
+        mnAsesmen20.setBackground(new java.awt.Color(255, 255, 254));
+        mnAsesmen20.setFont(new java.awt.Font("Segoe UI", 0, 11));
+        mnAsesmen20.setForeground(new java.awt.Color(50, 50, 50));
+        mnAsesmen20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png")));
+        mnAsesmen20.setText("Asesmen Medis Ranap (RM 20)");
+        mnAsesmen20.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        mnAsesmen20.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        mnAsesmen20.setName("MnAsesmenMedisRanap");
+        mnAsesmen20.setPreferredSize(new java.awt.Dimension(240, 26));
+        mnAsesmen20.addActionListener(this::MnAsesmenMedisRanapActionPerformed);
+        MnPenilaianAwal.insert(mnAsesmen20, 4);
+
+        // RM 20-1 - Asesmen Medis Rawat Inap Tunggal & Lengkap (Konsolidasi)
         javax.swing.JMenuItem mnAsesmen20_1 = new javax.swing.JMenuItem();
         mnAsesmen20_1.setBackground(new java.awt.Color(255, 255, 254));
         mnAsesmen20_1.setFont(new java.awt.Font("Segoe UI", 0, 11));
@@ -12193,7 +12203,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         mnAsesmen20_1.setName("MnAsesmenMedisRanap20_1");
         mnAsesmen20_1.setPreferredSize(new java.awt.Dimension(240, 26));
         mnAsesmen20_1.addActionListener(this::MnAsesmenMedisRanap20_1ActionPerformed);
-        MnPenilaianAwal.insert(mnAsesmen20_1, 6);
+        MnPenilaianAwal.insert(mnAsesmen20_1, 5);
 
         // RM 21 - Asesmen & Perencanaan Pendidikan Pasien, disisipkan tepat di
         // bawah RM 20-1 (indeks 7). Dibangun di LUAR blok GEN dengan alasan yang
@@ -12299,12 +12309,16 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 rekammedis.RMAsesmenMedisRanap form=new rekammedis.RMAsesmenMedisRanap(null,false);
                 form.isCek();
                 form.emptTeks();
+                String nrw = norawat.getText().trim();
+                if (nrw.isEmpty() && tbKamIn.getSelectedRow() > -1) {
+                    nrw = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString();
+                }
                 if(R1.isSelected()==true){
-                    form.setNoRm(norawat.getText(),new Date());
+                    form.setNoRm(nrw,new Date());
                 }else if(R2.isSelected()==true){
-                    form.setNoRm(norawat.getText(),DTPCari2.getDate());
+                    form.setNoRm(nrw,DTPCari2.getDate());
                 }else if(R3.isSelected()==true){
-                    form.setNoRm(norawat.getText(),DTPCari4.getDate());
+                    form.setNoRm(nrw,DTPCari4.getDate());
                 }
                 form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                 form.setLocationRelativeTo(internalFrame1);
@@ -12324,12 +12338,16 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 rekammedis.RMAsesmenMedisRanap20_1 form=new rekammedis.RMAsesmenMedisRanap20_1(null,false);
                 form.isCek();
                 form.emptTeks();
+                String nrw = norawat.getText().trim();
+                if (nrw.isEmpty() && tbKamIn.getSelectedRow() > -1) {
+                    nrw = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString();
+                }
                 if(R1.isSelected()==true){
-                    form.setNoRm(norawat.getText(),new Date());
+                    form.setNoRm(nrw,new Date());
                 }else if(R2.isSelected()==true){
-                    form.setNoRm(norawat.getText(),DTPCari2.getDate());
+                    form.setNoRm(nrw,DTPCari2.getDate());
                 }else if(R3.isSelected()==true){
-                    form.setNoRm(norawat.getText(),DTPCari4.getDate());
+                    form.setNoRm(nrw,DTPCari4.getDate());
                 }
                 form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                 form.setLocationRelativeTo(internalFrame1);

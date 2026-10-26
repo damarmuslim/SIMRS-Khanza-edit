@@ -12,6 +12,7 @@
 
 package simrskhanza;
 
+import bridging.ICareRiwayatPerawatan;
 import surat.SuratKontrol;
 import kepegawaian.DlgCariDokter;
 import kepegawaian.DlgCariPetugas;
@@ -258,6 +259,15 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
      * Editor NetBeans.
      */
     private widget.Button BtnResumeRalan;
+    // Pencarian dibuat di luar blok GEN agar tetap aman saat form dibuka di
+    // NetBeans Form Editor. Visibilitas asli disimpan setelah hak akses diterapkan.
+    private widget.PanelBiasa PanelCariMenu;
+    private widget.TextBox TCariMenu;
+    private final Map<java.awt.Component, Boolean> visibilitasMenuAsli = new java.util.IdentityHashMap<>();
+    private final Map<javax.swing.JButton, javax.swing.AbstractButton> sumberAksesCepat = new java.util.LinkedHashMap<>();
+    private javax.swing.JPanel PanelAksesCepat;
+    private javax.swing.JButton BtnCepatICare;
+    private int tinggiMenuAsli = 10;
 
     /** Creates new form DlgPerawatan
      * @param parent
@@ -267,6 +277,8 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         initComponents();
         widget.IconStyle.pasang(this);
         initRawatJalan();
+        siapkanAksesCepat();
+        siapkanPencarianMenu();
 
         this.setLocation(8,1);
         setSize(885,674);
@@ -8782,7 +8794,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             TCari.requestFocus();
         }else{
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            RMEdukasiPasienKeluargaRawatJalan form=new RMEdukasiPasienKeluargaRawatJalan(null,false);
+            rekammedis.DlgEdukasiPasienWebView form=new rekammedis.DlgEdukasiPasienWebView(null,false);
             form.isCek();
             form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
             form.setLocationRelativeTo(internalFrame1);
@@ -11268,11 +11280,14 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             ChkInput.setVisible(false);
             PanelInput.setPreferredSize(new Dimension(WIDTH,273));
             panelGlass12.setVisible(true);      
+            if(PanelAksesCepat != null) PanelAksesCepat.setVisible(true);
+            sesuaikanLayoutPemeriksaan();
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
             ChkInput.setVisible(false);            
             PanelInput.setPreferredSize(new Dimension(WIDTH,20));
             panelGlass12.setVisible(false);      
+            if(PanelAksesCepat != null) PanelAksesCepat.setVisible(false);
             ChkInput.setVisible(true);
         }
     }
@@ -11296,17 +11311,261 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             ChkAccor.setVisible(false);
             PanelAccor.setPreferredSize(new Dimension(205,HEIGHT));
             FormMenu.setVisible(true);  
+            PanelCariMenu.setVisible(true);
             ChkAccor.setVisible(true);
         }else if(ChkAccor.isSelected()==false){
             ChkAccor.setVisible(false);
             PanelAccor.setPreferredSize(new Dimension(15,HEIGHT));
             FormMenu.setVisible(false);
+            PanelCariMenu.setVisible(false);
             ChkAccor.setVisible(true);
         }
+    }
+
+    private void siapkanAksesCepat(){
+        PanelAksesCepat = new javax.swing.JPanel(new java.awt.GridLayout(7, 2, 4, 4));
+        PanelAksesCepat.setName("PanelAksesCepat");
+        PanelAksesCepat.setBackground(new java.awt.Color(248, 250, 252));
+        PanelAksesCepat.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(0, 1, 0, 0, new java.awt.Color(203, 213, 225)),
+                javax.swing.BorderFactory.createEmptyBorder(6, 6, 6, 6)));
+        PanelAksesCepat.setPreferredSize(new java.awt.Dimension(286, 253));
+
+        BtnCepatICare = buatTombolAksesCepat("ICare", "/picture/Hospital.png", evt -> bukaICare());
+        tambahBarisAksesCepat(BtnCepatICare,
+                buatTombolAksesCepat("Rujuk Internal", "/picture/DutyRoster.png", BtnRujukInternal));
+        tambahBarisAksesCepat(
+                buatTombolAksesCepat("Riwayat SOAP", "/picture/1358372639_kmenuedit.png", Btn5Soap),
+                buatTombolAksesCepat("Terima/Transfer Pasien", "/picture/shopping-cart-insert24.png", BtnTransferAntarRuang));
+        tambahBarisAksesCepat(
+                buatTombolAksesCepat("Riwayat Pasien", "/picture/History.png", BtnRiwayat),
+                buatTombolAksesCepat("Resume Pasien", "/picture/PatientData.png", BtnResume));
+        tambahBarisAksesCepat(
+                buatTombolAksesCepat("Input Resep", "/picture/Prescription.png", BtnResepObat),
+                buatTombolAksesCepat("Resume Rawat Jalan (RM 01)", "/picture/PatientFile.png", BtnResumeRalan));
+        tambahBarisAksesCepat(
+                buatTombolAksesCepat("Copy Resep", "/picture/editcopy.png", BtnCopyResep),
+                buatTombolAksesCepat("Permintaan LAB", "/picture/TestTubes.png", BtnPermintaanLab));
+        tambahBarisAksesCepat(
+                buatTombolAksesCepat("Berkas Digital", "/picture/add_to_folder.png", BtnBerkasDigital),
+                buatTombolAksesCepat("Permintaan RAD", "/picture/XRay.png", BtnPermintaanRad));
+        tambahBarisAksesCepat(
+                buatTombolAksesCepat("Jadwal Operasi", "/picture/Calendar.png", BtnJadwalOperasi),
+                buatTombolAksesCepat("Surat Kontrol", "/picture/file-edit-16x16.png", BtnSKDP));
+
+        PanelInput.add(PanelAksesCepat, java.awt.BorderLayout.EAST);
+
+        panelGlass12.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                sesuaikanLayoutPemeriksaan();
+            }
+        });
+        sesuaikanLayoutPemeriksaan();
+
+        sinkronkanAksesCepat();
+    }
+
+    private void sesuaikanLayoutPemeriksaan(){
+        if(panelGlass12 == null || scrollPane3 == null) return;
+        int w = panelGlass12.getWidth();
+        if(w <= 0) return;
+
+        int startXLabel;
+        int startXField;
+        int labelWidth;
+
+        if(w < 920){
+            // Mode layar ringkas / PC Rumah Sakit (resolusi 1366x768 atau scaling 125%)
+            startXLabel = 438;
+            labelWidth = 84;
+            startXField = 524;
+        }else{
+            // Mode layar lega / Laptop (Full HD 1920x1080)
+            startXLabel = 450;
+            labelWidth = 90;
+            startXField = 543;
+        }
+
+        int widthField = w - startXField - 12;
+        if(widthField < 120) widthField = 120;
+        if(widthField > 450) widthField = 450;
+
+        jLabel25.setBounds(startXLabel, 10, labelWidth, 23);
+        LingkarPerut.setBounds(startXField, 10, 55, 23);
+        jLabel15.setBounds(startXField + 60, 10, 60, 23);
+        int widthAlergi = widthField - 125;
+        if(widthAlergi < 80) widthAlergi = 80;
+        TAlergi.setBounds(startXField + 122, 10, widthAlergi, 23);
+
+        jLabel37.setBounds(startXLabel, 40, labelWidth, 23);
+        scrollPane3.setBounds(startXField, 40, widthField, 38);
+
+        jLabel26.setBounds(startXLabel, 85, labelWidth, 23);
+        scrollPane6.setBounds(startXField, 85, widthField, 47);
+
+        jLabel55.setBounds(startXLabel, 139, labelWidth, 23);
+        scrollPane7.setBounds(startXField, 139, widthField, 50);
+
+        jLabel56.setBounds(startXLabel, 196, labelWidth, 23);
+        scrollPane8.setBounds(startXField, 196, widthField, 44);
+
+        panelGlass12.revalidate();
+        panelGlass12.repaint();
+    }
+
+    private void tambahBarisAksesCepat(javax.swing.JButton kiri, javax.swing.JButton kanan){
+        PanelAksesCepat.add(kiri);
+        PanelAksesCepat.add(kanan);
+    }
+
+    private javax.swing.JButton buatTombolAksesCepat(String teks, String ikon, javax.swing.AbstractButton sumber){
+        javax.swing.JButton tombol = buatTombolAksesCepat(teks, ikon, evt -> sumber.doClick());
+        sumberAksesCepat.put(tombol, sumber);
+        return tombol;
+    }
+
+    private javax.swing.JButton buatTombolAksesCepat(String teks, String ikon, ActionListener aksi){
+        final java.awt.Color warnaNormal = new java.awt.Color(255, 255, 255);
+        final java.awt.Color warnaSorot = new java.awt.Color(232, 241, 251);
+        javax.swing.JButton tombol = new javax.swing.JButton(teks);
+        tombol.setName("BtnCepat" + teks.replaceAll("[^A-Za-z0-9]", ""));
+        tombol.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
+        tombol.setForeground(new java.awt.Color(36, 52, 71));
+        tombol.setBackground(warnaNormal);
+        tombol.setOpaque(true);
+        tombol.setContentAreaFilled(true);
+        tombol.setFocusPainted(false);
+        tombol.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        tombol.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        tombol.setIconTextGap(7);
+        javax.swing.ImageIcon ikonAsli = new javax.swing.ImageIcon(getClass().getResource(ikon));
+        tombol.setIcon(new javax.swing.ImageIcon(ikonAsli.getImage().getScaledInstance(
+                16, 16, java.awt.Image.SCALE_SMOOTH)));
+        tombol.setMargin(new java.awt.Insets(1, 4, 1, 4));
+        tombol.setPreferredSize(new java.awt.Dimension(136, 26));
+        tombol.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                new javax.swing.border.LineBorder(new java.awt.Color(203, 213, 225), 1, true),
+                javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5)));
+        tombol.addActionListener(aksi);
+        tombol.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt){
+                if(tombol.isEnabled()) tombol.setBackground(warnaSorot);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt){
+                tombol.setBackground(warnaNormal);
+            }
+        });
+        return tombol;
+    }
+
+    private void sinkronkanAksesCepat(){
+        for(Map.Entry<javax.swing.JButton, javax.swing.AbstractButton> entri : sumberAksesCepat.entrySet()){
+            entri.getKey().setVisible(entri.getValue().isVisible());
+            entri.getKey().setEnabled(entri.getValue().isEnabled());
+        }
+        if(BtnCepatICare != null){
+            BtnCepatICare.setVisible(akses.getriwayat_perawatan_icare_bpjs());
+            BtnCepatICare.setEnabled(akses.getriwayat_perawatan_icare_bpjs());
+        }
+        if(PanelAksesCepat != null){
+            PanelAksesCepat.revalidate();
+            PanelAksesCepat.repaint();
+        }
+    }
+
+    private void bukaICare(){
+        if(TNoRM.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+            TCari.requestFocus();
+            return;
+        }
+        if(KdPeg.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih dulu dokter pemberi asuhan...!!!");
+            BtnSeekPegawai.requestFocus();
+            return;
+        }
+        String kodeDokterBPJS = Sequel.cariIsi(
+                "select maping_dokter_dpjpvclaim.kd_dokter_bpjs from maping_dokter_dpjpvclaim where maping_dokter_dpjpvclaim.kd_dokter=?",
+                KdPeg.getText());
+        if(kodeDokterBPJS.equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Dokter tidak terdaftar di mapping dokter BPJS...!!!");
+            return;
+        }
+        akses.setform("DlgRawatJalan");
+        ICareRiwayatPerawatan form = new ICareRiwayatPerawatan(null,false);
+        form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        form.setLocationRelativeTo(internalFrame1);
+        form.setPasien(
+                Sequel.cariIsi("select pasien.no_peserta from pasien where pasien.no_rkm_medis=?",TNoRM.getText()),
+                kodeDokterBPJS);
+        form.setVisible(true);
+    }
+
+    private void siapkanPencarianMenu(){
+        PanelCariMenu = new widget.PanelBiasa();
+        PanelCariMenu.setBackground(new java.awt.Color(255, 255, 255));
+        PanelCariMenu.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 4, 4));
+        PanelCariMenu.setPreferredSize(new Dimension(190, 31));
+
+        TCariMenu = new widget.TextBox();
+        TCariMenu.setPlaceholder("Cari menu...");
+        TCariMenu.setToolTipText("Ketik nama menu untuk menyaring daftar menu Rawat Jalan");
+        TCariMenu.putClientProperty("JComponent.roundRect", Boolean.FALSE);
+        TCariMenu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(210, 210, 210)));
+        TCariMenu.setMargin(new java.awt.Insets(1, 6, 1, 6));
+        TCariMenu.setPreferredSize(new Dimension(180, 23));
+        TCariMenu.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override public void insertUpdate(DocumentEvent e) { terapkanPencarianMenu(); }
+            @Override public void removeUpdate(DocumentEvent e) { terapkanPencarianMenu(); }
+            @Override public void changedUpdate(DocumentEvent e) { terapkanPencarianMenu(); }
+        });
+        PanelCariMenu.add(TCariMenu);
+        PanelAccor.add(PanelCariMenu, java.awt.BorderLayout.NORTH);
+    }
+
+    private void pulihkanVisibilitasMenu(){
+        for(Map.Entry<java.awt.Component, Boolean> menu : visibilitasMenuAsli.entrySet()){
+            menu.getKey().setVisible(menu.getValue());
+        }
+    }
+
+    private void simpanVisibilitasMenu(){
+        visibilitasMenuAsli.clear();
+        for(java.awt.Component menu : FormMenu.getComponents()){
+            visibilitasMenuAsli.put(menu, menu.isVisible());
+        }
+    }
+
+    private void terapkanPencarianMenu(){
+        if(TCariMenu==null || visibilitasMenuAsli.isEmpty()){
+            return;
+        }
+        String kataKunci = TCariMenu.getText().trim().toLowerCase(java.util.Locale.ROOT);
+        int jumlahMenu = 0;
+        for(java.awt.Component menu : FormMenu.getComponents()){
+            boolean tampil = Boolean.TRUE.equals(visibilitasMenuAsli.get(menu));
+            if(tampil && menu instanceof javax.swing.AbstractButton){
+                String teksMenu = ((javax.swing.AbstractButton)menu).getText();
+                tampil = teksMenu != null && teksMenu.toLowerCase(java.util.Locale.ROOT).contains(kataKunci);
+            }
+            menu.setVisible(tampil);
+            if(tampil){
+                jumlahMenu++;
+            }
+        }
+        FormMenu.setPreferredSize(new Dimension(195, kataKunci.isEmpty() ? tinggiMenuAsli : Math.max(10, (jumlahMenu*24)+10)));
+        FormMenu.revalidate();
+        FormMenu.repaint();
+        ScrollMenu.getVerticalScrollBar().setValue(0);
     }
     
     public void isCek(){
         tinggi=0;
+        pulihkanVisibilitasMenu();
         BtnSimpan.setEnabled(akses.gettindakan_ralan());
         BtnHapus.setEnabled(akses.gettindakan_ralan());
         BtnEdit.setEnabled(akses.gettindakan_ralan());
@@ -11999,7 +12258,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         if(akses.getkriteria_masuk_picu()==true){
             tinggi=tinggi+24;
         }
-        FormMenu.setPreferredSize(new Dimension(195,(tinggi+10)));
+        tinggiMenuAsli=tinggi+10;
+        FormMenu.setPreferredSize(new Dimension(195,tinggiMenuAsli));
         TCari.setPreferredSize(new Dimension(207,23));
         
         if(akses.getjml2()>=1){
@@ -12029,6 +12289,9 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 cmbDtk.setEnabled(false);
             }
         }
+        simpanVisibilitasMenu();
+        terapkanPencarianMenu();
+        sinkronkanAksesCepat();
     }
 
     private void tampilPemeriksaan() {
@@ -14324,7 +14587,13 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         BtnResumeRalan = new widget.Button();
         BtnResumeRalan.setText("Resume Rawat Jalan (RM 01)");
         BtnResumeRalan.setToolTipText("Alergi obat, riwayat kesehatan, dan perhatian khusus pasien ini");
+        BtnResumeRalan.setFocusPainted(false);
+        BtnResumeRalan.setFont(new java.awt.Font("Segoe UI", 0, 11));
+        BtnResumeRalan.setGlassColor(new java.awt.Color(255, 255, 255));
+        BtnResumeRalan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BtnResumeRalan.setMargin(new java.awt.Insets(1, 1, 1, 1));
         BtnResumeRalan.setPreferredSize(new java.awt.Dimension(190, 23));
+        BtnResumeRalan.setRoundRect(false);
         BtnResumeRalan.addActionListener(this::BtnResumeRalanActionPerformed);
         FormMenu.add(BtnResumeRalan);
         // [RM 27-1 CPPT] Tombolnya sengaja variabel LOKAL, bukan field: tidak
@@ -14333,7 +14602,13 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         widget.Button btnCPPT = new widget.Button();
         btnCPPT.setText("CPPT (RM 27-1)");
         btnCPPT.setToolTipText("Cetak Catatan Perkembangan Pasien Terintegrasi");
+        btnCPPT.setFocusPainted(false);
+        btnCPPT.setFont(new java.awt.Font("Segoe UI", 0, 11));
+        btnCPPT.setGlassColor(new java.awt.Color(255, 255, 255));
+        btnCPPT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnCPPT.setMargin(new java.awt.Insets(1, 1, 1, 1));
         btnCPPT.setPreferredSize(new java.awt.Dimension(190, 23));
+        btnCPPT.setRoundRect(false);
         btnCPPT.addActionListener(evt -> cetakCPPT());
         FormMenu.add(btnCPPT);
         // [RM 02-1] Asesmen Medis Awal Rawat Jalan. Variabel LOKAL seperti dua
@@ -14342,7 +14617,13 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         widget.Button btnAsesmenAwal = new widget.Button();
         btnAsesmenAwal.setText("Asesmen Medis Awal (RM 02-1)");
         btnAsesmenAwal.setToolTipText("Edukasi, riwayat, risiko jatuh, anamnesis, dan diagnosis awal");
+        btnAsesmenAwal.setFocusPainted(false);
+        btnAsesmenAwal.setFont(new java.awt.Font("Segoe UI", 0, 11));
+        btnAsesmenAwal.setGlassColor(new java.awt.Color(255, 255, 255));
+        btnAsesmenAwal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnAsesmenAwal.setMargin(new java.awt.Insets(1, 1, 1, 1));
         btnAsesmenAwal.setPreferredSize(new java.awt.Dimension(190, 23));
+        btnAsesmenAwal.setRoundRect(false);
         btnAsesmenAwal.addActionListener(evt -> bukaAsesmenMedisAwal());
         FormMenu.add(btnAsesmenAwal);
         // [RM 02-2] Asesmen Awal Keperawatan Rawat Jalan. Variabel LOKAL, sama
@@ -14350,7 +14631,13 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         widget.Button btnAsesmenKeperawatan = new widget.Button();
         btnAsesmenKeperawatan.setText("Asesmen Kep. Awal (RM 02-2)");
         btnAsesmenKeperawatan.setToolTipText("Pemeriksaan fisik, pola kebiasaan, balita, reproduksi, psikososial");
+        btnAsesmenKeperawatan.setFocusPainted(false);
+        btnAsesmenKeperawatan.setFont(new java.awt.Font("Segoe UI", 0, 11));
+        btnAsesmenKeperawatan.setGlassColor(new java.awt.Color(255, 255, 255));
+        btnAsesmenKeperawatan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnAsesmenKeperawatan.setMargin(new java.awt.Insets(1, 1, 1, 1));
         btnAsesmenKeperawatan.setPreferredSize(new java.awt.Dimension(190, 23));
+        btnAsesmenKeperawatan.setRoundRect(false);
         btnAsesmenKeperawatan.addActionListener(evt -> bukaAsesmenAwalKeperawatan());
         FormMenu.add(btnAsesmenKeperawatan);
         FormMenu.add(BtnResepObat);
