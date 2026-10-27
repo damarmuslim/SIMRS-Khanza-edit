@@ -3023,9 +3023,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         int maks = (k instanceof widget.TextBox) ? MAKS_TEXTBOX_KEP : MAKS_COMBO_KEP;
         java.awt.Dimension d = k.getPreferredSize();
         int lebar = Math.max(LEBAR_KONTROL_KEP, Math.min(maks, d.width));
-        if (lebar != d.width) {
-            k.setPreferredSize(new java.awt.Dimension(lebar, Math.max(23, d.height)));
-        }
+        k.setPreferredSize(new java.awt.Dimension(lebar, Math.max(34, d.height)));
     }
 
     /**
@@ -3259,7 +3257,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                         barisBerlabel ? budget - LEBAR_LABEL_KEP - 10 : budget);
             } else if (k instanceof javax.swing.JScrollPane
                     || k instanceof javax.swing.JTabbedPane) {
-                k.setPreferredSize(new java.awt.Dimension(budget, k.getPreferredSize().height));
+                int minH = k.getMinimumSize() != null ? k.getMinimumSize().height : 0;
+                int prefH = k.getPreferredSize() != null ? k.getPreferredSize().height : 0;
+                k.setPreferredSize(new java.awt.Dimension(budget, Math.max(minH, prefH)));
             } else if (k.getPreferredSize().width > budget) {
                 // Komponen tunggal (TextBox/ComboBox/ScrollPane tabel) yg
                 // lebarnya warisan desain 1 kolom (dulu form selebar 870px).
@@ -3624,29 +3624,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private static final java.awt.Color WARNA_BORDER_KOTAK_KEP = COL_BORDER;
     private static final javax.swing.border.Border BORDER_KOTAK_TEXTFIELD = javax.swing.BorderFactory
             .createCompoundBorder(
-                    javax.swing.BorderFactory.createLineBorder(COL_INPUT_BORDER, 1),
-                    javax.swing.BorderFactory.createEmptyBorder(3, 8, 3, 8));
-    private static final javax.swing.border.Border BORDER_KOTAK_GARIS = javax.swing.BorderFactory
-            .createLineBorder(COL_BORDER, 1);
-
-    /**
-     * Border pill/chip modern untuk JCheckBox/JRadioButton dengan sudut rounded 6px.
-     */
-    private static final javax.swing.Icon ICON_KOSONG = new javax.swing.Icon() {
-        @Override
-        public void paintIcon(java.awt.Component c, java.awt.Graphics g, int x, int y) {
-        }
-
-        @Override
-        public int getIconWidth() {
-            return 0;
-        }
-
-        @Override
-        public int getIconHeight() {
-            return 0;
-        }
-    };
+                    new javax.swing.border.LineBorder(COL_INPUT_BORDER, 1, true),
+                    javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10));
+    private static final javax.swing.border.Border BORDER_KOTAK_GARIS = new javax.swing.border.LineBorder(COL_BORDER, 1, true);
 
     private static final javax.swing.Icon ICON_CENTANG = new javax.swing.Icon() {
         @Override
@@ -3672,10 +3652,15 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     };
 
     /**
-     * Border pill/chip modern untuk JCheckBox/JRadioButton dengan sudut rounded 6px.
+     * Border pill/chip modern untuk Checkbox Card & Radio Pill dengan sudut rounded 10px (Argon Medical Teal).
      */
     private static final class BorderChipKep implements javax.swing.border.Border {
-        private java.awt.Color garis = COL_INPUT_BORDER;
+        private java.awt.Color garis = new java.awt.Color(203, 213, 225);
+        private final boolean isRadio;
+
+        BorderChipKep(boolean isRadio) {
+            this.isRadio = isRadio;
+        }
 
         void setGaris(java.awt.Color c) {
             garis = c;
@@ -3683,7 +3668,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
 
         @Override
         public java.awt.Insets getBorderInsets(java.awt.Component c) {
-            return new java.awt.Insets(5, 12, 5, 12);
+            return isRadio ? new java.awt.Insets(8, 14, 8, 16) : new java.awt.Insets(8, 12, 8, 14);
         }
 
         @Override
@@ -3698,17 +3683,17 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(garis);
             if ((c instanceof javax.swing.AbstractButton) && ((javax.swing.AbstractButton) c).isSelected()) {
-                g2.setStroke(new java.awt.BasicStroke(1.5f));
+                g2.setStroke(new java.awt.BasicStroke(1.8f));
             } else {
-                g2.setStroke(new java.awt.BasicStroke(1.0f));
+                g2.setStroke(new java.awt.BasicStroke(1.2f));
             }
-            g2.drawRoundRect(x, y, w - 1, h - 1, 6, 6);
+            g2.drawRoundRect(x + 1, y + 1, w - 3, h - 3, 10, 10);
             g2.dispose();
         }
     }
 
     /**
-     * Pastikan semua field input memiliki sudut siku-siku rapi dan berbingkai COL_INPUT_BORDER.
+     * Pastikan semua field input memiliki sudut membulat rapi 8px (RSUD Demang Sepulau Raya).
      */
     private static void buatKotakKep(java.awt.Component c) {
         if (c == null) {
@@ -3716,12 +3701,14 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         }
         if (c instanceof javax.swing.JComponent) {
             javax.swing.JComponent jc = (javax.swing.JComponent) c;
-            jc.putClientProperty("Component.arc", 0);
-            jc.putClientProperty("Button.arc", 0);
-            jc.putClientProperty("TextComponent.arc", 0);
-            jc.putClientProperty("JTextField.arc", 0);
-            jc.putClientProperty("ComboBox.arc", 0);
-            jc.putClientProperty("JComponent.roundRect", false);
+            if (!(jc instanceof javax.swing.JRadioButton || jc instanceof javax.swing.JCheckBox)) {
+                jc.putClientProperty("Component.arc", 8);
+                jc.putClientProperty("Button.arc", 8);
+                jc.putClientProperty("TextComponent.arc", 8);
+                jc.putClientProperty("JTextField.arc", 8);
+                jc.putClientProperty("ComboBox.arc", 8);
+                jc.putClientProperty("JComponent.roundRect", true);
+            }
 
             if (c instanceof javax.swing.text.JTextComponent) {
                 if (!(c instanceof javax.swing.JTextArea)) {
@@ -3733,26 +3720,28 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
                 jc.setForeground(COL_TEXT_DARK);
                 jc.setOpaque(true);
                 jc.putClientProperty("FlatLaf.style",
-                        "background: #FFFFFF; inactiveBackground: #FFFFFF; disabledBackground: #FFFFFF;");
+                        "background: #FFFFFF; inactiveBackground: #FFFFFF; disabledBackground: #FFFFFF; arc: 8;");
             } else if (c instanceof javax.swing.JComboBox) {
                 jc.setBorder(BORDER_KOTAK_GARIS);
                 jc.setBackground(java.awt.Color.WHITE);
                 jc.setForeground(COL_TEXT_DARK);
                 jc.setOpaque(true);
                 jc.putClientProperty("FlatLaf.style",
-                        "background: #FFFFFF; disabledBackground: #FFFFFF; buttonBackground: #FFFFFF; editableBackground: #FFFFFF;");
+                        "background: #FFFFFF; disabledBackground: #FFFFFF; buttonBackground: #FFFFFF; editableBackground: #FFFFFF; arc: 8;");
             } else if (c instanceof javax.swing.JScrollPane) {
                 jc.setBorder(BORDER_KOTAK_GARIS);
                 jc.setBackground(java.awt.Color.WHITE);
                 jc.setOpaque(true);
+                jc.putClientProperty("FlatLaf.style", "arc: 8;");
             } else if (c instanceof uz.ncipro.calendar.JDateTimePicker) {
                 jc.setBorder(BORDER_KOTAK_GARIS);
                 jc.setBackground(java.awt.Color.WHITE);
                 jc.setOpaque(true);
-                jc.putClientProperty("FlatLaf.style", "background: #FFFFFF; buttonBackground: #FFFFFF;");
+                jc.putClientProperty("FlatLaf.style", "background: #FFFFFF; buttonBackground: #FFFFFF; arc: 8;");
             } else if (c instanceof javax.swing.AbstractButton) {
                 if (c instanceof widget.Button) {
-                    ((widget.Button) c).setRoundRect(false);
+                    ((widget.Button) c).setRoundRect(true);
+                    jc.putClientProperty("Button.arc", 8);
                 }
             }
         }
@@ -3776,7 +3765,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         }
     }
 
-    /** Pasang gaya Segmented Toggle Button pada satu radio/checkbox. */
+    /** Pasang gaya Checkbox Card / Radio Pill berbingkai (Argon Medical Teal). */
     private void pasangChipKep(final javax.swing.JToggleButton t) {
         if (Boolean.TRUE.equals(t.getClientProperty("chipKep"))) {
             return;
@@ -3786,19 +3775,34 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         t.setContentAreaFilled(true);
         t.setFocusPainted(false);
         t.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
-        t.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 11));
-        if (t instanceof javax.swing.JRadioButton) {
-            t.setIcon(ICON_KOSONG);
-            t.setSelectedIcon(ICON_KOSONG);
-            t.setPressedIcon(ICON_KOSONG);
-            t.setRolloverIcon(ICON_KOSONG);
-            t.setRolloverSelectedIcon(ICON_KOSONG);
-            t.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-            t.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        }
+        t.setFont(new java.awt.Font("SansSerif", java.awt.Font.PLAIN, 12));
+        
+        boolean isRadio = t instanceof javax.swing.JRadioButton;
+        t.setIcon(isRadio ? new simrskhanza.ui.theme.KhanzaMedicalTealTheme.RadioIcon18(false)
+                          : new simrskhanza.ui.theme.KhanzaMedicalTealTheme.CheckBoxIcon18(false));
+        t.setSelectedIcon(isRadio ? new simrskhanza.ui.theme.KhanzaMedicalTealTheme.RadioIcon18(true)
+                                  : new simrskhanza.ui.theme.KhanzaMedicalTealTheme.CheckBoxIcon18(true));
+        t.setPressedIcon(isRadio ? new simrskhanza.ui.theme.KhanzaMedicalTealTheme.RadioIcon18(true)
+                                 : new simrskhanza.ui.theme.KhanzaMedicalTealTheme.CheckBoxIcon18(true));
+        t.setRolloverIcon(isRadio ? new simrskhanza.ui.theme.KhanzaMedicalTealTheme.RadioIcon18(false)
+                                  : new simrskhanza.ui.theme.KhanzaMedicalTealTheme.CheckBoxIcon18(false));
+        t.setRolloverSelectedIcon(isRadio ? new simrskhanza.ui.theme.KhanzaMedicalTealTheme.RadioIcon18(true)
+                                          : new simrskhanza.ui.theme.KhanzaMedicalTealTheme.CheckBoxIcon18(true));
+        t.setIconTextGap(10);
+        t.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        t.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        int minH = isRadio ? 40 : 42;
+        int minW = isRadio ? 90 : 110;
+        int prefW = Math.max(minW, t.getPreferredSize().width + (isRadio ? 30 : 28));
+        t.setPreferredSize(new java.awt.Dimension(prefW, minH));
+        t.setMinimumSize(new java.awt.Dimension(minW, minH));
+
         t.setBorderPainted(true);
-        final BorderChipKep bd = new BorderChipKep();
+        final BorderChipKep bd = new BorderChipKep(isRadio);
         t.setBorder(bd);
+        t.putClientProperty("Component.arc", 10);
+        t.putClientProperty("Button.arc", 10);
         warnaiChipKep(t, bd, false);
         t.addItemListener(new java.awt.event.ItemListener() {
             @Override
@@ -3820,26 +3824,27 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     }
 
     /**
-     * Status Segmented Button (Gaya RM 20-1):
-     * - Aktif: background new Color(224, 242, 241), teks bold new Color(15, 118, 110), border new Color(15, 118, 110)
-     * - Tidak aktif: background Color.WHITE, teks new Color(100, 116, 139), border COL_INPUT_BORDER
+     * Status Checkbox Card / Radio Pill (Argon Medical Teal):
+     * - Aktif: background #E6FFFA (MED_50), teks bold #042F2E (MED_950), border #0D9488 (MED_600)
+     * - Hover: background #F0FDFA, border #0D9488, teks #0F766E (MED_700)
+     * - Tidak aktif: background Color.WHITE, teks #334155 (SLATE_700), border #CBD5E1 (SLATE_300)
      */
     private void warnaiChipKep(javax.swing.JToggleButton t, BorderChipKep bd, boolean hover) {
         if (t.isSelected()) {
-            t.setForeground(new java.awt.Color(15, 118, 110)); // #0F766E
-            t.setBackground(new java.awt.Color(224, 242, 241)); // #E0F2F1
-            bd.setGaris(new java.awt.Color(15, 118, 110));
-            t.setFont(t.getFont().deriveFont(java.awt.Font.BOLD));
+            t.setForeground(new java.awt.Color(4, 47, 46)); // MED_950 #042f2e
+            t.setBackground(new java.awt.Color(230, 255, 250)); // MED_50 #e6fffa
+            bd.setGaris(new java.awt.Color(13, 148, 136)); // MED_600 #0d9488
+            t.setFont(t.getFont().deriveFont(java.awt.Font.BOLD, 12f));
         } else if (hover) {
-            t.setForeground(COL_TEXT_DARK);
-            t.setBackground(new java.awt.Color(241, 245, 249)); // #F1F5F9
-            bd.setGaris(new java.awt.Color(153, 246, 228));
-            t.setFont(t.getFont().deriveFont(java.awt.Font.PLAIN));
+            t.setForeground(new java.awt.Color(15, 118, 110)); // MED_700 #0f766e
+            t.setBackground(new java.awt.Color(240, 253, 250)); // #f0fdfa
+            bd.setGaris(new java.awt.Color(13, 148, 136)); // MED_600
+            t.setFont(t.getFont().deriveFont(java.awt.Font.PLAIN, 12f));
         } else {
-            t.setForeground(new java.awt.Color(100, 116, 139)); // #64748B
+            t.setForeground(new java.awt.Color(51, 65, 85)); // SLATE_700 #334155
             t.setBackground(java.awt.Color.WHITE);
-            bd.setGaris(COL_INPUT_BORDER);
-            t.setFont(t.getFont().deriveFont(java.awt.Font.PLAIN));
+            bd.setGaris(new java.awt.Color(203, 213, 225)); // SLATE_300 #cbd5e1
+            t.setFont(t.getFont().deriveFont(java.awt.Font.PLAIN, 12f));
         }
         t.repaint();
     }
@@ -4588,6 +4593,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         widget.PanelBiasa boxUnit = new widget.PanelBiasa();
         boxUnit.setOpaque(false);
         boxUnit.setLayout(new java.awt.BorderLayout(6, 0));
+        if (field != null) {
+            java.awt.Dimension curD = field.getPreferredSize();
+            int w = (curD != null && curD.width > 0) ? curD.width : 85;
+            field.setPreferredSize(new java.awt.Dimension(w, 34));
+        }
         boxUnit.add(field, java.awt.BorderLayout.CENTER);
 
         if (unit != null && !unit.isEmpty()) {
@@ -4596,7 +4606,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             lblUnit.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
             lblUnit.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 10));
             lblUnit.setForeground(new java.awt.Color(0x64, 0x74, 0x8B));
-            lblUnit.setPreferredSize(new java.awt.Dimension(36, 26));
+            lblUnit.setPreferredSize(new java.awt.Dimension(36, 34));
             boxUnit.add(lblUnit, java.awt.BorderLayout.EAST);
         }
 
@@ -4950,10 +4960,11 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      * Berlatar putih, border 1px kotak rapi dengan padding dalam, kursor tangan,
      * dan efek hover halus.
      */
-    private void gayaTombolCardFooter(final widget.Button b, int lebar) {
+    private void gayaTombolCardFooter(final widget.Button b, int lebar, boolean primer, boolean bahaya) {
         b.setContentAreaFilled(true);
         b.setBorderPainted(true);
         b.setFocusPainted(false);
+        b.setRolloverEnabled(true);
         b.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         b.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11));
         b.setIconTextGap(6);
@@ -4961,8 +4972,47 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         b.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         b.putClientProperty("JButton.buttonType", null);
         b.putClientProperty("JButton.arc", 8);
+        b.putClientProperty("Button.arc", 8);
+        b.setRoundRect(true);
         b.setMargin(new java.awt.Insets(2, 6, 2, 6));
-        b.setPreferredSize(new java.awt.Dimension(lebar, 30));
+        b.setPreferredSize(new java.awt.Dimension(lebar, 32));
+
+        if (primer) {
+            final java.awt.Color bgNorm = new java.awt.Color(15, 118, 110);
+            final java.awt.Color bgHover = new java.awt.Color(20, 184, 166);
+            b.setBackground(bgNorm);
+            b.setForeground(java.awt.Color.WHITE);
+            b.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(13, 148, 136), 1, true));
+            b.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override public void mouseEntered(java.awt.event.MouseEvent e) { b.setBackground(bgHover); }
+                @Override public void mouseExited(java.awt.event.MouseEvent e) { b.setBackground(bgNorm); }
+            });
+        } else if (bahaya) {
+            final java.awt.Color bgNorm = java.awt.Color.WHITE;
+            final java.awt.Color bgHover = new java.awt.Color(254, 242, 242);
+            final java.awt.Color fgNorm = new java.awt.Color(185, 28, 28);
+            b.setBackground(bgNorm);
+            b.setForeground(fgNorm);
+            b.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(248, 113, 113), 1, true));
+            b.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override public void mouseEntered(java.awt.event.MouseEvent e) { b.setBackground(bgHover); }
+                @Override public void mouseExited(java.awt.event.MouseEvent e) { b.setBackground(bgNorm); }
+            });
+        } else {
+            final java.awt.Color bgNorm = java.awt.Color.WHITE;
+            final java.awt.Color bgHover = new java.awt.Color(241, 245, 249);
+            b.setBackground(bgNorm);
+            b.setForeground(new java.awt.Color(51, 65, 85));
+            b.setBorder(new javax.swing.border.LineBorder(COL_BORDER, 1, true));
+            b.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override public void mouseEntered(java.awt.event.MouseEvent e) { b.setBackground(bgHover); }
+                @Override public void mouseExited(java.awt.event.MouseEvent e) { b.setBackground(bgNorm); }
+            });
+        }
+    }
+
+    private void gayaTombolCardFooter(final widget.Button b, int lebar) {
+        gayaTombolCardFooter(b, lebar, false, false);
     }
 
     /**
@@ -4970,16 +5020,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
      */
     private void initActionBarKep() {
         BtnSimpan.setText("Simpan");
-        gayaTombolCardFooter(BtnSimpan, 96);
-        gayaTombolCardFooter(BtnBatal, 90);
-        gayaTombolCardFooter(BtnEdit, 90);
-        gayaTombolCardFooter(BtnHapus, 92);
-        gayaTombolCardFooter(BtnPrint, 90);
-        gayaTombolCardFooter(BtnAll, 96);
-        gayaTombolCardFooter(BtnKeluar, 96);
-
-        BtnHapus.setForeground(new java.awt.Color(0xB9, 0x1C, 0x1C));
-        BtnKeluar.setForeground(new java.awt.Color(0xB9, 0x1C, 0x1C));
+        gayaTombolCardFooter(BtnSimpan, 105, true, false);
+        gayaTombolCardFooter(BtnBatal, 90, false, false);
+        gayaTombolCardFooter(BtnEdit, 90, false, false);
+        gayaTombolCardFooter(BtnHapus, 92, false, true);
+        gayaTombolCardFooter(BtnPrint, 90, false, false);
+        gayaTombolCardFooter(BtnAll, 96, false, false);
+        gayaTombolCardFooter(BtnKeluar, 96, false, true);
 
         // Pasang icon SVG modern dari IconStyle jika belum terpasang
         widget.IconStyle.pasang(panelGlass8);
@@ -5780,13 +5827,13 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
             @Override
             protected void paintComponent(java.awt.Graphics g) {
                 java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
-                g2.setColor(COL_HEADER_DARK);
+                g2.setColor(new java.awt.Color(4, 47, 46));
                 g2.fillRect(0, 0, getWidth(), getHeight());
                 g2.dispose();
             }
         };
         pnlTopBar.setOpaque(true);
-        pnlTopBar.setPreferredSize(new java.awt.Dimension(100, 36));
+        pnlTopBar.setPreferredSize(new java.awt.Dimension(100, 38));
         pnlTopBar.setLayout(new java.awt.BorderLayout(12, 0));
         pnlTopBar.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 16, 0, 16));
 
@@ -6625,9 +6672,8 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         c.insets = new java.awt.Insets(0, 0, 0, 0);
         isi.add(strip, c);
 
-        scrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT));
-        scrollPane1.setPreferredSize(new java.awt.Dimension(100, 100));
-        scrollPane1.setMinimumSize(new java.awt.Dimension(100, 100));
+        scrollPane1.setBorder(BORDER_KOTAK_TEXTFIELD);
+        simrskhanza.ui.theme.KhanzaMedicalTealTheme.fixScrollPaneHeight(scrollPane1, 85);
         scrollPane1.setOpaque(true);
         scrollPane1.getViewport().setOpaque(true);
         scrollPane1.getViewport().setBackground(java.awt.Color.WHITE);
@@ -6665,7 +6711,9 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
     private void buatHalamanKep(HalamanKep h, int idx) {
         widget.PanelBiasa kartu = new widget.PanelBiasa();
         latarKep(kartu, COL_CARD_BG);
-        kartu.setBorder(javax.swing.BorderFactory.createLineBorder(COL_BORDER, 1, true));
+        kartu.setBorder(new javax.swing.border.LineBorder(COL_BORDER, 1, true));
+        kartu.putClientProperty("Component.arc", 12);
+        kartu.putClientProperty("FlatLaf.style", "arc: 12");
         kartu.setLayout(new java.awt.GridBagLayout());
 
         java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
@@ -6745,15 +6793,17 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         kiri.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 12, 6));
 
         widget.Label badge = new widget.Label();
-        badge.setText(String.valueOf(idx + 1));
+        badge.setText(String.format("%02d", idx + 1));
         badge.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         badge.setVerticalAlignment(javax.swing.SwingConstants.CENTER);
         badge.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 12));
         badge.setForeground(java.awt.Color.WHITE);
         badge.setOpaque(true);
-        badge.setBackground(h.tidakRelevan ? new java.awt.Color(0xA0, 0xAE, 0xC0) : COL_TEAL_PRIMARY);
-        badge.setPreferredSize(new java.awt.Dimension(26, 26));
-        badge.setMinimumSize(new java.awt.Dimension(26, 26));
+        badge.setBackground(h.tidakRelevan ? new java.awt.Color(0xA0, 0xAE, 0xC0) : new java.awt.Color(15, 118, 110));
+        badge.setPreferredSize(new java.awt.Dimension(28, 28));
+        badge.setMinimumSize(new java.awt.Dimension(28, 28));
+        badge.putClientProperty("Component.arc", 6);
+        badge.putClientProperty("FlatLaf.style", "arc: 6");
         h.lblBadgeNomor = badge;
         kiri.add(badge);
 
@@ -8780,7 +8830,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         panelGabungMasalah.putClientProperty("fillWidth", Boolean.TRUE);
         panelGabungMasalah.setLayout(new java.awt.BorderLayout(0, 6));
         panelGabungMasalah.add(panelCariMasalah, java.awt.BorderLayout.NORTH);
-        Scroll8.setPreferredSize(new java.awt.Dimension(100, 130));
+        simrskhanza.ui.theme.KhanzaMedicalTealTheme.fixScrollPaneHeight(Scroll8, 175);
         Scroll8.putClientProperty("fillWidth", Boolean.TRUE);
         tbMasalahKeperawatan.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         panelGabungMasalah.add(Scroll8, java.awt.BorderLayout.CENTER);
@@ -8840,7 +8890,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         // -- Tindakan Keperawatan Mandiri --
         row = tambahBarisKepJudul(panelKepTiga, row, "TINDAKAN KEPERAWATAN MANDIRI");
         TabRencanaKeperawatan.setVisible(false);
-        scrollPane5.setPreferredSize(new java.awt.Dimension(100, 100));
+        simrskhanza.ui.theme.KhanzaMedicalTealTheme.fixScrollPaneHeight(scrollPane5, 95);
         scrollPane5.setBorder(BORDER_KOTAK_TEXTFIELD);
         scrollPane5.putClientProperty("fillWidth", Boolean.TRUE);
         Rencana.putClientProperty("JTextField.placeholderText", "Tuliskan rencana dan tindakan keperawatan mandiri...");
@@ -10245,8 +10295,7 @@ public final class RMPenilaianAwalKeperawatanIGD extends javax.swing.JDialog {
         scrollObatInfus.setViewportView(tbObatInfus);
         scrollObatInfus.setBorder(javax.swing.BorderFactory.createLineBorder(widget.ThemeConfig.BORDER_SOFT));
         tabModeObatInfus.addTableModelListener((javax.swing.event.TableModelEvent e) -> scrollObatInfus.repaint());
-        scrollObatInfus.setPreferredSize(new java.awt.Dimension(0, 150));
-        scrollObatInfus.setMinimumSize(new java.awt.Dimension(0, 120));
+        simrskhanza.ui.theme.KhanzaMedicalTealTheme.fixScrollPaneHeight(scrollObatInfus, 180);
         java.awt.GridBagConstraints cTabelObat = kepConstraint(0, row);
         cTabelObat.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         cTabelObat.weightx = 1.0;

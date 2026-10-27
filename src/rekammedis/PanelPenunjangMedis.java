@@ -294,6 +294,7 @@ public class PanelPenunjangMedis extends JPanel {
             area.getParent().remove(area);
         }
         JScrollPane sp = new JScrollPane(area);
+        simrskhanza.ui.theme.KhanzaMedicalTealTheme.fixScrollPaneHeight(sp, 130);
         sp.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         sp.setOpaque(false);
         sp.getViewport().setOpaque(false);
@@ -303,7 +304,7 @@ public class PanelPenunjangMedis extends JPanel {
             sp.getVerticalScrollBar().setUnitIncrement(16);
             sp.getVerticalScrollBar().setBlockIncrement(64);
         }
-        pasangMouseWheelBubble(sp);
+        pasangMouseWheelBubble(sp, area);
 
         card.add(head, BorderLayout.NORTH);
         card.add(sp, BorderLayout.CENTER);
@@ -377,6 +378,7 @@ public class PanelPenunjangMedis extends JPanel {
             txtEKG.getParent().remove(txtEKG);
         }
         JScrollPane spEKG = new JScrollPane(txtEKG);
+        simrskhanza.ui.theme.KhanzaMedicalTealTheme.fixScrollPaneHeight(spEKG, 130);
         spEKG.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         spEKG.setOpaque(false);
         spEKG.getViewport().setOpaque(false);
@@ -386,7 +388,7 @@ public class PanelPenunjangMedis extends JPanel {
             spEKG.getVerticalScrollBar().setUnitIncrement(16);
             spEKG.getVerticalScrollBar().setBlockIncrement(64);
         }
-        pasangMouseWheelBubble(spEKG);
+        pasangMouseWheelBubble(spEKG, txtEKG);
 
         JPanel footerChipEKG = buatBarisChipContainer("EKG", panelChipEKG, cacheChipEKG, txtEKG);
 
@@ -1126,33 +1128,51 @@ public class PanelPenunjangMedis extends JPanel {
         });
     }
 
-    private void pasangMouseWheelBubble(JScrollPane sp) {
-        sp.addMouseWheelListener(e -> {
+    private void pasangMouseWheelBubble(JScrollPane sp, JTextArea area) {
+        java.awt.event.MouseWheelListener mwl = e -> {
             JScrollBar bar = sp.getVerticalScrollBar();
-            if (bar == null || !bar.isVisible()) {
-                Container parent = sp.getParent();
-                while (parent != null && !(parent instanceof JScrollPane)) {
-                    parent = parent.getParent();
-                }
-                if (parent != null) {
-                    parent.dispatchEvent(SwingUtilities.convertMouseEvent(sp, e, parent));
-                }
-            } else {
+            int rot = e.getWheelRotation();
+            boolean bisaScroll = false;
+            if (bar != null && bar.isVisible() && rot != 0) {
                 int val = bar.getValue();
                 int min = bar.getMinimum();
                 int max = bar.getMaximum() - bar.getModel().getExtent();
-                int rot = e.getWheelRotation();
-                if ((rot < 0 && val <= min) || (rot > 0 && val >= max)) {
-                    Container parent = sp.getParent();
-                    while (parent != null && !(parent instanceof JScrollPane)) {
-                        parent = parent.getParent();
-                    }
-                    if (parent != null) {
-                        parent.dispatchEvent(SwingUtilities.convertMouseEvent(sp, e, parent));
+                bisaScroll = (rot < 0 && val > min) || (rot > 0 && val < max);
+            }
+            if (bisaScroll) {
+                int unit = bar.getUnitIncrement(rot > 0 ? 1 : -1);
+                if (unit <= 0) unit = 16;
+                int delta = e.getUnitsToScroll() * unit;
+                if (delta == 0 && rot != 0) delta = rot * unit * 3;
+                bar.setValue(bar.getValue() + delta);
+                e.consume();
+                return;
+            }
+            Container parent = sp.getParent();
+            while (parent != null) {
+                if (parent instanceof JScrollPane) {
+                    JScrollPane parentSp = (JScrollPane) parent;
+                    JScrollBar parentBar = parentSp.getVerticalScrollBar();
+                    if (parentBar != null && parentBar.isVisible()) {
+                        int unit = parentBar.getUnitIncrement(rot > 0 ? 1 : -1);
+                        if (unit <= 0) unit = 16;
+                        int delta = e.getUnitsToScroll() * unit;
+                        if (delta == 0 && rot != 0) delta = rot * unit * 3;
+                        parentBar.setValue(parentBar.getValue() + delta);
+                        e.consume();
+                        return;
                     }
                 }
+                parent = parent.getParent();
             }
-        });
+        };
+        sp.addMouseWheelListener(mwl);
+        if (sp.getViewport() != null) {
+            sp.getViewport().addMouseWheelListener(mwl);
+        }
+        if (area != null) {
+            area.addMouseWheelListener(mwl);
+        }
     }
 
     private void stylePrimaryButton(JButton b) {
