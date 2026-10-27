@@ -1336,7 +1336,8 @@ public class frmUtama extends javax.swing.JFrame {
             java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("activeWindow", evt -> {
                 try {
                     java.awt.Window w = (java.awt.Window) evt.getNewValue();
-                    if (w instanceof javax.swing.JDialog && w.isVisible() && w != DlgHome && w != DlgLogin) {
+                    if (w instanceof javax.swing.JDialog && w.isVisible() && w != DlgHome && w != DlgLogin 
+                            && !(w instanceof DlgAsistenAIBoy) && !(w instanceof setting.DlgSetAI)) {
                         daftarDialogAktif.remove(w);
                         daftarDialogAktif.add(w);
                     }
@@ -1373,7 +1374,9 @@ public class frmUtama extends javax.swing.JFrame {
                     targetWindows.addAll(daftarDialogAktif);
                 } else {
                     for (java.awt.Window w : java.awt.Window.getWindows()) {
-                        if (w != this && w instanceof javax.swing.JDialog && w != DlgHome && w != DlgLogin && w.isDisplayable() && w.isVisible()) {
+                        if (w != this && w instanceof javax.swing.JDialog && w != DlgHome && w != DlgLogin 
+                                && !(w instanceof DlgAsistenAIBoy) && !(w instanceof setting.DlgSetAI) 
+                                && w.isDisplayable() && w.isVisible()) {
                             targetWindows.add(w);
                         }
                     }
@@ -1381,7 +1384,8 @@ public class frmUtama extends javax.swing.JFrame {
 
                 for (int i = 0; i < targetWindows.size(); i++) {
                     java.awt.Window d = targetWindows.get(i);
-                    if (d != null && d.isDisplayable() && d.isVisible() && d != DlgLogin) {
+                    if (d != null && d.isDisplayable() && d.isVisible() && d != DlgLogin 
+                            && !(d instanceof DlgAsistenAIBoy) && !(d instanceof setting.DlgSetAI)) {
                         if (PanelUtama != null && PanelUtama.getWidth() > 100 && PanelUtama.getHeight() > 100) {
                             d.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
                             d.setLocationRelativeTo(PanelUtama);
@@ -9720,6 +9724,16 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
 
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_btnSetupAplikasiActionPerformed
+
+    public void bukaAsistenAIBoy() {
+        DlgAsistenAIBoy dlg = DlgAsistenAIBoy.getInstance(this);
+        dlg.setVisible(true);
+    }
+
+    public void bukaPengaturanAI() {
+        setting.DlgSetAI dlg = new setting.DlgSetAI(this, true);
+        dlg.setVisible(true);
+    }
 
     private void btnSetOtoRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetOtoRalanActionPerformed
         

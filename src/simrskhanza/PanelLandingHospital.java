@@ -262,6 +262,38 @@ public class PanelLandingHospital extends JPanel {
         });
         pnlButtons.add(btnBantuanIT);
 
+        // Emerald / Teal Modern Assistant AI Button "Tanya Boy"
+        JButton btnTanyaBoy = new JButton("Tanya Boy (AI)") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                if (getModel().isPressed()) {
+                    g2.setColor(new Color(13, 148, 136));
+                } else if (getModel().isRollover()) {
+                    g2.setColor(new Color(20, 184, 166));
+                } else {
+                    g2.setColor(new Color(15, 118, 110));
+                }
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 6, 6));
+                g2.setColor(new Color(94, 234, 212, 160));
+                g2.setStroke(new BasicStroke(1.0f));
+                g2.draw(new RoundRectangle2D.Float(0.5f, 0.5f, getWidth() - 1.0f, getHeight() - 1.0f, 6, 6));
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btnTanyaBoy.setContentAreaFilled(false);
+        btnTanyaBoy.setBorderPainted(false);
+        btnTanyaBoy.setFocusPainted(false);
+        btnTanyaBoy.setMargin(new Insets(2, 6, 2, 6));
+        btnTanyaBoy.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnTanyaBoy.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnTanyaBoy.setForeground(Color.WHITE);
+        btnTanyaBoy.setPreferredSize(new Dimension(140, 32));
+        // Tombol Tanya Boy (AI) disembunyikan sementara selama tahap uji coba
+        // pnlButtons.add(btnTanyaBoy);
+
         pnlLeftContainer.add(pnlButtons);
 
         add(pnlLeftContainer, BorderLayout.WEST);
@@ -420,6 +452,10 @@ public class PanelLandingHospital extends JPanel {
 
         revalidate();
         repaint();
+    }
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
     }
 
     public PanelDashboardUtamaRSUD getDashboard() {
