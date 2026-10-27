@@ -203,9 +203,7 @@ public final class RMPemantauanEWSD extends JDialog {
     private boolean isUpdatingFromCode = false;
     private Timer timerJam;
 
-    // --- State Navigasi & Mode Edit ---
-    private final CardLayout cardLayoutViews = new CardLayout();
-    private final JPanel pnlWorkspaceViews = new JPanel(cardLayoutViews);
+    // --- State Formulir Pemantauan & Mode Edit ---
     private JScrollPane scrollFormMain;
     private JPanel pnlFormSectionsList;
     private final Map<String, JPanel> mapSectionCards = new LinkedHashMap<>();
@@ -219,17 +217,7 @@ public final class RMPemantauanEWSD extends JDialog {
     private String editTanggalSql = "";
     private int selectedSlotIndex = -1;
 
-    // Sub-Toolbar Tab Buttons
-    private JButton tabBtnForm;
-    private JButton tabBtnHistory;
-    private JLabel lblHistoryCountBadge;
     private JLabel lblStatusSimpanInfo;
-
-    // Contextual Footer Layout
-    private CardLayout footerCardLayout;
-    private JPanel leftFooterWrapper;
-    private JPanel panelFooterInput;
-    private JPanel panelFooterData;
     private JLabel lblFooterHint;
 
     // --- Komponen Identitas Pasien & Form Legacy (dipertahankan untuk kompatibilitas) ---
@@ -265,7 +253,6 @@ public final class RMPemantauanEWSD extends JDialog {
     private JLabel lblAvatar;
     private JLabel lblPasienNama, lblPasienJKUmur, lblPasienRM, lblPasienLahir, lblPasienMasuk, lblPasienRw, lblPasienLokasi;
     private JLabel lblSavedBadge;
-    private JLabel lblTteStatusBadge;
 
     // Live Score Monitor Card Components
     private RoundedCardPanel liveScoreCard;
@@ -353,7 +340,7 @@ public final class RMPemantauanEWSD extends JDialog {
     private DefaultTableModel matrixModel;
     private JTable matrixTable;
 
-    // --- Tab 2: Dual-Pane Riwayat & Live HTML Preview ---
+    // --- Legacy / Background Data Container ---
     public widget.Table tbObat;
     public widget.ScrollPane Scroll;
     public widget.TextBox TCari;
@@ -362,11 +349,10 @@ public final class RMPemantauanEWSD extends JDialog {
     public widget.Label LCount;
     private JLabel lblActivePatientBanner;
     private JEditorPane LoadHTML;
-    private JSplitPane splitRiwayat;
 
     // --- Bottom Action Buttons ---
     public widget.Button BtnBaru, BtnSimpan, BtnHapus, BtnEdit, BtnPrint, BtnKeluar;
-    private JButton btnGantiData, btnHapusData, btnValidasiTTE, btnCetakDokumen, btnSimpanForm, btnResetForm;
+    private JButton btnCetakDokumen, btnSimpanForm, btnResetForm;
 
     // =========================================================================
     // KONSTRUKTOR & INISIALISASI UTAMA
@@ -376,7 +362,6 @@ public final class RMPemantauanEWSD extends JDialog {
         setTitle("Early Warning Scoring System Dewasa — RSUD Demang Sepulau Raya");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        inisialisasiTabelKonfirmasiTTE();
         initMatrixRowSpecifications();
         initComponentsCustom();
         initRM301A();
@@ -734,6 +719,23 @@ public final class RMPemantauanEWSD extends JDialog {
         chkCodeBlue.setForeground(COL_ROSE_PRIMARY);
         chkCodeBlue.setFont(new Font("Segoe UI", Font.BOLD, 11));
 
+        // Inisialisasi kompatibilitas tabel riwayat & filter (background data container)
+        tbObat = new widget.Table();
+        Scroll = new widget.ScrollPane();
+        Scroll.setViewportView(tbObat);
+        DTPCari1 = new widget.Tanggal();
+        DTPCari1.setDisplayFormat("dd-MM-yyyy");
+        DTPCari2 = new widget.Tanggal();
+        DTPCari2.setDisplayFormat("dd-MM-yyyy");
+        TCari = createTextBox(100, true);
+        BtnCari = new widget.Button();
+        BtnAll = new widget.Button();
+        LCount = new widget.Label();
+        LCount.setText("0");
+        LoadHTML = new JEditorPane();
+        LoadHTML.setContentType("text/html");
+        LoadHTML.setEditable(false);
+
         // Compatibility buttons
         BtnBaru = new widget.Button();
         BtnSimpan = new widget.Button();
@@ -762,15 +764,11 @@ public final class RMPemantauanEWSD extends JDialog {
         // 1. Top Header & Sub-Navigation Bar
         getContentPane().add(buildTopHeader(), BorderLayout.NORTH);
 
-        // 2. Main Workspace (Tab 1: Formulir Pemantauan, Tab 2: Riwayat Pemantauan)
-        pnlWorkspaceViews.setBackground(COL_BG_SLATE);
-        pnlWorkspaceViews.add(buildFormulirWorkspace(), "FORM");
-        pnlWorkspaceViews.add(buildHistoryWorkspace(), "HISTORY");
-        getContentPane().add(pnlWorkspaceViews, BorderLayout.CENTER);
+        // 2. Main Workspace (Formulir Pemantauan & Bagan Observasi Terpadu Satu Lembar)
+        getContentPane().add(buildFormulirWorkspace(), BorderLayout.CENTER);
 
         // 3. Bottom Sticky Action Bar
-        JPanel bottomFooter = buildBottomActionBar();
-        getContentPane().add(bottomFooter, BorderLayout.SOUTH);
+        getContentPane().add(buildBottomActionBar(), BorderLayout.SOUTH);
     }
 
     private JPanel buildTopHeader() {
@@ -847,45 +845,12 @@ public final class RMPemantauanEWSD extends JDialog {
         subToolbar.setBorder(new MatteBorder(0, 0, 1, 0, COL_BORDER_DIVIDER));
         subToolbar.setPreferredSize(new Dimension(0, 42));
 
-        JPanel leftTabs = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
-        leftTabs.setOpaque(false);
-
-        tabBtnForm = new JButton("Formulir Pemantauan");
-        tabBtnForm.setFont(FONT_SECTION);
-        tabBtnForm.setFocusPainted(false);
-        tabBtnForm.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        styleTabButton(tabBtnForm, true);
-        tabBtnForm.addActionListener(e -> switchWorkspaceView("FORM"));
-        pasangHoverTab(tabBtnForm, "FORM");
-
-        tabBtnHistory = new JButton("Riwayat Pemantauan");
-        tabBtnHistory.setFont(FONT_SECTION);
-        tabBtnHistory.setFocusPainted(false);
-        tabBtnHistory.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        styleTabButton(tabBtnHistory, false);
-        tabBtnHistory.addActionListener(e -> switchWorkspaceView("HISTORY"));
-        pasangHoverTab(tabBtnHistory, "HISTORY");
-
-        lblHistoryCountBadge = new JLabel("0", SwingConstants.CENTER) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(getBackground());
-                g2.fill(new RoundRectangle2D.Float(0.5f, 0.5f, getWidth() - 1f, getHeight() - 1f, 8, 8));
-                g2.dispose();
-                super.paintComponent(g);
-            }
-        };
-        lblHistoryCountBadge.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        lblHistoryCountBadge.setOpaque(false);
-        lblHistoryCountBadge.setBackground(COL_BG_SLATE);
-        lblHistoryCountBadge.setForeground(COL_TEXT_MUTED);
-        lblHistoryCountBadge.setBorder(new EmptyBorder(2, 7, 2, 7));
-
-        leftTabs.add(tabBtnForm);
-        leftTabs.add(tabBtnHistory);
-        leftTabs.add(lblHistoryCountBadge);
+        JPanel leftSubtitle = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 10));
+        leftSubtitle.setOpaque(false);
+        JLabel lblDocTitle = new JLabel("Formulir Pemantauan & Bagan Observasi Terpadu");
+        lblDocTitle.setFont(FONT_SECTION);
+        lblDocTitle.setForeground(COL_TEAL_DARK);
+        leftSubtitle.add(lblDocTitle);
 
         JPanel rightActions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 5));
         rightActions.setOpaque(false);
@@ -912,60 +877,11 @@ public final class RMPemantauanEWSD extends JDialog {
         rightActions.add(btnDefaultNormal);
         rightActions.add(btnSimulasiKritis);
 
-        subToolbar.add(leftTabs, BorderLayout.WEST);
+        subToolbar.add(leftSubtitle, BorderLayout.WEST);
         subToolbar.add(rightActions, BorderLayout.EAST);
         wrapper.add(subToolbar, BorderLayout.CENTER);
 
         return wrapper;
-    }
-
-    private void pasangHoverTab(JButton btn, String viewKey) {
-        btn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                boolean active = (viewKey.equals("FORM") && tabBtnForm.getForeground().equals(COL_TEAL_DARK))
-                        || (viewKey.equals("HISTORY") && tabBtnHistory.getForeground().equals(COL_TEAL_DARK));
-                if (!active) {
-                    btn.setBackground(COL_BG_SLATE);
-                    btn.setForeground(COL_TEXT_DARK);
-                }
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                boolean active = (viewKey.equals("FORM") && tabBtnForm.getBorder() instanceof CompoundBorder)
-                        || (viewKey.equals("HISTORY") && tabBtnHistory.getBorder() instanceof CompoundBorder);
-                styleTabButton(btn, active);
-            }
-        });
-    }
-
-    private void styleTabButton(JButton btn, boolean active) {
-        btn.setRolloverEnabled(true);
-        if (active) {
-            btn.setBackground(COL_TEAL_SOFT);
-            btn.setForeground(COL_TEAL_DARK);
-            btn.setBorder(new CompoundBorder(
-                    new MatteBorder(0, 0, 3, 0, COL_TEAL_PRIMARY),
-                    new EmptyBorder(6, 16, 6, 16)));
-        } else {
-            btn.setBackground(Color.WHITE);
-            btn.setForeground(COL_TEXT_MUTED);
-            btn.setBorder(new EmptyBorder(6, 16, 6, 16));
-        }
-    }
-
-    private void switchWorkspaceView(String viewName) {
-        cardLayoutViews.show(pnlWorkspaceViews, viewName);
-        styleTabButton(tabBtnForm, "FORM".equals(viewName));
-        styleTabButton(tabBtnHistory, "HISTORY".equals(viewName));
-        if (footerCardLayout != null && leftFooterWrapper != null) {
-            footerCardLayout.show(leftFooterWrapper, "FORM".equals(viewName) ? "INPUT" : "DATA");
-        }
-        if ("HISTORY".equals(viewName)) {
-            runBackground(this::tampil);
-            updateStateButtonsTab2(tbObat.getSelectedRow());
-        }
     }
 
     // =========================================================================
@@ -1086,7 +1002,6 @@ public final class RMPemantauanEWSD extends JDialog {
             btnSimpanForm.setText("Simpan Perubahan");
         }
         updateSlotGridHighlight();
-        switchWorkspaceView("FORM");
         if (scrollFormMain != null) {
             scrollFormMain.getViewport().setViewPosition(new Point(0, 0));
         }
@@ -1194,7 +1109,6 @@ public final class RMPemantauanEWSD extends JDialog {
         lblPasienMasuk = new JLabel("-");
         lblPasienRw = new JLabel("-");
         lblPasienLokasi = new JLabel("-");
-        lblTteStatusBadge = createPillBadge("Belum Validasi TTE", COL_BG_SLATE, COL_TEXT_MUTED);
 
         patBody.add(avatarRow);
         patBody.add(Box.createVerticalStrut(8));
@@ -1209,21 +1123,10 @@ public final class RMPemantauanEWSD extends JDialog {
         patBody.add(createKeyValueRow("No. Rawat", lblPasienRw, true));
         patBody.add(Box.createVerticalStrut(4));
         patBody.add(createKeyValueRow("Kamar / Ruang", lblPasienLokasi, false));
-        patBody.add(Box.createVerticalStrut(6));
-
-        JPanel tteRow = new JPanel(new BorderLayout());
-        tteRow.setOpaque(false);
-        tteRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JLabel lblTteKey = new JLabel("Status TTE");
-        lblTteKey.setFont(FONT_SUBLABEL);
-        lblTteKey.setForeground(COL_TEXT_MUTED);
-        tteRow.add(lblTteKey, BorderLayout.WEST);
-        tteRow.add(lblTteStatusBadge, BorderLayout.EAST);
-        patBody.add(tteRow);
 
         patCard.add(patHdr, BorderLayout.NORTH);
         patCard.add(patBody, BorderLayout.CENTER);
-        patCard.setMaximumSize(new Dimension(Short.MAX_VALUE, 285));
+        patCard.setMaximumSize(new Dimension(Short.MAX_VALUE, 245));
 
         // --- CARD 2: SKOR EWS SAAT INI (LIVE SCORE MONITOR) ---
         liveScoreCard = new RoundedCardPanel(12);
@@ -1904,6 +1807,22 @@ public final class RMPemantauanEWSD extends JDialog {
                 }
             }
         });
+        if (matrixTable.getTableHeader() != null) {
+            matrixTable.getTableHeader().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            matrixTable.getTableHeader().addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int col = matrixTable.columnAtPoint(e.getPoint());
+                    int totalCols = matrixTable.getColumnCount();
+                    if (col >= 2 && col < totalCols - 1) {
+                        int idx = col - 2;
+                        if (idx < activeObsColumns.size()) {
+                            pilihSlotObservasi(idx);
+                        }
+                    }
+                }
+            });
+        }
 
         // Isi baris awal kosong agar 47 baris langsung tampil rapi
         refreshMatrixRows();
@@ -2044,189 +1963,7 @@ public final class RMPemantauanEWSD extends JDialog {
         }
     }
 
-    // =========================================================================
-    // 7. WORKSPACE 2: DUAL-PANE RIWAYAT PEMANTAUAN & LIVE PRATINJAU HTML A4
-    // =========================================================================
-    private JPanel buildHistoryWorkspace() {
-        JPanel historyPanel = new JPanel(new BorderLayout(0, 8));
-        historyPanel.setBackground(COL_BG_SLATE);
-        historyPanel.setBorder(new EmptyBorder(12, 14, 12, 14));
 
-        // 1. SISI KIRI: TABEL RIWAYAT DATA + FILTER TANGGAL & KEYWORD
-        RoundedCardPanel leftPane = new RoundedCardPanel(12);
-        leftPane.setLayout(new BorderLayout(0, 8));
-        leftPane.setBorder(new EmptyBorder(10, 12, 10, 12));
-
-        JPanel topFilterBox = new JPanel(new BorderLayout(0, 6));
-        topFilterBox.setOpaque(false);
-
-        // Banner Pasien Terpilih
-        JPanel bannerBar = new JPanel(new BorderLayout());
-        bannerBar.setBackground(COL_TEAL_SOFT);
-        bannerBar.setBorder(new CompoundBorder(
-                new RoundedBorder(COL_TEAL_BORDER, 8, 1.0f),
-                new EmptyBorder(5, 10, 5, 10)));
-        lblActivePatientBanner = new JLabel("Pasien Terpilih: -");
-        lblActivePatientBanner.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        lblActivePatientBanner.setForeground(COL_TEAL_BADGE);
-        bannerBar.add(lblActivePatientBanner, BorderLayout.WEST);
-
-        // Baris Filter Tanggal & Keyword
-        JPanel filterRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
-        filterRow.setOpaque(false);
-
-        DTPCari1 = new widget.Tanggal();
-        DTPCari1.setDisplayFormat("dd-MM-yyyy");
-        DTPCari1.setPreferredSize(new Dimension(98, 28));
-        styleTanggal(DTPCari1);
-
-        DTPCari2 = new widget.Tanggal();
-        DTPCari2.setDisplayFormat("dd-MM-yyyy");
-        DTPCari2.setPreferredSize(new Dimension(98, 28));
-        styleTanggal(DTPCari2);
-
-        TCari = createTextBox(100, true);
-        TCari.setPreferredSize(new Dimension(155, 28));
-        TCari.setToolTipText("Cari No. Rawat / No. RM / Nama Pasien / Petugas...");
-        TCari.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    runBackground(() -> tampil());
-                }
-            }
-        });
-
-        BtnCari = createRoundedWidgetButton("Cari", COL_TEAL_PRIMARY, Color.WHITE, COL_TEAL_DARK);
-        BtnCari.setPreferredSize(new Dimension(58, 28));
-        BtnCari.addActionListener(e -> runBackground(this::tampil));
-
-        BtnAll = createRoundedWidgetButton("Semua", Color.WHITE, COL_TEXT_DARK, COL_BORDER);
-        BtnAll.setPreferredSize(new Dimension(65, 28));
-        BtnAll.addActionListener(e -> {
-            TCari.setText("");
-            runBackground(this::tampil);
-        });
-
-        LCount = new widget.Label();
-        LCount.setText("0");
-        LCount.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        LCount.setForeground(COL_TEAL_DARK);
-
-        filterRow.add(new JLabel("Periode:"));
-        filterRow.add(DTPCari1);
-        filterRow.add(new JLabel("s.d."));
-        filterRow.add(DTPCari2);
-        filterRow.add(TCari);
-        filterRow.add(BtnCari);
-        filterRow.add(BtnAll);
-        filterRow.add(new JLabel("Record:"));
-        filterRow.add(LCount);
-
-        topFilterBox.add(bannerBar, BorderLayout.NORTH);
-        topFilterBox.add(filterRow, BorderLayout.CENTER);
-        leftPane.add(topFilterBox, BorderLayout.NORTH);
-
-        // Tabel Master tbObat
-        tbObat = new widget.Table();
-        tbObat.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tbObat.setRowHeight(26);
-        tbObat.setFont(FONT_INPUT);
-        tbObat.getTableHeader().setFont(FONT_MICRO_HEADER);
-
-        tbObat.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int r = tbObat.getSelectedRow();
-                if (r != -1) {
-                    getData();
-                    updateStateButtonsTab2(r);
-                    if (e.getClickCount() == 2) {
-                        setModeEditAktif(
-                                tbObat.getValueAt(r, 0).toString(),
-                                tbObat.getValueAt(r, 5).toString(),
-                                selectedSlotIndex
-                        );
-                    }
-                }
-            }
-        });
-
-        tbObat.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                int r = tbObat.getSelectedRow();
-                if (r != -1) {
-                    getData();
-                    updateStateButtonsTab2(r);
-                }
-            }
-        });
-
-        Scroll = new widget.ScrollPane();
-        Scroll.setViewportView(tbObat);
-        Scroll.setBorder(new RoundedBorder(COL_BORDER, 8, 1.0f));
-        leftPane.add(Scroll, BorderLayout.CENTER);
-
-        // 2. SISI KANAN: LIVE PRATINJAU DOKUMEN HTML A4 RM 30-1A
-        RoundedCardPanel rightPane = new RoundedCardPanel(12);
-        rightPane.setLayout(new BorderLayout(0, 6));
-        rightPane.setBorder(new EmptyBorder(10, 12, 10, 12));
-
-        JPanel prevToolBar = new JPanel(new BorderLayout());
-        prevToolBar.setOpaque(false);
-        JLabel lblPrevTitle = new JLabel("PRATINJAU LEMBAR OBSERVASI RM 30-1A");
-        lblPrevTitle.setFont(FONT_MICRO_HEADER);
-        lblPrevTitle.setForeground(COL_TEXT_MUTED);
-
-        JPanel prevBtns = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
-        prevBtns.setOpaque(false);
-
-        JButton btnFullscreen = createFlatButton("Jendela Layar Penuh", null, COL_TEAL_SOFT, COL_TEAL_DARK, COL_TEAL_BORDER);
-        btnFullscreen.setPreferredSize(new Dimension(145, 26));
-        btnFullscreen.addActionListener(e -> {
-            String nr = (tbObat.getSelectedRow() != -1)
-                    ? tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
-                    : TNoRw.getText().trim();
-            bukaDialogPreviewFullscreen(nr);
-        });
-
-        JButton btnPrintJasperRight = createFlatButton("Cetak Lembar EWS", IconStyle.muat("printer.svg", 13, Color.WHITE), COL_TEAL_PRIMARY, Color.WHITE, COL_TEAL_DARK);
-        btnPrintJasperRight.setPreferredSize(new Dimension(135, 26));
-        btnPrintJasperRight.addActionListener(e -> {
-            String nr = (tbObat.getSelectedRow() != -1)
-                    ? tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
-                    : TNoRw.getText().trim();
-            cetakRM301A(nr);
-        });
-
-        prevBtns.add(btnFullscreen);
-        prevBtns.add(btnPrintJasperRight);
-
-        prevToolBar.add(lblPrevTitle, BorderLayout.WEST);
-        prevToolBar.add(prevBtns, BorderLayout.EAST);
-        rightPane.add(prevToolBar, BorderLayout.NORTH);
-
-        LoadHTML = new JEditorPane();
-        LoadHTML.setContentType("text/html");
-        LoadHTML.setEditable(false);
-        HTMLEditorKit kit = new HTMLEditorKit();
-        LoadHTML.setEditorKit(kit);
-        StyleSheet styleSheet = kit.getStyleSheet();
-        styleSheet.addRule("body { font-family: Segoe UI, Tahoma, Arial, sans-serif; font-size: 8.5pt; color: #0f172a; margin: 10px; background: #ffffff; }");
-
-        JScrollPane spHtml = new RoundedScrollPane(LoadHTML, 8);
-        rightPane.add(spHtml, BorderLayout.CENTER);
-
-        // SplitPane Dual-Pane (60:40)
-        splitRiwayat = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);
-        splitRiwayat.setResizeWeight(0.60);
-        splitRiwayat.setDividerSize(6);
-        splitRiwayat.setBorder(null);
-
-        historyPanel.add(splitRiwayat, BorderLayout.CENTER);
-        return historyPanel;
-    }
 
     // =========================================================================
     // 8. DIALOG PRATINJAU DOKUMEN LAYAR PENUH & GENERATOR HTML A4 RM 30-1A
@@ -2543,19 +2280,18 @@ public final class RMPemantauanEWSD extends JDialog {
         footer.setPreferredSize(new Dimension(0, 48));
         footer.setBorder(new CompoundBorder(
                 new MatteBorder(1, 0, 0, 0, COL_BORDER_DIVIDER),
-                new EmptyBorder(0, 6, 0, 6)));
+                new EmptyBorder(0, 8, 0, 8)));
 
         Color colTextNormal = new Color(50, 50, 50);
         Color colTextDanger = new Color(185, 28, 28);
 
-        // Panel Tombol Tab 1 (Formulir Pemantauan) — Tanpa tombol TTE (TTE berada di Tab Data Tersimpan)
-        panelFooterInput = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
-        panelFooterInput.setOpaque(false);
+        JPanel panelAksi = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        panelAksi.setOpaque(false);
 
-        // Tombol Simpan Observasi: Solid Medical Green/Teal (#0F766E / #0D9488) senada dengan tombol Cetak RM
+        // 1. Tombol Simpan Observasi: Solid Medical Teal (#0F766E) senada dengan tombol Cetak RM
         btnSimpanForm = createFlatButton("Simpan Observasi", IconStyle.muat("save.svg", 15, Color.WHITE), COL_TEAL_PRIMARY, Color.WHITE, COL_TEAL_DARK);
         btnSimpanForm.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        btnSimpanForm.setPreferredSize(new Dimension(150, 32));
+        btnSimpanForm.setPreferredSize(new Dimension(155, 32));
         btnSimpanForm.setMnemonic('S');
         btnSimpanForm.setToolTipText("Alt+S (Simpan Kolom Baru / Perbarui Kolom Terpilih)");
         btnSimpanForm.addActionListener(e -> {
@@ -2566,77 +2302,42 @@ public final class RMPemantauanEWSD extends JDialog {
             }
         });
 
+        // 2. Tombol Reset / Kolom Baru
         btnResetForm = createCardFooterButton("Reset / Kolom Baru", IconStyle.muat("refresh.svg", 15, IconStyle.HIJAU), colTextNormal, false, 145);
         btnResetForm.setMnemonic('B');
         btnResetForm.setToolTipText("Alt+B (Bersihkan input atau batalkan mode edit)");
         btnResetForm.addActionListener(e -> setModeInputBaru());
 
-        JButton btnHapusKolomForm = createCardFooterButton("Hapus Kolom", IconStyle.muat("trash.svg", 15, IconStyle.MERAH), colTextDanger, true, 115);
+        // 3. Tombol Hapus Kolom
+        JButton btnHapusKolomForm = createCardFooterButton("Hapus Kolom", IconStyle.muat("trash.svg", 15, IconStyle.MERAH), colTextDanger, true, 120);
+        btnHapusKolomForm.setToolTipText("Hapus kolom observasi yang sedang diedit atau dipilih");
         btnHapusKolomForm.addActionListener(e -> hapus());
 
+        // 4. Tombol Pratinjau Cetak Lembar F4
+        JButton btnPratinjau = createCardFooterButton("Pratinjau Cetak", IconStyle.muat("file-text.svg", 15, IconStyle.BIRU), colTextNormal, false, 130);
+        btnPratinjau.setToolTipText("Buka pratinjau lembar RM 30-1A layar penuh");
+        btnPratinjau.addActionListener(e -> bukaDialogPreviewFullscreen(TNoRw.getText().trim()));
+
+        // 5. Tombol Cetak RM 30-1A: Solid Medical Teal (#0F766E)
+        btnCetakDokumen = createFlatButton("Cetak RM 30-1A", IconStyle.muat("printer.svg", 15, Color.WHITE), COL_TEAL_PRIMARY, Color.WHITE, COL_TEAL_DARK);
+        btnCetakDokumen.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnCetakDokumen.setPreferredSize(new Dimension(145, 32));
+        btnCetakDokumen.setMnemonic('P');
+        btnCetakDokumen.setToolTipText("Alt+P (Cetak formulir resmi RM 30-1A Jasper)");
+        btnCetakDokumen.addActionListener(e -> cetakRM301A(TNoRw.getText().trim()));
+
+        // 6. Tombol Keluar
         JButton btnKeluarInput = createCardFooterButton("Keluar", IconStyle.muat("log-out.svg", 15, IconStyle.ABU_MUDA), colTextDanger, true, 96);
         btnKeluarInput.setMnemonic('K');
         btnKeluarInput.setToolTipText("Alt+K (Tutup Jendela EWS Dewasa)");
         btnKeluarInput.addActionListener(e -> dispose());
 
-        panelFooterInput.add(btnSimpanForm);
-        panelFooterInput.add(btnResetForm);
-        panelFooterInput.add(btnHapusKolomForm);
-        panelFooterInput.add(btnKeluarInput);
-
-        // Panel Tombol Tab 2 (Riwayat Pemantauan / Data Tersimpan) — Memuat tombol Sahkan TTE
-        panelFooterData = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
-        panelFooterData.setOpaque(false);
-
-        btnGantiData = createCardFooterButton("Ganti / Edit Data", IconStyle.muat("pencil.svg", 15, IconStyle.ORANYE), colTextNormal, false, 138);
-        btnGantiData.setEnabled(false);
-        btnGantiData.addActionListener(e -> {
-            int r = tbObat.getSelectedRow();
-            if (r != -1) {
-                getData();
-                setModeEditAktif(tbObat.getValueAt(r, 0).toString(), tbObat.getValueAt(r, 5).toString(), selectedSlotIndex);
-            } else {
-                JOptionPane.showMessageDialog(this, "Pilih baris pada tabel riwayat terlebih dahulu!");
-            }
-        });
-
-        btnHapusData = createCardFooterButton("Hapus", IconStyle.muat("trash.svg", 15, IconStyle.MERAH), colTextDanger, true, 96);
-        btnHapusData.setEnabled(false);
-        btnHapusData.addActionListener(e -> hapus());
-
-        btnValidasiTTE = createCardFooterButton("Sahkan TTE", IconStyle.muat("circle-check.svg", 15, IconStyle.HIJAU), colTextNormal, false, 118);
-        btnValidasiTTE.setEnabled(false);
-        btnValidasiTTE.addActionListener(e -> bukaMenuSahkanTTE(btnValidasiTTE));
-
-        // Tombol Cetak RM 30-1A: Solid Medical Green/Teal (#0F766E / #0D9488)
-        btnCetakDokumen = createFlatButton("Cetak RM 30-1A", IconStyle.muat("printer.svg", 15, Color.WHITE), COL_TEAL_PRIMARY, Color.WHITE, COL_TEAL_DARK);
-        btnCetakDokumen.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        btnCetakDokumen.setPreferredSize(new Dimension(140, 32));
-        btnCetakDokumen.setEnabled(false);
-        btnCetakDokumen.addActionListener(e -> {
-            String nr = (tbObat.getSelectedRow() != -1)
-                    ? tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
-                    : TNoRw.getText().trim();
-            cetakRM301A(nr);
-        });
-
-        JButton btnKeluarData = createCardFooterButton("Keluar", IconStyle.muat("log-out.svg", 15, IconStyle.ABU_MUDA), colTextDanger, true, 96);
-        btnKeluarData.setMnemonic('K');
-        btnKeluarData.setToolTipText("Alt+K (Tutup Jendela EWS Dewasa)");
-        btnKeluarData.addActionListener(e -> dispose());
-
-        panelFooterData.add(btnGantiData);
-        panelFooterData.add(btnHapusData);
-        panelFooterData.add(btnValidasiTTE);
-        panelFooterData.add(btnCetakDokumen);
-        panelFooterData.add(btnKeluarData);
-
-        footerCardLayout = new CardLayout();
-        leftFooterWrapper = new JPanel(footerCardLayout);
-        leftFooterWrapper.setOpaque(false);
-        leftFooterWrapper.add(panelFooterInput, "INPUT");
-        leftFooterWrapper.add(panelFooterData, "DATA");
-        footerCardLayout.show(leftFooterWrapper, "INPUT");
+        panelAksi.add(btnSimpanForm);
+        panelAksi.add(btnResetForm);
+        panelAksi.add(btnHapusKolomForm);
+        panelAksi.add(btnPratinjau);
+        panelAksi.add(btnCetakDokumen);
+        panelAksi.add(btnKeluarInput);
 
         JPanel rightInfoPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 14));
         rightInfoPanel.setOpaque(false);
@@ -2645,163 +2346,9 @@ public final class RMPemantauanEWSD extends JDialog {
         lblFooterHint.setForeground(COL_TEXT_MUTED);
         rightInfoPanel.add(lblFooterHint);
 
-        footer.add(leftFooterWrapper, BorderLayout.CENTER);
+        footer.add(panelAksi, BorderLayout.CENTER);
         footer.add(rightInfoPanel, BorderLayout.EAST);
         return footer;
-    }
-
-    private void updateStateButtonsTab2(int r) {
-        if (btnGantiData == null) return;
-        boolean ada = (r != -1);
-        btnGantiData.setEnabled(ada && akses.getpemantauan_pews_dewasa());
-        btnHapusData.setEnabled(ada && akses.getpemantauan_pews_dewasa());
-        if (btnValidasiTTE != null) btnValidasiTTE.setEnabled(ada);
-        if (btnCetakDokumen != null) btnCetakDokumen.setEnabled(ada && akses.getpemantauan_pews_dewasa());
-    }
-
-    // =========================================================================
-    // 10. VALIDASI OTENTIKASI TTE (PETUGAS & DOKTER DPJP)
-    // =========================================================================
-    private void bukaMenuSahkanTTE(Component invoker) {
-        JPopupMenu menuTte = new JPopupMenu();
-
-        JMenuItem itemPetugas = new JMenuItem("1. Sahkan TTE Perawat / Petugas Observasi EWS");
-        itemPetugas.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        itemPetugas.setIcon(IconStyle.muat("clipboard-check.svg", 14, COL_TEAL_DARK));
-        itemPetugas.addActionListener(e -> validasiTtePetugas());
-
-        JMenuItem itemDokter = new JMenuItem("2. Sahkan TTE Dokter Jaga / DPJP (Otentikasi PIN TTE)");
-        itemDokter.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        itemDokter.setIcon(IconStyle.muat("clipboard-check.svg", 14, COL_TEAL_DARK));
-        itemDokter.addActionListener(e -> validasiTteDokter());
-
-        menuTte.add(itemPetugas);
-        menuTte.addSeparator();
-        menuTte.add(itemDokter);
-
-        menuTte.show(invoker, 0, -menuTte.getPreferredSize().height - 4);
-    }
-
-    private String resolveTargetNoRawatTte() {
-        if (isEditMode && !editNoRawat.isEmpty()) return editNoRawat;
-        if (tbObat.getSelectedRow() != -1) return tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString();
-        return TNoRw.getText().trim();
-    }
-
-    private String resolveTargetTanggalTte() {
-        if (isEditMode && !editTanggalSql.isEmpty()) return editTanggalSql;
-        if (selectedSlotIndex >= 0 && selectedSlotIndex < activeObsColumns.size()) {
-            return activeObsColumns.get(selectedSlotIndex).tanggalSql;
-        }
-        if (tbObat.getSelectedRow() != -1) return tbObat.getValueAt(tbObat.getSelectedRow(), 5).toString();
-        if (!activeObsColumns.isEmpty()) return activeObsColumns.get(activeObsColumns.size() - 1).tanggalSql;
-        return Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":" + Menit.getSelectedItem() + ":" + Detik.getSelectedItem();
-    }
-
-    private void validasiTtePetugas() {
-        String noRawat = resolveTargetNoRawatTte();
-        String tglObs = resolveTargetTanggalTte();
-        if (noRawat.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Pilih data pasien / observasi terlebih dahulu!");
-            return;
-        }
-        String nip = KdPetugas.getText().trim();
-        String nama = NmPetugas.getText().trim();
-        if (nip.isEmpty() && tbObat.getSelectedRow() != -1) {
-            nip = tbObat.getValueAt(tbObat.getSelectedRow(), 22).toString();
-            nama = tbObat.getValueAt(tbObat.getSelectedRow(), 23).toString();
-        }
-        if (nip.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Petugas pengisi observasi belum dipilih!");
-            return;
-        }
-
-        String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        String hash = "TTE-EWSD-" + noRawat.replaceAll("[^0-9]", "") + "-" + nip;
-        try {
-            PreparedStatement psTte = koneksi.prepareStatement(
-                    "insert into pemantauan_pews_dewasa_konfirmasi "
-                    + "(no_rawat, tanggal, tgl_validasi_petugas, nip_petugas, status_petugas, hash_tte) "
-                    + "values (?, ?, ?, ?, 'Tervalidasi', ?) "
-                    + "on duplicate key update tgl_validasi_petugas=values(tgl_validasi_petugas), "
-                    + "nip_petugas=values(nip_petugas), status_petugas='Tervalidasi', hash_tte=values(hash_tte)");
-            try {
-                psTte.setString(1, noRawat);
-                psTte.setString(2, tglObs);
-                psTte.setString(3, now);
-                psTte.setString(4, nip);
-                psTte.setString(5, hash);
-                psTte.executeUpdate();
-            } finally {
-                psTte.close();
-            }
-            lblTteStatusBadge.setText("\u2713 Tervalidasi (TTE)");
-            lblTteStatusBadge.setBackground(COL_EMERALD_BG);
-            lblTteStatusBadge.setForeground(COL_EMERALD_TXT);
-            tampilBaganMatrix();
-            JOptionPane.showMessageDialog(this, "Tanda Tangan Elektronik Petugas (" + nama + ") berhasil disahkan!");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Gagal mengesahkan TTE Petugas: " + ex.getMessage());
-        }
-    }
-
-    private void validasiTteDokter() {
-        String noRawat = resolveTargetNoRawatTte();
-        String tglObs = resolveTargetTanggalTte();
-        if (noRawat.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Pilih data pasien / observasi terlebih dahulu!");
-            return;
-        }
-
-        String kdDokter = Sequel.cariIsi("select dpjp_ranap.kd_dokter from dpjp_ranap where dpjp_ranap.no_rawat=? limit 1", noRawat);
-        if (kdDokter == null || kdDokter.trim().isEmpty()) {
-            kdDokter = Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=?", noRawat);
-        }
-        String nmDokter = Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", kdDokter);
-
-        DlgOtentikasiTTE dlgTte = new DlgOtentikasiTTE(this, true);
-        dlgTte.setKonteks(
-                noRawat,
-                TPasien.getText(),
-                "Early Warning Scoring System Dewasa (RM 30-1A)",
-                kdDokter,
-                nmDokter,
-                "",
-                kdDokter,
-                nmDokter,
-                ""
-        );
-        dlgTte.setLocationRelativeTo(this);
-        dlgTte.setVisible(true);
-
-        if (dlgTte.isTervalidasi() && !dlgTte.isAksiBatalTTE()) {
-            String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            String hash = "TTE-DPJP-EWSD-" + noRawat.replaceAll("[^0-9]", "");
-            try {
-                PreparedStatement psTte = koneksi.prepareStatement(
-                        "insert into pemantauan_pews_dewasa_konfirmasi "
-                        + "(no_rawat, tanggal, tgl_validasi_dokter, kd_dokter, status_dokter, status_petugas, hash_tte) "
-                        + "values (?, ?, ?, ?, 'Tervalidasi', 'Tervalidasi', ?) "
-                        + "on duplicate key update tgl_validasi_dokter=values(tgl_validasi_dokter), "
-                        + "kd_dokter=values(kd_dokter), status_dokter='Tervalidasi', status_petugas='Tervalidasi', hash_tte=values(hash_tte)");
-                try {
-                    psTte.setString(1, noRawat);
-                    psTte.setString(2, tglObs);
-                    psTte.setString(3, now);
-                    psTte.setString(4, kdDokter);
-                    psTte.setString(5, hash);
-                    psTte.executeUpdate();
-                } finally {
-                    psTte.close();
-                }
-                lblTteStatusBadge.setText("\u2713 Tervalidasi (TTE)");
-                lblTteStatusBadge.setBackground(COL_EMERALD_BG);
-                lblTteStatusBadge.setForeground(COL_EMERALD_TXT);
-                tampilBaganMatrix();
-            } catch (Exception ex) {
-                System.out.println("Notif simpan TTE Dokter EWS: " + ex);
-            }
-        }
     }
 
     // =========================================================================
@@ -3708,7 +3255,6 @@ public final class RMPemantauanEWSD extends JDialog {
             });
             int cnt = tabMode.getRowCount();
             LCount.setText("" + cnt);
-            if (lblHistoryCountBadge != null) lblHistoryCountBadge.setText("" + cnt);
             if (lblStatusSimpanInfo != null) {
                 lblStatusSimpanInfo.setText("Tersimpan (" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + " WIB)");
             }
@@ -3720,13 +3266,13 @@ public final class RMPemantauanEWSD extends JDialog {
     private void ganti() {
         String targetRw = isEditMode && !editNoRawat.isEmpty()
                 ? editNoRawat
-                : (tbObat.getSelectedRow() != -1 ? tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString() : "");
+                : TNoRw.getText().trim();
         String targetTgl = isEditMode && !editTanggalSql.isEmpty()
                 ? editTanggalSql
-                : (tbObat.getSelectedRow() != -1 ? tbObat.getValueAt(tbObat.getSelectedRow(), 5).toString() : "");
+                : (selectedSlotIndex >= 0 && selectedSlotIndex < activeObsColumns.size() ? activeObsColumns.get(selectedSlotIndex).tanggalSql : "");
 
         if (targetRw.isEmpty() || targetTgl.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Pilih kolom pada bagan atau baris pada tabel riwayat terlebih dahulu!");
+            JOptionPane.showMessageDialog(null, "Pilih kolom pada bagan observasi yang ingin diubah terlebih dahulu!");
             return;
         }
 
@@ -3750,33 +3296,35 @@ public final class RMPemantauanEWSD extends JDialog {
                     AliranOksigen.getText(), AlatOksigen.getSelectedItem().toString(), GulaDarah.getText(),
                     targetTgl, targetRw
                 })) {
-            int r = tbObat.getSelectedRow();
-            if (r != -1) {
-                tbObat.setValueAt(TNoRw.getText(), r, 0);
-                tbObat.setValueAt(TNoRM.getText(), r, 1);
-                tbObat.setValueAt(TPasien.getText(), r, 2);
-                tbObat.setValueAt(Umur.getText(), r, 3);
-                tbObat.setValueAt(JK.getText(), r, 4);
-                tbObat.setValueAt(tgl, r, 5);
-                tbObat.setValueAt(cmbSkor1.getSelectedItem().toString(), r, 6);
-                tbObat.setValueAt(Skor1.getText(), r, 7);
-                tbObat.setValueAt(cmbSkor2.getSelectedItem().toString(), r, 8);
-                tbObat.setValueAt(Skor2.getText(), r, 9);
-                tbObat.setValueAt(cmbSkor3.getSelectedItem().toString(), r, 10);
-                tbObat.setValueAt(Skor3.getText(), r, 11);
-                tbObat.setValueAt(cmbSkor4.getSelectedItem().toString(), r, 12);
-                tbObat.setValueAt(Skor4.getText(), r, 13);
-                tbObat.setValueAt(cmbSkor5.getSelectedItem().toString(), r, 14);
-                tbObat.setValueAt(Skor5.getText(), r, 15);
-                tbObat.setValueAt(cmbSkor6.getSelectedItem().toString(), r, 16);
-                tbObat.setValueAt(Skor6.getText(), r, 17);
-                tbObat.setValueAt(cmbSkor7.getSelectedItem().toString(), r, 18);
-                tbObat.setValueAt(Skor7.getText(), r, 19);
-                tbObat.setValueAt(TotalSkor.getText(), r, 20);
-                tbObat.setValueAt(ParameterSkor.getText(), r, 21);
-                tbObat.setValueAt(KdPetugas.getText(), r, 22);
-                tbObat.setValueAt(NmPetugas.getText(), r, 23);
-                tbObat.setValueAt(TglLahir.getText(), r, 24);
+            for (int r = 0; r < tabMode.getRowCount(); r++) {
+                if (targetRw.equals(tabMode.getValueAt(r, 0).toString()) && targetTgl.equals(tabMode.getValueAt(r, 5).toString())) {
+                    tabMode.setValueAt(TNoRw.getText(), r, 0);
+                    tabMode.setValueAt(TNoRM.getText(), r, 1);
+                    tabMode.setValueAt(TPasien.getText(), r, 2);
+                    tabMode.setValueAt(Umur.getText(), r, 3);
+                    tabMode.setValueAt(JK.getText(), r, 4);
+                    tabMode.setValueAt(tgl, r, 5);
+                    tabMode.setValueAt(cmbSkor1.getSelectedItem().toString(), r, 6);
+                    tabMode.setValueAt(Skor1.getText(), r, 7);
+                    tabMode.setValueAt(cmbSkor2.getSelectedItem().toString(), r, 8);
+                    tabMode.setValueAt(Skor2.getText(), r, 9);
+                    tabMode.setValueAt(cmbSkor3.getSelectedItem().toString(), r, 10);
+                    tabMode.setValueAt(Skor3.getText(), r, 11);
+                    tabMode.setValueAt(cmbSkor4.getSelectedItem().toString(), r, 12);
+                    tabMode.setValueAt(Skor4.getText(), r, 13);
+                    tabMode.setValueAt(cmbSkor5.getSelectedItem().toString(), r, 14);
+                    tabMode.setValueAt(Skor5.getText(), r, 15);
+                    tabMode.setValueAt(cmbSkor6.getSelectedItem().toString(), r, 16);
+                    tabMode.setValueAt(Skor6.getText(), r, 17);
+                    tabMode.setValueAt(cmbSkor7.getSelectedItem().toString(), r, 18);
+                    tabMode.setValueAt(Skor7.getText(), r, 19);
+                    tabMode.setValueAt(TotalSkor.getText(), r, 20);
+                    tabMode.setValueAt(ParameterSkor.getText(), r, 21);
+                    tabMode.setValueAt(KdPetugas.getText(), r, 22);
+                    tabMode.setValueAt(NmPetugas.getText(), r, 23);
+                    tabMode.setValueAt(TglLahir.getText(), r, 24);
+                    break;
+                }
             }
             if (lblStatusSimpanInfo != null) {
                 lblStatusSimpanInfo.setText("Diperbarui (" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + " WIB)");
@@ -3789,13 +3337,20 @@ public final class RMPemantauanEWSD extends JDialog {
     private void hapus() {
         String targetRw = isEditMode && !editNoRawat.isEmpty()
                 ? editNoRawat
-                : (tbObat.getSelectedRow() != -1 ? tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString() : "");
+                : TNoRw.getText().trim();
         String targetTgl = isEditMode && !editTanggalSql.isEmpty()
                 ? editTanggalSql
-                : (tbObat.getSelectedRow() != -1 ? tbObat.getValueAt(tbObat.getSelectedRow(), 5).toString() : "");
+                : (selectedSlotIndex >= 0 && selectedSlotIndex < activeObsColumns.size() ? activeObsColumns.get(selectedSlotIndex).tanggalSql : "");
 
         if (targetRw.isEmpty() || targetTgl.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Pilih kolom pada bagan atau baris pada tabel riwayat terlebih dahulu!");
+            JOptionPane.showMessageDialog(null, "Pilih kolom pada bagan observasi yang ingin dihapus terlebih dahulu!");
+            return;
+        }
+
+        int konfirmasi = JOptionPane.showConfirmDialog(this,
+                "Apakah Anda yakin ingin menghapus data observasi tanggal " + targetTgl + "?",
+                "Konfirmasi Hapus Observasi", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (konfirmasi != JOptionPane.YES_OPTION) {
             return;
         }
 
@@ -3805,22 +3360,18 @@ public final class RMPemantauanEWSD extends JDialog {
             Sequel.queryu2tf("delete from pemantauan_pews_dewasa_konfirmasi where tanggal=? and no_rawat=?", 2, new String[]{
                 targetTgl, targetRw
             });
-            if (tbObat.getSelectedRow() != -1) {
-                tabMode.removeRow(tbObat.getSelectedRow());
-            } else {
-                for (int i = 0; i < tabMode.getRowCount(); i++) {
-                    if (targetRw.equals(tabMode.getValueAt(i, 0).toString())
-                            && targetTgl.equals(tabMode.getValueAt(i, 5).toString())) {
-                        tabMode.removeRow(i);
-                        break;
-                    }
+            for (int i = 0; i < tabMode.getRowCount(); i++) {
+                if (targetRw.equals(tabMode.getValueAt(i, 0).toString())
+                        && targetTgl.equals(tabMode.getValueAt(i, 5).toString())) {
+                    tabMode.removeRow(i);
+                    break;
                 }
             }
             int cnt = tabMode.getRowCount();
             LCount.setText("" + cnt);
-            if (lblHistoryCountBadge != null) lblHistoryCountBadge.setText("" + cnt);
             setModeInputBaru();
             tampilBaganMatrix();
+            JOptionPane.showMessageDialog(this, "Data observasi berhasil dihapus.");
         } else {
             JOptionPane.showMessageDialog(null, "Gagal menghapus data!");
         }
@@ -4066,7 +3617,6 @@ public final class RMPemantauanEWSD extends JDialog {
         }
         int cnt = tabMode.getRowCount();
         LCount.setText("" + cnt);
-        if (lblHistoryCountBadge != null) lblHistoryCountBadge.setText("" + cnt);
         tampilBaganMatrix();
     }
 
@@ -4147,24 +3697,6 @@ public final class RMPemantauanEWSD extends JDialog {
                 lblSavedBadge.setText("Belum Ada Data");
                 lblSavedBadge.setBackground(COL_BG_SLATE);
                 lblSavedBadge.setForeground(COL_TEXT_MUTED);
-            }
-        }
-        if (lblTteStatusBadge != null) {
-            boolean anyTte = false;
-            for (ObsColumnData c : activeObsColumns) {
-                if ("Tervalidasi".equalsIgnoreCase(c.statusTte)) {
-                    anyTte = true;
-                    break;
-                }
-            }
-            if (anyTte) {
-                lblTteStatusBadge.setText("\u2713 Tervalidasi (TTE)");
-                lblTteStatusBadge.setBackground(COL_EMERALD_BG);
-                lblTteStatusBadge.setForeground(COL_EMERALD_TXT);
-            } else {
-                lblTteStatusBadge.setText("Belum Validasi TTE");
-                lblTteStatusBadge.setBackground(COL_BG_SLATE);
-                lblTteStatusBadge.setForeground(COL_TEXT_MUTED);
             }
         }
 
