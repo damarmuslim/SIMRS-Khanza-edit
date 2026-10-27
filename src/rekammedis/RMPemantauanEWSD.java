@@ -868,14 +868,9 @@ public final class RMPemantauanEWSD extends JDialog {
         btnDefaultNormal.setPreferredSize(new Dimension(135, 30));
         btnDefaultNormal.addActionListener(e -> isiPresetNormal());
 
-        JButton btnSimulasiKritis = createFlatButton("Simulasi Kasus Kritis", null, COL_ROSE_SOFT, COL_ROSE_PRIMARY, COL_ROSE_BORDER);
-        btnSimulasiKritis.setPreferredSize(new Dimension(145, 30));
-        btnSimulasiKritis.addActionListener(e -> isiPresetKritis());
-
         rightActions.add(lblStatusSimpanInfo);
         rightActions.add(btnPullTTV);
         rightActions.add(btnDefaultNormal);
-        rightActions.add(btnSimulasiKritis);
 
         subToolbar.add(leftSubtitle, BorderLayout.WEST);
         subToolbar.add(rightActions, BorderLayout.EAST);
@@ -1732,15 +1727,10 @@ public final class RMPemantauanEWSD extends JDialog {
         JPanel rightHdr = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
         rightHdr.setOpaque(false);
 
-        JButton btnPreviewHtml = createFlatButton("Pratinjau Lembar F4", null, COL_TEAL_SOFT, COL_TEAL_DARK, COL_TEAL_BORDER);
-        btnPreviewHtml.setPreferredSize(new Dimension(145, 28));
-        btnPreviewHtml.addActionListener(e -> bukaDialogPreviewFullscreen(TNoRw.getText().trim()));
-
         JButton btnPrintJasper = createFlatButton("Cetak RM 30-1A", IconStyle.muat("printer.svg", 14, Color.WHITE), COL_TEAL_PRIMARY, Color.WHITE, COL_TEAL_DARK);
         btnPrintJasper.setPreferredSize(new Dimension(135, 28));
         btnPrintJasper.addActionListener(e -> cetakRM301A(TNoRw.getText().trim()));
 
-        rightHdr.add(btnPreviewHtml);
         rightHdr.add(btnPrintJasper);
 
         header.add(leftHdr, BorderLayout.WEST);
@@ -2314,7 +2304,7 @@ public final class RMPemantauanEWSD extends JDialog {
         btnHapusKolomForm.addActionListener(e -> hapus());
 
         // 4. Tombol Pratinjau Cetak Lembar F4
-        JButton btnPratinjau = createCardFooterButton("Pratinjau Cetak", IconStyle.muat("file-text.svg", 15, IconStyle.BIRU), colTextNormal, false, 130);
+        JButton btnPratinjau = createCardFooterButton("Pratinjau Cetak", IconStyle.muat("eye.svg", 15, IconStyle.BIRU), colTextNormal, false, 130);
         btnPratinjau.setToolTipText("Buka pratinjau lembar RM 30-1A layar penuh");
         btnPratinjau.addActionListener(e -> bukaDialogPreviewFullscreen(TNoRw.getText().trim()));
 

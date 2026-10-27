@@ -71,7 +71,12 @@ public class IconStyle {
         // Informasi Edukasi) - clipboard-list mencerminkan pelaksanaan/
         // tindak lanjut suatu rencana/checklist, beda dari "hasil" (sudah
         // dicentang/selesai).
-        PETA.put("pelaksanaan", new Object[]{"clipboard-list.svg", ABU});
+        PETA.put("pelaksanaan",  new Object[]{"clipboard-list.svg", ABU});
+        PETA.put("tarik",        new Object[]{"download.svg",       HIJAU});
+        PETA.put("rekonsiliasi", new Object[]{"pill.svg",           HIJAU});
+        PETA.put("riwayat",      new Object[]{"history.svg",        ABU});
+        PETA.put("pratinjau",    new Object[]{"eye.svg",            BIRU});
+        PETA.put("preview",      new Object[]{"eye.svg",            BIRU});
     }
 
     /**
