@@ -43,6 +43,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.RoundRectangle2D;
@@ -91,6 +92,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
@@ -769,7 +771,6 @@ public final class RMPemantauanEWSD extends JDialog {
         // 3. Bottom Sticky Action Bar
         JPanel bottomFooter = buildBottomActionBar();
         getContentPane().add(bottomFooter, BorderLayout.SOUTH);
-        getContentPane().setComponentZOrder(bottomFooter, 0);
     }
 
     private JPanel buildTopHeader() {
@@ -1011,7 +1012,7 @@ public final class RMPemantauanEWSD extends JDialog {
 
         // Seksi 02: Bagan Grafik Observasi EWS (47 Baris x 12 Kolom)
         addSectionCard("02", buildSection02BaganGrafikMatrix());
-        pnlFormSectionsList.add(createFormVerticalSpacer(18));
+        pnlFormSectionsList.add(createFormVerticalSpacer(24));
 
         scrollFormMain = new JScrollPane(pnlFormSectionsList);
         scrollFormMain.setBorder(null);
@@ -1858,7 +1859,16 @@ public final class RMPemantauanEWSD extends JDialog {
             }
         };
 
-        matrixTable = new JTable(matrixModel);
+        matrixTable = new JTable(matrixModel) {
+            @Override
+            public void scrollRectToVisible(Rectangle aRect) {
+                // Kunci: Jangan pernah perbolehkan auto-scroll vertikal internal di dalam matrixScroll.
+                // Seluruh 47 baris selalu tampil vertikal utuh dari y = 0 sampai y = totalHeight.
+                // Hanya izinkan scrolling horizontal (x dan width) di matrixScroll.
+                Rectangle r = new Rectangle(aRect.x, 0, aRect.width, getHeight());
+                super.scrollRectToVisible(r);
+            }
+        };
         matrixTable.setRowHeight(21);
         matrixTable.setFont(new Font("Consolas", Font.PLAIN, 11));
         matrixTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 11));
@@ -1905,12 +1915,40 @@ public final class RMPemantauanEWSD extends JDialog {
         matrixScroll.getViewport().setScrollMode(javax.swing.JViewport.SIMPLE_SCROLL_MODE);
         matrixScroll.setBorder(BorderFactory.createEmptyBorder());
         matrixScroll.setPreferredSize(new Dimension(800, 1030));
+        matrixScroll.setWheelScrollingEnabled(false);
+
+        // Kunci posisi vertikal viewport matrix selalu 0 agar tidak pernah bergeser/terpotong
+        matrixScroll.getViewport().addChangeListener(e -> {
+            Point p = matrixScroll.getViewport().getViewPosition();
+            if (p.y != 0) {
+                matrixScroll.getViewport().setViewPosition(new Point(p.x, 0));
+            }
+        });
+
+        // Teruskan event mouse wheel vertikal ke parent scrollFormMain agar scroll tidak nyangkut/macet
+        MouseWheelListener wheelForwarder = e -> {
+            if (e.isShiftDown()) {
+                JScrollBar hsb = matrixScroll.getHorizontalScrollBar();
+                if (hsb != null && hsb.isVisible()) {
+                    int amount = e.getUnitsToScroll() * 16;
+                    hsb.setValue(hsb.getValue() + amount);
+                }
+            } else if (scrollFormMain != null) {
+                scrollFormMain.dispatchEvent(SwingUtilities.convertMouseEvent(e.getComponent(), e, scrollFormMain));
+            }
+        };
+        matrixTable.addMouseWheelListener(wheelForwarder);
+        if (matrixTable.getTableHeader() != null) {
+            matrixTable.getTableHeader().addMouseWheelListener(wheelForwarder);
+        }
+        matrixScroll.addMouseWheelListener(wheelForwarder);
 
         JPanel matrixContainer = new JPanel(new BorderLayout());
         matrixContainer.setOpaque(true);
         matrixContainer.setBackground(Color.WHITE);
         matrixContainer.setBorder(new RoundedBorder(COL_BORDER, 8, 1.0f));
         matrixContainer.add(matrixScroll, BorderLayout.CENTER);
+        matrixContainer.addMouseWheelListener(wheelForwarder);
 
         JPanel body = new JPanel(new BorderLayout());
         body.setOpaque(false);
@@ -2501,7 +2539,8 @@ public final class RMPemantauanEWSD extends JDialog {
     private JPanel buildBottomActionBar() {
         JPanel footer = new JPanel(new BorderLayout(8, 0));
         footer.setBackground(Color.WHITE);
-        footer.setPreferredSize(new Dimension(0, 46));
+        footer.setOpaque(true);
+        footer.setPreferredSize(new Dimension(0, 48));
         footer.setBorder(new CompoundBorder(
                 new MatteBorder(1, 0, 0, 0, COL_BORDER_DIVIDER),
                 new EmptyBorder(0, 6, 0, 6)));
@@ -2513,7 +2552,10 @@ public final class RMPemantauanEWSD extends JDialog {
         panelFooterInput = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         panelFooterInput.setOpaque(false);
 
-        btnSimpanForm = createCardFooterButton("Simpan Observasi", IconStyle.muat("save.svg", 15, IconStyle.BIRU), colTextNormal, false, 140);
+        // Tombol Simpan Observasi: Solid Medical Green/Teal (#0F766E / #0D9488) senada dengan tombol Cetak RM
+        btnSimpanForm = createFlatButton("Simpan Observasi", IconStyle.muat("save.svg", 15, Color.WHITE), COL_TEAL_PRIMARY, Color.WHITE, COL_TEAL_DARK);
+        btnSimpanForm.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnSimpanForm.setPreferredSize(new Dimension(150, 32));
         btnSimpanForm.setMnemonic('S');
         btnSimpanForm.setToolTipText("Alt+S (Simpan Kolom Baru / Perbarui Kolom Terpilih)");
         btnSimpanForm.addActionListener(e -> {
@@ -2566,7 +2608,10 @@ public final class RMPemantauanEWSD extends JDialog {
         btnValidasiTTE.setEnabled(false);
         btnValidasiTTE.addActionListener(e -> bukaMenuSahkanTTE(btnValidasiTTE));
 
-        btnCetakDokumen = createCardFooterButton("Cetak RM 30-1A", IconStyle.muat("printer.svg", 15, IconStyle.ABU), colTextNormal, false, 132);
+        // Tombol Cetak RM 30-1A: Solid Medical Green/Teal (#0F766E / #0D9488)
+        btnCetakDokumen = createFlatButton("Cetak RM 30-1A", IconStyle.muat("printer.svg", 15, Color.WHITE), COL_TEAL_PRIMARY, Color.WHITE, COL_TEAL_DARK);
+        btnCetakDokumen.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btnCetakDokumen.setPreferredSize(new Dimension(140, 32));
         btnCetakDokumen.setEnabled(false);
         btnCetakDokumen.addActionListener(e -> {
             String nr = (tbObat.getSelectedRow() != -1)
@@ -4904,18 +4949,19 @@ public final class RMPemantauanEWSD extends JDialog {
         }
 
         @Override
-        public void paint(Graphics g) {
+        protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(getBackground() != null ? getBackground() : COL_CARD_BG);
             g2.fill(new RoundRectangle2D.Float(0.5f, 0.5f, getWidth() - 1f, getHeight() - 1f, arc, arc));
+            g2.dispose();
+            super.paintComponent(g);
+        }
 
-            Graphics2D gChildren = (Graphics2D) g.create();
-            gChildren.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            gChildren.setClip(new RoundRectangle2D.Float(0.5f, 0.5f, getWidth() - 1f, getHeight() - 1f, arc, arc));
-            super.paint(gChildren);
-            gChildren.dispose();
-
+        @Override
+        protected void paintBorder(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setColor(borderColor);
             g2.setStroke(new BasicStroke(1.2f));
             g2.draw(new RoundRectangle2D.Float(0.6f, 0.6f, getWidth() - 1.2f, getHeight() - 1.2f, arc, arc));
@@ -4981,6 +5027,13 @@ public final class RMPemantauanEWSD extends JDialog {
         @Override
         public boolean getScrollableTracksViewportHeight() {
             return false;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(getBackground() != null ? getBackground() : COL_BG_SLATE);
+            g.fillRect(0, 0, getWidth(), getHeight());
         }
     }
 
