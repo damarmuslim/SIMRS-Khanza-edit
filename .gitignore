@@ -69,7 +69,7 @@ hasil-kategori.txt
 medis-hal-*.png
 
 # Screenshot hasil desain/render - jangan upload karena berpotensi memuat data pasien
-design_handoff_simrs_rm_forms/screenshots/
+design_handoff_simrs_rm_forms/
 
 # Claude local settings
 .claude/settings.json
