@@ -83,3 +83,11 @@ design_handoff_simrs_rm_forms/screenshots/
 
 # Temporary / Root jar
 /*.jar
+
+# Catatan pengembangan dan dokumentasi internal
+CLAUDE.md
+DEPLOY.md
+PROGRESS.md
+RM_UI_STATUS.md
+README.TXT
+README.md
